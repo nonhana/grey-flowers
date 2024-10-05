@@ -1,6 +1,10 @@
 <script setup lang="ts">
+
 </script>
 
 <template>
-  <NuxtPage />
+  <div>
+    <span>non_hana</span>
+    <Button />
+  </div>
 </template>
