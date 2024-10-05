@@ -1,6 +1,6 @@
-<script setup lang="ts">
-</script>
-
 <template>
-  <NuxtPage />
+  <NuxtLoadingIndicator />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>

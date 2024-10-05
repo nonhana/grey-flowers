@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <p>这是首页</p>
-  </div>
+  <div />
 </template>
+
+<style scoped>
+
+</style>

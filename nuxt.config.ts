@@ -49,7 +49,7 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     restructureDir: false,
   },
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',
 })
