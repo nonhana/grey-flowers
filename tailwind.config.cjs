@@ -1,4 +1,6 @@
+/** @type {import('tailwindcss/types')} */
 module.exports = {
+  mode: 'jit',
   darkMode: 'class',
   content: [],
   theme: {
@@ -54,6 +56,9 @@ module.exports = {
           2: '#b3b3b3',
           3: '#999999',
         },
+      },
+      fontFamily: {
+        noto: ['Noto Sans', 'Noto Sans SC', 'Noto Sans JP', 'sans-serif'],
       },
     },
   },

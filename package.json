@@ -29,6 +29,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.7.4",
     "eslint": "^9.12.0",
+    "eslint-plugin-tailwindcss": "^3.17.4",
     "sass": "^1.79.4",
     "typescript": "~5.5.4"
   }

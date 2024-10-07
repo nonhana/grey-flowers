@@ -49,6 +49,16 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     restructureDir: false,
   },
+  googleFonts: {
+    families: {
+      'Noto+Sans': [400, 700],
+      'Noto+Sans+SC': [400, 700],
+      'Noto+Sans+JP': [400, 700],
+    },
+    display: 'swap',
+    preload: true,
+    download: true,
+  },
   modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',
