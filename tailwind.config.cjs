@@ -25,10 +25,11 @@ module.exports = {
           4: '#cf222e',
         },
         text: {
-          0: '#777777',
-          1: '#666666',
-          2: '#4d4d4d',
-          3: '#242424',
+          0: '#020d1e88',
+          1: '#777777',
+          2: '#666666',
+          3: '#4d4d4d',
+          4: '#242424',
         },
       },
       dark: {
@@ -59,6 +60,9 @@ module.exports = {
       },
       fontFamily: {
         noto: ['Noto Sans', 'Noto Sans SC', 'Noto Sans JP', 'sans-serif'],
+      },
+      boxShadow: {
+        bottom: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
       },
     },
   },
