@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="h-[2000px]">
+  <div>
     <p>这是首页</p>
     <div class="flex">
       <HanaButton />

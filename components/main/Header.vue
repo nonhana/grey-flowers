@@ -1,4 +1,25 @@
 <script setup lang="ts">
+const routesMap = new Map([
+  ['/', { text: '主页', icon: 'lucide:house', to: '/' }],
+  ['/articles', { text: '文章', icon: 'lucide:notebook-pen', to: '/articles' }],
+  ['/thoughts', { text: '碎碎念', icon: 'lucide:messages-square', to: '/thoughts' }],
+  ['/about', { text: '关于', icon: 'lucide:info', to: '/about' }],
+  ['/friends', { text: '友链', icon: 'lucide:link', to: '/friends' }],
+])
+
+const route = useRoute()
+const { fullPath } = toRefs(route)
+const activeStatus = ref(Array.from<boolean>({ length: routesMap.size }).fill(false))
+watchEffect(() => {
+  activeStatus.value = Array.from<boolean>({ length: routesMap.size }).fill(false)
+  activeStatus.value[Array.from(routesMap.keys()).indexOf(fullPath.value)] = true
+})
+
+const curMode = ref<'light' | 'dark'>('light')
+function changeMode() {
+  curMode.value = curMode.value === 'light' ? 'dark' : 'light'
+}
+
 function handleClick() {
   console.log('click')
 }
@@ -17,19 +38,31 @@ function handleClick() {
       <HanaLogo class="absolute left-1/2 -translate-x-1/2 md:relative md:left-0 md:translate-x-0" />
 
       <div class="absolute left-1/2 hidden -translate-x-1/2 gap-0 transition-all md:flex lg:gap-4">
-        <HanaButton icon="lucide:house" text="主页" @click="handleClick" />
-        <HanaButton icon="lucide:notebook-pen" text="文章" @click="handleClick" />
-        <HanaButton icon="lucide:messages-square" text="碎碎念" @click="handleClick" />
-        <HanaButton icon="lucide:info" text="关于" @click="handleClick" />
-        <HanaButton icon="lucide:link" text="友链" @click="handleClick" />
+        <HanaButton
+          v-for="([key, value], index) in routesMap"
+          :key="key"
+          :type="value.to === fullPath ? 'common' : 'icon'"
+          :text="value.text"
+          :icon="value.icon"
+          :to="value.to"
+          :active="activeStatus[index]"
+        />
       </div>
 
-      <HanaButton
-        type="icon"
-        icon="lucide:user-round"
-        class="ml-auto"
-        @click="handleClick"
-      />
+      <div class="flex gap-0 transition-all lg:gap-4">
+        <HanaButton
+          type="icon"
+          :icon="curMode === 'light' ? 'lucide:moon' : 'lucide:sun'"
+          class="ml-auto"
+          @click="changeMode"
+        />
+        <HanaButton
+          type="icon"
+          icon="lucide:user-round"
+          class="ml-auto"
+          @click="handleClick"
+        />
+      </div>
     </div>
   </div>
 </template>
