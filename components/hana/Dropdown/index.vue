@@ -1,27 +1,34 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  type?: 'hover' | 'click'
+  showArrow?: boolean
+  position?: 'top' | 'bottom' | 'left' | 'right'
+  offset?: 'start' | 'center' | 'end'
+  trigger?: 'hover' | 'click'
+  animation?: 'fade' | 'slide'
 }>(), {
-  type: 'hover',
+  showArrow: true,
+  position: 'bottom',
+  offset: 'center',
+  trigger: 'hover',
+  animation: 'slide',
 })
-
-const visible = ref(false)
-
-function toggleVisible(action: boolean) {
-  visible.value = action
-}
 </script>
 
 <template>
   <div>
-    <div v-if="type === 'hover'" @mouseenter="toggleVisible(true)" @mouseleave="toggleVisible(false)">
-      <slot />
-    </div>
-    <div v-else-if="type === 'click'" @mouseenter="visible = !visible" @mouseleave="visible = !visible">
-      <slot />
-    </div>
-    <div :class="{ hidden: !visible }">
-      <slot name="dropdown" />
-    </div>
+    <HanaTooltip
+      :position="position"
+      :offset="offset"
+      :trigger="trigger"
+      :animation="animation"
+      :show-arrow="showArrow"
+    >
+      <slot v-if="$slots.default" />
+      <template #content>
+        <div>
+          <slot name="dropdown" />
+        </div>
+      </template>
+    </HanaTooltip>
   </div>
 </template>

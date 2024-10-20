@@ -1,10 +1,11 @@
 <script setup lang="ts">
 const props = defineProps<{
-  offset: 'top' | 'bottom' | 'left' | 'right'
+  position: 'top' | 'bottom' | 'left' | 'right'
+  offset?: number
 }>()
 
 const positionClass = computed(() => {
-  switch (props.offset) {
+  switch (props.position) {
     case 'top':
       return 'top-full left-1/2 -translate-x-1/2 border-x-transparent border-b-transparent border-t-white'
     case 'bottom':

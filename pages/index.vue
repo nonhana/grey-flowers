@@ -22,10 +22,5 @@ useHead({
 <template>
   <div>
     <p>这是首页</p>
-    <div class="flex gap-4">
-      <HanaTooltip trigger="click" content="这是一个提示" position="right" animation="slide">
-        <HanaButton text="提示" />
-      </HanaTooltip>
-    </div>
   </div>
 </template>

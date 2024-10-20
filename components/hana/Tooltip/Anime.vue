@@ -26,11 +26,11 @@ const animateClass = computed<Animation>(() => {
     case 'slide':
       return {
         enterActiveClass: 'duration-200 ease-out',
-        enterFromClass: `transform opacity-0${props.position === 'top' || props.position === 'bottom' ? ' translate-y-2' : ' translate-x-2'}`,
+        enterFromClass: `transform opacity-0 ${props.position === 'top' || props.position === 'bottom' ? 'translate-y-2' : 'translate-x-2'}`,
         enterToClass: 'opacity-100',
         leaveActiveClass: 'duration-200 ease-in',
         leaveFromClass: 'opacity-100',
-        leaveToClass: `transform opacity-0${props.position === 'top' || props.position === 'bottom' ? ' translate-y-2' : ' translate-x-2'}`,
+        leaveToClass: `transform opacity-0 ${props.position === 'top' || props.position === 'bottom' ? 'translate-y-2' : 'translate-x-2'}`,
       }
     default:
       return {

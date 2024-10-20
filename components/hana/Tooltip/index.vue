@@ -3,12 +3,14 @@ const props = withDefaults(defineProps<{
   content?: string
   showArrow?: boolean
   position?: 'top' | 'bottom' | 'left' | 'right'
+  offset?: 'start' | 'center' | 'end'
   trigger?: 'hover' | 'click'
   animation?: 'fade' | 'slide'
 }>(), {
   content: '',
   showArrow: true,
   position: 'bottom',
+  offset: 'center',
   trigger: 'hover',
   animation: 'fade',
 })
@@ -34,16 +36,55 @@ function toggleVisible(value: boolean) {
   }
 }
 
+const triggerRef = ref<HTMLDivElement | null>(null)
+const triggerWidth = ref(0)
+
+onMounted(() => {
+  if (triggerRef.value) {
+    triggerWidth.value = triggerRef.value.offsetWidth
+  }
+})
+
+const offsetStyle = computed(() => {
+  const triggerHalfWidth = `${triggerWidth.value / 2}px`
+  return {
+    ...((props.position === 'top' || props.position === 'bottom') && props.offset === 'center' && {
+      left: '50%',
+      transform: 'translateX(-50%)',
+    }),
+    ...((props.position === 'top' || props.position === 'bottom') && props.offset === 'end' && {
+      right: '50%',
+      transform: `translateX(${triggerHalfWidth})`,
+    }),
+    ...((props.position === 'top' || props.position === 'bottom') && props.offset !== 'center' && props.offset !== 'end' && {
+      left: '50%',
+      transform: `translateX(-${triggerHalfWidth})`,
+    }),
+    ...(props.position !== 'top' && props.position !== 'bottom' && props.offset === 'center' && {
+      top: '50%',
+      transform: 'translateY(-50%)',
+    }),
+    ...(props.position !== 'top' && props.position !== 'bottom' && props.offset === 'end' && {
+      bottom: '50%',
+      transform: `translateY(${triggerHalfWidth})`,
+    }),
+    ...(props.position !== 'top' && props.position !== 'bottom' && props.offset !== 'center' && props.offset !== 'end' && {
+      top: '50%',
+      transform: `translateY(-${triggerHalfWidth})`,
+    }),
+  }
+})
+
 const positionClass = computed(() => {
   switch (props.position) {
     case 'top':
-      return 'bottom-full left-1/2 transform -translate-x-1/2 mb-2'
+      return `bottom-full transform mb-2`
     case 'bottom':
-      return 'top-full left-1/2 transform -translate-x-1/2 mt-2'
+      return `top-full transform mt-2`
     case 'left':
-      return 'right-full top-1/2 transform -translate-y-1/2 mr-2'
+      return `right-full transform mr-2`
     case 'right':
-      return 'left-full top-1/2 transform -translate-y-1/2 ml-2'
+      return `left-full transform ml-2`
     default:
       return ''
   }
@@ -51,29 +92,38 @@ const positionClass = computed(() => {
 </script>
 
 <template>
-  <div class="relative">
-    <div
-      @[clickTrigger?`click`:null]="toggleVisible(!visible)"
-      @[hoverTrigger?`mouseenter`:null]="toggleVisible(true)"
-      @[hoverTrigger?`mouseleave`:null]="toggleVisible(false)"
-    >
-      <slot v-if="$slots.default" />
-    </div>
-
-    <HanaTooltipAnime :animation="animation" :position="position">
+  <div>
+    <div v-click-outside="() => toggleVisible(false)" class="relative">
       <div
-        v-if="visible" v-click-outside="() => toggleVisible(false)" class="absolute"
-        :class="positionClass"
+        ref="triggerRef"
+        class="inline-block"
+        @[clickTrigger?`click`:null]="toggleVisible(!visible)"
         @[hoverTrigger?`mouseenter`:null]="toggleVisible(true)"
         @[hoverTrigger?`mouseleave`:null]="toggleVisible(false)"
       >
-        <div class="relative min-w-max max-w-60 rounded-lg border border-gray-200 bg-white px-4 py-2 text-center shadow-md">
-          <slot name="content">
-            <span class="text-text-0">{{ content }}</span>
-          </slot>
-          <HanaTooltipArrow v-if="showArrow" :offset="position" />
-        </div>
+        <slot v-if="$slots.default" />
       </div>
-    </HanaTooltipAnime>
+
+      <HanaTooltipAnime :animation="animation" :position="position">
+        <div
+          v-show="visible"
+          class="absolute"
+          :style="offsetStyle"
+          :class="positionClass"
+          @[hoverTrigger?`mouseenter`:null]="toggleVisible(true)"
+          @[hoverTrigger?`mouseleave`:null]="toggleVisible(false)"
+        >
+          <div
+            class="relative min-w-max max-w-60 rounded-lg border border-gray-200 bg-white text-center shadow-md"
+            :class="[content ? 'px-4 py-2' : 'p-1']"
+          >
+            <slot name="content">
+              <span class="text-text-0">{{ content }}</span>
+            </slot>
+            <HanaTooltipArrow v-if="showArrow" :position="position" />
+          </div>
+        </div>
+      </HanaTooltipAnime>
+    </div>
   </div>
 </template>
