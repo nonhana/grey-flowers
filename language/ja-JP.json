@@ -1,1 +1,25 @@
-{}
+{
+  "head": {
+    "description": "灰色の世界でも、花はいつものように咲く。",
+    "keywords": "フルスタック開発、ウェブ開発チュートリアル、JavaScriptのヒント、Vue、React、Angular、Svelte、Solid.js、Node.jsのバックエンド、フロントエンドのパフォーマンス最適化、開発者のためのTypeScript、コーディングの課題、ソフトウェアエンジニアリングの原則",
+    "name": "灰色の花 - プログラミングとテクノロジーに関するブログ",
+    "title": "灰色の花"
+  },
+  "header": {
+    "about": {
+      "name": "について"
+    },
+    "articles": {
+      "name": "記事"
+    },
+    "friends": {
+      "name": "友人たち"
+    },
+    "thoughts": {
+      "name": "思い"
+    },
+    "home": {
+      "name": "ホームページ"
+    }
+  }
+}

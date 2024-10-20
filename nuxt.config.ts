@@ -1,5 +1,3 @@
-import { defineNuxtConfig } from 'nuxt/config'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devServer: {
@@ -36,13 +34,13 @@ export default defineNuxtConfig({
       },
       {
         code: 'ja-jp',
-        language: 'ja-JP',
-        file: 'ja-JP.json',
+        language: 'ja-jp',
+        file: 'ja-jp.json',
       },
       {
         code: 'zh-cn',
-        language: 'zh-CN',
-        file: 'zh-CN.json',
+        language: 'zh-cn',
+        file: 'zh-cn.json',
       },
     ],
     defaultLocale: 'en-us',
@@ -59,7 +57,8 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts', 'nuxt-lodash'],
+  plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',
 })

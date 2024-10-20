@@ -29,8 +29,8 @@ const component = computed(() => {
   <component
     :is="component"
     :to="to"
-    class="flex shrink-0 cursor-pointer select-none items-center gap-1 rounded-full text-text-0 transition-all hover:bg-primary-200 hover:text-primary-600 active:scale-95 active:bg-primary-300"
-    :class="[type === 'common' ? 'px-[10px] py-2' : 'p-2', active ? 'bg-primary-200 text-primary-600' : '']"
+    class="flex shrink-0 cursor-pointer select-none items-center gap-1 rounded-full text-text-0 transition-all hover:bg-great-blue-200/40 hover:text-great-blue active:scale-95 active:bg-great-blue-200"
+    :class="[type === 'common' ? 'px-[10px] py-2' : 'p-2', active ? 'bg-great-blue-200/40 text-great-blue' : '']"
     @click="emits('click')"
   >
     <Icon v-if="icon" :name="icon" size="20" />

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const routesMap = new Map([
-  ['/', { text: '主页', icon: 'lucide:house', to: '/' }],
-  ['/articles', { text: '文章', icon: 'lucide:notebook-pen', to: '/articles' }],
-  ['/thoughts', { text: '碎碎念', icon: 'lucide:messages-square', to: '/thoughts' }],
-  ['/about', { text: '关于', icon: 'lucide:info', to: '/about' }],
-  ['/friends', { text: '友链', icon: 'lucide:link', to: '/friends' }],
+  ['/', { text: t('header.home.name'), icon: 'lucide:house', to: '/' }],
+  ['articles', { text: t('header.articles.name'), icon: 'lucide:notebook-pen', to: '/articles' }],
+  ['thoughts', { text: t('header.thoughts.name'), icon: 'lucide:messages-square', to: '/thoughts' }],
+  ['about', { text: t('header.about.name'), icon: 'lucide:info', to: '/about' }],
+  ['friends', { text: t('header.friends.name'), icon: 'lucide:link', to: '/friends' }],
 ])
 
 const route = useRoute()
@@ -35,7 +37,9 @@ function handleClick() {
         @click="handleClick"
       />
 
-      <HanaLogo class="absolute left-1/2 -translate-x-1/2 md:relative md:left-0 md:translate-x-0" />
+      <HanaTooltip content="主页" animation="slide">
+        <HanaLogo class="absolute left-1/2 -translate-x-1/2 md:relative md:left-0 md:translate-x-0" />
+      </HanaTooltip>
 
       <div class="absolute left-1/2 hidden -translate-x-1/2 gap-0 transition-all md:flex lg:gap-4">
         <HanaButton
@@ -50,12 +54,14 @@ function handleClick() {
       </div>
 
       <div class="flex gap-0 transition-all lg:gap-4">
-        <HanaButton
-          type="icon"
-          :icon="curMode === 'light' ? 'lucide:moon' : 'lucide:sun'"
-          class="ml-auto"
-          @click="changeMode"
-        />
+        <HanaTooltip content="切换显示模式" animation="slide">
+          <HanaButton
+            type="icon"
+            :icon="curMode === 'light' ? 'lucide:moon' : 'lucide:sun'"
+            class="ml-auto"
+            @click="changeMode"
+          />
+        </HanaTooltip>
         <HanaButton
           type="icon"
           icon="lucide:user-round"
