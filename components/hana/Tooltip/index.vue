@@ -19,30 +19,34 @@ const visible = ref(false)
 const hoverTrigger = ref(trigger.value === 'hover')
 const clickTrigger = ref(trigger.value === 'click')
 
-const visibleTimer = ref<NodeJS.Timeout | null>(null)
 function toggleVisible(value: boolean) {
-  if (value) {
-    if (visibleTimer.value) {
-      clearTimeout(visibleTimer.value)
-      visibleTimer.value = null
-    }
-    visible.value = value
-  }
-  else {
-    visibleTimer.value = setTimeout(() => {
-      visible.value = value
-      visibleTimer.value = null
-    }, 100)
-  }
+  visible.value = value
+}
+function open() {
+  toggleVisible(true)
+}
+function close() {
+  toggleVisible(false)
 }
 
 const triggerRef = ref<HTMLDivElement | null>(null)
 const triggerWidth = ref(0)
+let observer: IntersectionObserver | null = null
 
 onMounted(() => {
+  observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      triggerWidth.value = entry.boundingClientRect.width
+    }
+  }, { threshold: 1 })
   if (triggerRef.value) {
-    triggerWidth.value = triggerRef.value.offsetWidth
+    observer.observe(triggerRef.value)
   }
+})
+
+onUnmounted(() => {
+  if (observer)
+    observer.disconnect()
 })
 
 const offsetStyle = computed(() => {
@@ -93,13 +97,13 @@ const positionClass = computed(() => {
 
 <template>
   <div>
-    <div v-click-outside="() => toggleVisible(false)" class="relative">
+    <div v-click-outside="() => close()" class="relative">
       <div
         ref="triggerRef"
         class="inline-block"
         @[clickTrigger?`click`:null]="toggleVisible(!visible)"
-        @[hoverTrigger?`mouseenter`:null]="toggleVisible(true)"
-        @[hoverTrigger?`mouseleave`:null]="toggleVisible(false)"
+        @[hoverTrigger?`mouseenter`:null]="open()"
+        @[hoverTrigger?`mouseleave`:null]="close()"
       >
         <slot v-if="$slots.default" />
       </div>
@@ -110,14 +114,14 @@ const positionClass = computed(() => {
           class="absolute"
           :style="offsetStyle"
           :class="positionClass"
-          @[hoverTrigger?`mouseenter`:null]="toggleVisible(true)"
-          @[hoverTrigger?`mouseleave`:null]="toggleVisible(false)"
+          @[hoverTrigger?`mouseenter`:null]="open()"
+          @[hoverTrigger?`mouseleave`:null]="close()"
         >
           <div
             class="relative min-w-max max-w-60 rounded-lg border border-gray-200 bg-white text-center shadow-md"
             :class="[content ? 'px-4 py-2' : 'p-1']"
           >
-            <slot name="content">
+            <slot name="content" :close="close">
               <span class="text-text-0">{{ content }}</span>
             </slot>
             <HanaTooltipArrow v-if="showArrow" :position="position" />

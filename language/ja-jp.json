@@ -6,20 +6,25 @@
     "title": "灰色の花"
   },
   "header": {
-    "about": {
-      "name": "について"
+    "routes": {
+      "about": {
+        "name": "について"
+      },
+      "articles": {
+        "name": "記事"
+      },
+      "friends": {
+        "name": "友人たち"
+      },
+      "thoughts": {
+        "name": "思い"
+      },
+      "home": {
+        "name": "ホームページ"
+      }
     },
-    "articles": {
-      "name": "記事"
-    },
-    "friends": {
-      "name": "友人たち"
-    },
-    "thoughts": {
-      "name": "思い"
-    },
-    "home": {
-      "name": "ホームページ"
+    "tooltips": {
+      "mode": "表示モードの切り替え"
     }
   }
 }

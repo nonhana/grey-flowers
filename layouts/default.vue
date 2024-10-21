@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper min-h-screen font-noto">
+    <MainBanner />
     <header class="sticky top-0 w-full">
       <MainHeader />
     </header>
@@ -11,10 +12,10 @@
 
 <style scoped lang="scss">
 .wrapper {
-  background-image: url('../public/images/ende_nea.webp');
+  /* background-image: url('../public/images/ende_nea.webp');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
 }
 </style>

@@ -6,20 +6,25 @@
     "title": "Grey Flowers"
   },
   "header": {
-    "about": {
-      "name": "关于"
+    "routes": {
+      "about": {
+        "name": "关于"
+      },
+      "articles": {
+        "name": "文章"
+      },
+      "friends": {
+        "name": "朋友们"
+      },
+      "thoughts": {
+        "name": "碎碎念"
+      },
+      "home": {
+        "name": "主页"
+      }
     },
-    "articles": {
-      "name": "文章"
-    },
-    "friends": {
-      "name": "朋友们"
-    },
-    "thoughts": {
-      "name": "碎碎念"
-    },
-    "home": {
-      "name": "主页"
+    "tooltips": {
+      "mode": "切换显示模式"
     }
   }
 }

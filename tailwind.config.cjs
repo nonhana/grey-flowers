@@ -74,9 +74,6 @@ module.exports = {
       fontFamily: {
         noto: ['Noto Sans', 'Noto Sans SC', 'Noto Sans JP', 'sans-serif'],
       },
-      boxShadow: {
-        bottom: '0 2px 4px 0 rgba(0, 0, 0, 0.1)',
-      },
     },
   },
   plugins: [

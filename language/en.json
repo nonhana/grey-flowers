@@ -6,20 +6,25 @@
     "keywords": "full-stack development, web development tutorials, JavaScript tips, Vue, React, Angular, Svelte, Solid.js, Node.js backend, frontend performance optimization, TypeScript for developers, coding challenges, software engineering principles"
   },
   "header": {
-    "home": {
-      "name": "Home"
+    "routes": {
+      "home": {
+        "name": "Home"
+      },
+      "articles": {
+        "name": "Articles"
+      },
+      "thoughts": {
+        "name": "Thoughts"
+      },
+      "about": {
+        "name": "About"
+      },
+      "friends": {
+        "name": "Friends"
+      }
     },
-    "articles": {
-      "name": "Articles"
-    },
-    "thoughts": {
-      "name": "Thoughts"
-    },
-    "about": {
-      "name": "About"
-    },
-    "friends": {
-      "name": "Friends"
+    "tooltips": {
+      "mode": "Switch display mode"
     }
   }
 }

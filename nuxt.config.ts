@@ -57,7 +57,7 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts', 'nuxt-lodash'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts', 'nuxt-lodash', '@nuxt/image'],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',
