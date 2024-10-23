@@ -33,7 +33,7 @@ const articleCards = ref<ArticleCardProps[]>(Array.from({ length: 6 }).fill(0).m
 </script>
 
 <template>
-  <div class="h-[2000px]">
+  <div>
     <HanaInfoCard title="最近文章" icon="lucide:newspaper" to="/articles">
       <div
         class=" grid

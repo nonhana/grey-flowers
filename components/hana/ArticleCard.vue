@@ -27,7 +27,7 @@ const tags = ref<Tag[]>(props.tags.map((tag, index) => ({
             :style="{ background: tag.color }"
           >{{ tag.name }}</span>
         </div>
-        <h2 class="text-lg leading-none">
+        <h2 class="text-lg font-bold leading-none">
           {{ title }}
         </h2>
         <p class="line-clamp-2 leading-none text-text">
