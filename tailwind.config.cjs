@@ -18,7 +18,7 @@ module.exports = {
           900: '#4d5562',
         },
         'great-blue': {
-          DEFAULT: '#2A669F',
+          DEFAULT: '#2A669F', // 默认主题色，按钮、文字等激活状态
           50: '#E4F7F8',
           100: '#CCEEF2',
           200: '#9CD7E5',
@@ -38,6 +38,7 @@ module.exports = {
           4: '#cf222e',
         },
         'text': {
+          DEFAULT: '#020d1e88', // 默认文本颜色
           0: '#020d1e88',
           1: '#777777',
           2: '#666666',
@@ -79,5 +80,17 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.with_underline': {
+          transition: 'all 0.3s',
+          background: 'linear-gradient(#2A669F, #2A669F) no-repeat 0 100% / 0 2px',
+        },
+        '.with_underline:hover': {
+          backgroundSize: '100% 2px',
+        },
+      }
+      addUtilities(newUtilities)
+    },
   ],
 }

@@ -21,6 +21,9 @@ importers:
       '@antfu/eslint-config':
         specifier: ^3.7.3
         version: 3.7.3(@typescript-eslint/utils@8.8.0(eslint@9.12.0(jiti@2.2.1))(typescript@5.5.4))(@vue/compiler-sfc@3.5.11)(eslint@9.12.0(jiti@2.2.1))(typescript@5.5.4)(vitest@2.1.2(@types/node@22.7.4)(sass@1.79.4)(terser@5.34.1))
+      '@ctrl/tinycolor':
+        specifier: ^4.1.0
+        version: 4.1.0
       '@iconify-json/lucide':
         specifier: ^1.2.7
         version: 1.2.7
@@ -315,6 +318,10 @@ packages:
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss-selector-parser: ^6.0.13
+
+  '@ctrl/tinycolor@4.1.0':
+    resolution: {integrity: sha512-WyOx8cJQ+FQus4Mm4uPIZA64gbk3Wxh0so5Lcii0aJifqwoVOlfFtorjLE0Hen4OYyHZMXDWqMmaQemBhgxFRQ==}
+    engines: {node: '>=14'}
 
   '@es-joy/jsdoccomment@0.48.0':
     resolution: {integrity: sha512-G6QUWIcC+KvSwXNsJyDTHvqUdNoAVJPPgkc3+Uk4WBKqZvoXhlvazOgm9aL0HwihJLQf0l+tOE2UFzXBqCqgDw==}
@@ -5279,6 +5286,8 @@ snapshots:
   '@csstools/selector-specificity@3.1.1(postcss-selector-parser@6.1.2)':
     dependencies:
       postcss-selector-parser: 6.1.2
+
+  '@ctrl/tinycolor@4.1.0': {}
 
   '@es-joy/jsdoccomment@0.48.0':
     dependencies:

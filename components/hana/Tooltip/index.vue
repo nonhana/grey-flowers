@@ -122,7 +122,7 @@ const positionClass = computed(() => {
             :class="[content ? 'px-4 py-2' : 'p-1']"
           >
             <slot name="content" :close="close">
-              <span class="text-text-0">{{ content }}</span>
+              <span class="text-text">{{ content }}</span>
             </slot>
             <HanaTooltipArrow v-if="showArrow" :position="position" />
           </div>

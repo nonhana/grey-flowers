@@ -7,10 +7,10 @@ const isHome = computed(() => fullPath.value === '/')
 <template>
   <div class="min-h-screen font-noto">
     <MainBanner v-if="isHome" />
-    <header class="sticky top-0 w-full">
+    <header class="sticky top-0 z-50 w-full">
       <MainHeader />
     </header>
-    <main>
+    <main class="mx-auto p-8 md:max-w-[80%] lg:max-w-[70%]">
       <slot />
     </main>
   </div>
