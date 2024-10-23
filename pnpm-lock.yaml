@@ -24,6 +24,9 @@ importers:
       '@ctrl/tinycolor':
         specifier: ^4.1.0
         version: 4.1.0
+      '@formkit/auto-animate':
+        specifier: ^0.8.2
+        version: 0.8.2
       '@iconify-json/lucide':
         specifier: ^1.2.7
         version: 1.2.7
@@ -807,6 +810,9 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@formkit/auto-animate@0.8.2':
+    resolution: {integrity: sha512-SwPWfeRa5veb1hOIBMdzI+73te5puUBHmqqaF1Bu7FjvxlYSz/kJcZKSa9Cg60zL0uRNeJL2SbRxV6Jp6Q1nFQ==}
 
   '@humanfs/core@0.19.0':
     resolution: {integrity: sha512-2cbWIHbZVEweE853g8jymffCA+NCMiuqeECeBBLm8dg2oFdjuGJhgN4UAbI+6v0CKbbhvtXA4qV8YR5Ji86nmw==}
@@ -5567,6 +5573,8 @@ snapshots:
     optional: true
 
   '@fastify/busboy@2.1.1': {}
+
+  '@formkit/auto-animate@0.8.2': {}
 
   '@humanfs/core@0.19.0': {}
 

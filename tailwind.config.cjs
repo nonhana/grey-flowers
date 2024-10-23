@@ -83,11 +83,20 @@ module.exports = {
     function ({ addUtilities }) {
       const newUtilities = {
         '.with_underline': {
-          transition: 'all 0.3s',
-          background: 'linear-gradient(#2A669F, #2A669F) no-repeat 0 100% / 0 2px',
+          background: 'linear-gradient(to right, #2A669F, #2A669F) no-repeat right bottom',
+          backgroundSize: '0% 2px',
+          transition: 'background-size 0.5s',
         },
         '.with_underline:hover': {
+          backgroundPosition: 'left bottom',
           backgroundSize: '100% 2px',
+        },
+        '.ellipsis-2': {
+          display: '-webkit-box',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: '2',
         },
       }
       addUtilities(newUtilities)

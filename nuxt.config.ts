@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
+  },
   devServer: {
     host: '127.0.0.1',
     port: 2408,
@@ -58,7 +62,7 @@ export default defineNuxtConfig({
     download: true,
   },
   modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts', 'nuxt-lodash', '@nuxt/image'],
-  plugins: ['~/plugins/directives.ts'],
+  plugins: ['~/plugins/directives.ts', '~/plugins/formik.client.ts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',
 })
