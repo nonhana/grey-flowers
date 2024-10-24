@@ -28,7 +28,6 @@ const isHome = computed(() => fullPath.value === '/')
 .banner-leave-to {
   height: 0;
   opacity: 0;
-  scale: 0;
 }
 
 .banner-enter-active,
@@ -39,6 +38,5 @@ const isHome = computed(() => fullPath.value === '/')
 .banner-enter-to {
   height: 732px;
   opacity: 1;
-  scale: 1;
 }
 </style>

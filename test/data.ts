@@ -1,4 +1,4 @@
-import type { ArticleCardProps } from '~/types/article'
+import type { ArticleCardProps, Tag } from '~/types/article'
 
 export const articleList: ArticleCardProps[] = Array.from({ length: 6 }).fill(0).map((_, index) => ({
   id: index,
@@ -9,4 +9,11 @@ export const articleList: ArticleCardProps[] = Array.from({ length: 6 }).fill(0)
   publishedAt: '2022-01-01',
   editedAt: '2022-01-01',
   wordCount: 1000,
+}))
+
+export const tagList: Tag[] = Array.from({ length: 61 }).fill(0).map((_, index) => ({
+  id: index,
+  name: 'Hello',
+  color: '#000',
+  count: 4 * index,
 }))
