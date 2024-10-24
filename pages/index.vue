@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ArticleCardProps } from '~/types/article'
+import { articleList } from '~/test/data'
 
 const { t, locale } = useI18n()
 
@@ -19,17 +19,6 @@ useHead({
     },
   ],
 })
-
-const articleCards = ref<ArticleCardProps[]>(Array.from({ length: 6 }).fill(0).map((_, index) => ({
-  id: index,
-  title: 'Hello, World!',
-  description: 'This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.',
-  cover: 'http://dummyimage.com/400X400',
-  tags: ['Hello', 'World'],
-  publishedAt: '2022-01-01',
-  editedAt: '2022-01-01',
-  wordCount: 1000,
-})))
 </script>
 
 <template>
@@ -39,7 +28,7 @@ const articleCards = ref<ArticleCardProps[]>(Array.from({ length: 6 }).fill(0).m
         class=" grid
         grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
       >
-        <HanaArticleCard v-for="card in articleCards" :key="card.id" v-bind="card" />
+        <HanaArticleCard v-for="card in articleList" :key="card.id" v-bind="card" />
       </div>
     </HanaInfoCard>
   </div>

@@ -12,9 +12,10 @@ const routesMap = new Map([
 const route = useRoute()
 const { fullPath } = toRefs(route)
 const activeStatus = ref(Array.from<boolean>({ length: routesMap.size }).fill(false))
+const rootRoute = computed(() => `/${fullPath.value.split('/')[1]}`)
 watchEffect(() => {
   activeStatus.value = Array.from<boolean>({ length: routesMap.size }).fill(false)
-  activeStatus.value[Array.from(routesMap.keys()).indexOf(fullPath.value)] = true
+  activeStatus.value[Array.from(routesMap.keys()).indexOf(rootRoute.value)] = true
 })
 
 const curMode = ref<'light' | 'dark'>('light')
@@ -51,7 +52,7 @@ function changeMode() {
         <HanaButton
           v-for="([key, value], index) in routesMap"
           :key="key"
-          :type="value.to === fullPath ? 'common' : 'icon'"
+          :type="value.to === rootRoute ? 'common' : 'icon'"
           :text="value.text"
           :icon="value.icon"
           :to="value.to"

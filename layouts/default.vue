@@ -6,7 +6,9 @@ const isHome = computed(() => fullPath.value === '/')
 
 <template>
   <div class="min-h-screen font-noto">
-    <MainBanner v-if="isHome" />
+    <transition name="banner">
+      <MainBanner v-if="isHome" />
+    </transition>
     <header class="sticky top-0 z-50 w-full">
       <MainHeader />
     </header>
@@ -20,3 +22,23 @@ const isHome = computed(() => fullPath.value === '/')
     </footer>
   </div>
 </template>
+
+<style scoped>
+.banner-enter-from,
+.banner-leave-to {
+  height: 0;
+  opacity: 0;
+  scale: 0;
+}
+
+.banner-enter-active,
+.banner-leave-active {
+  transition: all 0.5s ease;
+}
+
+.banner-enter-to {
+  height: 732px;
+  opacity: 1;
+  scale: 1;
+}
+</style>

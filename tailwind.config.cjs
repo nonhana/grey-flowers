@@ -75,6 +75,21 @@ module.exports = {
       fontFamily: {
         noto: ['Noto Sans', 'Noto Sans SC', 'Noto Sans JP', 'sans-serif'],
       },
+      keyframes: {
+        'bounce-x': {
+          '0%, 100%': {
+            transform: 'translateX(-25%)',
+            animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)',
+          },
+          '50%': {
+            transform: 'translateX(0)',
+            animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
+          },
+        },
+      },
+      animation: {
+        'bounce-x': 'bounce-x 1s infinite',
+      },
     },
   },
   plugins: [
@@ -91,12 +106,12 @@ module.exports = {
           backgroundPosition: 'left bottom',
           backgroundSize: '100% 2px',
         },
-        '.ellipsis-2': {
-          display: '-webkit-box',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: '2',
+        '.article-detail-item': {
+          display: 'flex',
+          flexDirection: 'var(--direction)',
+        },
+        '.article-detail-item:nth-child(odd)': {
+          '--direction': 'row-reverse',
         },
       }
       addUtilities(newUtilities)

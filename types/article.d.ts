@@ -7,6 +7,7 @@ export interface ArticleCardProps {
   publishedAt: string
   editedAt: string
   wordCount: number
+  type?: 'common' | 'detail'
 }
 
 export interface Tag {

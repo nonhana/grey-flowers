@@ -1,8 +1,10 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.client) {
     const coverDOM = document.getElementById('cover-clone')
     if (coverDOM) {
-      coverDOM.remove()
+      if (!/^\/articles\/\d+$/.test(to.fullPath)) {
+        coverDOM.remove()
+      }
     }
   }
 })

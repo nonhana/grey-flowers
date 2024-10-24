@@ -30,6 +30,7 @@ export default <RouterConfig>{
         resolve({
           left: savedPosition?.left || 0,
           top: savedPosition?.top || 0,
+          behavior: 'smooth',
         })
       }, 500)
     })
