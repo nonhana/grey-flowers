@@ -17,7 +17,7 @@ module.exports = {
           800: '#5b6678',
           900: '#4d5562',
         },
-        'great-blue': {
+        'hana-blue': {
           DEFAULT: '#2A669F', // 默认主题色，按钮、文字等激活状态
           50: '#E4F7F8',
           100: '#CCEEF2',
@@ -96,8 +96,9 @@ module.exports = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     function ({ addUtilities }) {
-      const newUtilities = {
+      addUtilities({
         '.with_underline': {
+          cursor: 'pointer',
           background: 'linear-gradient(to right, #2A669F, #2A669F) no-repeat right bottom',
           backgroundSize: '0% 2px',
           transition: 'background-size 0.5s',
@@ -113,8 +114,20 @@ module.exports = {
         '.article-detail-item:nth-child(odd)': {
           '--direction': 'row-reverse',
         },
-      }
-      addUtilities(newUtilities)
+      })
+    },
+    function ({ addComponents }) {
+      addComponents({
+        '.hana-button': {
+          '@apply flex shrink-0 cursor-pointer select-none items-center justify-between rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-200/40 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200': {},
+        },
+        '.hana-button--active': {
+          '@apply bg-hana-blue-200/40 text-hana-blue': {},
+        },
+        '.hana-card': {
+          '@apply rounded-lg bg-white p-2 text-text shadow-md': {},
+        },
+      })
     },
   ],
 }

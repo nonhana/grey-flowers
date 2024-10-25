@@ -6,11 +6,13 @@ const props = withDefaults(
     icon?: string
     to?: string
     active?: boolean
+    shape?: 'round' | 'square'
   }>(),
   {
     type: 'common',
     text: '默认按钮',
     active: false,
+    shape: 'round',
   },
 )
 
@@ -29,8 +31,8 @@ const component = computed(() => {
   <component
     :is="component"
     :to="to"
-    class="flex shrink-0 cursor-pointer select-none items-center gap-1 rounded-full transition-all hover:bg-great-blue-200/40 hover:text-great-blue active:scale-95 active:bg-great-blue-200"
-    :class="[type === 'common' ? 'px-[10px] py-2' : 'p-2', active ? 'bg-great-blue-200/40 text-great-blue' : 'text-text']"
+    class="flex shrink-0 cursor-pointer select-none items-center gap-1 transition-all hover:bg-hana-blue-200/40 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200"
+    :class="[type === 'common' ? 'px-[10px] py-2' : 'p-2', active ? 'bg-hana-blue-200/40 text-hana-blue' : 'text-text', shape === 'round' ? 'rounded-full' : 'rounded-lg']"
     @click="emits('click')"
   >
     <Icon v-if="icon" :name="icon" size="20" />

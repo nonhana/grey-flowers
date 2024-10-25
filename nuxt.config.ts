@@ -4,6 +4,14 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
   },
+  ssr: true,
+  content: {
+    highlight: {
+      theme: {
+        default: 'github-dark',
+      },
+    },
+  },
   devServer: {
     host: '127.0.0.1',
     port: 2408,
@@ -61,7 +69,16 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@nuxt/icon', '@nuxtjs/google-fonts', 'nuxt-lodash', '@nuxt/image'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
+    '@nuxt/icon',
+    '@nuxtjs/google-fonts',
+    'nuxt-lodash',
+    '@nuxt/image',
+    '@nuxt/content',
+    '@nuxtjs/seo',
+  ],
   plugins: ['~/plugins/directives.ts', '~/plugins/formik.client.ts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',

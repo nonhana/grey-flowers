@@ -22,21 +22,29 @@ function handleClick() {
     coverClone.style.left = `${rect.left}px`
     coverClone.style.width = `${coverRef.value.offsetWidth}px`
     coverClone.style.height = `${coverRef.value.offsetHeight}px`
+    coverClone.style.padding = '0 2rem'
+    coverClone.style.margin = '2rem 0'
     coverClone.style.transition = 'all 0.3s'
-    document.querySelector('main')!.appendChild(coverClone)
+    document.querySelector('#main-wrapper')!.appendChild(coverClone)
     setTimeout(() => {
       coverClone.style.top = '0'
       coverClone.style.left = '0'
       coverClone.style.width = '100%'
-      coverClone.style.height = '300px'
+      coverClone.style.height = '240px'
     }, 0)
+    setTimeout(() => {
+      coverClone.style.opacity = '0'
+    }, 300)
+    setTimeout(() => {
+      coverClone.remove()
+    }, 600)
   }
 }
 </script>
 
 <template>
   <NuxtLink
-    :to="`articles/${id}`" class="relative top-0 overflow-hidden bg-white transition-all hover:-top-1 hover:bg-great-blue-200/40 hover:shadow-lg active:scale-95 active:bg-great-blue-200" :class="[type === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
+    :to="`articles/${id}`" class="relative top-0 overflow-hidden bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="[type === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
     @click="handleClick"
   >
     <div ref="coverRef" class="relative aspect-[3/2] shrink-0" :class="{ 'h-36': type === 'detail' }">

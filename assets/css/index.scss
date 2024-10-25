@@ -1,1 +1,11 @@
 @use './normalize.scss';
+
+:root {
+  --hana-blue: rgba(156, 215, 229, 1);
+  --hana-white: rgba(255, 255, 255, 1);
+}
+
+::selection {
+  background-color: var(--hana-blue);
+  color: var(--hana-white);
+}

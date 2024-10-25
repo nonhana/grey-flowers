@@ -19,7 +19,7 @@ watchEffect(() => {
 
 <template>
   <div>
-    <h1 class="inline-block cursor-pointer font-bold text-great-blue with_underline">
+    <h1 v-if="!isDetail" class="inline-block cursor-pointer font-bold text-hana-blue with_underline">
       一些文章
     </h1>
     <div class="flex gap-20">
