@@ -22,7 +22,7 @@ watch(hash, (newHash) => {
 </script>
 
 <template>
-  <div class="hana-card h-fit w-52 shrink-0 justify-self-end">
+  <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
     <div class="flex items-center gap-2 text-xl">
       <Icon name="lucide:list" />
       <span class="with_underline">文章目录</span>

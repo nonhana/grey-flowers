@@ -9,7 +9,7 @@ const isHome = computed(() => fullPath.value === '/')
     <transition name="banner">
       <MainBanner v-if="isHome" />
     </transition>
-    <header class="sticky top-0 z-50 w-full">
+    <header class="sticky top-0 z-10 w-full">
       <MainHeader />
     </header>
     <main class="flex-1">

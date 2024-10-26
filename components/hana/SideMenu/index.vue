@@ -7,24 +7,34 @@ interface SideMenuProps {
     to: string
   }[]
   activatedId: number
+  type?: 'horizontal' | 'vertical'
 }
 
-withDefaults(defineProps<SideMenuProps>(), { })
+withDefaults(defineProps<SideMenuProps>(), {
+  type: 'vertical',
+})
 </script>
 
 <template>
-  <div class="relative flex h-fit w-40 shrink-0 flex-col gap-2 rounded-lg bg-white p-2 text-text shadow-md">
+  <div
+    class="relative flex size-fit shrink-0 overflow-auto rounded-lg bg-white p-2 text-text shadow-md"
+    :class="[type === 'horizontal' ? 'mx-auto flex-row gap-4' : 'flex-col gap-2']"
+  >
     <NuxtLink
       v-for="menu in menus" :key="menu.id"
       :to="menu.to"
-      class="group flex min-w-[100px] shrink-0 cursor-pointer select-none items-center justify-between rounded-lg px-[10px] py-2 text-xl transition-all hover:bg-hana-blue-200/40 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200"
-      :class="[activatedId === menu.id ? 'bg-hana-blue-200/40 text-hana-blue' : '']"
+      class="group hana-button text-xl"
+      :class="[
+        activatedId === menu.id ? 'bg-hana-blue-200/40 text-hana-blue' : '',
+        type === 'horizontal' ? 'w-auto' : 'w-36',
+      ]"
     >
       <div class="flex items-center gap-2">
         <Icon :name="menu.icon" />
         <span>{{ menu.title }}</span>
       </div>
       <Icon
+        v-if="type === 'vertical'"
         name="lucide:arrow-right" class="animate-bounce-x opacity-0 transition-all group-hover:opacity-100"
         :class="[activatedId === menu.id ? 'animate-none opacity-100' : '']"
       />

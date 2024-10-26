@@ -25,8 +25,8 @@ function changeMode() {
 </script>
 
 <template>
-  <div class="flex h-[50px] w-full justify-center bg-[#fff8] shadow-md backdrop-blur">
-    <div class="relative mx-auto flex size-full items-center justify-between md:max-w-[90%] xl:max-w-[70%]">
+  <div class="flex h-12 w-full justify-center bg-[#fff8] shadow-md backdrop-blur">
+    <div class="relative mx-auto flex size-full items-center justify-between px-2 md:max-w-[90%] xl:max-w-[70%]">
       <HanaDropdown trigger="click" animation="slide" offset="start" :show-arrow="false" class="md:hidden">
         <HanaButton
           type="icon"

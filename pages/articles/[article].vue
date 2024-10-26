@@ -31,25 +31,44 @@ defineOgImageComponent('og-image', {
   description: articleHeader.value.description,
   link: articleHeader.value.ogImage,
 })
+
+const drawerVisible = ref(false)
+function handleClick() {
+  drawerVisible.value = !drawerVisible.value
+}
 </script>
 
 <template>
   <div class="min-h-screen w-full">
-    <ArticleHeader v-if="article" v-bind="articleHeader" />
-    <div class="flex gap-5">
-      <div class="prose w-full max-w-none">
-        <ContentRenderer v-if="article" :value="article">
-          <template #empty>
-            <p>No content found.</p>
-          </template>
-        </ContentRenderer>
+    <div class="flex gap-8">
+      <div class="w-full">
+        <ArticleHeader v-if="article" v-bind="articleHeader" />
+        <div class="prose w-full max-w-none">
+          <ContentRenderer v-if="article" :value="article">
+            <template #empty>
+              <p>No content found.</p>
+            </template>
+          </ContentRenderer>
+        </div>
       </div>
       <div class="hidden lg:block">
-        <div class="sticky top-48 flex flex-col gap-5">
+        <div class="sticky top-20 flex flex-col gap-5">
+          <ArticleAuthor />
           <ArticleSwitch />
           <ArticleToc v-if="article" :article="article" />
         </div>
       </div>
+    </div>
+    <div class="fixed bottom-5 right-5 block lg:hidden">
+      <div class="hana-card">
+        <div class="hana-button w-full gap-2 text-center" @click="handleClick">
+          <span>文章目录</span>
+          <Icon name="lucide:menu" />
+        </div>
+      </div>
+    </div>
+    <div class="block lg:hidden">
+      <ArticleDrawer v-if="article" v-model="drawerVisible" :article="article" />
     </div>
   </div>
 </template>

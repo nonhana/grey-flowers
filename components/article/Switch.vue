@@ -10,7 +10,7 @@ const [prev, next] = neighbors.value || []
 </script>
 
 <template>
-  <div class="hana-card h-fit w-52 shrink-0 justify-self-end">
+  <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
     <HanaTooltip v-if="prev" position="left" :content="prev.title">
       <NuxtLink
         :to="prev._path"

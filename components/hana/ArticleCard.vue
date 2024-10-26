@@ -3,6 +3,8 @@ import type { ArticleCardProps, Tag } from '~/types/article'
 
 const props = withDefaults(defineProps<ArticleCardProps>(), { type: 'common' })
 
+const cardType = ref(props.type)
+
 const tags = ref<Tag[]>(props.tags.map((tag, index) => ({
   id: index,
   name: tag,
@@ -40,19 +42,25 @@ function handleClick() {
     }, 600)
   }
 }
+
+onWatchMedia('sm', (inToOut) => {
+  if (props.type === 'detail') {
+    cardType.value = inToOut ? 'detail' : 'common'
+  }
+})
 </script>
 
 <template>
   <NuxtLink
     :to="to"
     :title="title"
-    class="relative top-0 overflow-hidden bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="[type === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
+    class="relative top-0 overflow-hidden bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="[cardType === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
     @click="handleClick"
   >
-    <div ref="coverRef" class="relative aspect-[3/2] shrink-0" :class="{ 'h-36': type === 'detail' }">
+    <div ref="coverRef" class="relative aspect-[3/2] shrink-0" :class="{ 'h-36': cardType === 'detail' }">
       <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover" />
     </div>
-    <div class="relative flex h-36 flex-col justify-between p-4" :class="{ 'items-center': type === 'detail' }">
+    <div class="relative flex h-36 flex-col justify-between p-4" :class="{ 'items-center': cardType === 'detail' }">
       <div class="flex gap-2 overflow-hidden">
         <span
           v-for="tag in tags"
@@ -66,7 +74,7 @@ function handleClick() {
         {{ title }}
       </span>
       <div class="inline-block">
-        <span class="leading-none text-text" :class="[type === 'detail' ? 'line-clamp-1' : 'line-clamp-2']">
+        <span class="leading-none text-text" :class="[cardType === 'detail' ? 'line-clamp-1' : 'line-clamp-2']">
           {{ description }}
         </span>
       </div>
