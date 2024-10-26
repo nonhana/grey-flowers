@@ -19,9 +19,11 @@ watchEffect(() => {
 
 <template>
   <div>
-    <h1 v-if="!isDetail" class="inline-block cursor-pointer font-bold text-hana-blue with_underline">
-      一些文章
-    </h1>
+    <transition name="title">
+      <h1 v-if="!isDetail" class="inline-block cursor-pointer font-bold text-hana-blue with_underline">
+        一些文章
+      </h1>
+    </transition>
     <div class="flex gap-20">
       <transition name="side-menu">
         <HanaSideMenu v-if="!isDetail" :menus="menus" :activated-id="activatedId" />
@@ -40,11 +42,27 @@ watchEffect(() => {
 
 .side-menu-enter-active,
 .side-menu-leave-active {
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  transition: all 0.3s ease;
 }
 
 .side-menu-enter-to {
   opacity: 1;
   transform: translateX(0);
+}
+
+.title-enter-from,
+.title-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.title-enter-active,
+.title-leave-active {
+  transition: all 0.3s ease;
+}
+
+.title-enter-to {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

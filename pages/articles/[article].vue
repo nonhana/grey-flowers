@@ -37,14 +37,19 @@ defineOgImageComponent('og-image', {
   <div class="min-h-screen w-full">
     <ArticleHeader v-if="article" v-bind="articleHeader" />
     <div class="flex gap-5">
-      <div class="prose max-w-none">
+      <div class="prose w-full max-w-none">
         <ContentRenderer v-if="article" :value="article">
           <template #empty>
             <p>No content found.</p>
           </template>
         </ContentRenderer>
       </div>
-      <ArticleToc v-if="article" :article="article" />
+      <div class="hidden lg:block">
+        <div class="sticky top-48 flex flex-col gap-5">
+          <ArticleSwitch />
+          <ArticleToc v-if="article" :article="article" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

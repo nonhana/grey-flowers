@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const page = ref(1)
-const pageSize = ref(6)
-const { data } = await useAsyncData('recent-articles', () => queryContent('articles')
-  .skip((page.value - 1) * pageSize.value)
-  .limit(pageSize.value)
-  .sort({ _id: -1 })
-  .find())
+const { data } = await useAsyncData('recent-articles', () => queryContent('articles').limit(6).sort({ _id: -1 }).find())
 
 const articleCards = computed<ArticleCardProps[]>(() =>
   data.value?.map((article) => {
@@ -26,9 +20,9 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 </script>
 
 <template>
-  <div>
-    <div class="flex flex-col gap-5">
-      <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
+  <HanaInfoCard title="最近文章" icon="lucide:newspaper" to="/articles">
+    <div class=" grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <HanaArticleCard v-for="card in articleCards" :key="card.title" v-bind="card" />
     </div>
-  </div>
+  </HanaInfoCard>
 </template>

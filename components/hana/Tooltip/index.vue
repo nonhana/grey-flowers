@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{
   animation?: 'fade' | 'slide'
 }>(), {
   content: '',
-  showArrow: true,
+  showArrow: false,
   position: 'bottom',
   offset: 'center',
   trigger: 'hover',
@@ -100,7 +100,6 @@ const positionClass = computed(() => {
     <div v-click-outside="() => close()" class="relative">
       <div
         ref="triggerRef"
-        class="inline-block"
         @[clickTrigger?`click`:null]="toggleVisible(!visible)"
         @[hoverTrigger?`mouseenter`:null]="open()"
         @[hoverTrigger?`mouseleave`:null]="close()"

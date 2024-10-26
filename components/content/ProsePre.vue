@@ -15,5 +15,5 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <pre class="max-w-96"><slot /></pre>
+  <pre><div class="max-w-full overflow-x-auto"><slot /></div></pre>
 </template>

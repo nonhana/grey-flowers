@@ -4,7 +4,7 @@ export const articleList: ArticleCardProps[] = Array.from({ length: 6 }).fill(0)
   id: index,
   title: 'Hello, World!',
   description: 'This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.This is the first article.',
-  cover: 'http://dummyimage.com/400X400',
+  cover: 'https://dummyimage.com/400X400',
   tags: ['Hello', 'World'],
   publishedAt: '2022-01-01',
   editedAt: '2022-01-01',

@@ -22,13 +22,13 @@ watch(hash, (newHash) => {
 </script>
 
 <template>
-  <div class="hana-card sticky top-28 h-fit w-52 shrink-0 justify-self-end">
+  <div class="hana-card h-fit w-52 shrink-0 justify-self-end">
     <div class="flex items-center gap-2 text-xl">
       <Icon name="lucide:list" />
       <span class="with_underline">文章目录</span>
     </div>
     <hr class="my-2">
-    <div v-if="activatedId !== null">
+    <div v-if="activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">
       <NuxtLink
         v-for="link in links" :key="link.id"
         :to="`#${link.id}`"

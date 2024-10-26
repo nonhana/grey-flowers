@@ -1,5 +1,5 @@
 export interface ArticleCardProps {
-  id: number
+  to: string
   title: string
   description: string
   cover: string

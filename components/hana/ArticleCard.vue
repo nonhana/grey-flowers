@@ -44,24 +44,27 @@ function handleClick() {
 
 <template>
   <NuxtLink
-    :to="`articles/${id}`" class="relative top-0 overflow-hidden bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="[type === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
+    :to="to"
+    :title="title"
+    class="relative top-0 overflow-hidden bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="[type === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
     @click="handleClick"
   >
     <div ref="coverRef" class="relative aspect-[3/2] shrink-0" :class="{ 'h-36': type === 'detail' }">
       <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover" />
     </div>
     <div class="relative flex h-36 flex-col justify-between p-4" :class="{ 'items-center': type === 'detail' }">
-      <div class="flex gap-2">
+      <div class="flex gap-2 overflow-hidden">
         <span
           v-for="tag in tags"
-          :key="tag.id" class="rounded-md px-2 py-0.5 text-sm"
+          :key="tag.id"
+          class="shrink-0 rounded-md px-2 py-0.5 text-sm"
           :class="[isWarmHue(tag.color) ? 'text-black' : 'text-white']"
           :style="{ background: tag.color }"
         >{{ tag.name }}</span>
       </div>
-      <h2 class="text-lg font-bold leading-none">
+      <span class="line-clamp-1 text-lg font-bold leading-none">
         {{ title }}
-      </h2>
+      </span>
       <div class="inline-block">
         <span class="leading-none text-text" :class="[type === 'detail' ? 'line-clamp-1' : 'line-clamp-2']">
           {{ description }}

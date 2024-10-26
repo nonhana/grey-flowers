@@ -13,7 +13,7 @@ withDefaults(defineProps<SideMenuProps>(), { })
 </script>
 
 <template>
-  <div class="flex h-fit w-40 shrink-0 flex-col gap-2 rounded-lg bg-white p-2 text-text shadow-md">
+  <div class="relative flex h-fit w-40 shrink-0 flex-col gap-2 rounded-lg bg-white p-2 text-text shadow-md">
     <NuxtLink
       v-for="menu in menus" :key="menu.id"
       :to="menu.to"

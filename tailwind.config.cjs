@@ -124,6 +124,9 @@ module.exports = {
         '.hana-button--active': {
           '@apply bg-hana-blue-200/40 text-hana-blue': {},
         },
+        '.hana-button--disabled': {
+          '@apply cursor-not-allowed opacity-50': {},
+        },
         '.hana-card': {
           '@apply rounded-lg bg-white p-2 text-text shadow-md': {},
         },

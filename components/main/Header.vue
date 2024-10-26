@@ -36,7 +36,8 @@ function changeMode() {
           <HanaDropdownMenu>
             <HanaDropdownItem
               v-for="([key, value], index) in routesMap"
-              :key="key" :icon="value.icon"
+              :key="key"
+              :icon="value.icon"
               :active="activeStatus[index]"
               :to="value.to"
             >
@@ -53,11 +54,12 @@ function changeMode() {
           v-for="([key, value], index) in routesMap"
           :key="key"
           :type="value.to === rootRoute ? 'common' : 'icon'"
-          :text="value.text"
           :icon="value.icon"
           :to="value.to"
           :active="activeStatus[index]"
-        />
+        >
+          {{ value.text }}
+        </HanaButton>
       </div>
 
       <div class="flex gap-0 transition-all lg:gap-4">
