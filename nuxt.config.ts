@@ -78,6 +78,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/content',
     '@nuxtjs/seo',
+    '@vueuse/nuxt',
   ],
   plugins: ['~/plugins/directives.ts', '~/plugins/formik.client.ts'],
   devtools: { enabled: true },

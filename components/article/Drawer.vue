@@ -29,39 +29,43 @@ const [prev, next] = neighbors.value || []
 
 <template>
   <HanaDrawer v-model="visible">
-    <div class="flex flex-col gap-5">
-      <div class="mt-5 flex shrink-0 flex-col items-center justify-items-end gap-2">
-        <NuxtImg class="rounded-full" src="/images/avatar.webp" alt="non_hana" width="96" height="96" />
-        <h2 class="text-xl text-hana-blue with_underline">
-          non_hana
-        </h2>
-        <p class="text-sm">
-          不要为每一件事都赋予意义。
-        </p>
+    <template #default="{ close }">
+      <div class="flex flex-col gap-5">
+        <div class="mt-5 flex shrink-0 flex-col items-center justify-items-end gap-2">
+          <NuxtImg class="rounded-full" src="/images/avatar.webp" alt="non_hana" width="96" height="96" />
+          <h2 class="text-xl text-hana-blue with_underline">
+            non_hana
+          </h2>
+          <p class="text-sm">
+            不要为每一件事都赋予意义。
+          </p>
+        </div>
+        <hr>
+        <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-2 overflow-auto text-text">
+          <NuxtLink
+            v-for="link in links" :key="link.id"
+            :to="`#${link.id}`"
+            class="hana-button"
+            :class="{ 'hana-button--active': activatedId === link.id }"
+            @click="close"
+          >
+            <span class="line-clamp-2">
+              {{ link.text }}
+            </span>
+          </NuxtLink>
+        </div>
+        <div v-else class="text-center text-xl">
+          <Icon name="svg-spinners:8-dots-rotate" />
+        </div>
       </div>
-      <hr>
-      <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-2 overflow-auto text-text">
-        <NuxtLink
-          v-for="link in links" :key="link.id"
-          :to="`#${link.id}`"
-          class="hana-button"
-          :class="{ 'hana-button--active': activatedId === link.id }"
-        >
-          <span class="line-clamp-2">
-            {{ link.text }}
-          </span>
-        </NuxtLink>
-      </div>
-      <div v-else class="text-center text-xl">
-        <Icon name="svg-spinners:8-dots-rotate" />
-      </div>
-    </div>
-    <template #footer>
+    </template>
+    <template #footer="{ close }">
       <hr class="mb-5">
       <NuxtLink
         v-if="prev"
         :to="prev._path"
         class="hana-button w-full justify-center gap-5 text-text"
+        @click="close"
       >
         <span class="line-clamp-1">{{ prev.title }}</span>
         <Icon name="lucide:arrow-left" class="shrink-0 animate-bounce-x" />
@@ -71,6 +75,7 @@ const [prev, next] = neighbors.value || []
         v-if="next"
         :to="next._path"
         class="hana-button w-full justify-center gap-5 text-text"
+        @click="close"
       >
         <span class="shrink-0">下一篇</span>
         <Icon name="lucide:arrow-right" class="shrink-0 animate-bounce-x" />

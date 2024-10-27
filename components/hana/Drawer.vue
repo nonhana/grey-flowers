@@ -67,10 +67,10 @@ onBeforeUnmount(() => {
         <hr>
       </slot>
       <div class="flex-1">
-        <slot />
+        <slot :close="handleClose" />
       </div>
       <div class="mb-5">
-        <slot name="footer" />
+        <slot name="footer" :close="handleClose" />
       </div>
     </aside>
   </transition>

@@ -18,9 +18,11 @@ watchEffect(() => {
 
 const menuType = ref<'horizontal' | 'vertical'>('vertical')
 
-onWatchMedia('lg', (inToOut) => {
-  menuType.value = inToOut ? 'vertical' : 'horizontal'
-})
+const breakPoint = useMediaQuery(tailwindBreakpoints.lg)
+
+watch(breakPoint, (newV) => {
+  menuType.value = newV ? 'vertical' : 'horizontal'
+}, { immediate: true })
 </script>
 
 <template>

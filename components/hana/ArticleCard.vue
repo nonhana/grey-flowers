@@ -43,11 +43,13 @@ function handleClick() {
   }
 }
 
-onWatchMedia('sm', (inToOut) => {
+const breakPoint = useMediaQuery(tailwindBreakpoints.md)
+
+watch(breakPoint, (newV) => {
   if (props.type === 'detail') {
-    cardType.value = inToOut ? 'detail' : 'common'
+    cardType.value = newV ? 'detail' : 'common'
   }
-})
+}, { immediate: true })
 </script>
 
 <template>
