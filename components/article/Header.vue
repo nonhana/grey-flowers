@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<ArticleHeader>(), {
   alt: '暂无图片',
   ogImage: '/images/not-found.webp',
   tags: () => [],
+  category: '未分类',
   publishedAt: '',
   editedAt: '',
   published: false,

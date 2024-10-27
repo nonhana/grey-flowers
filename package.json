@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "new": "node ./scripts/newArticle.js"
   },
   "dependencies": {
     "nuxt": "^3.13.0",
@@ -37,6 +38,7 @@
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
     "clsx": "^2.1.1",
+    "dayjs-nuxt": "^2.1.11",
     "eslint": "^9.12.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "gsap": "^3.12.5",

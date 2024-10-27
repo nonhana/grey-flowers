@@ -5,6 +5,7 @@ export interface ArticleHeader {
   alt: string
   ogImage: string
   tags: string[]
+  category: string
   publishedAt: string
   editedAt: string
   published: boolean

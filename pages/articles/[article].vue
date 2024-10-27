@@ -20,6 +20,7 @@ const articleHeader = computed<ArticleHeader>(() => ({
   alt: article.value?.alt || '暂无图片',
   ogImage: article.value?.ogImage || '/images/not-found.webp',
   tags: article.value?.tags || [],
+  category: article.value?.category || '未分类',
   publishedAt: article.value?.publishedAt || '',
   editedAt: article.value?.editedAt || '',
   published: article.value?.published || false,
