@@ -79,7 +79,6 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/seo',
     '@vueuse/nuxt',
-    'dayjs-nuxt',
   ],
   plugins: ['~/plugins/directives.ts', '~/plugins/formik.client.ts'],
   devtools: { enabled: true },
