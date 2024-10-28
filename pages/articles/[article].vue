@@ -44,7 +44,7 @@ function handleClick() {
     <div class="flex gap-8">
       <div class="w-full">
         <ArticleHeader v-if="article" v-bind="articleHeader" />
-        <div class="prose w-full max-w-none">
+        <div class="prose w-full max-w-none dark:prose-invert prose-a:no-underline prose-a:prose-headings:font-bold hover:prose-a:prose-headings:text-hana-blue">
           <ContentRenderer v-if="article" :value="article">
             <template #empty>
               <p>No content found.</p>
@@ -52,7 +52,7 @@ function handleClick() {
           </ContentRenderer>
         </div>
       </div>
-      <div class="hidden lg:block">
+      <div class="hidden xl:block">
         <div class="sticky top-20 flex flex-col gap-5">
           <ArticleAuthor />
           <ArticleSwitch />
@@ -60,7 +60,7 @@ function handleClick() {
         </div>
       </div>
     </div>
-    <div class="fixed bottom-5 right-5 block lg:hidden">
+    <div class="fixed bottom-5 right-5 block xl:hidden">
       <div class="hana-card">
         <div class="hana-button w-full gap-2 text-center" @click="handleClick">
           <span>文章目录</span>
@@ -68,7 +68,7 @@ function handleClick() {
         </div>
       </div>
     </div>
-    <div class="block lg:hidden">
+    <div class="block xl:hidden">
       <ArticleDrawer v-if="article" v-model="drawerVisible" :article="article" />
     </div>
   </div>
