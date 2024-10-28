@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const props = withDefaults(defineProps<ArticleCardProps>(), { type: 'common' })
-
-const cardType = ref(props.type)
+withDefaults(defineProps<ArticleCardProps>(), { type: 'common' })
 
 const coverRef = ref<HTMLDivElement | null>(null)
 
@@ -35,27 +33,19 @@ function handleClick() {
     }, 600)
   }
 }
-
-const breakPoint = useMediaQuery(tailwindBreakpoints.md)
-
-watch(breakPoint, (newV) => {
-  if (props.type === 'detail') {
-    cardType.value = newV ? 'detail' : 'common'
-  }
-}, { immediate: true })
 </script>
 
 <template>
   <NuxtLink
     :to="to"
     :title="title"
-    class="relative top-0 w-full overflow-hidden bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="[cardType === 'detail' ? 'rounded-lg article-detail-item' : 'block rounded-3xl']"
+    class="relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200" :class="{ 'md:rounded-lg md:article-detail-item': type === 'detail' }"
     @click="handleClick"
   >
-    <div ref="coverRef" class="relative aspect-[3/2] shrink-0" :class="{ 'h-36': cardType === 'detail' }">
+    <div ref="coverRef" class="relative aspect-[3/2] shrink-0" :class="{ 'md:h-36': type === 'detail' }">
       <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover" />
     </div>
-    <div class="relative flex h-36 w-full flex-col justify-between p-4" :class="{ 'items-center': cardType === 'detail' }">
+    <div class="relative flex h-36 w-full flex-col justify-between p-4" :class="{ 'md:items-center': type === 'detail' }">
       <div class="flex gap-2 overflow-hidden">
         <ArticleTag v-for="tag in tags" :key="tag" :name="tag" size="small" />
       </div>
@@ -63,7 +53,7 @@ watch(breakPoint, (newV) => {
         {{ title }}
       </span>
       <div class="inline-block">
-        <span class="leading-none text-text" :class="[cardType === 'detail' ? 'line-clamp-1 text-center' : 'line-clamp-2']">
+        <span class="line-clamp-2 leading-none text-text" :class="{ 'md:line-clamp-1 md:text-center': type === 'detail' }">
           {{ description }}
         </span>
       </div>

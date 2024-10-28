@@ -15,14 +15,6 @@ watchEffect(() => {
   const index = menus.value.findIndex(menu => menu.to === fullPath.value)
   activatedId.value = index === -1 ? 0 : index
 })
-
-const menuType = ref<'horizontal' | 'vertical'>('vertical')
-
-const breakPoint = useMediaQuery(tailwindBreakpoints.lg)
-
-watch(breakPoint, (newV) => {
-  menuType.value = newV ? 'vertical' : 'horizontal'
-}, { immediate: true })
 </script>
 
 <template>
@@ -34,7 +26,7 @@ watch(breakPoint, (newV) => {
     </transition>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
-        <HanaSideMenu v-if="!isDetail" :menus="menus" :activated-id="activatedId" :type="menuType" />
+        <HanaSideMenu v-if="!isDetail" :menus="menus" :activated-id="activatedId" />
       </transition>
       <NuxtPage />
     </div>
