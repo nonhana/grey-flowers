@@ -10,9 +10,9 @@ const routesMap = new Map([
 ])
 
 const route = useRoute()
-const { fullPath } = toRefs(route)
+const { path } = toRefs(route)
 const activeStatus = ref(Array.from<boolean>({ length: routesMap.size }).fill(false))
-const rootRoute = computed(() => `/${fullPath.value.split('/')[1]}`)
+const rootRoute = computed(() => `/${path.value.split('/')[1]}`)
 watchEffect(() => {
   activeStatus.value = Array.from<boolean>({ length: routesMap.size }).fill(false)
   activeStatus.value[Array.from(routesMap.keys()).indexOf(rootRoute.value)] = true
