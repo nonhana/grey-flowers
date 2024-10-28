@@ -1,16 +1,33 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const page = ref(1)
+const route = useRoute()
+const router = useRouter()
+const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
-const { data } = await useAsyncData('recent-articles', () => queryContent('articles')
+
+const { data: total } = await useAsyncData('total-articles', () => queryContent('articles').count())
+const { data: articleData, status } = await useAsyncData('articles-by-page', () => queryContent('articles')
   .skip((page.value - 1) * pageSize.value)
   .limit(pageSize.value)
   .sort({ _id: -1 })
-  .find())
+  .find(), {
+  watch: [page],
+})
+
+watch(page, async (newPage) => {
+  router.replace({ query: { ...route.query, page: newPage.toString() } })
+}, { immediate: true })
+
+watch(() => route.query.page, (pageQuery) => {
+  const newPage = Number(pageQuery) || 1
+  if (newPage !== page.value) {
+    page.value = newPage
+  }
+})
 
 const articleCards = computed<ArticleCardProps[]>(() =>
-  data.value?.map((article) => {
+  articleData.value?.map((article) => {
     return {
       to: article._path || '/404',
       title: article.title || '暂无标题',
@@ -26,9 +43,16 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 </script>
 
 <template>
-  <div>
-    <div class="flex flex-col gap-5">
-      <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
+  <div class="flex size-full flex-col">
+    <div class="flex-1">
+      <transition name="page">
+        <div v-if="status === 'success'" class="flex flex-col gap-5">
+          <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
+        </div>
+      </transition>
+    </div>
+    <div class="sticky bottom-5 mx-auto mt-5 w-fit">
+      <HanaPaginator v-model="page" :total="total ?? 0" />
     </div>
   </div>
 </template>

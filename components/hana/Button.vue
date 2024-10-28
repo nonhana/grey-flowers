@@ -1,18 +1,20 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    type?: 'common' | 'icon' | 'link'
+    type?: 'common' | 'icon'
     icon?: string
     to?: string
     active?: boolean
     shape?: 'round' | 'square'
     disabled?: boolean
+    showSlot?: boolean
   }>(),
   {
     type: 'common',
     active: false,
     shape: 'round',
     disabled: false,
+    showSlot: true,
   },
 )
 
@@ -23,7 +25,7 @@ const emits = defineEmits<{
 const component = computed(() => {
   if (props.to)
     return resolveComponent('NuxtLink')
-  return 'div'
+  return 'button'
 })
 
 function handleClick(event: Event) {
@@ -55,6 +57,6 @@ function handleClick(event: Event) {
     @click="handleClick"
   >
     <Icon v-if="props.icon" :name="props.icon" size="20" />
-    <slot v-if="type === 'common'" />
+    <slot v-if="showSlot" />
   </component>
 </template>

@@ -54,6 +54,7 @@ function changeMode() {
           v-for="([key, value], index) in routesMap"
           :key="key"
           :type="value.to === rootRoute ? 'common' : 'icon'"
+          :show-slot="value.to === rootRoute"
           :icon="value.icon"
           :to="value.to"
           :active="activeStatus[index]"
