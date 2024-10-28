@@ -9,10 +9,3 @@ export interface ArticleCardProps {
   wordCount: number
   type?: 'common' | 'detail'
 }
-
-export interface Tag {
-  id: number
-  name: string
-  color: string
-  count: number
-}

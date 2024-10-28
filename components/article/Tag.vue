@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import type { Tag } from '~/types/article'
-
-withDefaults(defineProps<Tag>(), {
-  name: '暂无标签',
-  color: 'gray',
+withDefaults(defineProps<{
+  name: string
+  size?: 'small' | 'medium'
+}>(), {
+  size: 'medium',
 })
+
+const bgColor = ref('#3d3d3d')
 </script>
 
 <template>
   <span
-    class="cursor-pointer select-none rounded-md px-4 py-2 transition-all hover:opacity-80"
-    :class="[isWarmHue(color) ? 'text-black' : 'text-white']"
-    :style="{ background: color }"
+    class="cursor-pointer select-none rounded-md transition-all hover:opacity-80"
+    :class="[
+      isWarmHue(bgColor) ? 'text-black' : 'text-white',
+      size === 'small' ? 'px-2 py-0.5 text-sm' : 'px-4 py-2',
+    ]"
+    :style="{ background: bgColor }"
   >
     {{ name }}
   </span>

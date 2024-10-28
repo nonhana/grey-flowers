@@ -17,8 +17,8 @@ const articleCards = computed<ArticleCardProps[]>(() =>
       description: article.description || '暂无简介~',
       cover: article.cover || '/images/not-found.webp',
       tags: article.tags || [],
-      publishedAt: article.publishedAt || '',
-      editedAt: article.editedAt || '',
+      publishedAt: new Date(article.publishedAt || '').toLocaleDateString(),
+      editedAt: new Date(article.editedAt || '').toLocaleDateString(),
       wordCount: article.wordCount || 0,
     }
   }) || [],

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { Tag } from '~/types/article'
 import type { ArticleHeader } from '~/types/content'
 
-const props = withDefaults(defineProps<ArticleHeader>(), {
+withDefaults(defineProps<ArticleHeader>(), {
   title: '暂无标题',
   description: '暂无简介~',
   cover: '/images/not-found.webp',
@@ -15,13 +14,6 @@ const props = withDefaults(defineProps<ArticleHeader>(), {
   published: false,
   wordCount: 0,
 })
-
-const articleTags: Tag[] = props.tags.map((tag, index) => ({
-  id: index,
-  name: tag,
-  color: '#3d3d3d',
-  count: 0,
-}))
 </script>
 
 <template>
@@ -34,7 +26,7 @@ const articleTags: Tag[] = props.tags.map((tag, index) => ({
       {{ description }}
     </p>
     <div class="flex gap-2">
-      <ArticleTag v-for="tag in articleTags" :key="tag.id" v-bind="tag" />
+      <ArticleTag v-for="tag in tags" :key="tag" :name="tag" />
     </div>
     <div class="flex items-center gap-4 text-text">
       <span class="flex items-center gap-2">

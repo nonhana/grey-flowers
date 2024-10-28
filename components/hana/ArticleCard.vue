@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import type { ArticleCardProps, Tag } from '~/types/article'
+import type { ArticleCardProps } from '~/types/article'
 
 const props = withDefaults(defineProps<ArticleCardProps>(), { type: 'common' })
 
 const cardType = ref(props.type)
-
-const tags = ref<Tag[]>(props.tags.map((tag, index) => ({
-  id: index,
-  name: tag,
-  color: '#3d3d3d',
-  count: 0,
-})))
 
 const coverRef = ref<HTMLDivElement | null>(null)
 
@@ -64,13 +57,7 @@ watch(breakPoint, (newV) => {
     </div>
     <div class="relative flex h-36 flex-col justify-between p-4" :class="{ 'items-center': cardType === 'detail' }">
       <div class="flex gap-2 overflow-hidden">
-        <span
-          v-for="tag in tags"
-          :key="tag.id"
-          class="shrink-0 rounded-md px-2 py-0.5 text-sm"
-          :class="[isWarmHue(tag.color) ? 'text-black' : 'text-white']"
-          :style="{ background: tag.color }"
-        >{{ tag.name }}</span>
+        <ArticleTag v-for="tag in tags" :key="tag" :name="tag" size="small" />
       </div>
       <span class="line-clamp-1 text-lg font-bold leading-none">
         {{ title }}

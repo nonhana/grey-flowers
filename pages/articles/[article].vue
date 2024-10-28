@@ -21,8 +21,8 @@ const articleHeader = computed<ArticleHeader>(() => ({
   ogImage: article.value?.ogImage || '/images/not-found.webp',
   tags: article.value?.tags || [],
   category: article.value?.category || '未分类',
-  publishedAt: article.value?.publishedAt || '',
-  editedAt: article.value?.editedAt || '',
+  publishedAt: new Date(article.value?.publishedAt || '').toLocaleDateString(),
+  editedAt: new Date(article.value?.editedAt || '').toLocaleDateString(),
   published: article.value?.published || false,
   wordCount: article.value?.wordCount || 0,
 }))
