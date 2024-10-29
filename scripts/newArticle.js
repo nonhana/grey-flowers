@@ -28,10 +28,23 @@ rl.on('close', () => {
 
   const draftPath = path.resolve('scripts/draft.md')
   const draft = fs.readFileSync(draftPath, 'utf-8')
-  const now = new Date().toISOString().split('T')[0]
+  const now = formatDate()
   const content = draft.replace(/\{\{ title \}\}/g, articleTitle).replace(/\{\{ date \}\}/g, now)
 
   fs.writeFileSync(newArticlePath, content)
 
   console.log(`New article created at ${newArticlePath}`)
 })
+
+function formatDate() {
+  const now = new Date()
+
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0') // 月份从0开始
+  const day = String(now.getDate()).padStart(2, '0')
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  const seconds = String(now.getSeconds()).padStart(2, '0')
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
