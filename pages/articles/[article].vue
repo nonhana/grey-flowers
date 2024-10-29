@@ -41,8 +41,8 @@ function handleClick() {
 
 <template>
   <div class="min-h-screen w-full">
-    <div class="flex justify-center gap-8">
-      <div class="w-full max-w-4xl">
+    <div class="flex gap-8">
+      <div class="w-full xl:max-w-[calc(100%-272px)]">
         <ArticleHeader v-if="article" v-bind="articleHeader" />
         <div class="prose max-w-none dark:prose-invert prose-a:no-underline prose-a:prose-headings:font-bold hover:prose-a:prose-headings:text-hana-blue">
           <ContentRenderer v-if="article" :value="article">
@@ -52,7 +52,7 @@ function handleClick() {
           </ContentRenderer>
         </div>
       </div>
-      <div class="hidden max-w-fit flex-auto xl:block">
+      <div class="hidden max-w-fit xl:block">
         <div class="sticky top-20 flex flex-col gap-5">
           <ArticleAuthor />
           <ArticleSwitch />

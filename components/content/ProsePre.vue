@@ -1,3 +1,3 @@
 <template>
-  <pre class="max-w-full overflow-x-auto"><slot /></pre>
+  <pre><slot /></pre>
 </template>
