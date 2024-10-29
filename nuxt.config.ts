@@ -7,10 +7,13 @@ export default defineNuxtConfig({
   ssr: true,
   content: {
     highlight: {
-      theme: {
-        default: 'github-dark',
-      },
+      theme: 'github-dark',
     },
+  },
+  image: {
+    dir: 'public',
+    quality: 85,
+    formats: ['webp', 'avif'],
   },
   devServer: {
     host: '127.0.0.1',

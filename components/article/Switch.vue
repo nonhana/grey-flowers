@@ -3,7 +3,7 @@ const { path } = useRoute()
 
 const { data: neighbors } = await useAsyncData(`article-${path}-prev-next`, () => queryContent()
   .only(['title', '_path'])
-  .sort({ _id: -1 })
+  .sort({ publishedAt: -1 })
   .findSurround(path))
 
 const [prev, next] = neighbors.value || []

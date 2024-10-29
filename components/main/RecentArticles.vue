@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const { data } = await useAsyncData('recent-articles', () => queryContent('articles').limit(6).sort({ _id: -1 }).find())
+const { data } = await useAsyncData('recent-articles', () => queryContent('articles').limit(6).sort({ publishedAt: -1 }).find())
 
 const articleCards = computed<ArticleCardProps[]>(() =>
   data.value?.map((article) => {
@@ -17,6 +17,10 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }) || [],
 )
+
+onMounted(() => {
+  console.log('RecentArticles mounted', data.value)
+})
 </script>
 
 <template>

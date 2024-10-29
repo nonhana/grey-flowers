@@ -25,10 +25,10 @@ withDefaults(defineProps<ArticleHeader>(), {
     <p class="text-text">
       {{ description }}
     </p>
-    <div class="flex gap-2">
+    <div class="flex gap-2 overflow-auto">
       <ArticleTag v-for="tag in tags" :key="tag" :name="tag" />
     </div>
-    <div class="flex items-center gap-4 text-text">
+    <div class="flex flex-wrap items-center gap-4 text-text">
       <span class="flex items-center gap-2">
         <Icon name="lucide:calendar" />
         <time :datetime="publishedAt">{{ publishedAt }}</time>

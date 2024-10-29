@@ -10,7 +10,7 @@ const { data: total } = await useAsyncData('total-articles', () => queryContent(
 const { data: articleData, status } = await useAsyncData('articles-by-page', () => queryContent('articles')
   .skip((page.value - 1) * pageSize.value)
   .limit(pageSize.value)
-  .sort({ _id: -1 })
+  .sort({ publishedAt: -1 })
   .find(), {
   watch: [page],
 })
