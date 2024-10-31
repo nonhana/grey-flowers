@@ -17,8 +17,8 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
     <component
       :is="component"
       v-bind="to ? { to } : {}"
-      class="transition-all"
-      :class="{ 'font-bold text-black hover:text-hana-blue': to }"
+      class="hana-button inline"
+      :class="{ 'hover:text-hana-blue': to }"
     >
       <slot />
     </component>
