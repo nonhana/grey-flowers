@@ -35,7 +35,7 @@ const curPathArr = computed(() => {
       <transition name="side-menu">
         <HanaSideMenu v-if="!isDetail" :menus="menus" />
       </transition>
-      <div>
+      <div class="w-full">
         <HanaBreadcrumb>
           <HanaBreadcrumbItem v-for="item in curPathArr" :key="item.to" :to="item.to">
             {{ item.title }}
