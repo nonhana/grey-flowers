@@ -1,19 +1,26 @@
 <script setup lang="ts">
 const route = useRoute()
-const { fullPath, name } = toRefs(route)
+const { path, name } = toRefs(route)
 
-const menus = ref<{ id: number, title: string, icon: string, to: string }[]>([
-  { id: 0, title: '文章', icon: 'lucide:file-text', to: '/articles' },
-  { id: 1, title: '标签', icon: 'lucide:tag', to: '/articles/tags' },
-  { id: 2, title: '分类', icon: 'lucide:folder', to: '/articles/categories' },
-  { id: 3, title: '归档', icon: 'lucide:archive', to: '/articles/archives' },
+const menus = new Map([
+  ['/articles', { title: '文章', icon: 'lucide:file-text', to: '/articles' }],
+  ['/articles/tags', { title: '标签', icon: 'lucide:tag', to: '/articles/tags' }],
+  ['/articles/categories', { title: '分类', icon: 'lucide:folder', to: '/articles/categories' }],
+  ['/articles/archives', { title: '归档', icon: 'lucide:archive', to: '/articles/archives' }],
 ])
 
-const activatedId = ref(0)
 const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))
-watchEffect(() => {
-  const index = menus.value.findIndex(menu => menu.to === fullPath.value)
-  activatedId.value = index === -1 ? 0 : index
+const curPathArr = computed(() => {
+  return path.value
+    .split('/')
+    .reduce((acc, cur) => {
+      if (cur)
+        acc.push(`${acc[acc.length - 1]}/${cur}`)
+      else acc.push('')
+      return acc
+    }, [] as string[])
+    .filter(Boolean)
+    .map(to => ({ to, title: menus.get(to)?.title }))
 })
 </script>
 
@@ -26,9 +33,16 @@ watchEffect(() => {
     </transition>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
-        <HanaSideMenu v-if="!isDetail" :menus="menus" :activated-id="activatedId" />
+        <HanaSideMenu v-if="!isDetail" :menus="menus" />
       </transition>
-      <NuxtPage />
+      <div>
+        <HanaBreadcrumb>
+          <HanaBreadcrumbItem v-for="item in curPathArr" :key="item.to" :to="item.to">
+            {{ item.title }}
+          </HanaBreadcrumbItem>
+        </HanaBreadcrumb>
+        <NuxtPage />
+      </div>
     </div>
   </div>
 </template>

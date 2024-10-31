@@ -110,7 +110,7 @@ const positionClass = computed(() => {
       <HanaTooltipAnime :animation="animation" :position="position">
         <div
           v-show="visible"
-          class="absolute"
+          class="absolute z-50"
           :style="offsetStyle"
           :class="positionClass"
           @[hoverTrigger?`mouseenter`:null]="open()"
