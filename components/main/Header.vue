@@ -9,6 +9,28 @@ const routesMap = new Map([
   ['/friends', { text: t('header.routes.friends.name'), icon: 'lucide:link', to: '/friends' }],
 ])
 
+const notLoggedInMap = [{
+  text: t('header.user.notLoggedIn.login'),
+  icon: 'lucide:log-in',
+}, {
+  text: t('header.user.notLoggedIn.register'),
+  icon: 'lucide:user-plus',
+}]
+
+const loggedInMap = [{
+  text: t('header.user.loggedIn.profile'),
+  icon: 'lucide:user',
+}, {
+  text: t('header.user.loggedIn.messages'),
+  icon: 'lucide:mail',
+}, {
+  text: t('header.user.loggedIn.comments'),
+  icon: 'lucide:message-square-more',
+}, {
+  text: t('header.user.loggedIn.logout'),
+  icon: 'lucide:log-out',
+}]
+
 const route = useRoute()
 const { path } = toRefs(route)
 const activeStatus = ref(Array.from<boolean>({ length: routesMap.size }).fill(false))
@@ -70,11 +92,24 @@ function changeMode() {
           class="ml-auto"
           @click="changeMode"
         />
-        <HanaButton
-          type="icon"
-          icon="lucide:user-round"
-          class="ml-auto"
-        />
+        <HanaDropdown trigger="click" animation="slide" offset="end" :show-arrow="false">
+          <HanaButton
+            type="icon"
+            icon="lucide:user-round"
+            class="ml-auto"
+          />
+          <template #dropdown>
+            <HanaDropdownMenu>
+              <HanaDropdownItem
+                v-for="item in notLoggedInMap"
+                :key="item.text"
+                :icon="item.icon"
+              >
+                {{ item.text }}
+              </HanaDropdownItem>
+            </HanaDropdownMenu>
+          </template>
+        </HanaDropdown>
       </div>
     </div>
   </div>

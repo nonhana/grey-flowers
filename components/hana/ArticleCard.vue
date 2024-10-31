@@ -46,7 +46,7 @@ function handleClick() {
       <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover" />
     </div>
     <div class="relative flex h-36 w-full flex-col justify-between p-4" :class="{ 'md:items-center': type === 'detail' }">
-      <div class="flex gap-2 overflow-hidden">
+      <div class="flex h-6 flex-wrap gap-2 overflow-hidden">
         <ArticleTag v-for="tag in tags" :key="tag" :name="tag" size="small" />
       </div>
       <span class="line-clamp-1 text-lg font-bold leading-none">

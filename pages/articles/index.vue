@@ -10,6 +10,7 @@ const { data: total } = await useAsyncData('total-articles', () => queryContent(
 const { data: articleData, status } = await useAsyncData('articles-by-page', () => queryContent('articles')
   .skip((page.value - 1) * pageSize.value)
   .limit(pageSize.value)
+  .without('body')
   .sort({ publishedAt: -1 })
   .find(), {
   watch: [page],
@@ -40,6 +41,11 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }) || [],
 )
+
+const placeholderCount = computed(() => {
+  const reminder = articleCards.value.length % pageSize.value
+  return reminder === 0 ? 0 : pageSize.value - reminder
+})
 </script>
 
 <template>
@@ -48,6 +54,11 @@ const articleCards = computed<ArticleCardProps[]>(() =>
       <transition name="page">
         <div v-if="status === 'success'" class="flex flex-col gap-5">
           <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
+          <div
+            v-for="i in placeholderCount"
+            :key="i"
+            class="h-36 w-full"
+          />
         </div>
       </transition>
     </div>

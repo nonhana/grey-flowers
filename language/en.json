@@ -25,6 +25,18 @@
     },
     "tooltips": {
       "mode": "Switch display mode"
+    },
+    "user": {
+      "notLoggedIn": {
+        "login": "Login",
+        "register": "Register"
+      },
+      "loggedIn": {
+        "profile": "Profile",
+        "messages": "Messages",
+        "comments": "Comments",
+        "logout": "Logout"
+      }
     }
   }
 }

@@ -25,6 +25,18 @@
     },
     "tooltips": {
       "mode": "表示モードの切り替え"
+    },
+    "user": {
+      "loggedIn": {
+        "comments": "コメント",
+        "logout": "ログアウト",
+        "messages": "メッセージ",
+        "profile": "プロフィール"
+      },
+      "notLoggedIn": {
+        "login": "ログイン",
+        "register": "登録する"
+      }
     }
   }
 }

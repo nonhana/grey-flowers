@@ -25,6 +25,18 @@
     },
     "tooltips": {
       "mode": "切换显示模式"
+    },
+    "user": {
+      "loggedIn": {
+        "comments": "评论",
+        "logout": "退出登录",
+        "messages": "消息",
+        "profile": "个人资料"
+      },
+      "notLoggedIn": {
+        "login": "登录",
+        "register": "注册"
+      }
     }
   }
 }
