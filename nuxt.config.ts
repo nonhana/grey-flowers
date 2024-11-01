@@ -82,6 +82,8 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/seo',
     '@vueuse/nuxt',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
   ],
   plugins: ['~/plugins/directives.ts', '~/plugins/formik.client.ts'],
   devtools: { enabled: true },

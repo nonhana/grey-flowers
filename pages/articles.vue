@@ -26,21 +26,23 @@ const curPathArr = computed(() => {
 
 <template>
   <div>
-    <transition name="title">
-      <h1 v-if="!isDetail" class="inline-block cursor-pointer font-bold text-hana-blue with_underline">
-        一些文章
-      </h1>
-    </transition>
+    <div class="flex flex-col lg:flex-row lg:items-center lg:gap-20">
+      <transition name="title">
+        <h1 v-if="!isDetail" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with_underline">
+          一些文章
+        </h1>
+      </transition>
+      <HanaBreadcrumb>
+        <HanaBreadcrumbItem v-for="item in curPathArr" :key="item.to" :to="item.to">
+          {{ item.title }}
+        </HanaBreadcrumbItem>
+      </HanaBreadcrumb>
+    </div>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
         <HanaSideMenu v-if="!isDetail" :menus="menus" />
       </transition>
       <div class="w-full">
-        <HanaBreadcrumb>
-          <HanaBreadcrumbItem v-for="item in curPathArr" :key="item.to" :to="item.to">
-            {{ item.title }}
-          </HanaBreadcrumbItem>
-        </HanaBreadcrumb>
         <NuxtPage />
       </div>
     </div>
