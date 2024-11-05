@@ -10,18 +10,21 @@ const menus = new Map([
 ])
 
 const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))
-const curPathArr = computed(() => {
-  return path.value
+
+const curRouteArr = computed(() =>
+  path.value
     .split('/')
     .reduce((acc, cur) => {
-      if (cur)
+      if (cur) {
         acc.push(`${acc[acc.length - 1]}/${cur}`)
-      else acc.push('')
+      }
+      else {
+        acc.push('')
+      }
       return acc
     }, [] as string[])
     .filter(Boolean)
-    .map(to => ({ to, title: menus.get(to)?.title }))
-})
+    .map(to => ({ to, title: decodeURI(to.split('/').pop()!) })))
 </script>
 
 <template>
@@ -33,7 +36,7 @@ const curPathArr = computed(() => {
         </h1>
       </transition>
       <HanaBreadcrumb>
-        <HanaBreadcrumbItem v-for="item in curPathArr" :key="item.to" :to="item.to">
+        <HanaBreadcrumbItem v-for="item in curRouteArr" :key="item.to" :to="item.to">
           {{ item.title }}
         </HanaBreadcrumbItem>
       </HanaBreadcrumb>

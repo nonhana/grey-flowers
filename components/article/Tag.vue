@@ -22,8 +22,9 @@ const bgColor = ref('#3d3d3d')
   >
     {{ name }}
   </span>
-  <span
+  <NuxtLink
     v-else
+    :to="`/articles/tags/${name}`"
     class="cursor-pointer transition-all hover:text-hana-blue"
     :class="{
       'text-2xl text-error-2': count >= 5,
@@ -32,5 +33,5 @@ const bgColor = ref('#3d3d3d')
     }"
   >
     {{ name }}
-  </span>
+  </NuxtLink>
 </template>

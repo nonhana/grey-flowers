@@ -3,6 +3,9 @@ const props = defineProps<{
   to?: string
 }>()
 
+const route = useRoute()
+const { path } = toRefs(route)
+
 const component = computed(() => {
   if (props.to)
     return resolveComponent('NuxtLink')
@@ -18,7 +21,10 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
       :is="component"
       v-bind="to ? { to } : {}"
       class="hana-button inline"
-      :class="{ 'hover:text-hana-blue': to }"
+      :class="{
+        'hover:text-hana-blue': to,
+        'hana-button--active': path === to,
+      }"
     >
       <slot />
     </component>
