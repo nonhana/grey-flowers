@@ -4,7 +4,7 @@ const { data } = await useAsyncData('article-tags', () => queryContent('articles
 const tags = computed(() => {
   if (!data.value)
     return []
-  const tagMap = new Map<string, number>()
+  const tagMap: Map<string, number> = new Map()
   data.value.forEach((article) => {
     article.tags.forEach((tag: string) => {
       tagMap.set(tag, (tagMap.get(tag) || 0) + 1)

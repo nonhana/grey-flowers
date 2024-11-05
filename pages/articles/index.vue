@@ -7,7 +7,7 @@ const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
 
 const { data: total } = await useAsyncData('total-articles', () => queryContent('articles').count())
-const { data: articleData, status } = await useAsyncData('articles-by-page', () => queryContent('articles')
+const { data: articleData } = await useAsyncData('articles-by-page', () => queryContent('articles')
   .skip((page.value - 1) * pageSize.value)
   .limit(pageSize.value)
   .without('body')
@@ -41,26 +41,14 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }) || [],
 )
-
-const placeholderCount = computed(() => {
-  const reminder = articleCards.value.length % pageSize.value
-  return reminder === 0 ? 0 : pageSize.value - reminder
-})
 </script>
 
 <template>
   <div class="flex size-full flex-col">
     <div class="flex-1">
-      <transition name="page">
-        <div v-if="status === 'success'" class="flex flex-col gap-5">
-          <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
-          <div
-            v-for="i in placeholderCount"
-            :key="i"
-            class="h-36 w-full"
-          />
-        </div>
-      </transition>
+      <div class="flex flex-col gap-5">
+        <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
+      </div>
     </div>
     <div class="sticky bottom-5 mx-auto mt-5 w-fit">
       <HanaPaginator v-model="page" :total="total ?? 0" />

@@ -24,10 +24,11 @@ const bgColor = ref('#3d3d3d')
   </span>
   <span
     v-else
-    class="cursor-pointer text-primary-300 transition-all hover:text-hana-blue"
+    class="cursor-pointer transition-all hover:text-hana-blue"
     :class="{
-      'text-2xl text-error-1': count >= 5,
-      'text-xl text-hana-blue-200': count >= 3 && count < 5,
+      'text-2xl text-error-2': count >= 5,
+      'text-xl text-hana-blue-300': count >= 3 && count < 5,
+      'text-base text-primary-300': count < 3,
     }"
   >
     {{ name }}
