@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
 import type { ArticleCardProps } from '~/types/article'
 
 const route = useRoute()

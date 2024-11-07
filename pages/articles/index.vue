@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
+definePageMeta({
+  name: 'articles',
+})
+
 const route = useRoute()
 const router = useRouter()
 const page = ref(Number(route.query.page) || 1)

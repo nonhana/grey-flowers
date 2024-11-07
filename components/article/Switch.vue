@@ -14,16 +14,16 @@ const [prev, next] = neighbors.value || []
     <HanaTooltip v-if="prev" position="left" :content="prev.title">
       <NuxtLink
         :to="prev._path"
-        class="hana-button w-full text-center"
+        class="hana-button w-full justify-center gap-10"
       >
-        <Icon name="lucide:arrow-left" class="animate-bounce-x" />
         <span>上一篇</span>
+        <Icon name="lucide:arrow-left" class="animate-bounce-x" />
       </NuxtLink>
     </HanaTooltip>
     <HanaTooltip v-if="next" position="left" :content="next.title">
       <NuxtLink
         :to="next._path"
-        class="hana-button w-full text-center"
+        class="hana-button w-full justify-center gap-10"
       >
         <span>下一篇</span>
         <Icon name="lucide:arrow-right" class="animate-bounce-x" />

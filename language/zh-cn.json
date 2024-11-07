@@ -38,5 +38,19 @@
         "register": "注册"
       }
     }
+  },
+  "pageMeta": {
+    "articles": {
+      "archives": {
+        "name": "归档"
+      },
+      "categories": {
+        "name": "分类"
+      },
+      "name": "文章",
+      "tags": {
+        "name": "标签"
+      }
+    }
   }
 }

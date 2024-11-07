@@ -67,9 +67,9 @@ const [prev, next] = neighbors.value || []
         class="hana-button w-full justify-center gap-5 text-text"
         @click="close"
       >
-        <span class="line-clamp-1">{{ prev.title }}</span>
-        <Icon name="lucide:arrow-left" class="shrink-0 animate-bounce-x" />
         <span class="shrink-0">上一篇</span>
+        <Icon name="lucide:arrow-left" class="shrink-0 animate-bounce-x" />
+        <span class="line-clamp-1">{{ prev.title }}</span>
       </NuxtLink>
       <NuxtLink
         v-if="next"

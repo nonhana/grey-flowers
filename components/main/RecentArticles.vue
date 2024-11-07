@@ -17,10 +17,6 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }) || [],
 )
-
-onMounted(() => {
-  console.log('RecentArticles mounted', data.value)
-})
 </script>
 
 <template>

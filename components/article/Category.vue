@@ -1,7 +1,5 @@
 <script setup lang="ts">
-definePageMeta({
-  name: 'categories',
-})
+
 </script>
 
 <template>

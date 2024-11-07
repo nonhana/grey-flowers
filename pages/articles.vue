@@ -1,30 +1,18 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
+const curRouteArr = useRouteArr()
 const route = useRoute()
-const { path, name } = toRefs(route)
+const { name } = toRefs(route)
 
 const menus = new Map([
-  ['/articles', { title: '文章', icon: 'lucide:file-text', to: '/articles' }],
-  ['/articles/tags', { title: '标签', icon: 'lucide:tag', to: '/articles/tags' }],
-  ['/articles/categories', { title: '分类', icon: 'lucide:folder', to: '/articles/categories' }],
-  ['/articles/archives', { title: '归档', icon: 'lucide:archive', to: '/articles/archives' }],
+  ['/articles', { title: t('pageMeta.articles.name'), icon: 'lucide:file-text', to: '/articles' }],
+  ['/articles/tags', { title: t('pageMeta.articles.tags.name'), icon: 'lucide:tag', to: '/articles/tags' }],
+  ['/articles/categories', { title: t('pageMeta.articles.categories.name'), icon: 'lucide:folder', to: '/articles/categories' }],
+  ['/articles/archives', { title: t('pageMeta.articles.archives.name'), icon: 'lucide:archive', to: '/articles/archives' }],
 ])
 
 const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))
-
-const curRouteArr = computed(() =>
-  path.value
-    .split('/')
-    .reduce((acc, cur) => {
-      if (cur) {
-        acc.push(`${acc[acc.length - 1]}/${cur}`)
-      }
-      else {
-        acc.push('')
-      }
-      return acc
-    }, [] as string[])
-    .filter(Boolean)
-    .map(to => ({ to, title: decodeURI(to.split('/').pop()!) })))
 </script>
 
 <template>

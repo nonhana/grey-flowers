@@ -38,5 +38,19 @@
         "register": "登録する"
       }
     }
+  },
+  "pageMeta": {
+    "articles": {
+      "archives": {
+        "name": "アーカイブ"
+      },
+      "categories": {
+        "name": "分類"
+      },
+      "name": "記事",
+      "tags": {
+        "name": "タグ"
+      }
+    }
   }
 }

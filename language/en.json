@@ -38,5 +38,19 @@
         "logout": "Logout"
       }
     }
+  },
+  "pageMeta": {
+    "articles": {
+      "name": "Articles",
+      "tags": {
+        "name": "Tags"
+      },
+      "categories": {
+        "name": "Categories"
+      },
+      "archives": {
+        "name": "Archives"
+      }
+    }
   }
 }

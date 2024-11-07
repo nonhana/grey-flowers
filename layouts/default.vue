@@ -20,6 +20,7 @@ const isHome = computed(() => fullPath.value === '/')
     <footer class="bg-white">
       <MainFooter />
     </footer>
+    <HanaController />
   </div>
 </template>
 
