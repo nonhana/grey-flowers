@@ -5,5 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-  <div />
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+    <ArticleCategory v-for="i in 10" :key="i" />
+  </div>
 </template>

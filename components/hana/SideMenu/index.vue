@@ -13,7 +13,7 @@ const { path } = toRefs(route)
 
 <template>
   <div
-    class="relative mx-auto flex size-fit shrink-0 flex-row gap-2 overflow-auto rounded-lg bg-white p-2 text-text shadow-md lg:mx-0 lg:flex-col lg:gap-4"
+    class="relative mx-auto flex size-fit max-w-full shrink-0 flex-row gap-2 overflow-auto rounded-lg bg-white p-2 text-text shadow-md lg:mx-0 lg:flex-col lg:gap-4"
   >
     <NuxtLink
       v-for="[to, value] in menus" :key="to"
