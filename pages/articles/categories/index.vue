@@ -3,7 +3,7 @@ definePageMeta({
   name: 'categories',
 })
 
-const { data } = await useAsyncData('article-tags', () => queryContent('articles').only(['category']).find())
+const { data } = await useAsyncData('article-categories', () => queryContent('articles').only(['category']).find())
 
 const categories = computed(() => {
   if (!data.value)

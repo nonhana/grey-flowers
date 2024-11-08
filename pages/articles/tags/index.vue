@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const { data } = await useAsyncData('article-tags', () => queryContent('articles').only(['tags']).find())
-
 definePageMeta({
   name: 'tags',
 })
+
+const { data } = await useAsyncData('article-tags', () => queryContent('articles').only(['tags']).find())
 
 const tags = computed(() => {
   if (!data.value)

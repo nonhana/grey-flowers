@@ -73,7 +73,7 @@ const isFlipped = ref(false)
               <span>{{ articleData?.length || 0 }} 篇文章</span>
             </div>
             <HanaButton :to="`/articles/categories/${flatStr(title)}`">
-              more...
+              more
             </HanaButton>
           </footer>
         </div>
