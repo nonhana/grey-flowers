@@ -42,7 +42,7 @@ function handleClick(event: Event) {
 <template>
   <component
     :is="component"
-    :to="props.to"
+    :to="to"
     class="flex shrink-0 select-none items-center gap-1 transition-all"
     :class="[
       type === 'common' ? 'px-[10px] py-2' : 'p-2',

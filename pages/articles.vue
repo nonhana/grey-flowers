@@ -1,15 +1,13 @@
 <script setup lang="ts">
-const { t } = useI18n()
-
 const curRouteArr = useRouteArr()
 const route = useRoute()
 const { name } = toRefs(route)
 
 const menus = new Map([
-  ['/articles', { title: t('pageMeta.articles.name'), icon: 'lucide:file-text', to: '/articles' }],
-  ['/articles/tags', { title: t('pageMeta.articles.tags.name'), icon: 'lucide:tag', to: '/articles/tags' }],
-  ['/articles/categories', { title: t('pageMeta.articles.categories.name'), icon: 'lucide:folder', to: '/articles/categories' }],
-  ['/articles/archives', { title: t('pageMeta.articles.archives.name'), icon: 'lucide:archive', to: '/articles/archives' }],
+  ['/articles', { title: '文章', icon: 'lucide:file-text', to: '/articles' }],
+  ['/articles/tags', { title: '标签', icon: 'lucide:tag', to: '/articles/tags' }],
+  ['/articles/categories', { title: '目录', icon: 'lucide:folder', to: '/articles/categories' }],
+  ['/articles/archives', { title: '归档', icon: 'lucide:archive', to: '/articles/archives' }],
 ])
 
 const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))

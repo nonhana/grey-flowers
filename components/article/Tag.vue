@@ -1,18 +1,27 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   name: string
   size?: 'small' | 'medium' | 'large'
+  to?: string
   count?: number
 }>(), {
   size: 'medium',
 })
 
 const bgColor = ref('#3d3d3d')
+
+const component = computed(() => {
+  if (props.to)
+    return resolveComponent('NuxtLink')
+  return 'button'
+})
 </script>
 
 <template>
-  <span
+  <component
+    :is="component"
     v-if="!count"
+    :to="to"
     class="cursor-pointer select-none rounded-md transition-all hover:opacity-80"
     :class="[
       isWarmHue(bgColor) ? 'text-black' : 'text-white',
@@ -21,7 +30,7 @@ const bgColor = ref('#3d3d3d')
     :style="{ background: bgColor }"
   >
     {{ name }}
-  </span>
+  </component>
   <NuxtLink
     v-else
     :to="`/articles/tags/${name}`"
