@@ -32,8 +32,10 @@ function toggleShowPercent() {
         @mouseenter="toggleShowPercent"
         @mouseleave="toggleShowPercent"
       >
-        <span v-if="showPercent">{{ curScrollPercent }}%</span>
-        <Icon v-else name="lucide:arrow-up" size="24" />
+        <span class="absolute" :class="{ 'opacity-0': !showPercent }">{{ curScrollPercent }}%</span>
+        <svg class="absolute" :class="{ 'opacity-0': showPercent }" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5" />
+        </svg>
       </div>
     </HanaTooltip>
   </div>
