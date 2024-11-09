@@ -12,7 +12,7 @@ const imgUrl = computed(() => `/categories/${flatStr(title.value)}.webp`)
 const { data: articleData } = await useAsyncData(`articles-by-category-${title.value}`, () => queryContent('articles')
   .where({ category: title.value })
   .limit(6)
-  .without('body')
+  .only(['title', 'publishedAt', '_path', '_id'])
   .sort({ publishedAt: -1 })
   .find())
 

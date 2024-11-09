@@ -2,12 +2,18 @@
 import type { ArticleCardProps } from '~/types/article'
 
 const props = withDefaults(defineProps<{
-  type?: 'common' | 'tags' | 'category'
+  type?: 'common' | 'tags' | 'category' | 'archives'
 }>(), {
   type: 'common',
 })
 const route = useRoute()
 const router = useRouter()
+
+const { query } = toRefs(route)
+
+function remainTwoDigits(num: string) {
+  return num.length === 1 ? `0${num}` : num
+}
 
 const whereObj = computed(() => {
   switch (props.type) {
@@ -15,6 +21,8 @@ const whereObj = computed(() => {
       return { tags: { $in: [route.params.tag as string] } }
     case 'category':
       return { category: antiFlatStr(route.params.category as string) }
+    case 'archives':
+      return { publishedAt: { $regex: `^${query.value.year}-${remainTwoDigits(query.value.month as string)}` } }
     default:
       return {}
   }
@@ -32,7 +40,7 @@ const { data: articleData } = await useAsyncData('articles-by-page', () => query
   .limit(pageSize.value)
   .without('body')
   .sort({ publishedAt: -1 })
-  .find(), { watch: [page] })
+  .find(), { watch: [query] })
 
 watch(page, async (newPage) => {
   router.replace({ query: { ...route.query, page: newPage.toString() } })
@@ -64,7 +72,7 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 <template>
   <div class="flex size-full flex-col">
     <div class="flex-1">
-      <div class="flex flex-col gap-5">
+      <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
         <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
       </div>
     </div>
