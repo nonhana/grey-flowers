@@ -13,7 +13,7 @@ watch(isDetail, (_, __, onCleanup) => {
   showPage.value = false
   const timeout = setTimeout(() => {
     showPage.value = true
-  }, 350)
+  }, 300)
   onCleanup(() => clearTimeout(timeout))
 })
 </script>
