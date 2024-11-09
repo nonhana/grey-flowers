@@ -7,16 +7,22 @@ const { name } = toRefs(route)
 
 const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))
 
-const { isLoading } = useLoadingIndicator()
+const showPage = ref(true)
 
-const showSideMenu = computed(() => !isDetail.value || isLoading.value)
+watch(isDetail, (_, __, onCleanup) => {
+  showPage.value = false
+  const timeout = setTimeout(() => {
+    showPage.value = true
+  }, 350)
+  onCleanup(() => clearTimeout(timeout))
+})
 </script>
 
 <template>
   <div>
     <div class="flex flex-col lg:flex-row lg:items-center lg:gap-20">
       <transition name="title">
-        <h1 v-if="showSideMenu" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with_underline">
+        <h1 v-if="!isDetail" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with_underline">
           一些文章
         </h1>
       </transition>
@@ -28,9 +34,9 @@ const showSideMenu = computed(() => !isDetail.value || isLoading.value)
     </div>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
-        <HanaSideMenu v-if="showSideMenu" :menus="articlesMap" />
+        <HanaSideMenu v-if="!isDetail" :menus="articlesMap" />
       </transition>
-      <div class="w-full transition-all">
+      <div v-if="showPage" class="w-full">
         <NuxtPage />
       </div>
     </div>
@@ -43,12 +49,10 @@ const showSideMenu = computed(() => !isDetail.value || isLoading.value)
   opacity: 0;
   transform: translateX(-100%);
 }
-
 .side-menu-enter-active,
 .side-menu-leave-active {
   transition: all 0.3s ease;
 }
-
 .side-menu-enter-to {
   opacity: 1;
   transform: translateX(0);
@@ -59,12 +63,10 @@ const showSideMenu = computed(() => !isDetail.value || isLoading.value)
   opacity: 0;
   transform: translateY(-100%);
 }
-
 .title-enter-active,
 .title-leave-active {
   transition: all 0.3s ease;
 }
-
 .title-enter-to {
   opacity: 1;
   transform: translateY(0);
