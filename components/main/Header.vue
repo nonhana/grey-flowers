@@ -1,13 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-const routesMap = new Map([
-  ['/', { text: t('header.routes.home.name'), icon: 'lucide:house', to: '/' }],
-  ['/articles', { text: t('header.routes.articles.name'), icon: 'lucide:notebook-pen', to: '/articles' }],
-  ['/thoughts', { text: t('header.routes.thoughts.name'), icon: 'lucide:messages-square', to: '/thoughts' }],
-  ['/about', { text: t('header.routes.about.name'), icon: 'lucide:info', to: '/about' }],
-  ['/friends', { text: t('header.routes.friends.name'), icon: 'lucide:link', to: '/friends' }],
-])
+const { routesMap, articlesMap } = useRoutesMap()
 
 const notLoggedInMap = [{
   text: t('header.user.notLoggedIn.login'),
@@ -63,7 +57,7 @@ function changeMode() {
               :active="activeStatus[index]"
               :to="value.to"
             >
-              {{ value.text }}
+              {{ value.title }}
             </HanaDropdownItem>
           </HanaDropdownMenu>
         </template>
@@ -72,17 +66,41 @@ function changeMode() {
       <HanaLogo class="absolute left-1/2 -translate-x-1/2 md:relative md:left-0 md:translate-x-0" />
 
       <div class="absolute left-1/2 hidden -translate-x-1/2 gap-0 transition-all md:flex lg:gap-4">
-        <HanaButton
-          v-for="([key, value], index) in routesMap"
-          :key="key"
-          :type="value.to === rootRoute ? 'common' : 'icon'"
-          :show-slot="value.to === rootRoute"
-          :icon="value.icon"
-          :to="value.to"
-          :active="activeStatus[index]"
-        >
-          {{ value.text }}
-        </HanaButton>
+        <div v-for="([key, value], index) in routesMap" :key="key">
+          <HanaDropdown v-if="value.to === '/articles'" animation="slide">
+            <HanaButton
+              :type="value.to === rootRoute ? 'common' : 'icon'"
+              :show-slot="value.to === rootRoute"
+              :icon="value.icon"
+              :to="value.to"
+              :active="activeStatus[index]"
+            >
+              {{ value.title }}
+            </HanaButton>
+            <template #dropdown>
+              <HanaDropdownMenu>
+                <HanaDropdownItem
+                  v-for="([_key, _value]) in articlesMap"
+                  :key="_key"
+                  :to="_value.to"
+                  center
+                >
+                  {{ _value.title }}
+                </HanaDropdownItem>
+              </HanaDropdownMenu>
+            </template>
+          </HanaDropdown>
+          <HanaButton
+            v-else
+            :type="value.to === rootRoute ? 'common' : 'icon'"
+            :show-slot="value.to === rootRoute"
+            :icon="value.icon"
+            :to="value.to"
+            :active="activeStatus[index]"
+          >
+            {{ value.title }}
+          </HanaButton>
+        </div>
       </div>
 
       <div class="flex gap-0 transition-all lg:gap-4">
@@ -92,7 +110,7 @@ function changeMode() {
           class="ml-auto"
           @click="changeMode"
         />
-        <HanaDropdown trigger="click" animation="slide" offset="end" :show-arrow="false">
+        <HanaDropdown animation="slide" offset="end" :show-arrow="false">
           <HanaButton
             type="icon"
             icon="lucide:user-round"
