@@ -1,23 +1,22 @@
 <script setup lang="ts">
+const { articlesMap } = useRoutesMap()
+
 const curRouteArr = useRouteArr()
 const route = useRoute()
 const { name } = toRefs(route)
 
-const menus = new Map([
-  ['/articles', { title: '文章', icon: 'lucide:file-text', to: '/articles' }],
-  ['/articles/tags', { title: '标签', icon: 'lucide:tag', to: '/articles/tags' }],
-  ['/articles/categories', { title: '目录', icon: 'lucide:folder', to: '/articles/categories' }],
-  ['/articles/archives', { title: '归档', icon: 'lucide:archive', to: '/articles/archives' }],
-])
-
 const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))
+
+const { isLoading } = useLoadingIndicator()
+
+const showSideMenu = computed(() => !isDetail.value || isLoading.value)
 </script>
 
 <template>
   <div>
     <div class="flex flex-col lg:flex-row lg:items-center lg:gap-20">
       <transition name="title">
-        <h1 v-if="!isDetail" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with_underline">
+        <h1 v-if="showSideMenu" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with_underline">
           一些文章
         </h1>
       </transition>
@@ -29,9 +28,9 @@ const isDetail = computed(() => (name.value as string)!.startsWith('article-deta
     </div>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
-        <HanaSideMenu v-if="!isDetail" :menus="menus" />
+        <HanaSideMenu v-if="showSideMenu" :menus="articlesMap" />
       </transition>
-      <div class="w-full">
+      <div class="w-full transition-all">
         <NuxtPage />
       </div>
     </div>
