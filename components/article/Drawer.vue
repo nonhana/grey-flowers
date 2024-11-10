@@ -33,7 +33,7 @@ const [prev, next] = neighbors.value || []
       <div class="flex flex-col gap-5">
         <div class="mt-5 flex shrink-0 flex-col items-center justify-items-end gap-2">
           <NuxtImg class="rounded-full" src="/images/avatar.webp" alt="non_hana" width="96" height="96" />
-          <h2 class="text-xl text-hana-blue with_underline">
+          <h2 class="text-xl text-hana-blue with-underline">
             non_hana
           </h2>
           <p class="text-sm">
@@ -64,7 +64,7 @@ const [prev, next] = neighbors.value || []
       <NuxtLink
         v-if="prev"
         :to="prev._path"
-        class="hana-button w-full justify-center gap-5 text-text"
+        class="hana-button w-full justify-start gap-5 text-text"
         @click="close"
       >
         <span class="shrink-0">上一篇</span>
@@ -74,7 +74,7 @@ const [prev, next] = neighbors.value || []
       <NuxtLink
         v-if="next"
         :to="next._path"
-        class="hana-button w-full justify-center gap-5 text-text"
+        class="hana-button w-full justify-start gap-5 text-text"
         @click="close"
       >
         <span class="shrink-0">下一篇</span>

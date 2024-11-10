@@ -25,7 +25,7 @@ watch(hash, (newHash) => {
   <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
     <div class="flex items-center gap-2 text-xl">
       <Icon name="lucide:list" />
-      <span class="with_underline">文章目录</span>
+      <span class="with-underline">文章目录</span>
     </div>
     <hr class="my-2">
     <div v-if="activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">

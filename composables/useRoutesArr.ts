@@ -1,4 +1,4 @@
-export function useRouteArr() {
+export function useRoutesArr() {
   const route = useRoute()
   const { path } = toRefs(route)
   const routeArr = computed(() =>

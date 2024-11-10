@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { articlesMap } = useRoutesMap()
 
-const curRouteArr = useRouteArr()
+const curRouteArr = useRoutesArr()
 const route = useRoute()
 const { name } = toRefs(route)
 
@@ -22,7 +22,7 @@ watch(isDetail, (_, __, onCleanup) => {
   <div>
     <div class="flex flex-col lg:flex-row lg:items-center lg:gap-20">
       <transition name="title">
-        <h1 v-if="!isDetail" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with_underline">
+        <h1 v-if="!isDetail" class="m-0 inline-block w-40 cursor-pointer text-center font-bold text-hana-blue with-underline">
           一些文章
         </h1>
       </transition>

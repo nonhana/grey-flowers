@@ -99,13 +99,13 @@ module.exports = {
     require('@kamona/tailwindcss-perspective'),
     function ({ addUtilities }) {
       addUtilities({
-        '.with_underline': {
+        '.with-underline': {
           cursor: 'pointer',
           background: 'linear-gradient(to right, #2A669F, #2A669F) no-repeat right bottom',
           backgroundSize: '0% 2px',
           transition: 'background-size 0.5s',
         },
-        '.with_underline:hover': {
+        '.with-underline:hover': {
           backgroundPosition: 'left bottom',
           backgroundSize: '100% 2px',
         },

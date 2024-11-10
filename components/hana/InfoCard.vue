@@ -10,7 +10,7 @@ withDefaults(defineProps<{
   <div>
     <div class="mb-6 flex items-center gap-2 text-2xl text-text">
       <Icon :name="icon" size="32" />
-      <NuxtLink :to="to" class="with_underline">
+      <NuxtLink :to="to" class="with-underline">
         {{ title }}
       </NuxtLink>
     </div>
