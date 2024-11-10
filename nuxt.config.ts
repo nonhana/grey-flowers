@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   content: {
     highlight: {
       theme: 'github-dark',
+      langs: ['javascript', 'typescript', 'json', 'bash', 'shell', 'yaml', 'markdown', 'css', 'scss', 'html', 'vue', 'tsx', 'jsx'],
     },
   },
   image: {
