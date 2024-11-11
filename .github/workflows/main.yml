@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Publish And Deploy Demo
 
 on:
   push:
@@ -9,26 +9,35 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout # 拉取仓库内容
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
         uses: actions/checkout@v2
 
-      - name: Use Node.js v18.18.0
+      - name: Setup Node.js # 设置 Node.js 版本
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
         uses: actions/setup-node@v4
         with:
           node-version: '18.18.0'
 
-      - run: npm install
+      - name: Setup pnpm # 安装 pnpm
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-      
-      - run: npm run build
-        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-      
-      - run: tar -zcvf nuxt.tar.gz .output
-        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8 # 选择适合的 pnpm 版本
 
-      - name: Copy files to server
+      - name: Install dependencies with pnpm # 使用 pnpm 安装依赖
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the project # 构建项目
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        run: pnpm run build
+
+      - name: Compress output # 打包构建结果
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        run: tar -zcvf nuxt.tar.gz .output
+
+      - name: Copy files to server # 上传压缩包到服务器
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -39,7 +48,7 @@ jobs:
           source: "nuxt.tar.gz"
           target: ${{ secrets.TARGET }}
 
-      - name: Deploy Applications
+      - name: Deploy Applications # 部署应用
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
         uses: appleboy/ssh-action@v1.0.0
         with:
