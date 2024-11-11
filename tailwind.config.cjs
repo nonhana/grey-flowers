@@ -109,13 +109,6 @@ module.exports = {
           backgroundPosition: 'left bottom',
           backgroundSize: '100% 2px',
         },
-        '.article-detail-item': {
-          display: 'flex',
-          flexDirection: 'var(--direction)',
-        },
-        '.article-detail-item:nth-child(odd)': {
-          '--direction': 'row-reverse',
-        },
       })
     },
     function ({ addComponents }) {

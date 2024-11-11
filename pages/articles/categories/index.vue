@@ -21,7 +21,7 @@ const categories = computed(() => {
       </div>
     </header>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-      <ArticleCategory v-for="category in categories" :key="category" :title="category" />
+      <ArticleCategory v-for="(category, index) in categories" :key="`${category}-${index}`" :title="category" :index="index" />
     </div>
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   title?: string
+  index: number
 }>(), {
   title: 'Category',
 })
@@ -17,11 +18,30 @@ const { data: articleData } = await useAsyncData(`articles-by-category-${title.v
   .find())
 
 const isFlipped = ref(false)
+
+const opacity = ref(0)
+const top = ref('10px')
+
+function resetAnimation() {
+  opacity.value = 0
+  top.value = '10px'
+  setTimeout(() => {
+    opacity.value = 1
+    top.value = '0'
+  }, 0)
+}
+
+onMounted(() => {
+  resetAnimation()
+})
+
+watch(() => props.index, () => resetAnimation)
 </script>
 
 <template>
   <div
     class="relative h-56 perspective-10"
+    :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
     @mouseenter="isFlipped = true"
     @mouseleave="isFlipped = false"
   >

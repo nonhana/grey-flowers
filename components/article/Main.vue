@@ -73,7 +73,7 @@ const articleCards = computed<ArticleCardProps[]>(() =>
   <div class="flex size-full flex-col">
     <div class="flex-1">
       <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
-        <HanaArticleCard v-for="card in articleCards" :key="card.title" type="detail" v-bind="card" />
+        <HanaArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index }" />
       </div>
     </div>
     <div class="sticky bottom-5 mx-auto mt-5 w-fit">
