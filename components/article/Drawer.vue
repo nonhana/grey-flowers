@@ -41,18 +41,10 @@ const [prev, next] = neighbors.value || []
           </p>
         </div>
         <hr>
-        <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-2 overflow-auto text-text">
-          <NuxtLink
-            v-for="link in links" :key="link.id"
-            :to="`#${link.id}`"
-            class="hana-button"
-            :class="{ 'hana-button--active': activatedId === link.id }"
-            @click="close"
-          >
-            <span class="line-clamp-2">
-              {{ link.text }}
-            </span>
-          </NuxtLink>
+        <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-1 overflow-auto text-text">
+          <div @click="close">
+            <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
+          </div>
         </div>
         <div v-else class="text-center text-xl">
           <Icon name="svg-spinners:8-dots-rotate" />
