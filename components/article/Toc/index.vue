@@ -29,16 +29,7 @@ watch(hash, (newHash) => {
     </div>
     <hr class="my-2">
     <div v-if="activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">
-      <NuxtLink
-        v-for="link in links" :key="link.id"
-        :to="`#${link.id}`"
-        class="hana-button"
-        :class="{ 'hana-button--active': activatedId === link.id }"
-      >
-        <span class="line-clamp-2">
-          {{ link.text }}
-        </span>
-      </NuxtLink>
+      <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
     </div>
     <div v-else class="text-center text-xl">
       <Icon name="svg-spinners:8-dots-rotate" />

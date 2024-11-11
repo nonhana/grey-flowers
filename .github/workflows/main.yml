@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Install dependencies with pnpm # 使用 pnpm 安装依赖
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          source: "nuxt.tar.gz"
+          source: nuxt.tar.gz
           target: ${{ secrets.TARGET }}
 
       - name: Deploy Applications # 部署应用

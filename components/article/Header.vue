@@ -18,7 +18,7 @@ withDefaults(defineProps<ArticleHeader>(), {
 
 <template>
   <header class="mb-10 flex flex-col gap-5">
-    <NuxtImg :src="cover" :alt="alt" class="h-60 object-cover" />
+    <NuxtImg :src="cover" :alt="alt" class="h-60 rounded-lg object-cover" />
     <h1 class="font-bold">
       {{ title }}
     </h1>

@@ -7,9 +7,10 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <h2 :id="id" class="with-underline w-fit">
-    <NuxtLink :to="`#${id}`" class="flex items-center gap-2 font-bold hover:text-hana-blue">
-      <Icon name="lucide:pencil" />
+  <h2 :id="id" class="w-fit with-underline">
+    <NuxtLink
+      :to="`#${id}`" class="flex gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-['#'] after:font-light after:text-hana-blue-200 after:content-['(H2)'] hover:text-hana-blue"
+    >
       <slot />
     </NuxtLink>
   </h2>
