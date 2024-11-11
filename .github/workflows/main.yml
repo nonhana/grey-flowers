@@ -1,0 +1,54 @@
+name: Publish And Deploy Demo
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        uses: actions/checkout@v2
+
+      - name: Use Node.js v18.18.0
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.18.0'
+
+      - run: npm install
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+      
+      - run: npm run build
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+      
+      - run: tar -zcvf nuxt.tar.gz .output
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+
+      - name: Copy files to server
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          source: "nuxt.tar.gz"
+          target: ${{ secrets.TARGET }}
+
+      - name: Deploy Applications # 
+        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ secrets.TARGET }}
+            tar -zxvf nuxt.tar.gz
+            sudo pm2 delete grey-flowers
+            sudo pm2 start ecosystem.config.js
