@@ -11,19 +11,19 @@ jobs:
     steps:
       - name: Checkout # 拉取仓库内容
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js # 设置 Node.js 版本
-        if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.18.0'
+        uses: actions/checkout@v4
 
       - name: Setup pnpm # 安装 pnpm
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-        uses: pnpm/action-setup@v2.2.4
+        uses: pnpm/action-setup@v4
         with:
-          version: 8 # 选择适合的 pnpm 版本
+          version: 9
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
       - name: Install dependencies with pnpm # 使用 pnpm 安装依赖
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
@@ -31,7 +31,7 @@ jobs:
 
       - name: Build the project # 构建项目
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-        run: pnpm run build
+        run: pnpm build
 
       - name: Compress output # 打包构建结果
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
