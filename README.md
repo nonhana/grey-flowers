@@ -1,75 +1,17 @@
-# Nuxt 3 Minimal Starter
+![grey-flowers](https://moe.nonhana.pics/grey-flowers.webp)
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# Grey Flowers
 
-## Setup
+> Even in a gray world, flowers bloom as usual.
 
-Make sure to install the dependencies:
+**A Space to Write, Reflect, and Savor Life.**
+Thoughtfully designed and lovingly crafted by myself.
 
-```bash
-# npm
-npm install
+## Tech Stack
 
-# pnpm
-pnpm install
+Built with:
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- [Nuxt3](https://nuxt.com)
+- [Vue3](https://vuejs.org)
+- [Nuxt Content2](https://content.nuxt.com)
+- [TailwindCSS](https://tailwindcss.com)
