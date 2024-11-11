@@ -58,6 +58,6 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ${{ secrets.TARGET }}
-            sudo tar -zxvf nuxt.tar.gz
-            sudo pm2 delete grey-flowers
-            sudo pm2 start ecosystem.config.js
+            tar -zxvf nuxt.tar.gz
+            pm2 delete grey-flowers
+            pm2 start ecosystem.config.js
