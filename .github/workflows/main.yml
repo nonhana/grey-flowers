@@ -39,7 +39,7 @@ jobs:
 
       - name: Copy files to server # 上传压缩包到服务器
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -50,7 +50,7 @@ jobs:
 
       - name: Deploy Applications # 部署应用
         if: ${{ contains(github.event.head_commit.message, 'build-and-deploy') }}
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -58,6 +58,6 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd ${{ secrets.TARGET }}
-            tar -zxvf nuxt.tar.gz
+            sudo tar -zxvf nuxt.tar.gz
             sudo pm2 delete grey-flowers
             sudo pm2 start ecosystem.config.js
