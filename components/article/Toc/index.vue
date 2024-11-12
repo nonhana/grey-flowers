@@ -1,19 +1,54 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content'
+import type { ParsedContent, TocLink } from '@nuxt/content'
 
 const props = withDefaults(defineProps<{
   article: ParsedContent
 }>(), {})
 
 const links = props.article.body?.toc?.links || []
+const linkIds = computed(() => {
+  const result: string[] = []
+  const collectIds = (links: TocLink[]) => {
+    links.forEach((link) => {
+      result.push(link.id)
+      if (link.children) {
+        collectIds(link.children)
+      }
+    })
+  }
+  collectIds(links)
+  return result
+})
 
 const route = useRoute()
 const { hash } = toRefs(route)
 
 const activatedId = ref<string | null>(null)
 
+let linkObserver: IntersectionObserver | null = null
+
 onMounted(() => {
   activatedId.value = hash.value.slice(1)
+  linkObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        activatedId.value = entry.target.id
+      }
+    })
+  }, {
+    rootMargin: '0% 0% -80% 0%',
+  })
+
+  linkIds.value.forEach((id) => {
+    const element = document.getElementById(id)
+    if (element) {
+      linkObserver && linkObserver.observe(element)
+    }
+  })
+})
+
+onUnmounted(() => {
+  linkObserver && linkObserver.disconnect()
 })
 
 watch(hash, (newHash) => {
