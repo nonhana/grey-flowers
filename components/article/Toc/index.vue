@@ -24,6 +24,7 @@ const route = useRoute()
 const { hash } = toRefs(route)
 
 const activatedId = ref<string | null>(null)
+const activatedIdLock = ref(false)
 
 let linkObserver: IntersectionObserver | null = null
 
@@ -32,6 +33,8 @@ onMounted(() => {
   linkObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
+        if (activatedIdLock.value)
+          return
         activatedId.value = entry.target.id
       }
     })
@@ -51,8 +54,15 @@ onUnmounted(() => {
   linkObserver && linkObserver.disconnect()
 })
 
-watch(hash, (newHash) => {
+watch(hash, (newHash, _, onCleanup) => {
+  activatedIdLock.value = true
   activatedId.value = newHash.slice(1)
+  const timeout = setTimeout(() => {
+    activatedIdLock.value = false
+  }, 1000)
+  onCleanup(() => {
+    clearTimeout(timeout)
+  })
 })
 </script>
 

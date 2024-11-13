@@ -34,7 +34,7 @@ watch(isDetail, (_, __, onCleanup) => {
     </div>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
-        <HanaSideMenu v-if="!isDetail" :menus="articlesMap" />
+        <ArticleSideMenu v-if="!isDetail" :menus="articlesMap" />
       </transition>
       <div v-if="showPage" class="w-full">
         <NuxtPage />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const props = withDefaults(defineProps<ArticleCardProps & { index: number }>(), { type: 'common' })
+const props = withDefaults(defineProps<ArticleCardProps & { index: number, displayCols?: number }>(), { type: 'common', displayCols: 1 })
 
 const opacity = ref(0)
 const top = ref('10px')
@@ -30,14 +30,12 @@ watch(() => props.index, () => resetAnimation)
       class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200"
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"
     >
-      <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail' }">
+      <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail', 'md:hidden': displayCols > 1 && type === 'detail' }">
         <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover" />
       </div>
       <div
         class="relative flex h-36 w-full flex-col justify-between p-4"
-        :class="{
-          'md:items-center': type === 'detail',
-        }"
+        :class="{ 'md:items-center': type === 'detail' }"
       >
         <div class="flex h-6 flex-wrap gap-2 overflow-hidden">
           <ArticleTag v-for="tag in tags" :key="tag" :name="tag" size="small" />

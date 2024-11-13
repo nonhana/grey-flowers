@@ -6,10 +6,12 @@ const props = withDefaults(defineProps<{
   hideHeader?: boolean
   direction?: 'left' | 'right'
   overlayOpacity?: number
+  showInfo?: boolean
 }>(), {
   hideHeader: false,
   direction: 'right',
   overlayOpacity: 0.5,
+  showInfo: true,
 })
 
 const visible = defineModel<boolean>()
@@ -66,10 +68,23 @@ onBeforeUnmount(() => {
         </div>
         <hr>
       </slot>
-      <div class="flex-1">
+      <div v-if="showInfo" class="mt-5">
+        <div class="flex shrink-0 flex-col items-center justify-items-end gap-2">
+          <NuxtImg class="rounded-full" src="/images/avatar.webp" alt="non_hana" width="96" height="96" />
+          <h2 class="text-xl text-hana-blue with-underline">
+            non_hana
+          </h2>
+          <p class="text-sm">
+            不要为每一件事都赋予意义。
+          </p>
+        </div>
+        <hr class="mt-5">
+      </div>
+      <div class="mt-5 flex-1 overflow-auto">
         <slot :close="handleClose" />
       </div>
-      <div class="mb-5">
+      <div class="my-5">
+        <hr class="mb-5">
         <slot name="footer" :close="handleClose" />
       </div>
     </aside>

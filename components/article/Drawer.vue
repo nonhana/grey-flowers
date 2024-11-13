@@ -30,29 +30,16 @@ const [prev, next] = neighbors.value || []
 <template>
   <HanaDrawer v-model="visible">
     <template #default="{ close }">
-      <div class="flex flex-col gap-5">
-        <div class="mt-5 flex shrink-0 flex-col items-center justify-items-end gap-2">
-          <NuxtImg class="rounded-full" src="/images/avatar.webp" alt="non_hana" width="96" height="96" />
-          <h2 class="text-xl text-hana-blue with-underline">
-            non_hana
-          </h2>
-          <p class="text-sm">
-            不要为每一件事都赋予意义。
-          </p>
+      <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-1 overflow-auto text-text">
+        <div @click="close">
+          <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
         </div>
-        <hr>
-        <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-1 overflow-auto text-text">
-          <div @click="close">
-            <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
-          </div>
-        </div>
-        <div v-else class="text-center text-xl">
-          <Icon name="svg-spinners:8-dots-rotate" />
-        </div>
+      </div>
+      <div v-else class="text-center text-xl">
+        <Icon name="svg-spinners:8-dots-rotate" />
       </div>
     </template>
     <template #footer="{ close }">
-      <hr class="mb-5">
       <NuxtLink
         v-if="prev"
         :to="prev._path"

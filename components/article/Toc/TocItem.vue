@@ -7,7 +7,6 @@ const props = defineProps<{
 }>()
 
 const isActive = computed(() => props.activatedId === props.link.id)
-const isExpanded = computed(() => isActive.value || props.link.children?.some(child => child.id === props.activatedId))
 </script>
 
 <template>
@@ -18,9 +17,8 @@ const isExpanded = computed(() => isActive.value || props.link.children?.some(ch
       :class="{ 'hana-button--active': isActive }"
     >
       <span class="line-clamp-2">{{ link.text }}</span>
-      <Icon v-if="link.children" name="lucide:arrow-right" class="ml-auto shrink-0" :class="{ 'rotate-90': isExpanded }" />
     </NuxtLink>
-    <div v-if="isExpanded && link.children" class="flex flex-col gap-1 pl-4">
+    <div class="flex flex-col gap-1 pl-4">
       <ArticleTocItem
         v-for="child in link.children"
         :key="child.id"
