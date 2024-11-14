@@ -26,11 +26,13 @@ watch(isDetail, (_, __, onCleanup) => {
           一些文章
         </h1>
       </transition>
-      <HanaBreadcrumb>
-        <HanaBreadcrumbItem v-for="item in curRouteArr" :key="item.to" :to="item.to">
-          {{ item.title }}
-        </HanaBreadcrumbItem>
-      </HanaBreadcrumb>
+      <div class="w-full overflow-auto">
+        <HanaBreadcrumb>
+          <HanaBreadcrumbItem v-for="item in curRouteArr" :key="item.to" :to="item.to">
+            <span class="text-nowrap">{{ item.title }}</span>
+          </HanaBreadcrumbItem>
+        </HanaBreadcrumb>
+      </div>
     </div>
     <div class="flex flex-col gap-5 lg:flex-row lg:gap-20">
       <transition name="side-menu">
