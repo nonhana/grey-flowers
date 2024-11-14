@@ -5,6 +5,7 @@
 > Even in a gray world, flowers bloom as usual.
 
 **A Space to Write, Reflect, and Savor Life.**
+
 Thoughtfully designed and lovingly crafted by myself.
 
 ## Tech Stack
