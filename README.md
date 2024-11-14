@@ -2,11 +2,7 @@
 
 # Grey Flowers
 
-> Even in a gray world, flowers bloom as usual.
-
-**A Space to Write, Reflect, and Savor Life.**
-
-Thoughtfully designed and lovingly crafted by myself.
+Even in a gray world, flowers bloom as usual.
 
 ## Tech Stack
 
