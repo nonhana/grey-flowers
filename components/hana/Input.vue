@@ -11,6 +11,10 @@ withDefaults(defineProps<{
   rows: 5,
 })
 
+const emits = defineEmits<{
+  (e: 'keydown', event: KeyboardEvent): void
+}>()
+
 const value = defineModel<string>()
 
 const hovering = ref(false)
@@ -21,6 +25,10 @@ function handleMouseEnter() {
 
 function handleMouseLeave() {
   hovering.value = false
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+  emits('keydown', event)
 }
 </script>
 
@@ -36,6 +44,7 @@ function handleMouseLeave() {
         type="text"
         class="w-full rounded-lg border-none focus:ring-2 focus:ring-hana-blue-400"
         :placeholder="placeholder"
+        @keydown="handleKeyDown"
       >
     </template>
 
@@ -46,6 +55,7 @@ function handleMouseLeave() {
         :style="{ resize }"
         :placeholder="placeholder"
         :rows="rows"
+        @keydown="handleKeyDown"
       />
     </template>
   </div>
