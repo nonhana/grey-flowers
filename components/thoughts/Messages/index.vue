@@ -8,6 +8,6 @@ const { messages, newMessages } = messagesStore
 <template>
   <div class="relative mb-5 flex w-full flex-col gap-5">
     <ThoughtsMessagesItem v-for="(message, index) in messages" :key="message.id" :index="index" :message="message" />
-    <ThoughtsMessagesItem v-for="message in newMessages" :key="message.id" :index="0" :message="message" />
+    <ThoughtsMessagesItem v-for="message in newMessages" :key="message.id" :message="message" />
   </div>
 </template>

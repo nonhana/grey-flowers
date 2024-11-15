@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { MessageItem } from '~/types/message'
 
-const props = defineProps<{
-  index: number
+const props = withDefaults(defineProps<{
+  index?: number
   message: MessageItem
-}>()
+}>(), {
+  index: 0,
+})
 
 const opacity = ref(0)
 const top = ref('10px')
