@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("HANA_DATABASE_URL")
+}
+
+model Article {
+  id          Int       @id @default(autoincrement())
+  title       String    @unique
+  description String?
+  cover       String?
+  alt         String    @unique
+  ogImage     String?
+  publishedAt DateTime  @default(now())
+  editedAt    DateTime  @updatedAt
+  published   Boolean   @default(false)
+  wordCount   Int       @default(0)
+  tags        Tag[]     @relation("ArticleTags")
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  comments    Comment[] // 文章的评论
+}
+
+model Tag {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  articleCount Int       @default(0)
+  articles     Article[] @relation("ArticleTags")
+}
+
+model Category {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  cover        String?
+  articleCount Int       @default(0)
+  articles     Article[]
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  name     String?   @default("佚名")
+  site     String?
+  avatar   String?
+  comments Comment[]
+  replies  Comment[] @relation("ReplyToUser")
+  messages Message[]
+}
+
+model Comment {
+  id            Int          @id @default(autoincrement())
+  content       String
+  level         CommentLevel @default(PARENT)
+  parentId      Int?
+  parent        Comment?     @relation("ParentChild", fields: [parentId], references: [id])
+  children      Comment[]    @relation("ParentChild")
+  article       Article?     @relation(fields: [articleId], references: [id])
+  articleId     Int?
+  author        User?        @relation(fields: [authorId], references: [id])
+  authorId      Int?
+  replyToUser   User?        @relation("ReplyToUser", fields: [replyToUserId], references: [id])
+  replyToUserId Int?
+  publishedAt   DateTime     @default(now())
+  editedAt      DateTime     @updatedAt
+}
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  content     String
+  parentId    Int?
+  parent      Message?  @relation("ParentChild", fields: [parentId], references: [id])
+  children    Message[] @relation("ParentChild")
+  author      User?     @relation(fields: [authorId], references: [id])
+  authorId    Int?
+  publishedAt DateTime  @default(now())
+  editedAt    DateTime  @updatedAt
+}
+
+enum CommentLevel {
+  PARENT
+  CHILD
+}

@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "new": "node ./scripts/newArticle.js"
+    "new": "node ./scripts/newArticle.js",
+    "generate:prisma": "prisma generate",
+    "migrate:dev": "prisma migrate dev"
   },
   "dependencies": {
     "nuxt": "^3.13.0",
@@ -33,6 +35,8 @@
     "@nuxtjs/seo": "2.0.0-rc.23",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.6.1",
+    "@prisma/client": "^5.22.0",
+    "@prisma/nuxt": "^0.0.35",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.7.4",
@@ -45,6 +49,7 @@
     "gsap": "^3.12.5",
     "nuxt-lodash": "^2.5.3",
     "pinia": "^2.2.5",
+    "prisma": "5.22.0",
     "sass": "^1.79.4",
     "sharp": "^0.33.5",
     "typescript": "~5.5.4",
