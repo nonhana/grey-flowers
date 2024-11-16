@@ -10,8 +10,8 @@ export const MessageMockList: MessageItem[] = [
       site: 'https://alice-blog.com',
       avatar: 'https://dummyimage.com/400x400',
     },
-    publishedAt: '2024-11-01 10:30',
-    editedAt: '2024-11-01 10:45',
+    publishedAt: '2024/11/01 10:30',
+    editedAt: '2024/11/01 10:45',
     isMe: false,
   },
   {
@@ -23,8 +23,8 @@ export const MessageMockList: MessageItem[] = [
       site: 'https://bob-portfolio.com',
       avatar: 'https://dummyimage.com/400x400',
     },
-    publishedAt: '2024-11-01 11:00',
-    editedAt: '2024-11-01 11:05',
+    publishedAt: '2024/11/01 11:00',
+    editedAt: '2024/11/01 11:05',
     isMe: true,
     replyTo: {
       id: 1,
@@ -44,8 +44,8 @@ export const MessageMockList: MessageItem[] = [
       site: 'https://charlie.dev',
       avatar: 'https://dummyimage.com/400x400',
     },
-    publishedAt: '2024-11-02 08:15',
-    editedAt: '2024-11-02 08:20',
+    publishedAt: '2024/11/02 08:15',
+    editedAt: '2024/11/02 08:20',
     isMe: false,
   },
   {
@@ -57,8 +57,8 @@ export const MessageMockList: MessageItem[] = [
       site: 'https://bob-portfolio.com',
       avatar: 'https://dummyimage.com/400x400',
     },
-    publishedAt: '2024-11-02 08:30',
-    editedAt: '2024-11-02 08:35',
+    publishedAt: '2024/11/02 08:30',
+    editedAt: '2024/11/02 08:35',
     isMe: true,
     replyTo: {
       id: 3,

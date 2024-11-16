@@ -8,9 +8,15 @@ export const useMessagesStore = defineStore('messages', () => {
     newMessages.value.push(message)
   }
 
+  function updateMessages() {
+    messages.value = [...messages.value, ...newMessages.value]
+    newMessages.value = []
+  }
+
   return {
     messages,
     newMessages,
     addMessage,
+    updateMessages,
   }
 })

@@ -2,7 +2,11 @@
 import { useStore } from '~/store'
 
 const { messagesStore } = useStore()
-const { messages, newMessages } = messagesStore
+const { messages, newMessages, updateMessages } = messagesStore
+
+onUnmounted(() => {
+  updateMessages()
+})
 </script>
 
 <template>
