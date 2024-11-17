@@ -24,7 +24,7 @@ model Article {
   tags        Tag[]     @relation("ArticleTags")
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  Int?
-  comments    Comment[] // 文章的评论
+  comments    Comment[]
 }
 
 model Tag {

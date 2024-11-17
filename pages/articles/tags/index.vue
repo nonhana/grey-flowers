@@ -3,20 +3,9 @@ definePageMeta({
   name: 'tags',
 })
 
-const { data } = await useAsyncData('article-tags', () => queryContent('articles').only(['tags']).find())
+const { data } = await useAsyncData('article-tags', () => $fetch('/api/tags/list'))
 
-const tags = computed(() => {
-  if (!data.value)
-    return []
-  const tagMap: Map<string, number> = new Map()
-  data.value.forEach((article) => {
-    article.tags.forEach((tag: string) => {
-      tagMap.set(tag, (tagMap.get(tag) || 0) + 1)
-    })
-  })
-  return Array.from(tagMap.entries())
-    .map(([name, count]) => ({ name, count }))
-})
+const tags = computed(() => data.value || [])
 </script>
 
 <template>

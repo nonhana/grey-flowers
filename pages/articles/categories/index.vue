@@ -3,14 +3,9 @@ definePageMeta({
   name: 'categories',
 })
 
-const { data } = await useAsyncData('article-categories', () => queryContent('articles').only(['category']).find())
+const { data } = await useAsyncData('article-categories', () => $fetch('/api/categories/list'))
 
-const categories = computed(() => {
-  if (!data.value)
-    return []
-  const categorySet = new Set(data.value.map(article => article.category as string))
-  return Array.from(categorySet)
-})
+const categories = computed(() => data.value || [])
 </script>
 
 <template>
@@ -21,7 +16,7 @@ const categories = computed(() => {
       </div>
     </header>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-      <ArticleCategory v-for="(category, index) in categories" :key="`${category}-${index}`" :title="category" :index="index" />
+      <ArticleCategory v-for="(category, index) in categories" :key="`${category}-${index}`" :category="category" :index="index" />
     </div>
   </div>
 </template>

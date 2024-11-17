@@ -1,17 +1,16 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  title?: string
+const props = defineProps<{
+  category: {
+    id: number
+    name: string
+    cover: string | null
+    articleCount: number
+  }
   index: number
-}>(), {
-  title: 'Category',
-})
+}>()
 
-const { title } = toRefs(props)
-
-const imgUrl = computed(() => `/categories/${flatStr(title.value)}.webp`)
-
-const { data: articleData } = await useAsyncData(`articles-by-category-${title.value}`, () => queryContent('articles')
-  .where({ category: title.value })
+const { data: articleData } = await useAsyncData(`articles-by-category-${props.category.name}`, () => queryContent('articles')
+  .where({ category: props.category.name })
   .limit(6)
   .only(['title', 'publishedAt', '_path', '_id'])
   .sort({ publishedAt: -1 })
@@ -52,8 +51,8 @@ watch(() => props.index, () => resetAnimation)
       <div
         class="absolute inset-0 flex items-center justify-center rounded-lg text-xl font-bold text-white backface-hidden"
       >
-        <NuxtImg :src="imgUrl" :alt="title" class="absolute -z-10 size-full rounded-lg object-cover" />
-        <span class="relative select-none">{{ title }}</span>
+        <NuxtImg :src="category.cover || ''" :alt="category.name" class="absolute -z-10 size-full rounded-lg object-cover" />
+        <span class="relative select-none">{{ category.name }}</span>
       </div>
       <div
         class="absolute inset-0 rounded-lg bg-white p-4 shadow-md backface-hidden rotate-y-180"
@@ -65,9 +64,9 @@ watch(() => props.index, () => resetAnimation)
             </svg>
             <NuxtLink
               class="leading-5 with-underline hover:text-hana-blue"
-              :to="`/articles/categories/${flatStr(title)}`"
+              :to="`/articles/categories/${flatStr(category.name)}`"
             >
-              {{ title }}
+              {{ category.name }}
             </NuxtLink>
           </header>
           <main class="mt-5 grid grid-cols-2">
@@ -90,9 +89,9 @@ watch(() => props.index, () => resetAnimation)
                   <path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8m8 4H8m8 4H8" />
                 </g>
               </svg>
-              <span>{{ articleData?.length || 0 }} 篇文章</span>
+              <span>{{ category.articleCount }} 篇文章</span>
             </div>
-            <HanaButton :to="`/articles/categories/${flatStr(title)}`">
+            <HanaButton :to="`/articles/categories/${flatStr(category.name)}`">
               more
             </HanaButton>
           </footer>
