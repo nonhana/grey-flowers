@@ -6,7 +6,7 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 
-const { data: count } = await useAsyncData('total-articles', () => queryContent('articles').count())
+const { data: count } = await useAsyncData('article-count', () => $fetch('/api/articles/count'))
 
 const { data: articleData } = await useAsyncData('articles-by-publishedAt', () => queryContent('articles')
   .only(['publishedAt'])

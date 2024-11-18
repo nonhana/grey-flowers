@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ArticleCountQuery, ArticleListQuery } from '~/server/types/articles'
 import type { ArticleCardProps } from '~/types/article'
 
 const props = withDefaults(defineProps<{
@@ -15,17 +16,20 @@ function remainTwoDigits(num: string) {
   return num.length === 1 ? `0${num}` : num
 }
 
-const whereObj = computed(() => {
+const whereObj = computed<ArticleListQuery>(() => {
+  const result: ArticleCountQuery = {}
   switch (props.type) {
     case 'tags':
-      return { tags: { $in: [route.params.tag as string] } }
+      result.tag = route.params.tag as string
+      break
     case 'category':
-      return { category: antiFlatStr(route.params.category as string) }
+      result.category = antiFlatStr(route.params.category as string)
+      break
     case 'archives':
-      return { publishedAt: { $regex: `^${query.value.year}-${remainTwoDigits(query.value.month as string)}` } }
-    default:
-      return {}
+      result.publishedAtMonth = `${query.value.year}-${remainTwoDigits(query.value.month as string)}`
+      break
   }
+  return result
 })
 
 const displayCols = computed(() => {
@@ -40,16 +44,9 @@ const displayCols = computed(() => {
 const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
 
-const { data: total } = await useAsyncData('total-articles-category', () => queryContent('articles')
-  .where(whereObj.value)
-  .count())
-const { data: articleData } = await useAsyncData('articles-by-page', () => queryContent('articles')
-  .where(whereObj.value)
-  .skip((page.value - 1) * pageSize.value)
-  .limit(pageSize.value)
-  .without('body')
-  .sort({ publishedAt: -1 })
-  .find(), { watch: [query] })
+const { data: total } = await useAsyncData(`article-count-${props.type}`, () => $fetch('/api/articles/count', { query: whereObj.value }))
+
+const { data: articleData } = await useAsyncData(`articles-by-page-${props.type}`, () => $fetch('/api/articles/list', { query: { page: page.value, pageSize: pageSize.value, ...whereObj.value } }), { watch: [query] })
 
 watch(page, async (newPage) => {
   router.replace({ query: { ...route.query, page: newPage.toString() } })
@@ -65,14 +62,14 @@ watch(() => route.query.page, (pageQuery) => {
 const articleCards = computed<ArticleCardProps[]>(() =>
   articleData.value?.map((article) => {
     return {
-      to: article._path || '/404',
-      title: article.title || '暂无标题',
+      to: article.to,
+      title: article.title,
       description: article.description || '暂无简介~',
       cover: article.cover || '/images/not-found.webp',
-      tags: article.tags || [],
-      publishedAt: new Date(article.publishedAt || '').toLocaleDateString(),
-      editedAt: new Date(article.editedAt || '').toLocaleDateString(),
-      wordCount: article.wordCount || 0,
+      tags: article.tags,
+      publishedAt: article.publishedAt,
+      editedAt: article.editedAt,
+      wordCount: article.wordCount,
     }
   }) || [],
 )

@@ -12,6 +12,7 @@ datasource db {
 
 model Article {
   id          Int       @id @default(autoincrement())
+  to          String    @unique
   title       String    @unique
   description String?
   cover       String?

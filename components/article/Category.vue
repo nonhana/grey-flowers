@@ -9,12 +9,9 @@ const props = defineProps<{
   index: number
 }>()
 
-const { data: articleData } = await useAsyncData(`articles-by-category-${props.category.name}`, () => queryContent('articles')
-  .where({ category: props.category.name })
-  .limit(6)
-  .only(['title', 'publishedAt', '_path', '_id'])
-  .sort({ publishedAt: -1 })
-  .find())
+const { data: articleData } = await useAsyncData(`articles-by-category-${props.category.name}`, () => $fetch('/api/articles/list', {
+  query: { category: props.category.name, page: 1, pageSize: 6 },
+}))
 
 const isFlipped = ref(false)
 
@@ -72,8 +69,8 @@ watch(() => props.index, () => resetAnimation)
           <main class="mt-5 grid grid-cols-2">
             <NuxtLink
               v-for="article in articleData"
-              :key="article._id"
-              :to="article._path"
+              :key="article.id"
+              :to="article.to"
               class="hana-button"
             >
               <span class="line-clamp-1">

@@ -126,6 +126,7 @@ async function handleArticles(articles: ParsedContent[]) {
   const { createArticles, updateArticles } = articles.reduce(
     (acc, article) => {
       const baseData = {
+        to: article._path!,
         title: article.title!,
         description: article.description,
         cover: article.cover,

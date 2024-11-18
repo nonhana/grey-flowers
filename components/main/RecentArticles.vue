@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const { data } = await useAsyncData('recent-articles', () => queryContent('articles').limit(6).sort({ publishedAt: -1 }).find())
+const { data } = await useAsyncData('recent-articles', () => $fetch('/api/articles/list', { query: { page: 1, pageSize: 6 } }))
 
 const articleCards = computed<ArticleCardProps[]>(() =>
   data.value?.map((article) => {
     return {
-      to: article._path || '/404',
-      title: article.title || '暂无标题',
+      to: article.to,
+      title: article.title,
       description: article.description || '暂无简介~',
       cover: article.cover || '/images/not-found.webp',
-      tags: article.tags || [],
-      publishedAt: new Date(article.publishedAt || '').toLocaleDateString(),
-      editedAt: new Date(article.editedAt || '').toLocaleDateString(),
-      wordCount: article.wordCount || 0,
+      tags: article.tags,
+      publishedAt: article.publishedAt,
+      editedAt: article.editedAt,
+      wordCount: article.wordCount,
     }
   }) || [],
 )
