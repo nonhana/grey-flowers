@@ -6,7 +6,7 @@ type Options = p.Prisma.ArticleWhereInput
   & {
     page: number
     pageSize: number
-    publishedAtMonth?: string // 2024-06
+    publishedAtMonth?: string
   }
 
 async function selectArticleList(options: Options) {

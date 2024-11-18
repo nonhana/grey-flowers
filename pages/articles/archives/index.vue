@@ -8,34 +8,13 @@ const router = useRouter()
 
 const { data: count } = await useAsyncData('article-count', () => $fetch('/api/articles/count'))
 
-const { data: articleData } = await useAsyncData('articles-by-publishedAt', () => queryContent('articles')
-  .only(['publishedAt'])
-  .sort({ publishedAt: -1 })
-  .find())
+const { data: dateMap } = await useAsyncData('articles-by-publishedAt', () => $fetch('/api/articles/dates'))
 
-const dateMap = computed<Map<string, string[]>>(() => {
-  const map: Map<string, Set<string>> = new Map()
-  if (!articleData.value)
-    return new Map()
+const yearList = computed(() => dateMap.value ? (Object.keys(dateMap.value)).sort((a, b) => Number(b) - Number(a)) : [])
+const curYear = ref<string>(route.query.year as string || yearList.value[0])
 
-  articleData.value.forEach((article) => {
-    const publishedDate = new Date(article.publishedAt)
-    const year = publishedDate.getFullYear().toString()
-    const month = (publishedDate.getMonth() + 1).toString()
-
-    if (!map.has(year)) {
-      map.set(year, new Set())
-    }
-    map.get(year)!.add(month)
-  })
-
-  return new Map(
-    Array.from(map.entries()).map(([year, monthsSet]) => [year, Array.from(monthsSet)]),
-  )
-})
-
-const curYear = ref<string>(route.query.year as string || dateMap.value.keys().next().value!)
-const curMonth = ref<string>(route.query.month as string || dateMap.value.get(curYear.value)![0])
+const monthList = computed(() => dateMap.value ? [...dateMap.value[curYear.value]].sort((a, b) => Number(b) - Number(a)) : [])
+const curMonth = ref<string>(route.query.month as string || monthList.value[0])
 
 function toggleYear(year: string) {
   curYear.value = year
@@ -46,11 +25,11 @@ function toggleMonth(month: string) {
 }
 
 watch(curYear, (newYear) => {
-  router.replace({ query: { ...route.query, year: newYear, month: dateMap.value.get(newYear)![0] } })
+  router.replace({ query: { ...route.query, year: newYear, month: dateMap.value![newYear][0] } })
 }, { immediate: true })
 
 watch(() => route.query.year, (yearQuery) => {
-  const newYear = yearQuery as string || dateMap.value.keys().next().value!
+  const newYear = yearQuery as string || yearList.value[0]
   if (newYear !== curYear.value) {
     curYear.value = newYear
   }
@@ -61,7 +40,7 @@ watch(curMonth, (newMonth) => {
 })
 
 watch(() => route.query.month, (monthQuery) => {
-  const newMonth = monthQuery as string || dateMap.value.get(curYear.value)![0]
+  const newMonth = monthQuery as string || monthList.value[0]
   if (newMonth !== curMonth.value) {
     curMonth.value = newMonth
   }
@@ -76,7 +55,7 @@ watch(() => route.query.month, (monthQuery) => {
       </div>
       <div class="hana-card flex gap-2 overflow-auto">
         <div
-          v-for="year in dateMap.keys()"
+          v-for="year in yearList"
           :key="year"
           :class="{ 'hana-button--active': curYear === year }"
           class="hana-button inline-block"
@@ -87,7 +66,7 @@ watch(() => route.query.month, (monthQuery) => {
       </div>
       <div class="hana-card flex gap-2 overflow-auto">
         <div
-          v-for="month in dateMap.get(curYear)"
+          v-for="month in monthList"
           :key="month"
           :class="{ 'hana-button--active': curMonth === month }"
           class="hana-button inline-block"
