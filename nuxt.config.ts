@@ -78,8 +78,6 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  // server - 服务端 API 配置
-  nitro: {},
   prisma: {
     installStudio: false,
   },
