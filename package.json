@@ -22,7 +22,6 @@
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
     "@ctrl/tinycolor": "^4.1.0",
-    "@formkit/auto-animate": "^0.8.2",
     "@iconify-json/lucide": "^1.2.7",
     "@iconify-json/mingcute": "^1.2.0",
     "@iconify-json/svg-spinners": "^1.2.0",
