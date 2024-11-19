@@ -8,6 +8,7 @@ const props = withDefaults(
     shape?: 'round' | 'square'
     disabled?: boolean
     showSlot?: boolean
+    darkMode?: boolean
   }>(),
   {
     type: 'common',
@@ -15,6 +16,7 @@ const props = withDefaults(
     shape: 'round',
     disabled: false,
     showSlot: true,
+    darkMode: false,
   },
 )
 
@@ -43,16 +45,15 @@ function handleClick(event: Event) {
   <component
     :is="component"
     :to="to"
-    class="flex shrink-0 select-none items-center gap-1 transition-all"
+    class="flex shrink-0 select-none items-center justify-center gap-1 transition-all"
     :class="[
       type === 'common' ? 'px-[10px] py-2' : 'p-2',
-      active ? 'bg-hana-blue-200/40 text-hana-blue' : 'text-text',
+      active
+        ? darkMode ? 'bg-hana-blue/80' : 'bg-hana-blue-200/40 text-hana-blue'
+        : darkMode ? 'bg-hana-blue text-white' : 'text-text',
+      darkMode ? 'hover:bg-hana-blue/80' : 'hover:bg-hana-blue-200/40 hover:text-hana-blue',
       shape === 'round' ? 'rounded-full' : 'rounded-lg',
-      {
-        'cursor-pointer hover:bg-hana-blue-200/40 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200':
-          !props.disabled,
-        'cursor-not-allowed text-gray-400 opacity-50': props.disabled,
-      },
+      disabled ? 'cursor-not-allowed text-gray-400 opacity-50' : 'cursor-pointer active:scale-95 active:bg-hana-blue-200',
     ]"
     @click="handleClick"
   >

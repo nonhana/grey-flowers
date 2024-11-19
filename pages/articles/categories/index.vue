@@ -12,7 +12,7 @@ const categories = computed(() => data.value || [])
   <div>
     <header class="mb-5">
       <div class="text-xl text-hana-blue">
-        <span class="text-xl">目前共计 <span class="font-bold">{{ categories.length }}</span> 个目录...不同方向的知识，都需要掌握</span>
+        <span class="text-xl">目前共计 <span class="font-bold">{{ categories.length }}</span> 个目录...我还有很多想写的东西</span>
       </div>
     </header>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">

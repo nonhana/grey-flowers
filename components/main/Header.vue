@@ -38,6 +38,16 @@ const curMode = ref<'light' | 'dark'>('light')
 function changeMode() {
   curMode.value = curMode.value === 'light' ? 'dark' : 'light'
 }
+
+const userWindowVisible = ref(false)
+
+function handleUserCommand(command: string) {
+  switch (command) {
+    case t('header.user.notLoggedIn.login'):
+      userWindowVisible.value = true
+      break
+  }
+}
 </script>
 
 <template>
@@ -85,7 +95,7 @@ function changeMode() {
           class="ml-auto"
           @click="changeMode"
         />
-        <HanaDropdown animation="slide" offset="end" :show-arrow="false">
+        <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
           <HanaButton
             type="icon"
             icon="lucide:user-round"
@@ -97,6 +107,7 @@ function changeMode() {
                 v-for="item in notLoggedInMap"
                 :key="item.text"
                 :icon="item.icon"
+                :command="item.text"
               >
                 {{ item.text }}
               </HanaDropdownItem>
@@ -106,4 +117,18 @@ function changeMode() {
       </div>
     </div>
   </div>
+  <HanaDialog v-model="userWindowVisible" title="欢迎来到...花园">
+    <div class="flex flex-col gap-4">
+      <HanaInput prefix-icon="lucide:user-round" shape="rounded" placeholder="请输入用户名" />
+      <HanaInput prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="请输入密码" />
+    </div>
+    <div class="mt-8 flex flex-col gap-4">
+      <HanaButton type="common" class="w-full" dark-mode>
+        <span>登录</span>
+      </HanaButton>
+      <HanaButton type="common" class="w-full">
+        <span class="text-hana-blue">创建账户</span>
+      </HanaButton>
+    </div>
+  </HanaDialog>
 </template>
