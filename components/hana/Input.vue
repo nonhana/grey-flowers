@@ -1,5 +1,6 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
+  name?: string
   type?: 'text' | 'textarea' | 'password'
   placeholder?: string
   resize?: 'none' | 'vertical' | 'horizontal' | 'both'
@@ -56,6 +57,7 @@ function handleKeyDown(event: KeyboardEvent) {
         <!-- input -->
         <input
           v-model="value"
+          :name="name"
           :type="type"
           class="w-full border-none bg-hana-blue-50 py-2 pl-10 pr-3 text-sm focus:ring-2 focus:ring-hana-blue-400"
           :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
@@ -77,6 +79,7 @@ function handleKeyDown(event: KeyboardEvent) {
     <template v-else>
       <textarea
         v-model="value"
+        :name="name"
         class="w-full border-none bg-hana-blue-50 px-3 py-2 text-sm focus:ring-2 focus:ring-hana-blue-400"
         :style="{ resize }"
         :placeholder="placeholder"

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    type?: 'common' | 'icon'
+    type?: string
+    iconButton?: boolean
     icon?: string
     to?: string
     active?: boolean
@@ -11,7 +12,7 @@ const props = withDefaults(
     darkMode?: boolean
   }>(),
   {
-    type: 'common',
+    iconButton: false,
     active: false,
     shape: 'round',
     disabled: false,
@@ -30,13 +31,17 @@ const component = computed(() => {
   return 'button'
 })
 
-function handleClick(event: Event) {
+function handleClick(e: Event) {
   if (!props.disabled) {
     emits('click')
+    if (!props.type) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
   }
   else {
-    event.preventDefault()
-    event.stopPropagation()
+    e.preventDefault()
+    e.stopPropagation()
   }
 }
 </script>
@@ -45,9 +50,10 @@ function handleClick(event: Event) {
   <component
     :is="component"
     :to="to"
+    :type="type"
     class="flex shrink-0 select-none items-center justify-center gap-1 transition-all"
     :class="[
-      type === 'common' ? 'px-[10px] py-2' : 'p-2',
+      iconButton ? 'p-2' : 'px-[10px] py-2',
       active
         ? darkMode ? 'bg-hana-blue/80' : 'bg-hana-blue-200/40 text-hana-blue'
         : darkMode ? 'bg-hana-blue text-white' : 'text-text',

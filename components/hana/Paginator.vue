@@ -32,7 +32,7 @@ function goToPage(page: number) {
 <template>
   <div class="hana-card flex w-fit gap-2">
     <HanaButton
-      type="icon"
+      icon-button
       icon="lucide:chevron-left"
       :disabled="currentPage === 1"
       @click="stepPage('prev')"
@@ -41,7 +41,7 @@ function goToPage(page: number) {
       v-for="page in totalPages"
       :key="page"
       :active="page === currentPage"
-      type="icon"
+      icon-button
       @click="goToPage(page)"
     >
       <span class="size-5">
@@ -49,7 +49,7 @@ function goToPage(page: number) {
       </span>
     </HanaButton>
     <HanaButton
-      type="icon"
+      icon-button
       icon="lucide:chevron-right"
       :disabled="currentPage === totalPages"
       @click="stepPage('next')"

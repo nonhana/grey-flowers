@@ -39,12 +39,38 @@ function changeMode() {
   curMode.value = curMode.value === 'light' ? 'dark' : 'light'
 }
 
-const userWindowVisible = ref(false)
+const loginWindowVisible = ref(false)
+const registerWindowVisible = ref(false)
 
-function handleUserCommand(command: string) {
+function toggleLoginRegisterWindow() {
+  loginWindowVisible.value = !loginWindowVisible.value
+  registerWindowVisible.value = !registerWindowVisible.value
+}
+
+function handleUserCommand(command: string | number | object) {
   switch (command) {
     case t('header.user.notLoggedIn.login'):
-      userWindowVisible.value = true
+      loginWindowVisible.value = true
+      break
+    case t('header.user.notLoggedIn.register'):
+      registerWindowVisible.value = true
+      break
+  }
+}
+
+function handleSubmit(type: 'login' | 'register', e: Event) {
+  switch (type) {
+    case 'login':
+      if (e.target) {
+        const formData = new FormData(e.target as HTMLFormElement)
+        console.log(Object.fromEntries(formData))
+      }
+      break
+    case 'register':
+      if (e.target) {
+        const formData = new FormData(e.target as HTMLFormElement)
+        console.log(Object.fromEntries(formData))
+      }
       break
   }
 }
@@ -55,7 +81,7 @@ function handleUserCommand(command: string) {
     <div class="relative mx-auto flex size-full items-center justify-between px-2 md:max-w-[90%] xl:max-w-[70%]">
       <HanaDropdown trigger="click" animation="slide" offset="start" :show-arrow="false" class="md:hidden">
         <HanaButton
-          type="icon"
+          icon-button
           icon="lucide:align-justify"
         />
         <template #dropdown>
@@ -90,14 +116,14 @@ function handleUserCommand(command: string) {
 
       <div class="flex gap-0 transition-all lg:gap-4">
         <HanaButton
-          type="icon"
+          icon-button
           :icon="curMode === 'light' ? 'lucide:moon' : 'lucide:sun'"
           class="ml-auto"
           @click="changeMode"
         />
         <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
           <HanaButton
-            type="icon"
+            icon-button
             icon="lucide:user-round"
             class="ml-auto"
           />
@@ -117,18 +143,38 @@ function handleUserCommand(command: string) {
       </div>
     </div>
   </div>
-  <HanaDialog v-model="userWindowVisible" title="欢迎来到...花园">
-    <div class="flex flex-col gap-4">
-      <HanaInput prefix-icon="lucide:user-round" shape="rounded" placeholder="请输入用户名" />
-      <HanaInput prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="请输入密码" />
-    </div>
-    <div class="mt-8 flex flex-col gap-4">
-      <HanaButton type="common" class="w-full" dark-mode>
-        <span>登录</span>
-      </HanaButton>
-      <HanaButton type="common" class="w-full">
-        <span class="text-hana-blue">创建账户</span>
-      </HanaButton>
-    </div>
+  <HanaDialog v-model="loginWindowVisible" title="欢迎来到...花园。">
+    <form @submit.prevent="(e) => handleSubmit('login', e)">
+      <div class="flex flex-col gap-4">
+        <HanaInput name="account" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名 / 邮箱" />
+        <HanaInput name="password" prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="密码" />
+      </div>
+      <div class="mt-8 flex flex-col gap-4">
+        <HanaButton class="w-full" dark-mode type="submit">
+          <span>登录</span>
+        </HanaButton>
+        <HanaButton class="w-full" @click="toggleLoginRegisterWindow">
+          <span class="text-hana-blue">创建账户</span>
+        </HanaButton>
+      </div>
+    </form>
+  </HanaDialog>
+  <HanaDialog v-model="registerWindowVisible" title="这里有你想找的花吗？">
+    <form @submit.prevent="(e) => handleSubmit('register', e)">
+      <div class="flex flex-col gap-4">
+        <HanaInput name="username" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名" />
+        <HanaInput name="email" prefix-icon="lucide:mail" shape="rounded" placeholder="邮箱" />
+        <HanaInput name="site" prefix-icon="lucide:globe" shape="rounded" placeholder="站点（无可不填）" />
+        <HanaInput name="password" prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="密码" />
+      </div>
+      <div class="mt-8 flex flex-col gap-4">
+        <HanaButton class="w-full" dark-mode type="submit">
+          <span>注册</span>
+        </HanaButton>
+        <HanaButton class="w-full" @click="toggleLoginRegisterWindow">
+          <span class="text-hana-blue">已有帐号</span>
+        </HanaButton>
+      </div>
+    </form>
   </HanaDialog>
 </template>

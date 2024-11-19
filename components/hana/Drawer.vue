@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
       <slot name="header">
         <div v-if="!hideHeader" class="flex h-12 items-center">
           <span v-if="title" class="text-text">{{ title }}</span>
-          <HanaButton icon="lucide:x" class="ml-auto" type="icon" @click="handleClose" />
+          <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />
         </div>
         <hr>
       </slot>

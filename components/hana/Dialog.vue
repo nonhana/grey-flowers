@@ -33,7 +33,7 @@ const transitionClasses = {
   <transition v-bind="transitionClasses">
     <div
       v-if="visible"
-      class="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5"
+      class="fixed left-1/2 top-1/2 z-50 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow"
       :style="{ width }"
     >
       <div class="mb-5">
@@ -43,7 +43,7 @@ const transitionClasses = {
         >
           <div v-if="!hideHeader" class="flex items-center">
             <span v-if="title" class="text-2xl font-bold">{{ title }}</span>
-            <HanaButton icon="lucide:x" class="relative -right-2 -top-2 ml-auto" type="icon" @click="handleClose" />
+            <HanaButton icon="lucide:x" class="relative -right-2 -top-2 ml-auto" icon-button @click="handleClose" />
           </div>
         </slot>
       </div>
