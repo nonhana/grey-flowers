@@ -94,7 +94,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@prisma/nuxt',
   ],
-  plugins: ['~/plugins/directives.ts', '~/plugins/formik.client.ts'],
+  plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },
   compatibilityDate: '2024-10-05',
 })
