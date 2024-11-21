@@ -78,9 +78,6 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  prisma: {
-    installStudio: false,
-  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
@@ -92,7 +89,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@vueuse/nuxt',
     '@pinia/nuxt',
-    '@prisma/nuxt',
   ],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },
