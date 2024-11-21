@@ -47,13 +47,20 @@ model Category {
 model User {
   id       Int       @id @default(autoincrement())
   email    String    @unique
-  name     String?   @default("佚名")
+  username String?   @unique
   password String
   site     String?
   avatar   String?
   comments Comment[]
   replies  Comment[] @relation("ReplyToUser")
   messages Message[]
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }
 
 model Comment {

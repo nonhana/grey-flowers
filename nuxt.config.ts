@@ -78,30 +78,8 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  auth: {
-    isEnabled: true,
-    disableServerSideAuth: false,
-    originEnvKey: 'HANA_AUTH_ORIGIN',
-    baseURL: 'http://localhost:2408/api/auth',
-    provider: {
-      type: 'local',
-      endpoints: {
-        signIn: { path: '/login', method: 'post' },
-        signOut: { path: '/logout', method: 'post' },
-        signUp: { path: '/register', method: 'post' },
-        getSession: { path: '/session', method: 'get' },
-      },
-      refresh: {
-        isEnabled: true,
-        endpoint: { path: '/refresh', method: 'post' },
-        refreshOnlyToken: true,
-        token: {
-          signInResponseRefreshTokenPointer: '/refresh-token',
-          refreshRequestTokenPointer: '/refresh-token',
-          maxAgeInSeconds: 60 * 60 * 24 * 7,
-        },
-      },
-    },
+  runtimeConfig: {
+    sessionKey: '',
   },
   modules: [
     '@nuxtjs/tailwindcss',
@@ -114,7 +92,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@vueuse/nuxt',
     '@pinia/nuxt',
-    '@sidebase/nuxt-auth',
   ],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },

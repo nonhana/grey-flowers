@@ -35,16 +35,21 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@pinia/nuxt": "^0.6.1",
     "@prisma/client": "^5.22.0",
-    "@sidebase/nuxt-auth": "^0.9.4",
+    "@quixo3/prisma-session-store": "^3.1.13",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express-session": "^1.18.0",
     "@types/node": "^22.7.4",
     "@types/vivus": "^0.4.7",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
+    "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "eslint": "^9.12.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
+    "express-session": "^1.18.1",
     "gsap": "^3.12.5",
     "nuxt-lodash": "^2.5.3",
     "pinia": "^2.2.5",
@@ -52,6 +57,7 @@
     "sass": "^1.79.4",
     "sharp": "^0.33.5",
     "typescript": "~5.5.4",
-    "vivus": "^0.4.6"
+    "vivus": "^0.4.6",
+    "zod": "^3.23.8"
   }
 }
