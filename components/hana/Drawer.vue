@@ -7,11 +7,13 @@ const props = withDefaults(defineProps<{
   direction?: 'left' | 'right'
   overlayOpacity?: number
   showInfo?: boolean
+  width?: string
 }>(), {
   hideHeader: false,
   direction: 'right',
   overlayOpacity: 0.5,
-  showInfo: true,
+  showInfo: false,
+  width: '320px',
 })
 
 const visible = defineModel<boolean>()
@@ -58,12 +60,13 @@ onBeforeUnmount(() => {
     <aside
       v-if="visible"
       v-click-outside="() => handleClose()"
-      class="fixed top-0 z-50 flex h-screen w-4/5 max-w-80 flex-col bg-white px-5"
+      class="fixed top-0 z-50 flex h-screen w-4/5 flex-col bg-white px-5"
       :class="[direction === 'right' ? 'right-0' : 'left-0']"
+      :style="{ maxWidth: width }"
     >
       <slot name="header">
         <div v-if="!hideHeader" class="flex h-12 items-center">
-          <span v-if="title" class="text-text">{{ title }}</span>
+          <span v-if="title" class="text-xl text-hana-blue">{{ title }}</span>
           <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />
         </div>
         <hr>
@@ -83,7 +86,7 @@ onBeforeUnmount(() => {
       <div class="mt-5 flex-1 overflow-auto">
         <slot :close="handleClose" />
       </div>
-      <div class="my-5">
+      <div v-if="$slots.footer" class="my-5">
         <hr class="mb-5">
         <slot name="footer" :close="handleClose" />
       </div>

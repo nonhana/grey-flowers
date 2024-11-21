@@ -36,12 +36,10 @@ function handleClick(e: Event) {
     emits('click')
     if (!props.type) {
       e.preventDefault()
-      e.stopPropagation()
     }
   }
   else {
     e.preventDefault()
-    e.stopPropagation()
   }
 }
 </script>

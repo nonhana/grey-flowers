@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TransitionProps } from 'vue'
+
 withDefaults(defineProps<{
   title?: string
   overlayOpacity?: number
@@ -19,7 +21,7 @@ function handleClose() {
   visible.value = false
 }
 
-const transitionClasses = {
+const transitionClasses: TransitionProps = {
   enterActiveClass: 'transition-all duration-300',
   enterFromClass: 'opacity-0 scale-105',
   enterToClass: 'opacity-100',

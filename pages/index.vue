@@ -20,7 +20,5 @@ useHead({
 </script>
 
 <template>
-  <div>
-    <MainRecentArticles />
-  </div>
+  <MainBody />
 </template>

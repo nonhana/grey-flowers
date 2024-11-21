@@ -81,10 +81,10 @@ function handleKeyDown(event: KeyboardEvent) {
         v-model="value"
         :name="name"
         class="w-full border-none bg-hana-blue-50 px-3 py-2 text-sm focus:ring-2 focus:ring-hana-blue-400"
+        :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
         :style="{ resize }"
         :placeholder="placeholder"
         :rows="rows"
-        :class="shape === 'rounded' ? 'rounded-lg' : ''"
         @keydown="handleKeyDown"
       />
     </template>
