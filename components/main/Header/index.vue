@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import useMessage from '~/components/hana/Message/useMessage'
 import { useStore } from '~/store'
 
 const { t } = useI18n()
-
 const { routesMap } = useRoutesMap()
 const { userStore } = useStore()
+const { open } = useMessage()
 
 const notLoggedInMap = [{
   text: t('header.user.notLoggedIn.login'),
@@ -57,6 +58,12 @@ function handleUserCommand(command: string | number | object) {
       break
     case t('header.user.notLoggedIn.register'):
       registerWindowVisible.value = true
+      break
+    default:
+      open({
+        message: '功能开发中...',
+        type: 'info',
+      })
       break
   }
 }
