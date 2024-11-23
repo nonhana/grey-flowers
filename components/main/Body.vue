@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const { data } = await useAsyncData('recent-articles', () => $fetch('/api/articles/list', { query: { page: 1, pageSize: 6 } }))
+const { data: fetchArticleData } = await useFetch('/api/articles/list', { query: { page: 1, pageSize: 6 } })
+const articleData = computed(() => fetchArticleData.value ? fetchArticleData.value.payload ?? [] : [])
 
 const articleCards = computed<ArticleCardProps[]>(() =>
-  data.value?.map((article) => {
+  articleData.value.map((article) => {
     return {
       to: article.to,
       title: article.title,
@@ -15,7 +16,7 @@ const articleCards = computed<ArticleCardProps[]>(() =>
       editedAt: article.editedAt,
       wordCount: article.wordCount,
     }
-  }) || [],
+  }),
 )
 </script>
 

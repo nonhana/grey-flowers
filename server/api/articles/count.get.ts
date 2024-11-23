@@ -1,6 +1,7 @@
 import type * as p from '@prisma/client'
 import prisma from '~/lib/prisma'
 import type { ArticleCountQuery } from '~/server/types/articles'
+import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 type Options = p.Prisma.ArticleWhereInput & { publishedAtMonth?: string }
 
@@ -14,7 +15,7 @@ async function selectArticleCount(options: Options) {
   return await prisma.article.count({ where: rest })
 }
 
-export default defineEventHandler(async (event) => {
+export default formattedEventHandler(async (event) => {
   const query = getQuery(event) as ArticleCountQuery
   const tagName = query.tag as string | undefined
   const categoryName = query.category as string | undefined
@@ -32,5 +33,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const count = await selectArticleCount(options)
-  return count
+  return { payload: count }
 })

@@ -1,4 +1,5 @@
 import prisma from '~/lib/prisma'
+import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 async function getDates(): Promise<Record<string, string[]>> {
   const articles = await prisma.article.findMany({
@@ -20,7 +21,7 @@ async function getDates(): Promise<Record<string, string[]>> {
   return result
 }
 
-export default defineEventHandler(async () => {
+export default formattedEventHandler(async () => {
   const dates = await getDates()
-  return dates
+  return { payload: dates }
 })

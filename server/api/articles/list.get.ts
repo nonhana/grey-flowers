@@ -1,6 +1,7 @@
 import type * as p from '@prisma/client'
 import prisma from '~/lib/prisma'
 import type { ArticleListQuery } from '~/server/types/articles'
+import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 type Options = p.Prisma.ArticleWhereInput
   & {
@@ -32,7 +33,7 @@ async function selectArticleList(options: Options) {
   return result
 }
 
-export default defineEventHandler(async (event) => {
+export default formattedEventHandler(async (event) => {
   const query = getQuery(event) as ArticleListQuery
   const page = Number.parseInt(query.page as string) || 1
   const pageSize = Number.parseInt(query.pageSize as string) || 6
@@ -55,5 +56,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const articles = await selectArticleList(options)
-  return articles
+  return { payload: articles }
 })

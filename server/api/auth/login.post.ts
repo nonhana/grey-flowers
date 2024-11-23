@@ -1,8 +1,12 @@
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
+import env from '~/server/env/dotenv'
+import type { JwtPayload } from '~/server/types/jwt'
+import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
-export default defineEventHandler(async (event) => {
+export default formattedEventHandler(async (event) => {
   const body = await readBody(event)
   const { account, password } = body
 
@@ -26,8 +30,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const session = event.context.session
-  session.user = {
+  const userInfo: JwtPayload = {
     id: user.id,
     email: user.email,
     username: user.username,
@@ -35,5 +38,9 @@ export default defineEventHandler(async (event) => {
     site: user.site,
   }
 
-  return 'Login successful'
+  const token = jwt.sign(userInfo, env.HANA_JWT_SECRET!, {
+    expiresIn: '30d',
+  })
+
+  return { payload: { token, userInfo } }
 })

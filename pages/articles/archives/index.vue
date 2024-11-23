@@ -7,9 +7,12 @@ const route = useRoute()
 const router = useRouter()
 
 // 文章总数
-const { data: count } = await useAsyncData('article-count', () => $fetch('/api/articles/count'))
+const { data: fetchedCount } = await useFetch('/api/articles/count')
+const count = computed(() => fetchedCount.value ? fetchedCount.value.payload ?? 0 : 0)
+
 // 文章日期，key 为年份，value 为该年份下的月份数组
-const { data: dateMap } = await useAsyncData('articles-by-publishedAt', () => $fetch('/api/articles/dates'))
+const { data: fetchedDataMap } = await useFetch('/api/articles/dates')
+const dateMap = computed(() => fetchedDataMap.value ? fetchedDataMap.value.payload : null)
 
 const yearList = computed(() =>
   dateMap.value ? Object.keys(dateMap.value).sort((a, b) => Number(b) - Number(a)) : [],

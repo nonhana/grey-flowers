@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
+
 const { t } = useI18n()
 
 const { routesMap } = useRoutesMap()
+const { userStore } = useStore()
 
 const notLoggedInMap = [{
   text: t('header.user.notLoggedIn.login'),
@@ -58,18 +61,26 @@ function handleUserCommand(command: string | number | object) {
   }
 }
 
-function handleSubmit(type: 'login' | 'register', e: Event) {
+async function handleSubmit(type: 'login' | 'register', e: Event) {
   switch (type) {
     case 'login':
       if (e.target) {
         const formData = new FormData(e.target as HTMLFormElement)
-        console.log(Object.fromEntries(formData))
+        const { data } = await useFetch('/api/auth/login', { method: 'POST', body: JSON.stringify(Object.fromEntries(formData)) })
+        if (data.value?.success) {
+          localStorage.setItem('token', data.value.payload!.token)
+          userStore.setUserInfo(data.value.payload!.userInfo)
+          loginWindowVisible.value = false
+        }
       }
       break
     case 'register':
       if (e.target) {
         const formData = new FormData(e.target as HTMLFormElement)
-        console.log(Object.fromEntries(formData))
+        const { data } = useFetch('/api/auth/register', { method: 'POST', body: JSON.stringify(Object.fromEntries(formData)) })
+        if (data.value?.success) {
+          loginWindowVisible.value = true
+        }
       }
       break
   }
@@ -141,7 +152,7 @@ onUnmounted(() => {
           class="ml-auto"
           @click="changeMode"
         />
-        <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
+        <HanaDropdown v-if="!userStore.loggedIn" animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
           <HanaButton
             icon-button
             icon="lucide:user-round"
@@ -151,6 +162,24 @@ onUnmounted(() => {
             <HanaDropdownMenu>
               <HanaDropdownItem
                 v-for="item in notLoggedInMap"
+                :key="item.text"
+                :icon="item.icon"
+                :command="item.text"
+              >
+                {{ item.text }}
+              </HanaDropdownItem>
+            </HanaDropdownMenu>
+          </template>
+        </HanaDropdown>
+        <HanaDropdown v-if="userStore.loggedIn" animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
+          <NuxtImg v-if="userStore.userInfo!.avatar" :src="userStore.userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
+          <div v-else class="size-8 cursor-pointer rounded-full bg-hana-blue text-center text-2xl text-white">
+            <span>{{ userStore.userInfo!.username[0] }}</span>
+          </div>
+          <template #dropdown>
+            <HanaDropdownMenu>
+              <HanaDropdownItem
+                v-for="item in loggedInMap"
                 :key="item.text"
                 :icon="item.icon"
                 :command="item.text"

@@ -92,6 +92,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@vueuse/nuxt',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
   ],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },

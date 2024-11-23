@@ -1,6 +1,7 @@
 import type { ParsedContent } from '@nuxt/content'
 import type * as p from '@prisma/client'
 import prisma from '~/lib/prisma'
+import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 import { flatStr } from '~/utils/handleStr'
 
 // 从 Nuxt Content 中获取文章数据
@@ -171,15 +172,7 @@ async function handleArticles(articles: ParsedContent[]) {
   ])
 }
 
-export default defineEventHandler(async () => {
-  try {
-    // 获取文章数据
-    const articles = await getNuxtContent()
-    // 处理文章数据
-    await handleArticles(articles)
-    return { message: 'Refreshed articles' }
-  }
-  catch (error: any) {
-    return { message: error.message || 'Failed to refresh articles' }
-  }
+export default formattedEventHandler(async () => {
+  const articles = await getNuxtContent()
+  await handleArticles(articles)
 })

@@ -9,9 +9,11 @@ const props = defineProps<{
   index: number
 }>()
 
-const { data: articleData } = await useAsyncData(`articles-by-category-${props.category.name}`, () => $fetch('/api/articles/list', {
+const { data } = await useFetch('/api/articles/list', {
   query: { category: props.category.name, page: 1, pageSize: 6 },
-}))
+})
+
+const articleData = computed(() => data.value ? data.value.payload : [])
 
 const isFlipped = ref(false)
 

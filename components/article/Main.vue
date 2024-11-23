@@ -44,9 +44,19 @@ const displayCols = computed(() => {
 const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
 
-const { data: total } = await useAsyncData(`article-count-${props.type}`, () => $fetch('/api/articles/count', { query: whereObj.value }))
+const { data: fetchedTotal } = await useAsyncData(`articles-count-${props.type}`, () => $fetch('/api/articles/count', {
+  query: whereObj.value,
+}), { watch: [whereObj] })
+const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
 
-const { data: articleData } = await useAsyncData(`articles-by-page-${props.type}`, () => $fetch('/api/articles/list', { query: { page: page.value, pageSize: pageSize.value, ...whereObj.value } }), { watch: [query] })
+const { data: fetchedArticleData } = await useAsyncData(`articles-list-${props.type}`, () => $fetch('/api/articles/list', {
+  query: {
+    page: page.value,
+    pageSize: pageSize.value,
+    ...whereObj.value,
+  },
+}), { watch: [page, pageSize, whereObj] })
+const articleData = computed(() => fetchedArticleData.value ? fetchedArticleData.value.payload ?? [] : [])
 
 watch(page, async (newPage) => {
   router.replace({ query: { ...route.query, page: newPage.toString() } })
@@ -60,7 +70,7 @@ watch(() => route.query.page, (pageQuery) => {
 })
 
 const articleCards = computed<ArticleCardProps[]>(() =>
-  articleData.value?.map((article) => {
+  articleData.value.map((article) => {
     return {
       to: article.to,
       title: article.title,
@@ -71,7 +81,7 @@ const articleCards = computed<ArticleCardProps[]>(() =>
       editedAt: article.editedAt,
       wordCount: article.wordCount,
     }
-  }) || [],
+  }),
 )
 </script>
 
@@ -83,7 +93,7 @@ const articleCards = computed<ArticleCardProps[]>(() =>
       </div>
     </div>
     <div class="sticky bottom-5 mx-auto mt-5 w-fit">
-      <HanaPaginator v-model="page" :total="total ?? 0" />
+      <HanaPaginator v-model="page" :total="total" />
     </div>
   </div>
 </template>

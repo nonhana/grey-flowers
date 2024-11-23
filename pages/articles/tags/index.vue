@@ -3,9 +3,9 @@ definePageMeta({
   name: 'tags',
 })
 
-const { data } = await useAsyncData('article-tags', () => $fetch('/api/tags/list'))
+const { data: fetchedTags } = await useFetch('/api/tags/list')
 
-const tags = computed(() => data.value || [])
+const tags = computed(() => fetchedTags.value ? fetchedTags.value.payload ?? [] : [])
 </script>
 
 <template>
