@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import type { ArticleHeader } from '~/types/content'
 
 definePageMeta({
@@ -17,8 +18,8 @@ const articleHeader = computed<ArticleHeader>(() => ({
   ogImage: article.value?.ogImage || '/images/not-found.webp',
   tags: article.value?.tags || [],
   category: article.value?.category || '未分类',
-  publishedAt: new Date(article.value?.publishedAt || '').toLocaleDateString(),
-  editedAt: new Date(article.value?.editedAt || '').toLocaleDateString(),
+  publishedAt: dayjs(article.value?.publishedAt).format('YYYY-MM-DD'),
+  editedAt: dayjs(article.value?.editedAt).format('YYYY-MM-DD'),
   published: article.value?.published || false,
   wordCount: article.value?.wordCount || 0,
 }))

@@ -1,4 +1,5 @@
 import type * as p from '@prisma/client'
+import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
 import type { ArticleListQuery } from '~/server/types/articles'
 import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
@@ -13,8 +14,8 @@ type Options = p.Prisma.ArticleWhereInput
 async function selectArticleList(options: Options) {
   const { page, pageSize, publishedAtMonth, ...rest } = options
   if (publishedAtMonth) {
-    const curMonth = new Date(publishedAtMonth)
-    const nextMonth = new Date(curMonth.getFullYear(), curMonth.getMonth() + 1)
+    const curMonth = dayjs(publishedAtMonth).toDate()
+    const nextMonth = dayjs(publishedAtMonth).add(1, 'month').toDate()
     rest.publishedAt = { gte: curMonth, lt: nextMonth }
   }
   const retrievedRes = await prisma.article.findMany({
@@ -27,8 +28,8 @@ async function selectArticleList(options: Options) {
   const result = retrievedRes.map(article => ({
     ...article,
     tags: article.tags.map(tag => tag.name),
-    publishedAt: article.publishedAt.toISOString(),
-    editedAt: article.editedAt.toISOString(),
+    publishedAt: dayjs(article.publishedAt).format('YYYY-MM-DD'),
+    editedAt: dayjs(article.editedAt).format('YYYY-MM-DD'),
   }))
   return result
 }

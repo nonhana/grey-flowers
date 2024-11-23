@@ -1,4 +1,5 @@
 import type * as p from '@prisma/client'
+import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
 import type { ArticleCountQuery } from '~/server/types/articles'
 import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
@@ -8,8 +9,8 @@ type Options = p.Prisma.ArticleWhereInput & { publishedAtMonth?: string }
 async function selectArticleCount(options: Options) {
   const { publishedAtMonth, ...rest } = options
   if (publishedAtMonth) {
-    const curMonth = new Date(publishedAtMonth)
-    const nextMonth = new Date(curMonth.getFullYear(), curMonth.getMonth() + 1)
+    const curMonth = dayjs(publishedAtMonth).toDate()
+    const nextMonth = dayjs(publishedAtMonth).add(1, 'month').toDate()
     rest.publishedAt = { gte: curMonth, lt: nextMonth }
   }
   return await prisma.article.count({ where: rest })

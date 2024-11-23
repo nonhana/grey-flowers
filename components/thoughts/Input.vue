@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { useStore } from '~/store'
 import type { MessageItem } from '~/types/message'
 
@@ -19,7 +20,7 @@ function handlePublish() {
       site: '/about',
       avatar: '/images/avatar.webp',
     },
-    publishedAt: new Date().toLocaleString(),
+    publishedAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     editedAt: '',
     isMe: true,
   }

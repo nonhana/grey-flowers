@@ -173,7 +173,7 @@ onUnmounted(() => {
         </HanaDropdown>
         <HanaDropdown v-if="userStore.loggedIn" animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
           <NuxtImg v-if="userStore.userInfo!.avatar" :src="userStore.userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
-          <div v-else class="size-8 cursor-pointer rounded-full bg-hana-blue text-center text-2xl text-white">
+          <div v-else class="flex size-8 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
             <span>{{ userStore.userInfo!.username[0] }}</span>
           </div>
           <template #dropdown>
