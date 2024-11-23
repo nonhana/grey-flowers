@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { TransitionProps } from 'vue'
 import type { MessageOptions } from './useMessage'
 
 const props = withDefaults(defineProps<MessageOptions>(), {
@@ -9,20 +8,7 @@ const props = withDefaults(defineProps<MessageOptions>(), {
   position: 'top',
 })
 
-const emits = defineEmits<{
-  (e: 'destroy'): void
-}>()
-
 const visible = ref(false)
-
-const transitionClasses: TransitionProps = {
-  enterActiveClass: 'transition-all duration-300',
-  enterFromClass: 'translate-y-[calc(-100%-1rem)]',
-  enterToClass: 'translate-y-0',
-  leaveActiveClass: 'transition-all duration-300',
-  leaveFromClass: 'translate-y-0',
-  leaveToClass: 'translate-y-[calc(-100%-1rem)]',
-}
 
 onMounted(() => {
   visible.value = true
@@ -31,30 +17,23 @@ onMounted(() => {
   }, props.timeout)
 })
 
-function handleAfterLeave() {
-  emits('destroy')
+type NonUndefined<T> = T extends undefined ? never : T
+
+const messageClasses: Record<NonUndefined<MessageOptions['type']>, string> = {
+  info: 'bg-hana-blue-100 text-hana-blue border-hana-blue border-2',
+  success: 'bg-green-100 text-green-600 border-green-600 border-2',
+  warning: 'bg-yellow-100 text-yellow-600 border-yellow-600 border-2',
+  error: 'bg-red-100 text-red-600 border-red-600 border-2',
 }
 </script>
 
 <template>
-  <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
-    <div
-      v-if="visible"
-      class="fixed left-1/2 z-50 -translate-x-1/2 rounded-lg p-3 text-sm shadow-lg"
-      :class="{
-        'bg-blue-100': props.type === 'info',
-        'bg-green-100': props.type === 'success',
-        'bg-yellow-100': props.type === 'warning',
-        'bg-red-100': props.type === 'error',
-        'text-blue-800': props.type === 'info',
-        'text-green-800': props.type === 'success',
-        'text-yellow-800': props.type === 'warning',
-        'text-red-800': props.type === 'error',
-        'top-4': props.position === 'top',
-        'bottom-4': props.position === 'bottom',
-      }"
-    >
-      {{ props.message }}
-    </div>
-  </transition>
+  <div
+    v-if="visible"
+    class="flex shrink-0 items-center gap-2 text-nowrap rounded-lg p-3 text-sm shadow-lg"
+    :class="messageClasses[props.type]"
+  >
+    <HanaMessageIcon :type="type" />
+    <span>{{ props.message }}</span>
+  </div>
 </template>

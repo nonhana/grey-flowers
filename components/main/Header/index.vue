@@ -5,7 +5,7 @@ import { useStore } from '~/store'
 const { t } = useI18n()
 const { routesMap } = useRoutesMap()
 const { userStore } = useStore()
-const { open } = useMessage()
+const { HanaMessage } = useMessage()
 
 const notLoggedInMap = [{
   text: t('header.user.notLoggedIn.login'),
@@ -60,9 +60,9 @@ function handleUserCommand(command: string | number | object) {
       registerWindowVisible.value = true
       break
     default:
-      open({
+      HanaMessage({
         message: '功能开发中...',
-        type: 'info',
+        type: 'error',
       })
       break
   }

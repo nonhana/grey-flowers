@@ -1,5 +1,5 @@
 import { createVNode, render } from 'vue'
-import Message from './index.vue'
+import Container from './Container.vue'
 
 export interface MessageOptions {
   message?: string
@@ -9,21 +9,20 @@ export interface MessageOptions {
   [key: string]: any
 }
 
+let containerInstance: any = null
+
 export default function useMessage() {
-  const open = (options: MessageOptions) => {
-    const container = document.createElement('div')
-    document.body.appendChild(container)
+  const HanaMessage = (options: MessageOptions) => {
+    if (!containerInstance) {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+      const messageContainer = createVNode(Container)
+      render(messageContainer, container)
+      containerInstance = messageContainer.component?.exposed
+    }
 
-    const messageVNode = createVNode(Message, {
-      ...options,
-      onDestroy: () => {
-        render(null, container)
-        document.body.removeChild(container)
-      },
-    })
-
-    render(messageVNode, container)
+    containerInstance?.addMessage(options)
   }
 
-  return { open }
+  return { HanaMessage }
 }
