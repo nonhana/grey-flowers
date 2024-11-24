@@ -13,7 +13,7 @@ interface DialogDeclarativeOptions {
 }
 
 // 编程式调用 Dialog 的选项
-// 如 HanaDialog({ ... })
+// 如 callHanaDialog({ ... })
 interface DialogProgrammaticOptions {
   title?: string
   content?: string
@@ -28,42 +28,68 @@ interface DialogProgrammaticOptions {
 export type DialogOptions = DialogDeclarativeOptions & DialogProgrammaticOptions & { programmatic?: boolean }
 
 export default function useDialog() {
-  const HanaDialog = (options: DialogOptions) => {
-    if (typeof window === 'undefined') {
-      return
+  // 编程式调用 Dialog 手动管理遮罩层以正确触发过渡效果
+  function createOverlay(overlayOpacity: number = 0.5) {
+    const overlay = document.createElement('div')
+    overlay.className = 'fixed inset-0 z-40 bg-black transition-opacity duration-300'
+    overlay.style.opacity = '0'
+    document.body.appendChild(overlay)
+
+    requestAnimationFrame(() => {
+      overlay.style.opacity = String(overlayOpacity)
+    })
+
+    const removeOverlay = () => {
+      overlay.style.opacity = '0'
+      setTimeout(() => {
+        document.body.removeChild(overlay)
+      }, 300)
     }
 
-    const container = document.createElement('div')
-    document.appendChild(container)
+    overlay.addEventListener('click', () => {
+      removeOverlay()
+    })
+    return { removeOverlay }
+  }
 
+  // 编程式调用 Dialog
+  const callHanaDialog = (options: DialogOptions) => {
+    // 创建容器
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    // 创建遮罩层
+    const { removeOverlay } = createOverlay(options.overlayOpacity)
+
+    // 挂载 VNode
     const dialogVNode = createVNode(Dialog, {
       ...options,
-      'programmatic': true,
-      'modelValue': true,
-      'onDestroy': () => {
-        render(null, container) // 1. 把 Dialog 组件从 container 中移除
-        document.removeChild(container) // 2. 把 container 从 document.body 中移除
-      },
-      'onOk': () => {
-        options.onOk?.()
-        render(null, container)
-        document.removeChild(container)
-      },
-      'onCancel': () => {
-        options.onCancel?.()
-        render(null, container)
-        document.removeChild(container)
-      },
-      'onUpdate:modelValue': (value: boolean) => {
-        if (!value) {
-          render(null, container)
-          document.removeChild(container)
+      programmatic: true,
+      onOk: () => {
+        try {
+          options.onOk?.()
+        }
+        finally {
+          dialogVNode.component?.exposed?.handleClose()
         }
       },
+      onCancel: () => {
+        try {
+          options.onCancel?.()
+        }
+        finally {
+          dialogVNode.component?.exposed?.handleClose()
+        }
+      },
+      onDestroy: () => {
+        render(null, container)
+        document.body.removeChild(container)
+      },
+      onRemoveOverlay: removeOverlay,
     })
 
     render(dialogVNode, container)
   }
 
-  return { HanaDialog }
+  return { callHanaDialog }
 }

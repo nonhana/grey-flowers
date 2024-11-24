@@ -2,7 +2,7 @@
 import type { TransitionProps } from 'vue'
 import type { DialogOptions } from './useDialog'
 
-withDefaults(defineProps<DialogOptions>(), {
+const props = withDefaults(defineProps<DialogOptions>(), {
   title: '默认标题',
   overlayOpacity: 0.5,
   hideHeader: false,
@@ -12,14 +12,34 @@ withDefaults(defineProps<DialogOptions>(), {
 })
 
 const emits = defineEmits<{
-  (e: 'Ok'): void
-  (e: 'Cancel'): void
+  (e: 'ok'): void
+  (e: 'cancel'): void
   (e: 'destroy'): void
+  (e: 'removeOverlay'): void
   (e: 'update:modelValue', value: boolean): void
 }>()
 
+const programmaticVisible = ref(false)
+watch(programmaticVisible, (newV) => {
+  if (!newV) {
+    emits('removeOverlay')
+  }
+})
+const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
+
+onMounted(() => {
+  if (props.programmatic) {
+    programmaticVisible.value = true
+  }
+})
+
 function handleClose() {
-  emits('update:modelValue', false)
+  if (props.programmatic) {
+    programmaticVisible.value = false
+  }
+  else {
+    emits('update:modelValue', false)
+  }
 }
 
 const transitionClasses: TransitionProps = {
@@ -34,12 +54,16 @@ const transitionClasses: TransitionProps = {
 function handleAfterLeave() {
   emits('destroy')
 }
+
+defineExpose({
+  handleClose,
+})
 </script>
 
 <template>
   <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
     <div
-      v-if="modelValue"
+      v-if="visible"
       class="fixed left-1/2 top-1/2 z-50 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow"
       :style="{ width }"
     >
@@ -50,7 +74,7 @@ function handleAfterLeave() {
         >
           <div v-if="!hideHeader" class="flex items-center">
             <span v-if="title" class="text-2xl font-bold">{{ title }}</span>
-            <HanaButton icon="lucide:x" class="relative -right-2 -top-2 ml-auto" icon-button @click="handleClose" />
+            <HanaButton v-if="!programmatic" icon="lucide:x" class="relative -right-2 -top-2 ml-auto" icon-button @click="handleClose" />
           </div>
         </slot>
       </div>
@@ -63,14 +87,18 @@ function handleAfterLeave() {
       <div v-if="programmatic" class="mt-5 flex justify-end gap-4">
         <HanaButton
           v-if="showCancelButton || false"
-          @click="emits('Cancel')"
+          shape="square"
+          class="w-20"
+          @click="emits('cancel')"
         >
           {{ cancelText || '取消' }}
         </HanaButton>
         <HanaButton
           v-if="showOkButton || true"
           dark-mode
-          @click="emits('Ok')"
+          shape="square"
+          class="w-20"
+          @click="emits('ok')"
         >
           {{ okText || '确定' }}
         </HanaButton>
@@ -81,9 +109,10 @@ function handleAfterLeave() {
     </div>
   </transition>
   <div
+    v-if="!programmatic"
     class="fixed inset-0 z-40 bg-black transition-opacity duration-300"
-    :class="{ 'pointer-events-none': !modelValue }"
-    :style="{ opacity: modelValue ? overlayOpacity : 0 }"
+    :class="{ 'pointer-events-none': !visible }"
+    :style="{ opacity: visible ? overlayOpacity : 0 }"
     @click="handleClose"
   />
 </template>

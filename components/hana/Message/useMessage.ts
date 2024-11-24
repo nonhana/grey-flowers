@@ -15,7 +15,7 @@ type ContainerInstance = ComponentPublicInstance<{
 let containerInstance: ContainerInstance | null = null
 
 export default function useMessage() {
-  const HanaMessage = (options: MessageOptions) => {
+  const callHanaMessage = (options: MessageOptions) => {
     if (!containerInstance) {
       const container = document.createElement('div')
       document.body.appendChild(container)
@@ -29,5 +29,5 @@ export default function useMessage() {
     containerInstance.addMessage(options)
   }
 
-  return { HanaMessage }
+  return { callHanaMessage }
 }
