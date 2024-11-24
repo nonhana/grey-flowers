@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MessageOptions } from './useMessage'
-import Message from './index.vue'
+import Message from './Item.vue'
 
 interface MessageItem extends MessageOptions {
   key: number

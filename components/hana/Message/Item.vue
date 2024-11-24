@@ -5,7 +5,6 @@ const props = withDefaults(defineProps<MessageOptions>(), {
   message: '默认消息',
   type: 'info',
   timeout: 3000,
-  position: 'top',
 })
 
 const visible = ref(false)

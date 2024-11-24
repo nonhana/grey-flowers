@@ -1,27 +1,32 @@
+import type { ComponentPublicInstance } from 'vue'
 import { createVNode, render } from 'vue'
 import Container from './Container.vue'
 
 export interface MessageOptions {
   message?: string
   type?: 'info' | 'success' | 'warning' | 'error'
-  position?: 'top' | 'bottom'
   timeout?: number
-  [key: string]: any
 }
 
-let containerInstance: any = null
+type ContainerInstance = ComponentPublicInstance<{
+  addMessage: (options: MessageOptions) => void
+}>
+
+let containerInstance: ContainerInstance | null = null
 
 export default function useMessage() {
   const HanaMessage = (options: MessageOptions) => {
     if (!containerInstance) {
       const container = document.createElement('div')
       document.body.appendChild(container)
-      const messageContainer = createVNode(Container)
-      render(messageContainer, container)
-      containerInstance = messageContainer.component?.exposed
+
+      const messageContainerVNode = createVNode(Container)
+      render(messageContainerVNode, container)
+
+      containerInstance = messageContainerVNode.component?.exposed as ContainerInstance
     }
 
-    containerInstance?.addMessage(options)
+    containerInstance.addMessage(options)
   }
 
   return { HanaMessage }

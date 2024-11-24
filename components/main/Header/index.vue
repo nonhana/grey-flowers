@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import useDialog from '~/components/hana/Dialog/useDialog'
 import useMessage from '~/components/hana/Message/useMessage'
 import { useStore } from '~/store'
 
@@ -6,6 +7,7 @@ const { t } = useI18n()
 const { routesMap } = useRoutesMap()
 const { userStore } = useStore()
 const { HanaMessage } = useMessage()
+const { HanaDialog } = useDialog()
 
 const notLoggedInMap = [{
   text: t('header.user.notLoggedIn.login'),
@@ -59,6 +61,22 @@ function handleUserCommand(command: string | number | object) {
     case t('header.user.notLoggedIn.register'):
       registerWindowVisible.value = true
       break
+    case t('header.user.loggedIn.logout'):
+      HanaDialog({
+        title: '提示',
+        content: '确定要退出登录吗？',
+        showCancelButton: true,
+        onOk: () => {
+          // localStorage.removeItem('token')
+          // userStore.logout()
+          // HanaMessage({
+          //   message: '已退出登录。',
+          //   type: 'success',
+          // })
+          console.log('已退出登录。')
+        },
+      })
+      break
     default:
       HanaMessage({
         message: '功能开发中...',
@@ -78,6 +96,10 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
           localStorage.setItem('token', data.value.payload!.token)
           userStore.setUserInfo(data.value.payload!.userInfo)
           loginWindowVisible.value = false
+          HanaMessage({
+            message: `欢迎回来，${userStore.userInfo?.username}。`,
+            type: 'success',
+          })
         }
       }
       break
@@ -199,7 +221,7 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
-  <HanaDialog v-model="loginWindowVisible" title="欢迎来到...花园。">
+  <!-- <HanaDialog v-model="loginWindowVisible" title="欢迎来到...花园。">
     <form @submit.prevent="(e) => handleSubmit('login', e)">
       <div class="flex flex-col gap-4">
         <HanaInput name="account" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名 / 邮箱" />
@@ -214,8 +236,8 @@ onUnmounted(() => {
         </HanaButton>
       </div>
     </form>
-  </HanaDialog>
-  <HanaDialog v-model="registerWindowVisible" title="这里有你想找的花吗？">
+  </HanaDialog> -->
+  <!-- <HanaDialog v-model="registerWindowVisible" title="这里有你想找的花吗？">
     <form @submit.prevent="(e) => handleSubmit('register', e)">
       <div class="flex flex-col gap-4">
         <HanaInput name="username" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名" />
@@ -232,7 +254,7 @@ onUnmounted(() => {
         </HanaButton>
       </div>
     </form>
-  </HanaDialog>
+  </HanaDialog> -->
   <div class="block md:hidden">
     <MainHeaderDrawer v-model="drawerVisible" :active-status="activeStatus" />
   </div>
