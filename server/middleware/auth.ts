@@ -11,7 +11,7 @@ export default eventHandler((event) => {
   if (!token) {
     return {
       statusCode: 401,
-      statusMessage: 'Unauthorized',
+      statusMessage: 'Unauthorized, please login',
       success: false,
     }
   }
@@ -23,7 +23,7 @@ export default eventHandler((event) => {
   catch {
     return {
       statusCode: 401,
-      statusMessage: 'Invalid token',
+      statusMessage: 'Invalid token, please login',
       success: false,
     }
   }

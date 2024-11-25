@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
 import type { MessageItem } from '~/types/message'
 
 const props = withDefaults(defineProps<{
@@ -7,6 +8,9 @@ const props = withDefaults(defineProps<{
 }>(), {
   index: 0,
 })
+
+const { userStore } = useStore()
+const isMe = computed(() => props.message.author!.id === userStore.userInfo?.id)
 
 const opacity = ref(0)
 const top = ref('10px')
@@ -30,25 +34,29 @@ watch(() => props.index, () => resetAnimation)
 <template>
   <div
     class="relative flex items-start gap-5"
-    :class="{ 'flex-row-reverse self-end': message.isMe }"
+    :class="{ 'flex-row-reverse self-end': isMe }"
     :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
   >
     <div class="flex flex-col items-center gap-2">
-      <NuxtImg :src="message.author.avatar" class="rounded-full" width="40" height="40" />
-      <NuxtLink :to="message.author.site" class="text-text hover:text-hana-blue">
-        <span>{{ message.author.name }}</span>
+      <NuxtImg v-if="message.author!.avatar" :src="message.author!.avatar" width="40" height="40" class="cursor-pointer rounded-full" />
+      <div v-else class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
+        <span>{{ message.author!.username[0] }}</span>
+      </div>
+      <NuxtLink v-if="message.author!.site" :to="message.author!.site" class="text-text hover:text-hana-blue">
+        <span>{{ message.author!.username }}</span>
       </NuxtLink>
+      <span v-else>{{ message.author!.username }}</span>
     </div>
     <div class="flex flex-col gap-1">
-      <div v-if="message.replyTo" class="flex self-end text-text">
+      <div v-if="message.parent" class="flex self-end text-text">
         <div class="line-clamp-1 max-w-40">
-          <span>{{ message.replyTo.content }}</span>
+          <span>{{ message.parent.content }}</span>
         </div>
         <Icon name="material-symbols:reply" />
       </div>
       <div
         class="w-fit rounded-lg p-3"
-        :class="[message.isMe ? 'self-end bg-hana-blue-400 text-white' : 'bg-white text-text']"
+        :class="[isMe ? 'self-end bg-hana-blue-400 text-white' : 'bg-white text-text']"
       >
         <span class="whitespace-pre-wrap">{{ message.content }}</span>
       </div>

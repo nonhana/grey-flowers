@@ -1,5 +1,5 @@
 import { createVNode, render } from 'vue'
-import Dialog from './index.vue'
+import Dialog from '~/components/hana/Dialog.vue'
 
 // 声明式调用 Dialog 的选项
 // 如 <HanaDialog ... />

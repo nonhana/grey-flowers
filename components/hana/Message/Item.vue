@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MessageOptions } from './useMessage'
+import type { MessageOptions } from '~/composables/useMessage'
 
 const props = withDefaults(defineProps<MessageOptions>(), {
   message: '默认消息',

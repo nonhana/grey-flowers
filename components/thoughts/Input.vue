@@ -1,31 +1,45 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import { useStore } from '~/store'
-import type { MessageItem } from '~/types/message'
+const emits = defineEmits<{
+  (e: 'published'): void
+}>()
 
-const { messagesStore } = useStore()
-const { newMessages } = messagesStore
+const { callHanaMessage } = useMessage()
 
 const value = ref('')
 
-function handlePublish() {
-  if (value.value === '')
+async function handlePublish() {
+  if (value.value === '') {
+    callHanaMessage({
+      type: 'error',
+      message: '内容不能为空',
+    })
     return
-  const messageItem: MessageItem = {
-    id: newMessages.length + 1,
-    content: value.value,
-    author: {
-      id: 1,
-      name: 'Hana',
-      site: '/about',
-      avatar: '/images/avatar.webp',
-    },
-    publishedAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    editedAt: '',
-    isMe: true,
   }
-  messagesStore.addMessage(messageItem)
-  value.value = ''
+  const objData = {
+    content: value.value,
+  }
+  const { data } = await useAsyncData('post-message', () => $fetch('/api/messages/post', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    method: 'POST',
+    body: JSON.stringify(objData),
+  }))
+  if (data.value?.success) {
+    value.value = ''
+    callHanaMessage({
+      type: 'success',
+      message: '发布成功',
+    })
+    emits('published')
+  }
+  else {
+    const errorList = data.value?.payload?.map(item => item.message).join(', ')
+    callHanaMessage({
+      type: 'error',
+      message: errorList || data.value?.statusMessage || '发布失败',
+    })
+  }
 }
 
 function handleKeyDown(event: KeyboardEvent) {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
-import type { DialogOptions } from './useDialog'
+import type { DialogOptions } from '~/composables/useDialog'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
   title: '默认标题',

@@ -1,17 +1,16 @@
 export interface MessageItem {
-  id: number
   content: string
+  id: number
+  publishedAt: string
+  editedAt: string
+  parent: {
+    content: string
+    id: number
+  } | null
   author: {
     id: number
-    name: string
-    site: string
-    avatar: string
-  }
-  publishedAt: string // YYYY-MM-DD HH:mm
-  editedAt: string // YYYY-MM-DD HH:mm
-  isMe: boolean
-  replyTo?: {
-    id: number
-    content: string
-  }
+    username: string
+    site: string | null
+    avatar: string | null
+  } | null
 }

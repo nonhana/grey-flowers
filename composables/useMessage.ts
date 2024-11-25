@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance } from 'vue'
 import { createVNode, render } from 'vue'
-import Container from './Container.vue'
+import Container from '~/components/hana/Message/Container.vue'
 
 export interface MessageOptions {
   message?: string

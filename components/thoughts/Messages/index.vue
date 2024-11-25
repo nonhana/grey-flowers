@@ -1,17 +1,40 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
+import type { MessageItem } from '~/types/message'
 
-const { messagesStore } = useStore()
-const { messages, newMessages, updateMessages } = messagesStore
+const props = defineProps<{
+  needRefresh: boolean
+}>()
 
-onUnmounted(() => {
-  updateMessages()
+const emits = defineEmits<{
+  (e: 'refreshed'): void
+}>()
+
+const { needRefresh } = toRefs(props)
+
+const messages = ref<MessageItem[]>([])
+
+async function fetchMessages() {
+  const data = await $fetch('/api/messages/list')
+
+  if (data.success) {
+    messages.value = data.payload ?? []
+  }
+}
+
+watch(needRefresh, async (newV) => {
+  if (newV) {
+    await fetchMessages()
+    emits('refreshed')
+  }
+})
+
+onMounted(async () => {
+  await fetchMessages()
 })
 </script>
 
 <template>
   <div class="relative mb-5 flex w-full flex-col gap-5">
     <ThoughtsMessagesItem v-for="(message, index) in messages" :key="message.id" :index="index" :message="message" />
-    <ThoughtsMessagesItem v-for="message in newMessages" :key="message.id" :message="message" />
   </div>
 </template>

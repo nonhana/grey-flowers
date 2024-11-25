@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import useDialog from '~/components/hana/Dialog/useDialog'
-import useMessage from '~/components/hana/Message/useMessage'
 import { useStore } from '~/store'
 
 const { t } = useI18n()
