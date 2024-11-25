@@ -28,38 +28,11 @@ interface DialogProgrammaticOptions {
 export type DialogOptions = DialogDeclarativeOptions & DialogProgrammaticOptions & { programmatic?: boolean }
 
 export default function useDialog() {
-  // 编程式调用 Dialog 手动管理遮罩层以正确触发过渡效果
-  function createOverlay(overlayOpacity: number = 0.5) {
-    const overlay = document.createElement('div')
-    overlay.className = 'fixed inset-0 z-40 bg-black transition-opacity duration-300'
-    overlay.style.opacity = '0'
-    document.body.appendChild(overlay)
-
-    requestAnimationFrame(() => {
-      overlay.style.opacity = String(overlayOpacity)
-    })
-
-    const removeOverlay = () => {
-      overlay.style.opacity = '0'
-      setTimeout(() => {
-        document.body.removeChild(overlay)
-      }, 300)
-    }
-
-    overlay.addEventListener('click', () => {
-      removeOverlay()
-    })
-    return { removeOverlay }
-  }
-
   // 编程式调用 Dialog
   const callHanaDialog = (options: DialogOptions) => {
     // 创建容器
     const container = document.createElement('div')
     document.body.appendChild(container)
-
-    // 创建遮罩层
-    const { removeOverlay } = createOverlay(options.overlayOpacity)
 
     // 挂载 VNode
     const dialogVNode = createVNode(Dialog, {
@@ -85,7 +58,6 @@ export default function useDialog() {
         render(null, container)
         document.body.removeChild(container)
       },
-      onRemoveOverlay: removeOverlay,
     })
 
     render(dialogVNode, container)

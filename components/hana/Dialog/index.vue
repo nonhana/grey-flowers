@@ -15,16 +15,10 @@ const emits = defineEmits<{
   (e: 'ok'): void
   (e: 'cancel'): void
   (e: 'destroy'): void
-  (e: 'removeOverlay'): void
   (e: 'update:modelValue', value: boolean): void
 }>()
 
 const programmaticVisible = ref(false)
-watch(programmaticVisible, (newV) => {
-  if (!newV) {
-    emits('removeOverlay')
-  }
-})
 const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
 
 onMounted(() => {
@@ -54,6 +48,20 @@ const transitionClasses: TransitionProps = {
 function handleAfterLeave() {
   emits('destroy')
 }
+
+const overlayRef = ref<HTMLDivElement | null>(null)
+watch(visible, (newV) => {
+  if (overlayRef.value) {
+    if (newV) {
+      requestAnimationFrame(() => {
+        overlayRef.value!.style.opacity = String(props.overlayOpacity)
+      })
+    }
+    else {
+      overlayRef.value!.style.opacity = '0'
+    }
+  }
+})
 
 defineExpose({
   handleClose,
@@ -109,10 +117,9 @@ defineExpose({
     </div>
   </transition>
   <div
-    v-if="!programmatic"
-    class="fixed inset-0 z-40 bg-black transition-opacity duration-300"
+    ref="overlayRef"
+    class="fixed inset-0 z-40 bg-black opacity-0 transition-opacity duration-300"
     :class="{ 'pointer-events-none': !visible }"
-    :style="{ opacity: visible ? overlayOpacity : 0 }"
     @click="handleClose"
   />
 </template>
