@@ -16,11 +16,12 @@ export default formattedEventHandler(async (event) => {
 
   const { success, errorList, result } = useZodVerify(verifySchema, body)
   if (!success) {
-    throw createError({
+    return {
       statusCode: 400,
       statusMessage: 'Invalid request body',
-      data: errorList,
-    })
+      payload: errorList,
+      success: false,
+    }
   }
 
   const { username, email, site, password } = result
@@ -31,10 +32,11 @@ export default formattedEventHandler(async (event) => {
     },
   })
   if (existingUsers.length) {
-    throw createError({
+    return {
       statusCode: 409,
       statusMessage: 'User already exists',
-    })
+      success: false,
+    }
   }
 
   const salt = await bcrypt.genSalt(10)

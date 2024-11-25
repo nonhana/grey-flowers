@@ -1,5 +1,5 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   name?: string
   type?: 'text' | 'textarea' | 'password'
   placeholder?: string
@@ -35,6 +35,19 @@ function handleMouseLeave() {
 function handleKeyDown(event: KeyboardEvent) {
   emits('keydown', event)
 }
+
+const showPassword = ref(false)
+
+function toggleShowPassword() {
+  showPassword.value = !showPassword.value
+}
+
+const curType = computed(() => {
+  if (props.type === 'textarea') {
+    return props.type
+  }
+  return showPassword.value ? 'text' : props.type
+})
 </script>
 
 <template>
@@ -58,7 +71,7 @@ function handleKeyDown(event: KeyboardEvent) {
         <input
           v-model="value"
           :name="name"
-          :type="type"
+          :type="curType"
           class="w-full border-none bg-hana-blue-50 py-2 pl-10 pr-3 text-sm focus:ring-2 focus:ring-hana-blue-400"
           :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
           :placeholder="placeholder"
@@ -66,11 +79,18 @@ function handleKeyDown(event: KeyboardEvent) {
         >
         <!-- suffix slot or Icon -->
         <span
-          v-if="suffixIcon || $slots.suffix"
+          v-if="suffixIcon || $slots.suffix || type === 'password'"
           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
         >
           <slot name="suffix" />
-          <Icon v-if="suffixIcon" :name="suffixIcon" size="20" />
+          <Icon v-if="suffixIcon && type !== 'password'" :name="suffixIcon" size="20" />
+          <Icon
+            v-else-if="type === 'password'"
+            :name="showPassword ? 'lucide:eye' : 'lucide:eye-off'"
+            size="20"
+            class="cursor-pointer"
+            @click="toggleShowPassword"
+          />
         </span>
       </div>
     </template>

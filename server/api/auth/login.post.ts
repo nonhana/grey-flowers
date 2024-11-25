@@ -16,18 +16,20 @@ export default formattedEventHandler(async (event) => {
     where: isEmail ? { email: account } : { username: account },
   })
   if (!user) {
-    throw createError({
+    return {
       statusCode: 401,
       statusMessage: 'User not found, please sign up',
-    })
+      success: false,
+    }
   }
 
   const isValid = await bcrypt.compare(password, user.password)
   if (!isValid) {
-    throw createError({
+    return {
       statusCode: 401,
       statusMessage: 'Incorrect password',
-    })
+      success: false,
+    }
   }
 
   const userInfo: JwtPayload = {

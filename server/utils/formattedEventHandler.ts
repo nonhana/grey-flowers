@@ -25,7 +25,7 @@ export function formattedEventHandler<T>(
           statusMessage: 'OK',
           success: true,
           payload: null,
-        } satisfies ApiResponse<null>
+        } as ApiResponse<null>
       }
 
       const { statusCode, statusMessage, success, payload } = res
@@ -39,7 +39,7 @@ export function formattedEventHandler<T>(
         statusMessage: statusMessage || 'OK',
         success: success ?? true,
         payload: formattedPayload,
-      } satisfies ApiResponse<T extends void ? null : T>
+      } as ApiResponse<T extends void ? null : T>
     }
     catch (error: any) {
       return {
@@ -47,7 +47,7 @@ export function formattedEventHandler<T>(
         statusMessage: error.statusMessage || 'Internal Server Error',
         success: false,
         payload: null,
-      } satisfies ApiResponse<null>
+      } as ApiResponse<null>
     }
   })
 }
