@@ -7,7 +7,7 @@ import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 const verifySchema = z.object({
   username: z.string().min(1, { message: 'Username must not be empty' }).max(16, { message: 'Username must not exceed 16 characters' }),
   email: z.string().email({ message: 'Invalid email format' }),
-  site: z.string().url({ message: 'Invalid site URL' }),
+  site: z.string().url({ message: 'Invalid site URL' }).optional(),
   password: z.string().min(8, { message: 'Password must be at least 8 characters' }).max(32, { message: 'Password must not exceed 32 characters' }),
 })
 

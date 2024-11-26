@@ -109,8 +109,16 @@ async function handleRegister(e: Event) {
       })
       return
     }
+    if (objData.site === '') {
+      delete objData.site
+    }
     const { data } = await useFetch('/api/auth/register', { method: 'POST', body: JSON.stringify(objData) })
     if (data.value?.success) {
+      callHanaMessage({
+        message: '注册成功，请登录',
+        type: 'success',
+      })
+      registerWindowVisible.value = false
       loginWindowVisible.value = true
     }
     else {
