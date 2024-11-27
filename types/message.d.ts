@@ -13,4 +13,5 @@ export interface MessageItem {
     site: string | null
     avatar: string | null
   } | null
+  isNew?: boolean
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const emits = defineEmits<{
-  (e: 'published'): void
+  (e: 'published', value: number | undefined): void
 }>()
 
 const { callHanaMessage } = useMessage()
@@ -18,26 +18,27 @@ async function handlePublish() {
   const objData = {
     content: value.value,
   }
-  const { data } = await useAsyncData('post-message', () => $fetch('/api/messages/post', {
+  const data = await $fetch('/api/messages/post', {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
     method: 'POST',
     body: JSON.stringify(objData),
-  }))
-  if (data.value?.success) {
+  })
+  if (data.success) {
+    const newMsgId = data.payload?.id
+    emits('published', newMsgId)
     value.value = ''
     callHanaMessage({
       type: 'success',
       message: '发布成功',
     })
-    emits('published')
   }
   else {
-    const errorList = data.value?.payload?.map(item => item.message).join(', ')
+    const errorList = data.error?.map(item => item.message).join(', ')
     callHanaMessage({
       type: 'error',
-      message: errorList || data.value?.statusMessage || '发布失败',
+      message: errorList || data.statusMessage || '发布失败',
     })
   }
 }

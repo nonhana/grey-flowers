@@ -1,18 +1,18 @@
 <script setup lang="ts">
-const needRefresh = ref(false)
+const newMsgId = ref<number>()
 
-function handlePublished() {
-  needRefresh.value = true
+function handlePublished(id: number | undefined) {
+  newMsgId.value = id
 }
 
 function handleRefreshed() {
-  needRefresh.value = false
+  newMsgId.value = undefined
 }
 </script>
 
 <template>
-  <div class="w-full">
-    <ThoughtsMessages :need-refresh="needRefresh" @refreshed="handleRefreshed" />
+  <div class="relative size-full overflow-auto">
+    <ThoughtsMessages :new-msg-id="newMsgId" @refreshed="handleRefreshed" />
     <ThoughtsInput @published="handlePublished" />
   </div>
 </template>

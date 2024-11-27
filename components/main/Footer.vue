@@ -3,8 +3,8 @@
 </script>
 
 <template>
-  <div class="mx-auto flex justify-between p-8 md:max-w-[90%] xl:max-w-[70%]">
+  <div class="mx-auto flex h-20 items-center justify-between px-8 md:max-w-[90%] xl:max-w-[70%]">
     <span>Copyright © 2024 Hana's Garden</span>
-    <span>愛する人を失った世界には、どんな色の花が咲く？</span>
+    <span class="hidden md:block">灰色的花终会绽放。</span>
   </div>
 </template>

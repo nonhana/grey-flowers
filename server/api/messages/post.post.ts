@@ -15,17 +15,19 @@ export default formattedEventHandler(async (event) => {
     return {
       statusCode: 400,
       statusMessage: 'Invalid request body',
-      payload: errorList,
+      error: errorList,
       success: false,
     }
   }
 
   const { content } = result
 
-  await prisma.message.create({
+  const newItem = await prisma.message.create({
     data: {
       content,
       authorId: id,
     },
   })
+
+  return { payload: { id: newItem.id } }
 })

@@ -13,7 +13,7 @@ const isHome = computed(() => fullPath.value === '/')
       <MainHeader />
     </header>
     <main class="flex-1">
-      <div id="main-wrapper" class="relative mx-auto p-8 md:max-w-[90%] xl:max-w-[70%]">
+      <div class="mx-auto flex-1 p-8 md:max-w-[90%] xl:max-w-[70%]">
         <slot />
       </div>
     </main>

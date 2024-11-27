@@ -18,4 +18,8 @@ export const useUserInfoStore = defineStore('userInfo', () => {
     setUserInfo,
     logout,
   }
-}, { persist: true })
+}, {
+  persist: {
+    storage: piniaPluginPersistedstate.localStorage(),
+  },
+})
