@@ -33,7 +33,7 @@ watch(() => props.index, () => resetAnimation)
 
 <template>
   <div
-    class="relative flex items-start gap-5"
+    class="relative flex max-w-[80%] items-start gap-2 md:gap-5"
     :class="{ 'flex-row-reverse self-end': isMe }"
     :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
   >
@@ -42,12 +42,14 @@ watch(() => props.index, () => resetAnimation)
       <div v-else class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
         <span>{{ message.author!.username[0] }}</span>
       </div>
-      <NuxtLink v-if="message.author!.site" :to="message.author!.site" class="text-text hover:text-hana-blue">
-        <span>{{ message.author!.username }}</span>
-      </NuxtLink>
-      <span v-else>{{ message.author!.username }}</span>
     </div>
     <div class="flex flex-col gap-1">
+      <div class="text-sm text-text" :class="{ 'self-end': isMe }">
+        <NuxtLink v-if="message.author!.site" :to="message.author!.site">
+          <span>{{ message.author!.username }}</span>
+        </NuxtLink>
+        <span v-else>{{ message.author!.username }}</span>
+      </div>
       <div v-if="message.parent" class="flex self-end text-text">
         <div class="line-clamp-1 max-w-40">
           <span>{{ message.parent.content }}</span>

@@ -109,6 +109,11 @@ module.exports = {
           backgroundPosition: 'left bottom',
           backgroundSize: '100% 2px',
         },
+        '.scrollbar-hidden': {
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
       })
     },
     function ({ addComponents }) {
