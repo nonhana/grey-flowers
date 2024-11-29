@@ -7,8 +7,8 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <h3 :id="id" class="w-fit with-underline ">
-    <NuxtLink :to="`#${id}`" class="flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-['#'] hover:text-hana-blue">
+  <h3 :id="id" class="w-fit text-2xl with-underline">
+    <NuxtLink :to="`#${id}`" class="hana-article-title">
       <slot />
     </NuxtLink>
   </h3>

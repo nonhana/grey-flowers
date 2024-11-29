@@ -144,43 +144,48 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
 </script>
 
 <template>
-  <HanaDropdown v-if="!userStore.loggedIn" animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
-    <HanaButton
-      icon-button
-      icon="lucide:user-round"
-      class="ml-auto"
-    />
-    <template #dropdown>
-      <HanaDropdownMenu>
-        <HanaDropdownItem
-          v-for="item in notLoggedInMap"
-          :key="item.text"
-          :icon="item.icon"
-          :command="item.text"
-        >
-          {{ item.text }}
-        </HanaDropdownItem>
-      </HanaDropdownMenu>
-    </template>
-  </HanaDropdown>
-  <HanaDropdown v-if="userStore.loggedIn" animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
-    <NuxtImg v-if="userStore.userInfo!.avatar" :src="userStore.userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
-    <div v-else class="flex size-8 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
-      <span>{{ userStore.userInfo!.username[0] }}</span>
-    </div>
-    <template #dropdown>
-      <HanaDropdownMenu>
-        <HanaDropdownItem
-          v-for="item in loggedInMap"
-          :key="item.text"
-          :icon="item.icon"
-          :command="item.text"
-        >
-          {{ item.text }}
-        </HanaDropdownItem>
-      </HanaDropdownMenu>
-    </template>
-  </HanaDropdown>
+  <!-- 由于 pinia store 数组存储至 localStorage，因此必须客户端渲染 -->
+  <ClientOnly v-if="!userStore.loggedIn">
+    <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
+      <HanaButton
+        icon-button
+        icon="lucide:user-round"
+        class="ml-auto"
+      />
+      <template #dropdown>
+        <HanaDropdownMenu>
+          <HanaDropdownItem
+            v-for="item in notLoggedInMap"
+            :key="item.text"
+            :icon="item.icon"
+            :command="item.text"
+          >
+            {{ item.text }}
+          </HanaDropdownItem>
+        </HanaDropdownMenu>
+      </template>
+    </HanaDropdown>
+  </ClientOnly>
+  <ClientOnly v-else>
+    <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
+      <NuxtImg v-if="userStore.userInfo!.avatar" :src="userStore.userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
+      <div v-else class="flex size-8 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
+        <span>{{ userStore.userInfo!.username[0] }}</span>
+      </div>
+      <template #dropdown>
+        <HanaDropdownMenu>
+          <HanaDropdownItem
+            v-for="item in loggedInMap"
+            :key="item.text"
+            :icon="item.icon"
+            :command="item.text"
+          >
+            {{ item.text }}
+          </HanaDropdownItem>
+        </HanaDropdownMenu>
+      </template>
+    </HanaDropdown>
+  </ClientOnly>
   <HanaDialog v-model="loginWindowVisible" title="欢迎来到...花园。">
     <form @submit.prevent="(e) => handleSubmit('login', e)">
       <div class="flex flex-col gap-4">

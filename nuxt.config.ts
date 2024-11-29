@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   content: {
     highlight: {
       langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http'],
-      theme: 'github-dark',
+      theme: 'github-light',
     },
     markdown: {
       toc: {

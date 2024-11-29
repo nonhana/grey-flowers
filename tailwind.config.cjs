@@ -114,6 +114,11 @@ module.exports = {
             display: 'none',
           },
         },
+        '.scrollbar-sticky': {
+          '&::-webkit-scrollbar': {
+            position: 'sticky',
+          },
+        },
       })
     },
     function ({ addComponents }) {
@@ -129,6 +134,9 @@ module.exports = {
         },
         '.hana-card': {
           '@apply rounded-lg bg-white p-2 text-text shadow-md': {},
+        },
+        '.hana-article-title': {
+          '@apply flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-[\'#\'] hover:text-hana-blue': {},
         },
       })
     },

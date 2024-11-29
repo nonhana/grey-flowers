@@ -1,9 +1,9 @@
-import { useMessagesStore } from './modules/messages'
+import { useHeaderStatusStore } from './modules/headerStatus'
 import { useUserInfoStore } from './modules/user'
 
 export function useStore() {
   return {
-    messagesStore: useMessagesStore(),
     userStore: useUserInfoStore(),
+    headerStatusStore: useHeaderStatusStore(),
   }
 }

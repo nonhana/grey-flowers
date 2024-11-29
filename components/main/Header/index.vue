@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
+
+const { headerStatusStore } = useStore()
+
 const { routesMap } = useRoutesMap()
 
 const route = useRoute()
@@ -28,9 +32,11 @@ function handleScroll() {
     const currentScrollY = window.scrollY
     if (currentScrollY > lastScrollY) {
       headerTop.value = '-100px'
+      headerStatusStore.setHidden(true)
     }
     else {
       headerTop.value = '0px'
+      headerStatusStore.setHidden(false)
     }
     lastScrollY = currentScrollY
   }

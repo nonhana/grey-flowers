@@ -46,6 +46,7 @@
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
     "bcrypt": "^5.1.1",
+    "clipboard": "^2.0.11",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
