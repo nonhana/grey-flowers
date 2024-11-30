@@ -1,5 +1,21 @@
 import type { CSSProperties } from 'vue'
 
+const ZOOM_STEP = 0.2 // 每次滚轮缩放的步长
+const ZOOM_MIN = 0.2 // 缩放最小值
+const ZOOM_MAX = 10 // 缩放最大值
+
+// 为 DOM 元素设置样式
+function setStyles(el: HTMLElement, styles: CSSProperties) {
+  Object.assign(el.style, styles)
+}
+
+// 计算两点之间的距离
+function getDistance(touch1: Touch, touch2: Touch): number {
+  const dx = touch2.pageX - touch1.pageX
+  const dy = touch2.pageY - touch1.pageY
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
 export default function useImgViewer(
   imgRef: Ref<HTMLImageElement | null>, // 图片 DOM
   props: {
@@ -8,6 +24,8 @@ export default function useImgViewer(
     animationDuration: number
   },
 ) {
+  let initialDistance = 0 // 缩放时，初始两指距离
+
   let initialMouseX = 0 // 按下鼠标时，鼠标的初始位置 X
   let initialMouseY = 0 // 按下鼠标时，鼠标的初始位置 Y
   let initialBoxX = 0 // 初始大图的 transform X 偏移
@@ -37,29 +55,91 @@ export default function useImgViewer(
     }
   })
 
-  // 为 DOM 元素设置样式
-  const setStyles = (el: HTMLElement, styles: CSSProperties) => {
-    Object.assign(el.style, styles)
-  }
-
   // 滚轮缩放
   const handleWheel = (event: WheelEvent) => {
     if (imgCopyRef.value) {
-      zoomLevel.value += event.deltaY < 0 ? 0.2 : -0.2
-      zoomLevel.value = Math.max(zoomLevel.value, 0.2)
+      zoomLevel.value += event.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP
+      zoomLevel.value = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoomLevel.value))
       setStyles(imgCopyRef.value, {
         transform: newImgTransform.value,
       })
     }
   }
 
-  // 点击大图时缩放
+  // 双击大图时缩放
   const handleDblclick = () => {
     if (imgCopyRef.value) {
       zoomLevel.value = zoomLevel.value > 1 ? 1 : 2
       setStyles(imgCopyRef.value, {
         transform: newImgTransform.value,
       })
+    }
+  }
+
+  // 双指触控缩放2 - 移动双指，缩放大图
+  const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault()
+    if (imgCopyRef.value) {
+      if (e.touches.length === 2) {
+        const touch1 = e.touches[0]
+        const touch2 = e.touches[1]
+        const newDistance = getDistance(touch1, touch2)
+        const scaleChange = newDistance / initialDistance
+        zoomLevel.value = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, scaleChange))
+        initialDistance = newDistance
+      }
+      else if (e.touches.length === 1) {
+        const touch = e.touches[0]
+        const deltaX = touch.pageX - initialMouseX
+        const deltaY = touch.pageY - initialMouseY
+
+        currentTranslateX.value = initialBoxX + deltaX
+        currentTranslateY.value = initialBoxY + deltaY
+
+        setStyles(imgCopyRef.value, {
+          transform: newImgTransform.value,
+        })
+      }
+    }
+  }
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    if (e.touches.length < 2) {
+      initialDistance = 0
+      document.removeEventListener('touchmove', handleTouchMove)
+      document.removeEventListener('touchend', handleTouchEnd)
+    }
+  }
+
+  // 双指触控缩放1 - 记录初始两指距离
+  const handleTouchStart = (e: TouchEvent) => {
+    if (imgCopyRef.value) {
+      if (e.touches.length === 2) {
+        const touch1 = e.touches[0]
+        const touch2 = e.touches[1]
+        initialDistance = getDistance(touch1, touch2)
+      }
+      else if (e.touches.length === 1) {
+        const touch = e.touches[0]
+        initialMouseX = touch.pageX
+        initialMouseY = touch.pageY
+        const transform = window.getComputedStyle(imgCopyRef.value).transform
+        if (transform !== 'none') {
+          const match = transform.match(/matrix\((.+)\)/)
+          if (match) {
+            const matrixValues = match[1].split(', ')
+            initialBoxX = Number.parseFloat(matrixValues[4]) || 0
+            initialBoxY = Number.parseFloat(matrixValues[5]) || 0
+          }
+        }
+        else {
+          initialBoxX = 0
+          initialBoxY = 0
+        }
+      }
+
+      document.addEventListener('touchmove', handleTouchMove)
+      document.addEventListener('touchend', handleTouchEnd)
     }
   }
 
@@ -233,7 +313,8 @@ export default function useImgViewer(
   return {
     generateMask,
     generateNewImg,
-    handleWheel,
     clearDOM,
+    handleWheel,
+    handleTouchStart,
   }
 }

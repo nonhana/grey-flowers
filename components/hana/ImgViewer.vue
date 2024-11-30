@@ -20,8 +20,9 @@ const imgRef = ref<HTMLImageElement | null>(null) // 原图片 DOM
 const {
   generateMask,
   generateNewImg,
-  handleWheel,
   clearDOM,
+  handleWheel,
+  handleTouchStart,
 } = useImgViewer(imgRef, props)
 
 // 切换查看大图状态
@@ -32,12 +33,14 @@ function toggleDisplay() {
       displaying.value = false
       document.body.style.overflow = 'auto'
       window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
     }, props.animationDuration)
   }
   else {
     displaying.value = true
     document.body.style.overflow = 'hidden'
     window.addEventListener('wheel', handleWheel)
+    window.addEventListener('touchstart', handleTouchStart)
   }
 }
 
@@ -66,7 +69,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative m-auto flex max-w-[60%] flex-col items-center gap-2 object-cover text-sm text-text">
+  <div class="relative m-auto flex flex-col items-center gap-2 object-cover text-sm text-text">
     <img
       ref="imgRef"
       :src="imgUrl"
