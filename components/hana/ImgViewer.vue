@@ -20,10 +20,33 @@ const imgRef = ref<HTMLImageElement | null>(null) // 原图片 DOM
 const {
   generateMask,
   generateNewImg,
-  clearDOM,
   handleWheel,
   handleTouchStart,
+  clearDOM,
 } = useImgViewer(imgRef, props)
+
+function eventListenerManager(type: 'on' | 'off') {
+  switch (type) {
+    case 'on':
+      window.addEventListener('wheel', preventDefault, {
+        passive: false,
+      })
+      window.addEventListener('wheel', handleWheel)
+      window.addEventListener('touchmove', preventDefault, {
+        passive: false,
+      })
+      window.addEventListener('touchstart', handleTouchStart)
+      break
+    case 'off':
+      window.removeEventListener('wheel', preventDefault)
+      window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchmove', preventDefault)
+      window.removeEventListener('touchstart', handleTouchStart)
+      break
+    default:
+      break
+  }
+}
 
 // 切换查看大图状态
 function toggleDisplay() {
@@ -32,15 +55,13 @@ function toggleDisplay() {
     setTimeout(() => {
       displaying.value = false
       document.body.style.overflow = 'auto'
-      window.removeEventListener('wheel', handleWheel)
-      window.removeEventListener('touchstart', handleTouchStart)
+      eventListenerManager('off')
     }, props.animationDuration)
   }
   else {
     displaying.value = true
     document.body.style.overflow = 'hidden'
-    window.addEventListener('wheel', handleWheel)
-    window.addEventListener('touchstart', handleTouchStart)
+    eventListenerManager('on')
   }
 }
 
