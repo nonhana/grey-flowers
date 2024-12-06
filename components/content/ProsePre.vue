@@ -34,7 +34,7 @@ useCopy(copyBtn, codeblock)
     class="relative text-clip rounded-lg border-2 border-primary-400 bg-primary-100 p-2 text-sm"
   >
     <figcaption
-      class="sticky z-50 flex items-center justify-between gap-4 px-2 text-text transition-all"
+      class="sticky z-10 flex items-center justify-between gap-4 px-2 text-text transition-all"
       :class="[headerStatusStore.hidden ? 'top-2' : 'top-14']"
     >
       <div class="flex items-center gap-2">

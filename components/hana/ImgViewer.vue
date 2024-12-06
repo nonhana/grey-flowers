@@ -1,21 +1,22 @@
 <script setup lang="ts">
-const props = withDefaults(
-  defineProps<{
-    imgUrl: string
-    imgAlt?: string
-    maskBgColor?: string
-    animationDuration?: number
-    width?: number | string
-    height?: number | string
-  }>(),
-  {
-    maskBgColor: 'rgba(0, 0, 0, 0.1)',
-    animationDuration: 500,
-  },
-)
+import type { CSSProperties } from 'vue'
 
-const displaying = ref(false) // 是否正在查看大图
-const imgRef = ref<HTMLImageElement | null>(null) // 原图片 DOM
+const props = defineProps<{
+  src: string
+  alt?: string
+  width?: number | string
+  height?: number | string
+}>()
+
+const imgStyle = computed<CSSProperties>(() => ({
+  width: (typeof props.width === 'number' ? `${props.width}px` : props.width)
+    ?? 'auto',
+  height: (typeof props.height === 'number' ? `${props.height}px` : props.height)
+    ?? 'auto',
+}))
+
+const displaying = ref(false)
+const imgRef = ref<HTMLImageElement | null>(null)
 
 const {
   generateMask,
@@ -23,55 +24,55 @@ const {
   handleWheel,
   handleTouchStart,
   clearDOM,
-} = useImgViewer(imgRef, props)
+} = useImgViewer(imgRef)
 
-function eventListenerManager(type: 'on' | 'off') {
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && displaying.value) {
+    toggleDisplay()
+  }
+}
+
+function toggleEventListener(type: 'on' | 'off') {
   switch (type) {
     case 'on':
       window.addEventListener('wheel', preventDefault, {
         passive: false,
       })
-      window.addEventListener('wheel', handleWheel)
       window.addEventListener('touchmove', preventDefault, {
         passive: false,
       })
+      window.addEventListener('wheel', handleWheel)
       window.addEventListener('touchstart', handleTouchStart)
+      window.addEventListener('keydown', handleKeyDown)
       break
     case 'off':
       window.removeEventListener('wheel', preventDefault)
       window.removeEventListener('wheel', handleWheel)
       window.removeEventListener('touchmove', preventDefault)
       window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('keydown', handleKeyDown)
       break
     default:
       break
   }
 }
 
-// 切换查看大图状态
 function toggleDisplay() {
   if (displaying.value) {
     clearDOM()
     setTimeout(() => {
       displaying.value = false
       document.body.style.overflow = 'auto'
-      eventListenerManager('off')
-    }, props.animationDuration)
+      toggleEventListener('off')
+    }, 500)
   }
   else {
     displaying.value = true
     document.body.style.overflow = 'hidden'
-    eventListenerManager('on')
+    toggleEventListener('on')
   }
 }
 
-function handleKeyDown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && displaying.value) {
-    toggleDisplay()
-  }
-}
-
-// 点击原图片
 function handleClick() {
   if (imgRef.value) {
     toggleDisplay()
@@ -79,26 +80,20 @@ function handleClick() {
     generateNewImg()
   }
 }
-
-onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeyDown)
-})
 </script>
 
 <template>
-  <div class="relative m-auto flex flex-col items-center gap-2 object-cover text-sm text-text">
-    <img
-      ref="imgRef"
-      :src="imgUrl"
-      alt="demo-img"
-      class="cursor-pointer"
-      :style="{ visibility: displaying ? 'hidden' : 'visible' }"
-      @click="handleClick"
-    >
-    <span v-if="imgAlt">{{ imgAlt }}</span>
+  <div class="relative flex flex-col items-center gap-2 text-sm text-text">
+    <div :style="imgStyle">
+      <img
+        ref="imgRef"
+        :src="src"
+        alt="demo-img"
+        class="size-full cursor-pointer object-cover"
+        :style="{ visibility: displaying ? 'hidden' : 'visible' }"
+        @click="handleClick"
+      >
+    </div>
+    <span v-if="alt">{{ alt }}</span>
   </div>
 </template>

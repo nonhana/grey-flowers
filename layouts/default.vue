@@ -5,7 +5,7 @@ const isHome = computed(() => fullPath.value === '/')
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col font-noto">
+  <div class="flex min-h-screen flex-col">
     <transition name="banner">
       <MainBanner v-if="isHome" />
     </transition>

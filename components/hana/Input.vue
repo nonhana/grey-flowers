@@ -56,10 +56,8 @@ const curType = computed(() => {
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <!-- 输入框 -->
     <template v-if="type !== 'textarea'">
       <div class="relative w-full">
-        <!-- prefix slot or Icon -->
         <span
           v-if="prefixIcon || $slots.prefix"
           class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
@@ -67,17 +65,15 @@ const curType = computed(() => {
           <slot name="prefix" />
           <Icon v-if="prefixIcon" :name="prefixIcon" size="20" />
         </span>
-        <!-- input -->
         <input
           v-model="value"
           :name="name"
           :type="curType"
-          class="w-full border-none bg-hana-blue-50 py-2 pl-10 pr-3 text-sm focus:ring-2 focus:ring-hana-blue-400"
+          class="w-full border-hana-blue-50 bg-hana-blue-50 py-2 pl-10 pr-3 text-sm transition-all focus:border-hana-blue-400 focus:outline-0"
           :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
           :placeholder="placeholder"
           @keydown="handleKeyDown"
         >
-        <!-- suffix slot or Icon -->
         <span
           v-if="suffixIcon || $slots.suffix || type === 'password'"
           class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
@@ -95,12 +91,11 @@ const curType = computed(() => {
       </div>
     </template>
 
-    <!-- 文本区域 -->
     <template v-else>
       <textarea
         v-model="value"
         :name="name"
-        class="w-full border-none bg-hana-blue-50 px-3 py-2 text-sm focus:ring-2 focus:ring-hana-blue-400"
+        class="w-full border-hana-blue-50 bg-hana-blue-50 px-3 py-2 text-sm transition-all focus:border-hana-blue-400 focus:outline-0"
         :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
         :style="{ resize }"
         :placeholder="placeholder"

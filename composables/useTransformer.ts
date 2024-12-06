@@ -1,11 +1,10 @@
 import type { Ref } from 'vue'
 import { computed, ref, watch } from 'vue'
 
-const ZOOM_STEP = 0.2 // 每次滚轮缩放的步长
-const ZOOM_MIN = 0.2 // 缩放最小值
-const ZOOM_MAX = 10 // 缩放最大值
+const ZOOM_STEP = 0.2
+const ZOOM_MIN = 0.2
+const ZOOM_MAX = 10
 
-// 获取目标元素的 transform 位置（初始化）
 function getTargetPosition(targetRef: Ref<HTMLElement | null>) {
   if (targetRef.value) {
     let X = 0
@@ -29,19 +28,19 @@ function getTargetPosition(targetRef: Ref<HTMLElement | null>) {
 }
 
 export default function useTransformer(targetRef: Ref<HTMLElement | null>) {
-  let initialDistance = 0 // 缩放时，初始两指距离
+  let initialDistance = 0
 
-  let initialMouseX = 0 // 按下鼠标时，鼠标的初始位置 X
-  let initialMouseY = 0 // 按下鼠标时，鼠标的初始位置 Y
-  let initialBoxX = 0 // 初始大图的 transform X 偏移
-  let initialBoxY = 0 // 初始大图的 transform Y 偏移
+  let initialMouseX = 0
+  let initialMouseY = 0
+  let initialBoxX = 0
+  let initialBoxY = 0
 
-  const currentTranslateX = ref(0) // 当前大图的 transform X 偏移
-  const currentTranslateY = ref(0) // 当前大图的 transform Y 偏移
+  const currentTranslateX = ref(0)
+  const currentTranslateY = ref(0)
 
-  const zoomLevel = ref(1) // 缩放级别，初始为 1
+  const zoomLevel = ref(1)
 
-  const dragging = ref(false) // 是否正在拖动大图
+  const dragging = ref(false)
   watch(dragging, (newV) => {
     if (targetRef.value) {
       targetRef.value.style.cursor = newV ? 'grabbing' : 'grab'

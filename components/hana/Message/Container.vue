@@ -29,7 +29,7 @@ defineExpose({
 
 <template>
   <div class="fixed left-1/2 top-4 z-50 flex w-full -translate-x-1/2 flex-col gap-4">
-    <transition-group name="message_container">
+    <transition-group name="message-container">
       <div
         v-for="msg in messages"
         :key="msg.key"
@@ -42,18 +42,18 @@ defineExpose({
 </template>
 
 <style scoped>
-.message_container-move,
-.message_container-enter-active,
-.message_container-leave-active {
+.message-container-move,
+.message-container-enter-active,
+.message-container-leave-active {
   transition: all 0.3s ease;
 }
 
-.message_container-enter-from,
-.message_container-leave-to {
+.message-container-enter-from,
+.message-container-leave-to {
   transform: translateY(calc(-100% - 1rem));
 }
 
-.message_container-leave-active {
+.message-container-leave-active {
   position: absolute;
 }
 </style>

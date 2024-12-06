@@ -6,6 +6,8 @@ const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
 const { callHanaDialog } = useDialog()
 
+const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible } = toRefs(userStore)
+
 const notLoggedInMap = [{
   text: t('header.user.notLoggedIn.login'),
   icon: 'lucide:log-in',
@@ -27,9 +29,6 @@ const loggedInMap = [{
   text: t('header.user.loggedIn.logout'),
   icon: 'lucide:log-out',
 }]
-
-const loginWindowVisible = ref(false)
-const registerWindowVisible = ref(false)
 
 function toggleLoginRegisterWindow() {
   loginWindowVisible.value = !loginWindowVisible.value
@@ -68,6 +67,8 @@ function handleUserCommand(command: string | number | object) {
   }
 }
 
+const logging = ref(false)
+const loginBtnText = computed(() => logging.value ? '登录中...' : '登录')
 async function handleLogin(e: Event) {
   if (e.target) {
     const formData = new FormData(e.target as HTMLFormElement)
@@ -79,13 +80,14 @@ async function handleLogin(e: Event) {
       })
       return
     }
+    logging.value = true
     const { data } = await useFetch('/api/auth/login', { method: 'POST', body: JSON.stringify(objData) })
     if (data.value?.success) {
       localStorage.setItem('token', data.value.payload!.token)
       userStore.setUserInfo(data.value.payload!.userInfo)
       loginWindowVisible.value = false
       callHanaMessage({
-        message: `欢迎回来，${userStore.userInfo?.username}。`,
+        message: `欢迎回来，${userInfo.value?.username}。`,
         type: 'success',
       })
     }
@@ -95,9 +97,12 @@ async function handleLogin(e: Event) {
         type: 'error',
       })
     }
+    logging.value = false
   }
 }
 
+const registering = ref(false)
+const registerBtnText = computed(() => registering.value ? '注册中...' : '注册')
 async function handleRegister(e: Event) {
   if (e.target) {
     const formData = new FormData(e.target as HTMLFormElement)
@@ -112,6 +117,7 @@ async function handleRegister(e: Event) {
     if (objData.site === '') {
       delete objData.site
     }
+    registering.value = true
     const { data } = await useFetch('/api/auth/register', { method: 'POST', body: JSON.stringify(objData) })
     if (data.value?.success) {
       callHanaMessage({
@@ -128,16 +134,17 @@ async function handleRegister(e: Event) {
         type: 'error',
       })
     }
+    registering.value = false
   }
 }
 
 async function handleSubmit(type: 'login' | 'register', e: Event) {
   switch (type) {
     case 'login':
-      handleLogin(e)
+      await handleLogin(e)
       break
     case 'register':
-      handleRegister(e)
+      await handleRegister(e)
       break
   }
 }
@@ -145,7 +152,7 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
 
 <template>
   <!-- 由于 pinia store 数组存储至 localStorage，因此必须客户端渲染 -->
-  <ClientOnly v-if="!userStore.loggedIn">
+  <ClientOnly v-if="!loggedIn">
     <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
       <HanaButton
         icon-button
@@ -168,9 +175,9 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
   </ClientOnly>
   <ClientOnly v-else>
     <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
-      <NuxtImg v-if="userStore.userInfo!.avatar" :src="userStore.userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
+      <NuxtImg v-if="userInfo!.avatar" :src="userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
       <div v-else class="flex size-8 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
-        <span>{{ userStore.userInfo!.username[0] }}</span>
+        <span>{{ userInfo!.username[0] }}</span>
       </div>
       <template #dropdown>
         <HanaDropdownMenu>
@@ -193,8 +200,8 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
         <HanaInput name="password" prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="密码" />
       </div>
       <div class="mt-8 flex flex-col gap-4">
-        <HanaButton class="w-full" dark-mode type="submit">
-          <span>登录</span>
+        <HanaButton class="w-full" dark-mode type="submit" :disabled="logging">
+          {{ loginBtnText }}
         </HanaButton>
         <HanaButton class="w-full" @click="toggleLoginRegisterWindow">
           <span class="text-hana-blue">创建账户</span>
@@ -212,7 +219,7 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
       </div>
       <div class="mt-8 flex flex-col gap-4">
         <HanaButton class="w-full" dark-mode type="submit">
-          <span>注册</span>
+          {{ registerBtnText }}
         </HanaButton>
         <HanaButton class="w-full" @click="toggleLoginRegisterWindow">
           <span class="text-hana-blue">已有帐号</span>

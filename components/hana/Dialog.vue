@@ -3,7 +3,7 @@ import type { TransitionProps } from 'vue'
 import type { DialogOptions } from '~/composables/useDialog'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
-  title: '默认标题',
+  title: '',
   overlayOpacity: 0.5,
   hideHeader: false,
   width: '400px',
@@ -63,6 +63,20 @@ watch(visible, (newV) => {
       document.body.style.overflow = ''
     }
   }
+})
+
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    handleClose()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 
 defineExpose({

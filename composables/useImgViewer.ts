@@ -1,26 +1,15 @@
-import type { Ref } from 'vue'
-import { ref } from 'vue'
-
-export default function useImgViewer(
-  imgRef: Ref<HTMLImageElement | null>, // 图片 DOM
-  props: {
-    imgUrl: string
-    maskBgColor: string
-    animationDuration: number
-  },
-) {
-  const maskRef = ref<HTMLDivElement | null>(null) // 遮罩层 DOM
-  const imgCopyRef = ref<HTMLImageElement | null>(null) // 大图 DOM
+export default function useImgViewer(imgRef: Ref<HTMLImageElement | null>) {
+  const maskRef = ref<HTMLDivElement | null>(null)
+  const imgCopyRef = ref<HTMLImageElement | null>(null)
 
   const {
-    handleWheel, // 绑 window
-    handleTouchStart, // 绑 window
-    handleDblclick, // 绑 imgCopyRef
-    handleMouseDown, // 绑 imgCopyRef
+    handleWheel,
+    handleTouchStart,
+    handleDblclick,
+    handleMouseDown,
     initMover,
   } = useTransformer(imgCopyRef)
 
-  // 生成遮罩层
   const generateMask = (cb: () => void): void => {
     const mask = document.createElement('div')
     setStyles(mask, {
@@ -29,22 +18,22 @@ export default function useImgViewer(
       left: '0',
       width: '100%',
       height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0)',
+      backgroundColor: 'black',
+      opacity: '0',
       zIndex: '999',
-      transition: `all ${props.animationDuration / 1000}s`,
+      transition: 'all 0.5s',
     })
 
     document.body.appendChild(mask)
 
     requestAnimationFrame(() => {
-      mask.style.backgroundColor = props.maskBgColor
+      setStyles(mask, { opacity: '0.1' })
     })
 
     mask.onclick = cb
     maskRef.value = mask
   }
 
-  // 生成新的大图
   const generateNewImg = (): void => {
     if (!imgRef.value)
       return
@@ -67,7 +56,7 @@ export default function useImgViewer(
       top: `${rect.top + scrollY}px`,
       left: `${rect.left + scrollX}px`,
       zIndex: '1000',
-      transition: `all ${props.animationDuration / 1000}s`,
+      transition: 'all 0.5s',
       cursor: 'grab',
     })
 
@@ -75,7 +64,7 @@ export default function useImgViewer(
 
     setTimeout(() => {
       setStyles(img, { transition: 'none' })
-    }, props.animationDuration)
+    }, 500)
 
     requestAnimationFrame(() => {
       setStyles(img, {
@@ -93,20 +82,16 @@ export default function useImgViewer(
     imgCopyRef.value = img
   }
 
-  // 清除所有生成的 DOM
   const clearDOM = () => {
     if (maskRef.value && imgCopyRef.value && imgRef.value) {
+      setStyles(maskRef.value, { opacity: '0' })
+      setStyles(imgCopyRef.value, { transition: 'all 0.5s' })
+
       const rect = imgRef.value.getBoundingClientRect()
       const scrollX = window.scrollX || document.documentElement.scrollLeft
       const scrollY = window.scrollY || document.documentElement.scrollTop
       const imgAspectRatio = rect.width / rect.height
       const windowAspectRatio = window.innerWidth / window.innerHeight
-
-      maskRef.value.style.backgroundColor = 'rgba(0, 0, 0, 0)'
-
-      setStyles(imgCopyRef.value, {
-        transition: `all ${props.animationDuration / 1000}s`,
-      })
 
       requestAnimationFrame(() => {
         setStyles(imgCopyRef.value!, {
@@ -126,7 +111,7 @@ export default function useImgViewer(
         maskRef.value = null
         imgCopyRef.value = null
         initMover()
-      }, props.animationDuration)
+      }, 500)
     }
   }
 

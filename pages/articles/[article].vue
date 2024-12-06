@@ -48,6 +48,9 @@ function handleClick() {
             </template>
           </ContentRenderer>
         </div>
+        <div class="mt-5">
+          <Comment />
+        </div>
       </div>
       <div class="hidden max-w-fit xl:block">
         <div class="sticky top-20 flex flex-col gap-5">

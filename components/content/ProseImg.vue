@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import { joinURL, withLeadingSlash, withTrailingSlash } from 'ufo'
 
-const props = withDefaults(
-  defineProps<{
-    src: string
-    alt?: string
-    width?: string | number
-    height?: string | number
-  }>(),
-  {
-    alt: '',
-    width: undefined,
-    height: undefined,
-  },
-)
+const props = defineProps<{
+  src: string
+  alt?: string
+  width?: string | number
+  height?: string | number
+}>()
 
 const refinedSrc = computed(() => {
   if (props.src?.startsWith('/') && !props.src.startsWith('//')) {
@@ -28,6 +21,8 @@ const refinedSrc = computed(() => {
 
 <template>
   <ClientOnly>
-    <HanaImgViewer :img-url="refinedSrc" :img-alt="alt" :width="width" :height="height" />
+    <div class="m-auto w-full md:w-3/5">
+      <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
+    </div>
   </ClientOnly>
 </template>

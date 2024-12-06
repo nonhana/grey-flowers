@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import { useZodVerify } from '~/server/composables/useZodVerify'
-import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 const verifySchema = z.object({
   content: z.string().min(1, { message: 'Content must not be empty' }).max(1024, { message: 'Content must not exceed 1024 characters' }),

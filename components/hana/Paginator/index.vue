@@ -2,8 +2,10 @@
 const props = withDefaults(defineProps<{
   total: number
   pageSize?: number
+  buttonCount?: number
 }>(), {
   pageSize: 6,
+  buttonCount: 5,
 })
 
 const { total, pageSize } = toRefs(props)
@@ -27,6 +29,9 @@ function stepPage(type: 'prev' | 'next') {
 function goToPage(page: number) {
   currentPage.value = page
 }
+
+const maxButtonCount = props.buttonCount
+const sideButtonCount = (maxButtonCount - 3) / 2
 </script>
 
 <template>
@@ -37,17 +42,13 @@ function goToPage(page: number) {
       :disabled="currentPage === 1"
       @click="stepPage('prev')"
     />
-    <HanaButton
-      v-for="page in totalPages"
-      :key="page"
-      :active="page === currentPage"
-      icon-button
-      @click="goToPage(page)"
-    >
-      <span class="size-5">
-        {{ page }}
-      </span>
-    </HanaButton>
+    <HanaPaginatorButtons
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      :max-button-count="maxButtonCount"
+      :side-button-count="sideButtonCount"
+      @click="goToPage"
+    />
     <HanaButton
       icon-button
       icon="lucide:chevron-right"

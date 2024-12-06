@@ -49,7 +49,7 @@ function handleClick(e: Event) {
     :is="component"
     :to="to"
     :type="type"
-    class="flex shrink-0 select-none items-center justify-center gap-1 transition-all"
+    class="relative flex shrink-0 select-none items-center justify-center gap-1 transition-all"
     :class="[
       iconButton ? 'p-2' : 'px-[10px] py-2',
       active

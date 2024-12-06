@@ -15,9 +15,7 @@ async function handlePublish() {
     })
     return
   }
-  const objData = {
-    content: value.value,
-  }
+  const objData = { content: value.value }
   const data = await $fetch('/api/messages/post', {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,

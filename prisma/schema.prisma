@@ -64,20 +64,23 @@ model Session {
 }
 
 model Comment {
-  id            Int          @id @default(autoincrement())
-  content       String
-  level         CommentLevel @default(PARENT)
-  parentId      Int?
-  parent        Comment?     @relation("ParentChild", fields: [parentId], references: [id])
-  children      Comment[]    @relation("ParentChild")
-  article       Article?     @relation(fields: [articleId], references: [id])
-  articleId     Int?
-  author        User?        @relation(fields: [authorId], references: [id])
-  authorId      Int?
-  replyToUser   User?        @relation("ReplyToUser", fields: [replyToUserId], references: [id])
-  replyToUserId Int?
-  publishedAt   DateTime     @default(now())
-  editedAt      DateTime     @updatedAt
+  id               Int          @id @default(autoincrement())
+  article          Article?     @relation(fields: [articleId], references: [id])
+  articleId        Int?
+  content          String
+  level            CommentLevel @default(PARENT)
+  parent           Comment?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId         Int?
+  children         Comment[]    @relation("ParentChild")
+  author           User?        @relation(fields: [authorId], references: [id])
+  authorId         Int?
+  replyToUser      User?        @relation("ReplyToUser", fields: [replyToUserId], references: [id])
+  replyToUserId    Int?
+  replyToComment   Comment?     @relation("ReplyToComment", fields: [replyToCommentId], references: [id])
+  replyToCommentId Int?
+  replies          Comment[]    @relation("ReplyToComment")
+  publishedAt      DateTime     @default(now())
+  editedAt         DateTime     @updatedAt
 }
 
 model Message {

@@ -10,7 +10,8 @@ const props = withDefaults(defineProps<{
 })
 
 const { userStore } = useStore()
-const isMe = computed(() => props.message.author!.id === userStore.userInfo?.id)
+const { userInfo } = toRefs(userStore)
+const isMe = computed(() => props.message.author!.id === userInfo.value?.id)
 
 const opacity = ref(0)
 const top = ref('10px')
