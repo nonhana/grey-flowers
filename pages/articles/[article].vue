@@ -60,7 +60,7 @@ function handleClick() {
         </div>
       </div>
     </div>
-    <div class="fixed bottom-5 right-5 block xl:hidden">
+    <div class="fixed bottom-5 right-5 z-10 block xl:hidden">
       <div class="hana-card">
         <div class="hana-button w-full gap-2 text-center" @click="handleClick">
           <span>文章目录</span>

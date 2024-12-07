@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
 
 const { headerStatusStore } = useStore()
 
-const codeBlockVisibleRows = 16 // 超过 16 行代码就会折叠
+const codeBlockVisibleRows = 12 // 超过 12 行代码就会折叠
 
 const rows = computed(() => props.code.split('\n').length)
 const collapsibleHeight = computed(() => `${codeBlockVisibleRows}rem`)
@@ -31,10 +31,10 @@ useCopy(copyBtn, codeblock)
 
 <template>
   <figure
-    class="relative text-clip rounded-lg border-2 border-primary-400 bg-primary-100 p-2 text-sm"
+    class="relative text-clip rounded-lg border-2 border-primary-400 bg-primary-100 text-sm"
   >
     <figcaption
-      class="sticky z-10 flex items-center justify-between gap-4 px-2 text-text transition-all"
+      class="sticky z-10 flex items-center justify-between gap-4 px-4 pt-2 text-text transition-all"
       :class="[headerStatusStore.hidden ? 'top-2' : 'top-14']"
     >
       <div class="flex items-center gap-2">
@@ -51,16 +51,17 @@ useCopy(copyBtn, codeblock)
     </figcaption>
     <pre
       ref="codeblockRef"
-      class="my-2 overflow-auto px-2 scrollbar-sticky"
+      class="overflow-auto px-4 py-2 scrollbar-hidden"
       :class="[props.class, { 'animate-none overflow-hidden': isCollapsed }]"
       :style="{ maxHeight: isCollapsed ? collapsibleHeight : 'none' }"
     ><slot /></pre>
     <button
       v-if="collapsible"
-      class="w-full rounded-lg p-2 text-text transition-all hover:bg-hana-blue-200"
+      class="absolute bottom-0 flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-b from-[#ffffff00] to-[#ffffff] text-text/40 transition-colors hover:text-text"
+      :class="{ 'bg-none': !isCollapsed }"
       @click="toggleCollapsed()"
     >
-      <Icon class="animate-bounce" size="16" :name="collapsedIcon" />
+      <Icon class="animate-bounce" size="20" :name="collapsedIcon" />
     </button>
   </figure>
 </template>
