@@ -6,6 +6,8 @@ export default function useCopy(
   text?: string,
 ) {
   const { callHanaMessage } = useMessage()
+  const debouncedCallHanaMessage = useDebounceFn(callHanaMessage, 50)
+
   let clipboard: ClipboardJS
   const getEl = (element: any) => element?.$el ?? element
 
@@ -21,8 +23,8 @@ export default function useCopy(
     }
 
     clipboard = new ClipboardJS(elTrigger, { text: getText })
-    clipboard.on('success', () => callHanaMessage({ type: 'success', message: '复制成功' }))
-    clipboard.on('error', () => callHanaMessage({ type: 'error', message: '复制失败' }))
+    clipboard.on('success', () => debouncedCallHanaMessage({ type: 'success', message: '复制成功' }))
+    clipboard.on('error', () => debouncedCallHanaMessage({ type: 'error', message: '复制失败' }))
   })
 
   onUnmounted(() => {

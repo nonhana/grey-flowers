@@ -26,6 +26,17 @@ const { hash } = toRefs(route)
 const activatedId = ref<string | null>(null)
 const activatedIdLock = ref(false)
 
+const debouncedScrollIntoView = useDebounceFn((id: string) => {
+  const targetItem = document.getElementById(`toc-${id}`)
+  targetItem && targetItem.scrollIntoView({ behavior: 'smooth' })
+}, 100)
+
+watch(activatedId, (newV) => {
+  if (newV === null)
+    return
+  debouncedScrollIntoView(newV)
+})
+
 let linkObserver: IntersectionObserver | null = null
 
 onMounted(() => {

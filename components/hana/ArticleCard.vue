@@ -42,7 +42,7 @@ watch(() => props.index, () => resetAnimation)
         </div>
         <span class="line-clamp-1 text-lg font-bold leading-none">{{ title }}</span>
         <div class="inline-block">
-          <span class="line-clamp-2 leading-none text-text" :class="{ 'md:line-clamp-1 md:text-center': type === 'detail' }">
+          <span class="line-clamp-1 text-text" :class="{ 'md:text-center': type === 'detail' }">
             {{ description }}
           </span>
         </div>

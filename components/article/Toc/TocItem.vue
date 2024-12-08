@@ -10,7 +10,7 @@ const isActive = computed(() => props.activatedId === props.link.id)
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
+  <div :id="`toc-${link.id}`" class="flex flex-col gap-1">
     <NuxtLink
       :to="`#${link.id}`"
       class="hana-button"

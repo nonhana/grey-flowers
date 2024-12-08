@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
 import type { ArticleHeader } from '~/types/content'
 
 withDefaults(defineProps<ArticleHeader>(), {
@@ -14,10 +15,33 @@ withDefaults(defineProps<ArticleHeader>(), {
   published: false,
   wordCount: 0,
 })
+
+const { articleHeadStatusStore } = useStore()
+const { setVisible } = articleHeadStatusStore
+
+const articleHeadRef = ref<HTMLElement | null>(null)
+let headObserver: IntersectionObserver | null = null
+
+onMounted(() => {
+  if (!articleHeadRef.value)
+    return
+
+  headObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      setVisible(entry.isIntersecting)
+    })
+  }, { threshold: 1.0 })
+
+  headObserver.observe(articleHeadRef.value)
+})
+
+onUnmounted(() => {
+  headObserver?.disconnect()
+})
 </script>
 
 <template>
-  <header class="mb-10 flex flex-col gap-5">
+  <header ref="articleHeadRef" class="mb-10 flex flex-col gap-5">
     <NuxtImg :src="cover" :alt="alt" class="h-60 rounded-lg object-cover" />
     <h1 class="font-bold">
       {{ title }}

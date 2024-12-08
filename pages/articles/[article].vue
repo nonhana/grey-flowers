@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { useStore } from '~/store'
 import type { ArticleHeader } from '~/types/content'
 
 definePageMeta({
@@ -34,6 +35,9 @@ const drawerVisible = ref(false)
 function handleClick() {
   drawerVisible.value = !drawerVisible.value
 }
+
+const { articleHeadStatusStore } = useStore()
+const { visible } = toRefs(articleHeadStatusStore)
 </script>
 
 <template>
@@ -53,7 +57,7 @@ function handleClick() {
         </div>
       </div>
       <div class="hidden max-w-fit xl:block">
-        <div class="sticky top-20 flex flex-col gap-5">
+        <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !visible }">
           <ArticleAuthor />
           <ArticleSwitch />
           <ArticleToc v-if="article" :article="article" />
@@ -63,7 +67,6 @@ function handleClick() {
     <div class="fixed bottom-5 right-5 z-10 block xl:hidden">
       <div class="hana-card">
         <div class="hana-button w-full gap-2 text-center" @click="handleClick">
-          <span>文章目录</span>
           <Icon name="lucide:menu" />
         </div>
       </div>

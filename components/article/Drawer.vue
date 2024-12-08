@@ -28,7 +28,7 @@ const [prev, next] = neighbors.value || []
 </script>
 
 <template>
-  <HanaDrawer v-model="visible" show-info title="文章目录">
+  <HanaDrawer v-model="visible" show-info title="文章目录" icon="lucide:table-of-contents">
     <template #default="{ close }">
       <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-1 overflow-auto text-text">
         <div @click="close">

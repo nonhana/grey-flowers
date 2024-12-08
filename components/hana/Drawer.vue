@@ -3,6 +3,7 @@ import type { TransitionProps } from 'vue'
 
 const props = withDefaults(defineProps<{
   title?: string
+  icon?: string
   hideHeader?: boolean
   direction?: 'left' | 'right'
   overlayOpacity?: number
@@ -65,7 +66,8 @@ onBeforeUnmount(() => {
       :style="{ maxWidth: width }"
     >
       <slot name="header">
-        <div v-if="!hideHeader" class="flex h-12 items-center">
+        <div v-if="!hideHeader" class="flex h-12 items-center gap-2">
+          <Icon v-if="icon" :name="icon" size="20" class="text-hana-blue" />
           <span v-if="title" class="text-xl text-hana-blue">{{ title }}</span>
           <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />
         </div>
