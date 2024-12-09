@@ -31,7 +31,7 @@ watch(() => props.index, () => resetAnimation)
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"
     >
       <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail', 'md:hidden': displayCols > 1 && type === 'detail' }">
-        <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover" />
+        <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full object-cover transition-transform duration-300 group-hover:scale-105" />
       </div>
       <div
         class="relative flex h-36 w-full flex-col justify-between p-4"
