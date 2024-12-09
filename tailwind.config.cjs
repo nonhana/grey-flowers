@@ -73,7 +73,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        noto: ['Noto Sans', 'Noto Sans SC', 'Noto Sans JP', 'sans-serif'],
+        noto: ['Noto Serif', 'Noto Serif SC', 'Noto Serif JP', 'sans-serif'],
       },
       keyframes: {
         'bounce-x': {

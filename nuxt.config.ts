@@ -70,9 +70,9 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      'Noto+Sans': [400, 700],
-      'Noto+Sans+SC': [400, 700],
-      'Noto+Sans+JP': [400, 700],
+      'Noto+Serif': [500, 700],
+      'Noto+Serif+SC': [500, 700],
+      'Noto+Serif+JP': [500, 700],
     },
     display: 'swap',
     preload: true,
