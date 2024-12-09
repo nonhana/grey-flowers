@@ -22,19 +22,38 @@ function removeMessage(key: number) {
   messages.value = messages.value.filter(msg => msg.key !== key)
 }
 
+const messageContainerRef = ref<HTMLElement | null>(null)
+let observer: ResizeObserver | null = null
+
+onMounted(() => {
+  if (messageContainerRef.value) {
+    observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          messageContainerRef.value!.style.width = `${entry.contentRect.width}px`
+        }
+      }
+    })
+    observer.observe(messageContainerRef.value)
+  }
+})
+
+onUnmounted(() => {
+  observer && observer.disconnect()
+})
+
 defineExpose({
   addMessage,
 })
 </script>
 
 <template>
-  <div class="fixed left-1/2 top-4 z-50 flex w-full -translate-x-1/2 flex-col gap-4">
+  <div
+    ref="messageContainerRef"
+    class="fixed left-1/2 top-4 z-50 flex -translate-x-1/2 flex-col gap-4"
+  >
     <transition-group name="message-container">
-      <div
-        v-for="msg in messages"
-        :key="msg.key"
-        class="flex w-full justify-center"
-      >
+      <div v-for="msg in messages" :key="msg.key" class="relative">
         <Message v-bind="msg" />
       </div>
     </transition-group>

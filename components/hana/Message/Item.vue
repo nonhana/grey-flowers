@@ -29,7 +29,7 @@ const messageClasses: Record<NonUndefined<MessageOptions['type']>, string> = {
 <template>
   <div
     v-if="visible"
-    class="flex shrink-0 items-center gap-2 text-nowrap rounded-lg p-3 text-sm shadow-lg"
+    class="flex items-center gap-2 text-nowrap rounded-lg p-3 text-sm shadow-lg"
     :class="messageClasses[props.type]"
   >
     <HanaMessageIcon :type="type" />
