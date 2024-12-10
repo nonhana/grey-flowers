@@ -21,6 +21,7 @@ module.exports = {
           DEFAULT: '#2A669F', // 默认主题色，按钮、文字等激活状态
           50: '#E4F7F8',
           100: '#CCEEF2',
+          150: '#D1EDF3',
           200: '#9CD7E5',
           300: '#6CB9D8',
           400: '#3B94CB',
@@ -74,6 +75,7 @@ module.exports = {
       },
       fontFamily: {
         noto: ['Noto Serif', 'Noto Serif SC', 'Noto Serif JP', 'sans-serif'],
+        code: ['Fira Code', 'consolas', 'monospace', 'Microsoft YaHei UI'],
       },
       keyframes: {
         'bounce-x': {
@@ -118,15 +120,40 @@ module.exports = {
             position: 'sticky',
           },
         },
+        '.background-grid': {
+          'background-image': `linear-gradient(
+            0deg,
+            transparent 24%,
+            #f0f0f0 25%,
+            #f0f0f0 26%,
+            transparent 27%,
+            transparent 74%,
+            #f0f0f0 75%,
+            #f0f0f0 76%,
+            transparent 77%
+          ),
+          linear-gradient(
+            90deg,
+            transparent 24%,
+            #f0f0f0 25%,
+            #f0f0f0 26%,
+            transparent 27%,
+            transparent 74%,
+            #f0f0f0 75%,
+            #f0f0f0 76%,
+            transparent 77%
+          )`,
+          'background-size': '100px 100px',
+        },
       })
     },
     function ({ addComponents }) {
       addComponents({
         '.hana-button': {
-          '@apply flex shrink-0 cursor-pointer select-none items-center justify-between rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-200/40 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200': {},
+          '@apply flex shrink-0 cursor-pointer select-none items-center justify-between rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-150 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200': {},
         },
         '.hana-button--active': {
-          '@apply bg-hana-blue-200/40 text-hana-blue': {},
+          '@apply bg-hana-blue-150 text-hana-blue': {},
         },
         '.hana-button--disabled': {
           '@apply cursor-not-allowed opacity-50': {},

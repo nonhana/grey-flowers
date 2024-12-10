@@ -9,7 +9,7 @@ useHead({
 </script>
 
 <template>
-  <div class="bg-hana-blue-200/10">
+  <div class="bg-hana-blue-200/10 background-grid">
     <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />

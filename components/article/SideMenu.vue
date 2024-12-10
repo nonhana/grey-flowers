@@ -20,7 +20,7 @@ const { path } = toRefs(route)
       :to="to"
       class="group hana-button w-auto text-base md:text-xl lg:w-36"
       :class="[
-        path === to ? 'bg-hana-blue-200/40 text-hana-blue' : '',
+        path === to ? 'bg-hana-blue-150 text-hana-blue' : '',
       ]"
     >
       <div class="flex items-center gap-2">

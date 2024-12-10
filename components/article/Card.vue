@@ -27,7 +27,7 @@ watch(() => props.index, () => resetAnimation)
     <NuxtLink
       :to="to"
       :title="title"
-      class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all hover:-top-1 hover:bg-hana-blue-200/40 hover:shadow-lg active:scale-95 active:bg-hana-blue-200"
+      class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all hover:-top-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200"
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"
     >
       <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail', 'md:hidden': displayCols > 1 && type === 'detail' }">

@@ -53,9 +53,9 @@ function handleClick(e: Event) {
     :class="[
       iconButton ? 'p-2' : 'px-[10px] py-2',
       active
-        ? darkMode ? 'bg-hana-blue/80' : 'bg-hana-blue-200/40 text-hana-blue'
+        ? darkMode ? 'bg-hana-blue/80' : 'bg-hana-blue-150 text-hana-blue'
         : darkMode ? 'bg-hana-blue text-white' : 'text-text',
-      darkMode ? 'hover:bg-hana-blue/80' : 'hover:bg-hana-blue-200/40 hover:text-hana-blue',
+      darkMode ? 'hover:bg-hana-blue/80' : 'hover:bg-hana-blue-150 hover:text-hana-blue',
       shape === 'round' ? 'rounded-full' : 'rounded-lg',
       disabled ? 'cursor-not-allowed text-gray-400 opacity-50' : 'cursor-pointer active:scale-95 active:bg-hana-blue-200',
     ]"

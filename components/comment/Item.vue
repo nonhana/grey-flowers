@@ -93,7 +93,7 @@ function handleShowAuthorInfo() {
         <span>{{ comment.author!.username[0] }}</span>
       </div>
     </div>
-    <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-200/40': isActive }">
+    <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
       <div class="flex h-5 items-center gap-2">
         <span class="cursor-pointer font-bold text-hana-blue-400" @click="handleShowAuthorInfo">{{ comment.author!.username }}</span>
         <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
