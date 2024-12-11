@@ -4,7 +4,7 @@
 
 **没有使用任何现成的框架，从零使用 `Nuxt3 + Nuxt Content + Tailwind` 设计并搭建。后端使用 `Prisma` 作为 `ORM`、`PostgreSQL` 做持久化。**
 
-完全开源，遵循 [MIT](https://choosealicense.com/licenses/mit) 开源协议。若感兴趣，可以访问 [Github 链接🔗](https://github.com/nonhana/GreyFlowers)。
+完全开源，遵循 [MIT](https://mit-license.org) 开源协议。若感兴趣，可以访问 [Github 链接🔗](https://github.com/nonhana/GreyFlowers)。
 
 无论如何，与你相遇是一件幸运的事情❤️
 
