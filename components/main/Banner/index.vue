@@ -9,7 +9,7 @@ function scrollToHead() {
 
 <template>
   <div class="relative h-[732px] w-full">
-    <NuxtImg class="size-full object-cover" src="/images/banner.webp" alt="banner" />
+    <NuxtImg class="size-full object-cover" src="/images/ende_nea.webp" alt="ende_nea" />
     <div class="absolute left-0 top-0 grid size-full">
       <div class="flex items-center justify-center">
         <MainBannerLogo />

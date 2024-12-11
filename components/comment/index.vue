@@ -15,7 +15,7 @@ const pageSize = ref(10)
 const totalCount = ref(0)
 const parentCount = ref(0)
 const { data: fetchedTotal } = await useAsyncData(`comments-count-${path}`, () => $fetch('/api/comments/count', {
-  query: { articlePath: path },
+  query: { path },
 }))
 if (fetchedTotal.value?.success) {
   totalCount.value = fetchedTotal.value.payload?.totalCount || 0
@@ -23,7 +23,7 @@ if (fetchedTotal.value?.success) {
 }
 
 const { data: fetchedCommentList } = await useAsyncData(`comments-${path}`, () => $fetch('/api/comments/list', {
-  query: { articlePath: path, page: page.value, pageSize: pageSize.value },
+  query: { path, page: page.value, pageSize: pageSize.value },
 }), { watch: [page, pageSize] })
 const commentList = computed<ParentCommentItem[]>(() => fetchedCommentList.value?.success ? fetchedCommentList.value.payload || [] : [])
 

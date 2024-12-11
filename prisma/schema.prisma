@@ -26,7 +26,6 @@ model Article {
   tags        Tag[]     @relation("ArticleTags")
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  Int?
-  comments    Comment[]
 }
 
 model Tag {
@@ -65,8 +64,7 @@ model Session {
 
 model Comment {
   id               Int          @id @default(autoincrement())
-  article          Article?     @relation(fields: [articleId], references: [id])
-  articleId        Int?
+  path             String?
   content          String
   level            CommentLevel @default(PARENT)
   parent           Comment?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)

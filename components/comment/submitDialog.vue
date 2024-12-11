@@ -38,7 +38,7 @@ async function handlePublish() {
     return
   }
   const objData: IPostComment = {
-    articlePath: path,
+    path,
     content: content.value,
   }
   if (replyTo.value) {

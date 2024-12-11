@@ -1,5 +1,5 @@
 export interface CommentListQuery {
-  articlePath: string
+  path: string
   page?: string
   pageSize?: string
 }

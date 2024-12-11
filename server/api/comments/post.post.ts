@@ -5,7 +5,7 @@ import { useZodVerify } from '~/server/composables/useZodVerify'
 import { selectCommentObj } from '~/server/prisma/select'
 
 const verifySchema = z.object({
-  articlePath: z.string(),
+  path: z.string(),
   content: z.string().min(1, { message: 'Content must not be empty' }).max(2048, { message: 'Content must not exceed 2048 characters' }),
   parentId: z.number().int().optional(),
   replyToUserId: z.number().int().optional(),
@@ -26,25 +26,16 @@ export default formattedEventHandler(async (event) => {
   }
 
   const {
-    articlePath,
+    path,
     content,
     parentId,
     replyToUserId,
     replyToCommentId,
   } = result
 
-  const targetArticle = await prisma.article.findUnique({ where: { to: articlePath }, select: { id: true } })
-  if (!targetArticle) {
-    return {
-      statusCode: 404,
-      statusMessage: `Article not found by path: ${articlePath}`,
-      success: false,
-    }
-  }
-
   const { id: newId } = await prisma.comment.create({
     data: {
-      articleId: targetArticle.id,
+      path,
       content,
       level: parentId ? 'CHILD' : 'PARENT',
       parentId,

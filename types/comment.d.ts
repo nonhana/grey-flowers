@@ -26,7 +26,7 @@ export interface ParentCommentItem extends CommentItem {
 }
 
 export interface IPostComment {
-  articlePath: string
+  path: string
   content: string
   parentId?: number
   replyToUserId?: number

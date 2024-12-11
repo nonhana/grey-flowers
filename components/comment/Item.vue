@@ -74,73 +74,75 @@ function handleShowAuthorInfo() {
 </script>
 
 <template>
-  <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none">
-    <div
-      class="hidden md:block"
-      @click="handleShowAuthorInfo"
-    >
-      <NuxtImg
-        v-if="comment.author!.avatar"
-        :src="comment.author!.avatar"
-        width="40"
-        height="40"
-        class="shrink-0 cursor-pointer rounded-full"
-      />
+  <ClientOnly>
+    <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none">
       <div
-        v-else
-        class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white"
+        class="hidden md:block"
+        @click="handleShowAuthorInfo"
       >
-        <span>{{ comment.author!.username[0] }}</span>
-      </div>
-    </div>
-    <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
-      <div class="flex h-5 items-center gap-2">
-        <span class="cursor-pointer font-bold text-hana-blue-400" @click="handleShowAuthorInfo">{{ comment.author!.username }}</span>
-        <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
-        <span v-if="comment.replyToUser" class="text-hana-blue-400">{{ comment.replyToUser.username }}</span>
+        <NuxtImg
+          v-if="comment.author!.avatar"
+          :src="comment.author!.avatar"
+          width="40"
+          height="40"
+          class="shrink-0 cursor-pointer rounded-full"
+        />
         <div
-          v-if="comment.replyToComment"
-          @mouseenter="handleActivate(comment.replyToComment.id)"
-          @mouseleave="handleActivate(undefined)"
+          v-else
+          class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white"
         >
-          <HanaButton icon="lucide:map-pin" icon-button />
+          <span>{{ comment.author!.username[0] }}</span>
         </div>
       </div>
-      <p class="whitespace-pre-wrap leading-6 text-black">
-        {{ comment.content }}
-      </p>
-      <div class="flex h-6 items-center gap-2">
-        <span class="text-sm">{{ comment.publishedAt }}</span>
-        <HanaTooltip v-if="loggedIn" content="点击回复">
-          <HanaButton
-            icon="lucide:reply"
-            icon-button
-            @click="handleReply"
+      <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
+        <div class="flex h-5 items-center gap-2">
+          <span class="cursor-pointer font-bold text-hana-blue-400" @click="handleShowAuthorInfo">{{ comment.author!.username }}</span>
+          <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
+          <span v-if="comment.replyToUser" class="text-hana-blue-400">{{ comment.replyToUser.username }}</span>
+          <div
+            v-if="comment.replyToComment"
+            @mouseenter="handleActivate(comment.replyToComment.id)"
+            @mouseleave="handleActivate(undefined)"
+          >
+            <HanaButton icon="lucide:map-pin" icon-button />
+          </div>
+        </div>
+        <p class="whitespace-pre-wrap leading-6 text-black">
+          {{ comment.content }}
+        </p>
+        <div class="flex h-6 items-center gap-2">
+          <span class="text-sm">{{ comment.publishedAt }}</span>
+          <HanaTooltip v-if="loggedIn" content="点击回复">
+            <HanaButton
+              icon="lucide:reply"
+              icon-button
+              @click="handleReply"
+            />
+          </HanaTooltip>
+          <HanaTooltip v-if="isMe" content="删除评论">
+            <HanaButton
+              icon="lucide:x"
+              icon-button
+              @click="confirmDelete"
+            />
+          </HanaTooltip>
+        </div>
+        <div
+          v-if="isParentCommentItem(comment) && comment.children?.length"
+          class="rounded-lg bg-primary-100 px-4"
+        >
+          <CommentItem
+            v-for="child in comment.children"
+            :key="child.id"
+            :comment="child"
+            :active-comment-id="activeCommentId"
+            @reply="emits('reply', $event)"
+            @delete="emits('delete', $event)"
+            @activate="emits('activate', $event)"
+            @show-author-info="emits('showAuthorInfo', $event)"
           />
-        </HanaTooltip>
-        <HanaTooltip v-if="isMe" content="删除评论">
-          <HanaButton
-            icon="lucide:x"
-            icon-button
-            @click="confirmDelete"
-          />
-        </HanaTooltip>
-      </div>
-      <div
-        v-if="isParentCommentItem(comment) && comment.children?.length"
-        class="rounded-lg bg-primary-100 px-4"
-      >
-        <CommentItem
-          v-for="child in comment.children"
-          :key="child.id"
-          :comment="child"
-          :active-comment-id="activeCommentId"
-          @reply="emits('reply', $event)"
-          @delete="emits('delete', $event)"
-          @activate="emits('activate', $event)"
-          @show-author-info="emits('showAuthorInfo', $event)"
-        />
+        </div>
       </div>
     </div>
-  </div>
+  </ClientOnly>
 </template>

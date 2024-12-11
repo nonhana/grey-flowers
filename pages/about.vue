@@ -15,5 +15,6 @@
     <div class="relative my-20">
       <AboutIntro />
     </div>
+    <Comment />
   </div>
 </template>
