@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { articlePageData } from '~/data'
+
 const { articlesMap } = useRoutesMap()
 
 const curRouteArr = useRoutesArr()
@@ -15,6 +17,16 @@ watch(isDetail, (_, __, onCleanup) => {
     showPage.value = true
   }, 300)
   onCleanup(() => clearTimeout(timeout))
+})
+
+useHead({
+  title: articlePageData.title,
+  meta: [
+    {
+      name: 'description',
+      content: articlePageData.description,
+    },
+  ],
 })
 </script>
 

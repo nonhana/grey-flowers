@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { navbarData, seoData } from '~/data'
 import { useStore } from '~/store'
 import type { ArticleHeader } from '~/types/content'
 
@@ -24,13 +25,6 @@ const articleHeader = computed<ArticleHeader>(() => ({
   published: article.value?.published || false,
   wordCount: article.value?.wordCount || 0,
 }))
-
-defineOgImageComponent('og-image', {
-  title: articleHeader.value.title,
-  description: articleHeader.value.description,
-  link: articleHeader.value.ogImage,
-})
-
 const drawerVisible = ref(false)
 function handleClick() {
   drawerVisible.value = !drawerVisible.value
@@ -38,6 +32,67 @@ function handleClick() {
 
 const { articleHeadStatusStore } = useStore()
 const { visible } = toRefs(articleHeadStatusStore)
+
+useHead({
+  title: articleHeader.value.title,
+  meta: [
+    { name: 'description', content: articleHeader.value.description },
+    {
+      name: 'description',
+      content: articleHeader.value.description,
+    },
+    // Test on: https://developers.facebook.com/tools/debug/ or https://socialsharepreview.com/
+    { property: 'og:site_name', content: navbarData.homeTitle },
+    { hid: 'og:type', property: 'og:type', content: 'website' },
+    {
+      property: 'og:url',
+      content: `${seoData.mySite}/${path}`,
+    },
+    {
+      property: 'og:title',
+      content: articleHeader.value.title,
+    },
+    {
+      property: 'og:description',
+      content: articleHeader.value.description,
+    },
+    {
+      property: 'og:image',
+      content: articleHeader.value.ogImage,
+    },
+    // Test on: https://cards-dev.twitter.com/validator or https://socialsharepreview.com/
+    { name: 'twitter:site', content: '@non_hanaz' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    {
+      name: 'twitter:url',
+      content: `${seoData.mySite}/${path}`,
+    },
+    {
+      name: 'twitter:title',
+      content: articleHeader.value.title,
+    },
+    {
+      name: 'twitter:description',
+      content: articleHeader.value.description,
+    },
+    {
+      name: 'twitter:image',
+      content: articleHeader.value.ogImage,
+    },
+  ],
+  link: [
+    {
+      rel: 'canonical',
+      href: `${seoData.mySite}/${path}`,
+    },
+  ],
+})
+
+defineOgImageComponent('og-image', {
+  title: articleHeader.value.title,
+  description: articleHeader.value.description,
+  link: articleHeader.value.ogImage,
+})
 </script>
 
 <template>

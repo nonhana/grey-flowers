@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { friendsPageData } from '~/data'
 
+useHead({
+  title: friendsPageData.title,
+  meta: [
+    {
+      name: 'description',
+      content: friendsPageData.description,
+    },
+  ],
+})
 </script>
 
 <template>

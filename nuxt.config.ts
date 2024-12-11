@@ -1,10 +1,32 @@
+import { seoData } from './data'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      title: seoData.title,
+    },
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
   },
-  ssr: true,
+  sitemap: {
+    strictNuxtContentPaths: true,
+  },
+  site: {
+    url: seoData.mySite,
+    identity: {
+      type: 'Person',
+    },
+    twitter: seoData.twitterHandle,
+  },
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/', '/rss.xml'],
+    },
+  },
   content: {
     highlight: {
       langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http'],

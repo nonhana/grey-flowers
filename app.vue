@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { siteMetaData } from './data'
+
 useHead({
   htmlAttrs: {
     lang: 'zh-Hans',
   },
+  meta: () => siteMetaData,
 })
 </script>
 

@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { aboutPageData, navbarData } from '~/data'
+
+useHead({
+  title: aboutPageData.title,
+  meta: [
+    {
+      name: 'description',
+      content: aboutPageData.description,
+    },
+  ],
+})
+
+defineOgImageComponent('About', {
+  headline: 'Greetings 👋',
+  title: navbarData.homeTitle,
+  description: 'Dive into web development with me, and learn JS, TS, Vue, React, etc.',
+  link: '/images/avatar.webp',
+})
+</script>
+
 <template>
   <div class="flex flex-col">
     <div class="relative h-[calc(100vh-80px)] w-full">

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { thoughtsPageData } from '~/data'
+
 const newMsgId = ref<number>()
 
 function handlePublished(id: number | undefined) {
@@ -8,6 +10,16 @@ function handlePublished(id: number | undefined) {
 function handleRefreshed() {
   newMsgId.value = undefined
 }
+
+useHead({
+  title: thoughtsPageData.title,
+  meta: [
+    {
+      name: 'description',
+      content: thoughtsPageData.description,
+    },
+  ],
+})
 </script>
 
 <template>
