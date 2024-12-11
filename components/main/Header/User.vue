@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useStore } from '~/store'
 
-const { t } = useI18n()
 const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
 const { callHanaDialog } = useDialog()
@@ -9,24 +8,24 @@ const { callHanaDialog } = useDialog()
 const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible } = toRefs(userStore)
 
 const notLoggedInMap = [{
-  text: t('header.user.notLoggedIn.login'),
+  text: '登录',
   icon: 'lucide:log-in',
 }, {
-  text: t('header.user.notLoggedIn.register'),
+  text: '注册',
   icon: 'lucide:user-plus',
 }]
 
 const loggedInMap = [{
-  text: t('header.user.loggedIn.profile'),
+  text: '个人资料',
   icon: 'lucide:user',
 }, {
-  text: t('header.user.loggedIn.messages'),
+  text: '消息',
   icon: 'lucide:mail',
 }, {
-  text: t('header.user.loggedIn.comments'),
+  text: '评论',
   icon: 'lucide:message-square-more',
 }, {
-  text: t('header.user.loggedIn.logout'),
+  text: '退出登录',
   icon: 'lucide:log-out',
 }]
 
@@ -37,13 +36,13 @@ function toggleLoginRegisterWindow() {
 
 function handleUserCommand(command: string | number | object) {
   switch (command) {
-    case t('header.user.notLoggedIn.login'):
+    case '登录':
       loginWindowVisible.value = true
       break
-    case t('header.user.notLoggedIn.register'):
+    case '注册':
       registerWindowVisible.value = true
       break
-    case t('header.user.loggedIn.logout'):
+    case '退出登录':
       callHanaDialog({
         title: '提示',
         content: '确定要退出登录吗？',

@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   image: {
     dir: 'public',
     quality: 85,
-    formats: ['webp', 'avif'],
+    formats: ['webp', 'gif', 'jpeg', 'png', 'avif'],
   },
   devServer: {
     host: '127.0.0.1',
@@ -45,29 +45,6 @@ export default defineNuxtConfig({
     exposeConfig: true,
     viewer: false,
   },
-  i18n: {
-    langDir: './language',
-    locales: [
-      {
-        code: 'en-us',
-        language: 'en-US',
-        file: 'en.json',
-      },
-      {
-        code: 'ja-jp',
-        language: 'ja-jp',
-        file: 'ja-jp.json',
-      },
-      {
-        code: 'zh-cn',
-        language: 'zh-cn',
-        file: 'zh-cn.json',
-      },
-    ],
-    defaultLocale: 'en-us',
-    strategy: 'prefix_except_default',
-    restructureDir: false,
-  },
   googleFonts: {
     families: {
       'Noto+Serif': [500, 700],
@@ -78,15 +55,10 @@ export default defineNuxtConfig({
     preload: true,
     download: true,
   },
-  runtimeConfig: {
-    sessionKey: '',
-  },
   modules: [
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/i18n',
     '@nuxt/icon',
     '@nuxtjs/google-fonts',
-    'nuxt-lodash',
     '@nuxt/image',
     '@nuxt/content',
     '@nuxtjs/seo',

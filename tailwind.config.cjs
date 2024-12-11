@@ -95,7 +95,6 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     require('@kamona/tailwindcss-perspective'),
     function ({ addUtilities }) {

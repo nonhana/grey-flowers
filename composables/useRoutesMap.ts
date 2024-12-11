@@ -5,14 +5,12 @@ type Route = Map<string, {
 }>
 
 export function useRoutesMap() {
-  const { t } = useI18n()
-
   const routesMap: Route = new Map([
-    ['/', { title: t('header.routes.home.name'), icon: 'lucide:house', to: '/' }],
-    ['/articles', { title: t('header.routes.articles.name'), icon: 'lucide:notebook-pen', to: '/articles' }],
-    ['/thoughts', { title: t('header.routes.thoughts.name'), icon: 'lucide:messages-square', to: '/thoughts' }],
-    ['/about', { title: t('header.routes.about.name'), icon: 'lucide:info', to: '/about' }],
-    ['/friends', { title: t('header.routes.friends.name'), icon: 'lucide:link', to: '/friends' }],
+    ['/', { title: '主页', icon: 'lucide:house', to: '/' }],
+    ['/articles', { title: '文章', icon: 'lucide:notebook-pen', to: '/articles' }],
+    ['/thoughts', { title: '碎碎念', icon: 'lucide:messages-square', to: '/thoughts' }],
+    ['/about', { title: '关于', icon: 'lucide:info', to: '/about' }],
+    ['/friends', { title: '朋友们', icon: 'lucide:link', to: '/friends' }],
   ])
 
   const articlesMap: Route = new Map([

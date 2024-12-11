@@ -8,8 +8,6 @@ const props = withDefaults(defineProps<{
   size: 'medium',
 })
 
-const bgColor = ref('#3d3d3d')
-
 const component = computed(() => {
   if (props.to)
     return resolveComponent('NuxtLink')
@@ -22,12 +20,8 @@ const component = computed(() => {
     :is="component"
     v-if="!count"
     :to="to"
-    class="cursor-pointer select-none rounded-md transition-all hover:opacity-80"
-    :class="[
-      isWarmHue(bgColor) ? 'text-black' : 'text-white',
-      size === 'small' ? 'px-2 py-0.5 text-sm' : 'px-4 py-2',
-    ]"
-    :style="{ background: bgColor }"
+    class="cursor-pointer select-none rounded-md bg-[#3d3d3d] text-white transition-all hover:opacity-80"
+    :class="[size === 'small' ? 'px-2 py-0.5 text-sm' : 'px-4 py-2']"
   >
     {{ name }}
   </component>

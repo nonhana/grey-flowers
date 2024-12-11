@@ -119,7 +119,7 @@ watch(userInfoDialogVisible, (newV) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
+  <div id="comments" class="flex flex-col gap-5">
     <div class="hana-card w-full p-4">
       <header class="flex items-center justify-between">
         <div class="flex items-center gap-4">
