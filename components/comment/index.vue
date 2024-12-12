@@ -12,20 +12,34 @@ const { path } = route
 
 const page = ref(1)
 const pageSize = ref(10)
+
 const totalCount = ref(0)
 const parentCount = ref(0)
-const { data: fetchedTotal } = await useAsyncData(`comments-count-${path}`, () => $fetch('/api/comments/count', {
-  query: { path },
-}))
-if (fetchedTotal.value?.success) {
-  totalCount.value = fetchedTotal.value.payload?.totalCount || 0
-  parentCount.value = fetchedTotal.value.payload?.parentCount || 0
+const commentList = ref<ParentCommentItem[]>([])
+
+async function fetchTotal() {
+  const data = await $fetch('/api/comments/count', {
+    query: { path },
+  })
+  if (data.success) {
+    totalCount.value = data.payload?.totalCount || 0
+    parentCount.value = data.payload?.parentCount || 0
+  }
 }
 
-const { data: fetchedCommentList } = await useAsyncData(`comments-${path}`, () => $fetch('/api/comments/list', {
-  query: { path, page: page.value, pageSize: pageSize.value },
-}), { watch: [page, pageSize] })
-const commentList = computed<ParentCommentItem[]>(() => fetchedCommentList.value?.success ? fetchedCommentList.value.payload || [] : [])
+async function fetchComments() {
+  const data = await $fetch('/api/comments/list', {
+    query: { path, page: page.value, pageSize: pageSize.value },
+  })
+  if (data.success) {
+    commentList.value = data.payload || []
+  }
+}
+
+onMounted(() => {
+  fetchTotal()
+  fetchComments()
+})
 
 const submitDialogVisible = ref(false)
 const replyTo = ref<IReplyComment | null>(null)

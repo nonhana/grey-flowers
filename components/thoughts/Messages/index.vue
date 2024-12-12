@@ -25,9 +25,7 @@ async function fetchOldMessages() {
   }
 }
 
-onMounted(async () => {
-  await fetchOldMessages()
-})
+onMounted(fetchOldMessages)
 
 async function fetchNewMessage(id: number) {
   const data = await $fetch('/api/messages/single', { query: { id } })
