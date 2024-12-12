@@ -16,12 +16,12 @@ const { path } = toRefs(route)
     class="relative mx-auto flex size-fit max-w-full shrink-0 flex-row gap-2 overflow-auto rounded-lg bg-white p-2 text-text shadow-md lg:mx-0 lg:flex-col lg:gap-4"
   >
     <NuxtLink
-      v-for="[to, value] in menus" :key="to"
+      v-for="[to, value] in menus"
+      :key="to"
       :to="to"
+      :aria-label="value.title"
       class="group hana-button w-auto text-base md:text-xl lg:w-36"
-      :class="[
-        path === to ? 'bg-hana-blue-150 text-hana-blue' : '',
-      ]"
+      :class="{ 'bg-hana-blue-150 text-hana-blue': path === to }"
     >
       <div class="flex items-center gap-2">
         <Icon :name="value.icon" />

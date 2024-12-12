@@ -14,6 +14,7 @@ const [prev, next] = neighbors.value || []
     <HanaTooltip v-if="prev" position="left" :content="prev.title">
       <NuxtLink
         :to="prev._path"
+        :aria-label="prev.title"
         class="hana-button w-full justify-center gap-10"
       >
         <span>上一篇</span>
@@ -23,6 +24,7 @@ const [prev, next] = neighbors.value || []
     <HanaTooltip v-if="next" position="left" :content="next.title">
       <NuxtLink
         :to="next._path"
+        :aria-label="next.title"
         class="hana-button w-full justify-center gap-10"
       >
         <span>下一篇</span>

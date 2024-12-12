@@ -19,12 +19,11 @@ export default defineNuxtConfig({
     identity: {
       type: 'Person',
     },
-    twitter: seoData.twitterHandle,
   },
   nitro: {
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/rss.xml'],
+      routes: ['/'],
     },
   },
   content: {

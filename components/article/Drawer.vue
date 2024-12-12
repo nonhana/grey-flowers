@@ -43,6 +43,8 @@ const [prev, next] = neighbors.value || []
       <NuxtLink
         v-if="prev"
         :to="prev._path"
+        :aria-label="prev.title"
+        :title="prev.title"
         class="hana-button w-full justify-start gap-5 text-text"
         @click="close"
       >

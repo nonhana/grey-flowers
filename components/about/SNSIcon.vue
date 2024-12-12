@@ -6,7 +6,7 @@ defineProps<SNSItem>()
 
 <template>
   <HanaTooltip :content="name">
-    <NuxtLink :to="to" target="_blank" class="grid size-9 place-items-center rounded-full" :style="{ backgroundColor: bgColor }">
+    <NuxtLink :to="to" :aria-label="`SNS: ${name}`" target="_blank" class="grid size-9 place-items-center rounded-full" :style="{ backgroundColor: bgColor }">
       <AboutSNSSvg :icon="icon" :color="iconColor" />
     </NuxtLink>
   </HanaTooltip>

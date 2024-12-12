@@ -64,6 +64,8 @@ watch(() => props.index, () => resetAnimation)
             <NuxtLink
               class="leading-5 with-underline hover:text-hana-blue"
               :to="`/articles/categories/${flatStr(category.name)}`"
+              :aria-label="`前往 ${category.name} 目录`"
+              :title="category.name"
             >
               {{ category.name }}
             </NuxtLink>
@@ -73,6 +75,8 @@ watch(() => props.index, () => resetAnimation)
               v-for="article in articleData"
               :key="article.id"
               :to="article.to"
+              :aria-label="article.title"
+              :title="article.title"
               class="hana-button"
             >
               <span class="line-clamp-1">
@@ -90,7 +94,11 @@ watch(() => props.index, () => resetAnimation)
               </svg>
               <span>{{ category.articleCount }} 篇文章</span>
             </div>
-            <HanaButton :to="`/articles/categories/${flatStr(category.name)}`">
+            <HanaButton
+              :to="`/articles/categories/${flatStr(category.name)}`"
+              :aria-label="`前往 ${category.name} 目录`"
+              shape="square"
+            >
               more
             </HanaButton>
           </footer>

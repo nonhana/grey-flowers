@@ -19,6 +19,7 @@ const visible = defineModel<boolean>()
             v-for="([key, value], index) in routesMap" :key="key"
             :icon="value.icon"
             :to="value.to"
+            :aria-label="value.title"
             :active="activeStatus[index]"
             shape="square"
           >

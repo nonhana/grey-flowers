@@ -15,9 +15,7 @@ function resetAnimation() {
   }, 0)
 }
 
-onMounted(() => {
-  resetAnimation()
-})
+onMounted(resetAnimation)
 
 watch(() => props.index, () => resetAnimation)
 </script>
@@ -26,6 +24,7 @@ watch(() => props.index, () => resetAnimation)
   <div class="relative" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }">
     <NuxtLink
       :to="to"
+      :aria-label="title"
       :title="title"
       class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all hover:-top-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200"
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"

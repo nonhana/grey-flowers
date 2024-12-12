@@ -27,7 +27,7 @@ const component = computed(() => {
   </component>
   <NuxtLink
     v-else
-    :to="`/articles/tags/${name}`"
+    :to="`/articles/tags/filter?tag=${name}`"
     class="cursor-pointer transition-all hover:text-hana-blue"
     :class="{
       'text-2xl text-error-2': count >= 5,

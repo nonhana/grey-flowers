@@ -174,5 +174,5 @@ async function handleArticles(articles: ParsedContent[]) {
 
 export default formattedEventHandler(async () => {
   const articles = await getNuxtContent()
-  await handleArticles(articles)
+  await handleArticles(articles.filter(article => article.title !== 'About'))
 })

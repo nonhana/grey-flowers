@@ -23,7 +23,7 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
       class="hana-button inline"
       :class="{
         'hover:text-hana-blue': to,
-        'hana-button--active': path === to,
+        'hana-button--active': path === to?.split('?')[0],
       }"
     >
       <slot />

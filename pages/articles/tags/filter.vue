@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const tag = computed(() => route.path.split('/').pop())
+const tag = computed(() => route.query.tag)
 
 useHead({
-  title: tag.value,
+  title: tag.value as string,
   meta: [
     {
       name: 'description',

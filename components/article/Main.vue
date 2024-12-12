@@ -20,7 +20,7 @@ const whereObj = computed<ArticleListQuery>(() => {
   const result: ArticleCountQuery = {}
   switch (props.type) {
     case 'tags':
-      result.tag = route.params.tag as string
+      result.tag = route.query.tag as string
       break
     case 'category':
       result.category = antiFlatStr(route.params.category as string)

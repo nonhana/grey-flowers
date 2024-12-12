@@ -46,7 +46,11 @@ watch(() => props.index, () => resetAnimation)
     </div>
     <div class="flex flex-col gap-1">
       <div class="text-sm text-text" :class="{ 'self-end': isMe }">
-        <NuxtLink v-if="message.author!.site" :to="message.author!.site">
+        <NuxtLink
+          v-if="message.author!.site"
+          :to="message.author!.site"
+          :aria-label="`${message.author!.username}的个人主页：${message.author!.site}`"
+        >
           <span>{{ message.author!.username }}</span>
         </NuxtLink>
         <span v-else>{{ message.author!.username }}</span>

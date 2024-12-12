@@ -5,6 +5,7 @@ const props = withDefaults(
     iconButton?: boolean
     icon?: string
     to?: string
+    ariaLabel?: string
     active?: boolean
     shape?: 'round' | 'square'
     disabled?: boolean
@@ -49,6 +50,8 @@ function handleClick(e: Event) {
     :is="component"
     :to="to"
     :type="type"
+    :aria-label="ariaLabel || (props.iconButton && props.icon) ? props.icon : undefined"
+    :title="ariaLabel || undefined"
     class="relative flex shrink-0 select-none items-center justify-center gap-1 transition-all"
     :class="[
       iconButton ? 'p-2' : 'px-[10px] py-2',
@@ -63,5 +66,6 @@ function handleClick(e: Event) {
   >
     <Icon v-if="props.icon" :name="props.icon" size="20" />
     <slot v-if="showSlot" />
+    <span v-if="!props.icon && !showSlot && ariaLabel" class="sr-only">{{ ariaLabel }}</span>
   </component>
 </template>

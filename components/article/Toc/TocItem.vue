@@ -13,6 +13,7 @@ const isActive = computed(() => props.activatedId === props.link.id)
   <div :id="`toc-${link.id}`" class="flex flex-col gap-1">
     <NuxtLink
       :to="`#${link.id}`"
+      :aria-label="`目录锚点：${link.text}`"
       class="hana-button"
       :class="{ 'hana-button--active': isActive }"
     >

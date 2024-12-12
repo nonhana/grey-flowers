@@ -21,7 +21,7 @@ useHead({
         如有错误，请及时联系我，非常感谢！
       </strong>
       <div class="hana-card">
-        <HanaButton to="/" shape="square">
+        <HanaButton to="/" aria-label="返回首页" shape="square">
           点击返回首页
         </HanaButton>
       </div>

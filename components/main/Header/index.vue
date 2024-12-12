@@ -75,6 +75,7 @@ onUnmounted(() => {
           :icon-button="value.to !== rootRoute"
           :icon="value.icon"
           :to="value.to"
+          :aria-label="value.title"
           :active="activeStatus[index]"
         >
           {{ value.title }}

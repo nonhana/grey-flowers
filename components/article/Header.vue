@@ -50,7 +50,7 @@ onUnmounted(() => {
       {{ description }}
     </p>
     <div class="flex gap-2 overflow-auto">
-      <ArticleTag v-for="tag in tags" :key="tag" :name="tag" :to="`/articles/tags/${tag}`" />
+      <ArticleTag v-for="tag in tags" :key="tag" :name="tag" :to="`/articles/tags/filter?tag=${tag}`" />
     </div>
     <div class="flex flex-wrap items-center gap-4 text-text">
       <span class="flex items-center gap-2">
