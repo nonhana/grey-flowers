@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
 import type { MessageItem } from '~/types/message'
+import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<{
   index?: number

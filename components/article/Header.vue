@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
 import type { ArticleHeader } from '~/types/content'
+import { useStore } from '~/store'
 
 withDefaults(defineProps<ArticleHeader>(), {
   title: '暂无标题',

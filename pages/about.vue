@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { aboutPageData, navbarData } from '~/data'
+import { aboutPageData } from '~/data'
 
 useHead({
   title: aboutPageData.title,
@@ -9,13 +9,6 @@ useHead({
       content: aboutPageData.description,
     },
   ],
-})
-
-defineOgImageComponent('About', {
-  headline: 'Greetings 👋',
-  title: navbarData.homeTitle,
-  description: 'Dive into web development with me, and learn JS, TS, Vue, React, etc.',
-  link: '/images/avatar.webp',
 })
 </script>
 

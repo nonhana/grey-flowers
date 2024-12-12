@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
 import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
 import type { SimpleUserInfo } from '~/types/userInfo'
+import { useStore } from '~/store'
 
 const { userStore } = useStore()
 const { loggedIn } = toRefs(userStore)

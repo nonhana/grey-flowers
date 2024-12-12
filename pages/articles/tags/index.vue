@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { articleTagsData } from '~/data'
+
 definePageMeta({
   name: 'tags',
 })
@@ -6,6 +8,16 @@ definePageMeta({
 const { data: fetchedTags } = await useFetch('/api/tags/list')
 
 const tags = computed(() => fetchedTags.value ? fetchedTags.value.payload ?? [] : [])
+
+useHead({
+  title: articleTagsData.title,
+  meta: [
+    {
+      name: 'description',
+      content: articleTagsData.description,
+    },
+  ],
+})
 </script>
 
 <template>

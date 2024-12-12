@@ -1,7 +1,7 @@
+import type { CommentListQuery } from '~/server/types/comments'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
 import { selectCommentObj } from '~/server/prisma/select'
-import type { CommentListQuery } from '~/server/types/comments'
 import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 async function getComments(path: string, page: number, pageSize: number) {

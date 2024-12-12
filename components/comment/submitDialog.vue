@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
 import type { CommentItem, IPostComment, IReplyComment } from '~/types/comment'
+import { useStore } from '~/store'
 
 const props = defineProps<{
   replyTo: IReplyComment | null

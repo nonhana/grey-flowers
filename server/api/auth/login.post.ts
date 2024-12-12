@@ -1,9 +1,9 @@
+import type { JwtPayload } from '~/server/types/jwt'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import env from '~/server/env/dotenv'
-import type { JwtPayload } from '~/server/types/jwt'
 import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 export default formattedEventHandler(async (event) => {

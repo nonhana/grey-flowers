@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { ArticleHeader } from '~/types/content'
 import dayjs from 'dayjs'
 import { navbarData, seoData } from '~/data'
 import { useStore } from '~/store'
-import type { ArticleHeader } from '~/types/content'
 
 definePageMeta({
   name: 'article-detail',
@@ -25,7 +25,9 @@ const articleHeader = computed<ArticleHeader>(() => ({
   published: article.value?.published || false,
   wordCount: article.value?.wordCount || 0,
 }))
+
 const drawerVisible = ref(false)
+
 function handleClick() {
   drawerVisible.value = !drawerVisible.value
 }
@@ -86,12 +88,6 @@ useHead({
       href: `${seoData.mySite}/${path}`,
     },
   ],
-})
-
-defineOgImageComponent('og-image', {
-  title: articleHeader.value.title,
-  description: articleHeader.value.description,
-  link: articleHeader.value.ogImage,
 })
 </script>
 

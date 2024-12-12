@@ -1,7 +1,7 @@
 import type * as p from '@prisma/client'
+import type { ArticleListQuery } from '~/server/types/articles'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
-import type { ArticleListQuery } from '~/server/types/articles'
 import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 type Options = p.Prisma.ArticleWhereInput

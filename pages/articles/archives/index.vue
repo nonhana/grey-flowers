@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { articleArchivesData } from '~/data'
+
 definePageMeta({
   name: 'archives',
 })
@@ -77,6 +79,16 @@ function toggleYear(year: string) {
 function toggleMonth(month: string) {
   curMonth.value = month
 }
+
+useHead({
+  title: articleArchivesData.title,
+  meta: [
+    {
+      name: 'description',
+      content: articleArchivesData.description,
+    },
+  ],
+})
 </script>
 
 <template>
