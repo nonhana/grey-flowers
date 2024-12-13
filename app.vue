@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { siteMetaData } from './data'
 
+const initializing = ref(true)
+
+onMounted(() => initializing.value = false)
+
 useHead({
   htmlAttrs: {
     lang: 'zh-Hans',
@@ -10,6 +14,9 @@ useHead({
 </script>
 
 <template>
+  <transition name="page">
+    <HanaLoading v-if="initializing" />
+  </transition>
   <div class="bg-hana-blue-200/10 background-grid">
     <NuxtLoadingIndicator />
     <NuxtLayout>
