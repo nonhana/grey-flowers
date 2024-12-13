@@ -1,0 +1,26 @@
+[
+  {
+    "site": "望月阁",
+    "owner": "Kaitaku",
+    "url": "https://www.kaitaku.xyz",
+    "desc": "一个萌新的 Notes",
+    "image": "https://www.kaitaku.xyz/assets/avatar.webp",
+    "color": "#00BFFF"
+  },
+  {
+    "site": "AsperforMias's Blog",
+    "owner": "AsperforMias",
+    "url": "https://mias.moe",
+    "desc": "「米娜最可爱！」",
+    "image": "https://github.com/AsperforMias.png",
+    "color": "#00BFFF"
+  },
+  {
+    "site": "KUN's Blog",
+    "owner": "KUN",
+    "url": "https://soft.moe",
+    "desc": "KUN, Moe, CUTEST, animations, visual novel (galgame), programming.",
+    "image": "https://soft.moe/avatar/kun.webp",
+    "color": "#00BFFF"
+  }
+]

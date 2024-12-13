@@ -3,6 +3,7 @@
 body,
 html {
   @apply font-noto;
+  min-width: 320px;
 }
 
 :root {
