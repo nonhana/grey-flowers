@@ -26,7 +26,7 @@ useHead({
         <Icon class="animate-bounce" size="24" name="lucide:chevron-down" />
       </div>
     </div>
-    <div class="relative my-20">
+    <div class="relative mb-20 mt-80">
       <AboutIntro />
     </div>
     <Comment />
