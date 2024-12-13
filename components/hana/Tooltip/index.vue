@@ -96,37 +96,35 @@ const positionClass = computed(() => {
 </script>
 
 <template>
-  <div>
-    <div v-click-outside="() => close()" class="relative">
+  <div v-click-outside="() => close()" class="relative">
+    <div
+      ref="triggerRef"
+      @[clickTrigger?`click`:null]="toggleVisible(!visible)"
+      @[hoverTrigger?`mouseenter`:null]="open()"
+      @[hoverTrigger?`mouseleave`:null]="close()"
+    >
+      <slot v-if="$slots.default" />
+    </div>
+
+    <HanaTooltipAnime :animation="animation" :position="position">
       <div
-        ref="triggerRef"
-        @[clickTrigger?`click`:null]="toggleVisible(!visible)"
+        v-show="visible"
+        class="absolute z-10"
+        :style="offsetStyle"
+        :class="positionClass"
         @[hoverTrigger?`mouseenter`:null]="open()"
         @[hoverTrigger?`mouseleave`:null]="close()"
       >
-        <slot v-if="$slots.default" />
-      </div>
-
-      <HanaTooltipAnime :animation="animation" :position="position">
         <div
-          v-show="visible"
-          class="absolute z-10"
-          :style="offsetStyle"
-          :class="positionClass"
-          @[hoverTrigger?`mouseenter`:null]="open()"
-          @[hoverTrigger?`mouseleave`:null]="close()"
+          class="relative min-w-max max-w-60 rounded-lg border border-gray-200 bg-white text-center shadow-md"
+          :class="[content ? 'px-4 py-2' : 'p-1']"
         >
-          <div
-            class="relative min-w-max max-w-60 rounded-lg border border-gray-200 bg-white text-center shadow-md"
-            :class="[content ? 'px-4 py-2' : 'p-1']"
-          >
-            <slot name="content" :close="close">
-              <span class="text-text">{{ content }}</span>
-            </slot>
-            <HanaTooltipArrow v-if="showArrow" :position="position" />
-          </div>
+          <slot name="content" :close="close">
+            <span class="text-text">{{ content }}</span>
+          </slot>
+          <HanaTooltipArrow v-if="showArrow" :position="position" />
         </div>
-      </HanaTooltipAnime>
-    </div>
+      </div>
+    </HanaTooltipAnime>
   </div>
 </template>

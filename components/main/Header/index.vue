@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useStore } from '~/store'
 
-const { headerStatusStore } = useStore()
-
 const { routesMap } = useRoutesMap()
 
 const route = useRoute()
@@ -23,40 +21,10 @@ const drawerVisible = ref(false)
 function toggleDrawerVisible() {
   drawerVisible.value = !drawerVisible.value
 }
-
-const headerTop = ref('0px')
-let lastScrollY = 0
-
-function handleScroll() {
-  if (route.meta.name === 'article-detail') {
-    const currentScrollY = window.scrollY
-    if (currentScrollY > lastScrollY) {
-      headerTop.value = '-100px'
-      headerStatusStore.setHidden(true)
-    }
-    else {
-      headerTop.value = '0px'
-      headerStatusStore.setHidden(false)
-    }
-    lastScrollY = currentScrollY
-  }
-}
-
-const debouncedHandleScroll = useDebounceFn(handleScroll, 50)
-
-onMounted(() => {
-  window.addEventListener('scroll', debouncedHandleScroll)
-})
-onUnmounted(() => {
-  window.removeEventListener('scroll', debouncedHandleScroll)
-})
 </script>
 
 <template>
-  <div
-    class="relative flex h-12 w-full justify-center bg-[#fff8] shadow-md backdrop-blur transition-all"
-    :style="{ top: headerTop }"
-  >
+  <div class="relative flex h-12 w-full justify-center bg-[#fff8] shadow-md backdrop-blur">
     <div class="relative mx-auto flex size-full items-center justify-between px-2 md:max-w-[90%] xl:max-w-[70%]">
       <HanaButton
         class="block md:hidden"
@@ -86,7 +54,7 @@ onUnmounted(() => {
         <HanaButton
           icon-button
           :icon="curMode === 'light' ? 'lucide:moon' : 'lucide:sun'"
-          class="ml-auto"
+          class="ml-auto hidden"
           @click="changeMode"
         />
         <MainHeaderUser />

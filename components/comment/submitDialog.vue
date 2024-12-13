@@ -86,12 +86,7 @@ async function publishComment(objData: IPostComment) {
       <span class="line-clamp-2">{{ replyTo.content }}</span>
     </div>
     <div class="mb-5 flex items-center gap-2">
-      <div class="flex flex-col items-center gap-2">
-        <NuxtImg v-if="userInfo!.avatar" :src="userInfo!.avatar" width="40" height="40" class="cursor-pointer rounded-full" />
-        <div v-else class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
-          <span>{{ userInfo!.username[0] }}</span>
-        </div>
-      </div>
+      <HanaAvatar :size="10" :avatar="userInfo!.avatar" :username="userInfo!.username" />
       <div class="flex flex-col gap-1">
         <span class="font-bold text-black">{{ userInfo!.username }}</span>
         <span class="text-sm text-text">@{{ userInfo!.email }}</span>

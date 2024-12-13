@@ -38,12 +38,7 @@ watch(() => props.index, () => resetAnimation)
     :class="{ 'flex-row-reverse self-end': isMe }"
     :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
   >
-    <div class="flex flex-col items-center gap-2">
-      <NuxtImg v-if="message.author!.avatar" :src="message.author!.avatar" width="40" height="40" class="cursor-pointer rounded-full" />
-      <div v-else class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
-        <span>{{ message.author!.username[0] }}</span>
-      </div>
-    </div>
+    <HanaAvatar :size="10" :avatar="message.author!.avatar" :username="message.author!.username" />
     <div class="flex flex-col gap-1">
       <div class="text-sm text-text" :class="{ 'self-end': isMe }">
         <NuxtLink

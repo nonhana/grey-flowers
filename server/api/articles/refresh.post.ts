@@ -4,6 +4,8 @@ import prisma from '~/lib/prisma'
 import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 import { flatStr } from '~/utils/handleStr'
 
+const blacklist = ['About', 'Friends']
+
 // 从 Nuxt Content 中获取文章数据
 async function getNuxtContent() {
   const _params = { without: ['body'] }
@@ -174,5 +176,5 @@ async function handleArticles(articles: ParsedContent[]) {
 
 export default formattedEventHandler(async () => {
   const articles = await getNuxtContent()
-  await handleArticles(articles.filter(article => article.title !== 'About'))
+  await handleArticles(articles.filter(article => !blacklist.includes(article.title!)))
 })

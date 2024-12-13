@@ -174,10 +174,7 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
   </ClientOnly>
   <ClientOnly v-else>
     <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
-      <NuxtImg v-if="userInfo!.avatar" :src="userInfo!.avatar" class="size-8 cursor-pointer rounded-full" />
-      <div v-else class="flex size-8 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white">
-        <span>{{ userInfo!.username[0] }}</span>
-      </div>
+      <HanaAvatar :size="8" :avatar="userInfo!.avatar" :username="userInfo!.username" />
       <template #dropdown>
         <HanaDropdownMenu>
           <HanaDropdownItem
