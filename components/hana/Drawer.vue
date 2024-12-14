@@ -17,6 +17,8 @@ const props = withDefaults(defineProps<{
   width: '320px',
 })
 
+const { toggleScrollable } = useToggleScrollable()
+
 const visible = defineModel<boolean>()
 
 function handleClose() {
@@ -39,12 +41,7 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 watch(visible, (newV) => {
-  if (newV) {
-    document.body.style.overflow = 'hidden'
-  }
-  else {
-    document.body.style.overflow = ''
-  }
+  toggleScrollable(newV ?? false)
 })
 
 onMounted(() => {

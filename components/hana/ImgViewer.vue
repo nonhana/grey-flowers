@@ -8,6 +8,8 @@ const props = defineProps<{
   height?: number | string
 }>()
 
+const { toggleScrollable } = useToggleScrollable()
+
 const imgStyle = computed<CSSProperties>(() => ({
   width: (typeof props.width === 'number' ? `${props.width}px` : props.width)
     ?? 'auto',
@@ -62,13 +64,13 @@ function toggleDisplay() {
     clearDOM()
     setTimeout(() => {
       displaying.value = false
-      document.body.style.overflow = 'auto'
+      toggleScrollable(false)
       toggleEventListener('off')
     }, 500)
   }
   else {
     displaying.value = true
-    document.body.style.overflow = 'hidden'
+    toggleScrollable(true)
     toggleEventListener('on')
   }
 }

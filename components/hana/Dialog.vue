@@ -18,6 +18,8 @@ const emits = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
 }>()
 
+const { toggleScrollable } = useToggleScrollable()
+
 const programmaticVisible = ref(false)
 const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
 
@@ -51,16 +53,15 @@ function handleAfterLeave() {
 
 const overlayRef = ref<HTMLDivElement | null>(null)
 watch(visible, (newV) => {
+  toggleScrollable(newV)
   if (overlayRef.value) {
     if (newV) {
       requestAnimationFrame(() => {
         overlayRef.value!.style.opacity = String(props.overlayOpacity)
       })
-      document.body.style.overflow = 'hidden'
     }
     else {
       overlayRef.value!.style.opacity = '0'
-      document.body.style.overflow = ''
     }
   }
 })
