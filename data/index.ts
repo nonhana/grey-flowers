@@ -38,9 +38,9 @@ export const friendsPageData = {
 }
 
 export const seoData = {
-  title: 'GreyFlowers - 在失去了意义的世界里，会绽放出什么颜色的花朵呢',
-  ogTitle: 'A garden to study programming, explore myself, and vent emotions - GreyFlowers',
-  description: 'Even in a grey world, flowers bloom as ever. - GreyFlowers',
+  title: '在失去了意义的世界里，会绽放出什么颜色的花朵呢',
+  ogTitle: 'A garden to study programming, explore myself, and vent emotions.',
+  description: 'Even in a grey world, flowers bloom as ever.',
   keywords: '全栈开发, Web 开发教程, JavaScript 技巧, Vue, React, Angular, Svelte, Solid.js, Node.js 后端, 前端性能优化, 面向开发人员的 TypeScript, 编码挑战, 软件工程原理',
   image: 'https://moe.greyflowers.pics/greyflowers-ogimg.webp',
   mySite: 'https://www.greyflowers.moe',
