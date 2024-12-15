@@ -174,7 +174,7 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
   </ClientOnly>
   <ClientOnly v-else>
     <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
-      <HanaAvatar :size="8" :avatar="userInfo!.avatar" :username="userInfo!.username" :site="userInfo!.site" />
+      <HanaAvatar :size="8" :avatar="userInfo!.avatar" :username="userInfo!.username" :site="userInfo!.site" :show-info="false" />
       <template #dropdown>
         <HanaDropdownMenu>
           <HanaDropdownItem
