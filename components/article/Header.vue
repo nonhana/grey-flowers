@@ -30,7 +30,7 @@ onMounted(() => {
     entries.forEach((entry) => {
       setVisible(entry.isIntersecting)
     })
-  }, { threshold: 1.0 })
+  })
 
   headObserver.observe(articleHeadRef.value)
 })
@@ -42,7 +42,9 @@ onUnmounted(() => {
 
 <template>
   <header ref="articleHeadRef" class="mb-10 flex flex-col gap-5">
-    <NuxtImg :src="cover" :alt="alt" class="h-60 rounded-lg object-cover" />
+    <div class="overflow-hidden rounded-lg">
+      <NuxtImg :src="cover" :alt="alt" class="size-full object-cover transition-transform hover:scale-110" />
+    </div>
     <h1 class="font-bold">
       {{ title }}
     </h1>
