@@ -41,9 +41,12 @@ export default formattedEventHandler(async (event) => {
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
 
+  const avatar = getAvatarUrl(email)
+
   await prisma.user.create({
     data: {
       username,
+      avatar,
       email,
       site,
       password: hashedPassword,
