@@ -19,16 +19,15 @@ function handleClick() {
 </script>
 
 <template>
-  <div @click="handleClick">
+  <div class="shrink-0 cursor-pointer overflow-hidden rounded-full" @click="handleClick">
     <NuxtImg
       v-if="avatar"
       :src="avatar"
-      class="cursor-pointer rounded-full"
       :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
     />
     <div
       v-else
-      class="flex shrink-0 cursor-pointer select-none items-center justify-center rounded-full bg-hana-blue text-xl text-white"
+      class="flex select-none items-center justify-center bg-hana-blue text-xl text-white"
       :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
     >
       <span>{{ username[0] }}</span>
