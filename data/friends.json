@@ -22,5 +22,13 @@
     "desc": "KUN, Moe, CUTEST, animations, visual novel (galgame), programming.",
     "image": "https://soft.moe/avatar/kun.webp",
     "color": "#00BFFF"
+  },
+  {
+    "site": "Kloudy Shape",
+    "owner": "Kloudy",
+    "url": "https://shape.kloudy.cn",
+    "desc": "Stay Hungry, Stay Foolish",
+    "image": "https://api.kloudy.cn/img/icon.webp",
+    "color": "#0099ff"
   }
 ]
