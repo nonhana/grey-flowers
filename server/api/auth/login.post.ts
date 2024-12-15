@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import env from '~/server/env/dotenv'
-import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 export default formattedEventHandler(async (event) => {
   const body = await readBody(event)

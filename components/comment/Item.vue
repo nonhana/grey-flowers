@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
-import type { SimpleUserInfo } from '~/types/userInfo'
 import { useStore } from '~/store'
 
 const props = defineProps<{
@@ -12,7 +11,6 @@ const emits = defineEmits<{
   (e: 'reply', value: IReplyComment): void
   (e: 'delete', value: IDeleteComment): void
   (e: 'activate', value: number | undefined): void
-  (e: 'showAuthorInfo', value: SimpleUserInfo): void
 }>()
 
 const { callHanaDialog } = useDialog()
@@ -67,36 +65,17 @@ function confirmDelete() {
 function handleActivate(id: number | undefined) {
   emits('activate', id)
 }
-
-function handleShowAuthorInfo() {
-  emits('showAuthorInfo', props.comment.author!)
-}
 </script>
 
 <template>
   <ClientOnly>
     <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none">
-      <div
-        class="hidden md:block"
-        @click="handleShowAuthorInfo"
-      >
-        <NuxtImg
-          v-if="comment.author!.avatar"
-          :src="comment.author!.avatar"
-          width="40"
-          height="40"
-          class="shrink-0 cursor-pointer rounded-full"
-        />
-        <div
-          v-else
-          class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-hana-blue text-xl text-white"
-        >
-          <span>{{ comment.author!.username[0] }}</span>
-        </div>
+      <div class="hidden md:block">
+        <HanaAvatar :size="10" :avatar="comment.author!.avatar" :site="comment.author!.site" :username="comment.author!.username" />
       </div>
       <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
         <div class="flex h-5 items-center gap-2">
-          <span class="cursor-pointer font-bold text-hana-blue-400" @click="handleShowAuthorInfo">{{ comment.author!.username }}</span>
+          <span class="font-bold text-hana-blue-400">{{ comment.author!.username }}</span>
           <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
           <span v-if="comment.replyToUser" class="text-hana-blue-400">{{ comment.replyToUser.username }}</span>
           <div
@@ -139,7 +118,6 @@ function handleShowAuthorInfo() {
             @reply="emits('reply', $event)"
             @delete="emits('delete', $event)"
             @activate="emits('activate', $event)"
-            @show-author-info="emits('showAuthorInfo', $event)"
           />
         </div>
       </div>

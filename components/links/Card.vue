@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { FriendCardProps } from '~/types/friend'
+import type { LinkCardProps } from '~/types/link'
 
-const props = defineProps<FriendCardProps & { index: number }>()
+const props = defineProps<LinkCardProps & { index: number }>()
 
 const opacity = ref(0)
 const top = ref('10px')

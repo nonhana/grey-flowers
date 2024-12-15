@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { articleArchivesData } from '~/data'
+import { articleArchivesData } from '~/data/meta'
 
 definePageMeta({
   name: 'archives',

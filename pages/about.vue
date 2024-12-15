@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { aboutPageData } from '~/data'
+import { aboutPageData } from '~/data/meta'
 
 useHead({
   title: aboutPageData.title,

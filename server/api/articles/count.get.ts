@@ -2,7 +2,6 @@ import type * as p from '@prisma/client'
 import type { ArticleCountQuery } from '~/server/types/articles'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
-import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 type Options = p.Prisma.ArticleWhereInput & { publishedAtMonth?: string }
 

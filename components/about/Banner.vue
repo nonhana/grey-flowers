@@ -2,7 +2,7 @@
 import type { SNSItem } from '~/types/about'
 
 const welcomeStr = '你好！欢迎来到这里 👋。'
-const introStr = '我是 non_hana，意为 “没有花”，你也可以叫我 Hana 🌷'
+const introStr = '我是 non_hana，意为“没有花”，你也可以叫我 Hana 🌷'
 const roleStr = '一个正在努力学习中的 NodeJS Developer'
 
 const welcomeCharArr = Array.from(welcomeStr)

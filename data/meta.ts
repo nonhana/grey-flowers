@@ -32,9 +32,9 @@ export const thoughtsPageData = {
   description: 'I have a lot of thoughts in my mind. I hope you can find something interesting here.',
 }
 
-export const friendsPageData = {
-  title: 'Friends',
-  description: 'Here are some friends of mine. If you like my blog, you may also like their blogs.',
+export const linksPageData = {
+  title: 'Links',
+  description: 'Here are some friends and some works of mine. If you like my blog, you may also like their blogs.',
 }
 
 export const seoData = {

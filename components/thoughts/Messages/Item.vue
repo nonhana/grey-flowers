@@ -38,17 +38,10 @@ watch(() => props.index, () => resetAnimation)
     :class="{ 'flex-row-reverse self-end': isMe }"
     :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
   >
-    <HanaAvatar :size="10" :avatar="message.author!.avatar" :username="message.author!.username" />
+    <HanaAvatar :size="10" :avatar="message.author!.avatar" :username="message.author!.username" :site="message.author!.site" />
     <div class="flex flex-col gap-1">
       <div class="text-sm text-text" :class="{ 'self-end': isMe }">
-        <NuxtLink
-          v-if="message.author!.site"
-          :to="message.author!.site"
-          :aria-label="`${message.author!.username}的个人主页：${message.author!.site}`"
-        >
-          <span>{{ message.author!.username }}</span>
-        </NuxtLink>
-        <span v-else>{{ message.author!.username }}</span>
+        <span>{{ message.author!.username }}</span>
       </div>
       <div v-if="message.parent" class="flex self-end text-text">
         <div class="line-clamp-1 max-w-40">
@@ -62,7 +55,7 @@ watch(() => props.index, () => resetAnimation)
       >
         <span class="whitespace-pre-wrap">{{ message.content }}</span>
       </div>
-      <div class="self-end text-sm text-text">
+      <div class="text-sm text-text" :class="{ 'self-end': isMe }">
         <span>{{ message.publishedAt }}</span>
       </div>
     </div>

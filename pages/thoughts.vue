@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { thoughtsPageData } from '~/data'
+import { thoughtsPageData } from '~/data/meta'
 
 const newMsgId = ref<number>()
 

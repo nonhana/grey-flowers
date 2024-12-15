@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { articleCategoriesData } from '~/data'
+import { articleCategoriesData } from '~/data/meta'
 
 definePageMeta({
   name: 'categories',

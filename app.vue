@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { siteMetaData } from './data'
+import { siteMetaData } from '~/data/meta'
 
 const initializing = ref(true)
 

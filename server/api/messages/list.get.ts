@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
-import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 export default formattedEventHandler(async () => {
   const messages = await prisma.message.findMany({

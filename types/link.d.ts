@@ -1,4 +1,4 @@
-export interface FriendCardProps {
+export interface LinkCardProps {
   site: string
   owner: string
   url: string

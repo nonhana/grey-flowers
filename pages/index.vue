@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { seoData } from '~/data'
+import { seoData } from '~/data/meta'
 
 useHead({
   title: seoData.title,

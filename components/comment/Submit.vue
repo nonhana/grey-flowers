@@ -86,7 +86,7 @@ async function publishComment(objData: IPostComment) {
       <span class="line-clamp-2">{{ replyTo.content }}</span>
     </div>
     <div class="mb-5 flex items-center gap-2">
-      <HanaAvatar :size="10" :avatar="userInfo!.avatar" :username="userInfo!.username" />
+      <HanaAvatar :size="10" :avatar="userInfo!.avatar" :username="userInfo!.username" :site="userInfo!.site" />
       <div class="flex flex-col gap-1">
         <span class="font-bold text-black">{{ userInfo!.username }}</span>
         <span class="text-sm text-text">@{{ userInfo!.email }}</span>

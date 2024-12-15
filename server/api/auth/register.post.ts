@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import { useZodVerify } from '~/server/composables/useZodVerify'
-import { formattedEventHandler } from '~/server/utils/formattedEventHandler'
 
 const verifySchema = z.object({
   username: z.string().min(1, { message: 'Username must not be empty' }).max(16, { message: 'Username must not exceed 16 characters' }),

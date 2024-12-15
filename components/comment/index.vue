@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
-import type { SimpleUserInfo } from '~/types/userInfo'
 import { useStore } from '~/store'
 
 const { userStore } = useStore()
@@ -118,18 +117,6 @@ const activeCommentId = ref<number>()
 function handleActivate(id: number | undefined) {
   activeCommentId.value = id
 }
-
-const userInfoDialogVisible = ref(false)
-const curUserInfo = ref<SimpleUserInfo | null>(null)
-function handleShowAuthorInfo(userInfo: SimpleUserInfo) {
-  curUserInfo.value = userInfo
-  userInfoDialogVisible.value = true
-}
-watch(userInfoDialogVisible, (newV) => {
-  if (!newV) {
-    curUserInfo.value = null
-  }
-})
 </script>
 
 <template>
@@ -160,7 +147,6 @@ watch(userInfoDialogVisible, (newV) => {
           @reply="handleReply"
           @delete="handleDelete"
           @activate="handleActivate"
-          @show-author-info="handleShowAuthorInfo"
         />
       </main>
     </div>
@@ -168,6 +154,5 @@ watch(userInfoDialogVisible, (newV) => {
       <HanaPaginator v-model="page" :total="parentCount" :page-size="pageSize" />
     </div>
   </div>
-  <CommentSubmitDialog v-model="submitDialogVisible" :reply-to="replyTo" @published="handlePublished" />
-  <CommentUserInfoDialog v-model="userInfoDialogVisible" :user-info="curUserInfo" />
+  <CommentSubmit v-model="submitDialogVisible" :reply-to="replyTo" @published="handlePublished" />
 </template>

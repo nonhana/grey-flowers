@@ -10,7 +10,7 @@ export function useRoutesMap() {
     ['/articles', { title: '文章', icon: 'lucide:notebook-pen', to: '/articles' }],
     ['/thoughts', { title: '碎碎念', icon: 'lucide:messages-square', to: '/thoughts' }],
     ['/about', { title: '关于', icon: 'lucide:info', to: '/about' }],
-    ['/friends', { title: '一些链接', icon: 'lucide:link', to: '/friends' }],
+    ['/links', { title: '一些链接', icon: 'lucide:link', to: '/links' }],
   ])
 
   const articlesMap: Route = new Map([

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ArticleHeader } from '~/types/content'
 import dayjs from 'dayjs'
-import { navbarData, seoData } from '~/data'
+import { navbarData, seoData } from '~/data/meta'
 import { useStore } from '~/store'
 
 definePageMeta({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { articleTagsData } from '~/data'
+import { articleTagsData } from '~/data/meta'
 
 definePageMeta({
   name: 'tags',

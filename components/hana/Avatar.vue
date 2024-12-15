@@ -1,23 +1,38 @@
 <script setup lang="ts">
-defineProps<{
+const props = withDefaults(defineProps<{
   avatar: string | null
   username: string
+  site: string | null
   size: number
-}>()
+  showInfo?: boolean
+}>(), {
+  showInfo: true,
+})
+
+const [visible, toggleVisible] = useToggle(false)
+
+function handleClick() {
+  if (props.showInfo) {
+    toggleVisible()
+  }
+}
 </script>
 
 <template>
-  <NuxtImg
-    v-if="avatar"
-    :src="avatar"
-    class="cursor-pointer rounded-full"
-    :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
-  />
-  <div
-    v-else
-    class="flex cursor-pointer select-none items-center justify-center rounded-full bg-hana-blue text-xl text-white"
-    :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
-  >
-    <span>{{ username[0] }}</span>
+  <div @click="handleClick">
+    <NuxtImg
+      v-if="avatar"
+      :src="avatar"
+      class="cursor-pointer rounded-full"
+      :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
+    />
+    <div
+      v-else
+      class="flex shrink-0 cursor-pointer select-none items-center justify-center rounded-full bg-hana-blue text-xl text-white"
+      :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
+    >
+      <span>{{ username[0] }}</span>
+    </div>
   </div>
+  <HanaUserInfoWindow v-model="visible" v-bind="{ avatar, username, site }" />
 </template>

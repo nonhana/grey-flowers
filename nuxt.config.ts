@@ -1,4 +1,4 @@
-import { seoData } from './data'
+import { seoData } from '~/data/meta'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
