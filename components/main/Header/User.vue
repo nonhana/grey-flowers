@@ -34,38 +34,6 @@ function toggleLoginRegisterWindow() {
   registerWindowVisible.value = !registerWindowVisible.value
 }
 
-function handleUserCommand(command: string | number | object) {
-  switch (command) {
-    case '登录':
-      loginWindowVisible.value = true
-      break
-    case '注册':
-      registerWindowVisible.value = true
-      break
-    case '退出登录':
-      callHanaDialog({
-        title: '提示',
-        content: '确定要退出登录吗？',
-        showCancelButton: true,
-        onOk: () => {
-          localStorage.removeItem('token')
-          userStore.logout()
-          callHanaMessage({
-            message: '已退出登录。',
-            type: 'success',
-          })
-        },
-      })
-      break
-    default:
-      callHanaMessage({
-        message: '功能开发中...',
-        type: 'error',
-      })
-      break
-  }
-}
-
 const logging = ref(false)
 const loginBtnText = computed(() => logging.value ? '登录中...' : '登录')
 async function handleLogin(e: Event) {
@@ -147,6 +115,43 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
       break
   }
 }
+
+const userInfoDialogVisible = ref(false)
+
+function handleUserCommand(command: string | number | object) {
+  switch (command) {
+    case '登录':
+      loginWindowVisible.value = true
+      break
+    case '注册':
+      registerWindowVisible.value = true
+      break
+    case '退出登录':
+      callHanaDialog({
+        title: '提示',
+        content: '确定要退出登录吗？',
+        showCancelButton: true,
+        onOk: () => {
+          localStorage.removeItem('token')
+          userStore.logout()
+          callHanaMessage({
+            message: '已退出登录。',
+            type: 'success',
+          })
+        },
+      })
+      break
+    case '个人资料':
+      userInfoDialogVisible.value = true
+      break
+    default:
+      callHanaMessage({
+        message: '功能开发中...',
+        type: 'error',
+      })
+      break
+  }
+}
 </script>
 
 <template>
@@ -223,4 +228,5 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
       </div>
     </form>
   </HanaDialog>
+  <UserInfoDialog v-model="userInfoDialogVisible" />
 </template>

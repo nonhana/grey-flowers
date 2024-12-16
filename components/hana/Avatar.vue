@@ -33,5 +33,5 @@ function handleClick() {
       <span>{{ username[0] }}</span>
     </div>
   </div>
-  <HanaUserInfoWindow v-model="visible" v-bind="{ avatar, username, site }" />
+  <UserInfoViewer v-model="visible" v-bind="{ avatar, username, site }" />
 </template>

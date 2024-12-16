@@ -87,6 +87,12 @@ defineExpose({
 
 <template>
   <teleport to="body">
+    <div
+      ref="overlayRef"
+      class="fixed inset-0 z-50 bg-black opacity-0 transition-opacity duration-300"
+      :class="{ 'pointer-events-none': !visible }"
+      @click="handleClose"
+    />
     <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
       <div
         v-if="visible"
@@ -134,11 +140,5 @@ defineExpose({
         </div>
       </div>
     </transition>
-    <div
-      ref="overlayRef"
-      class="fixed inset-0 z-40 bg-black opacity-0 transition-opacity duration-300"
-      :class="{ 'pointer-events-none': !visible }"
-      @click="handleClose"
-    />
   </teleport>
 </template>
