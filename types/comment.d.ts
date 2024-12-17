@@ -1,5 +1,6 @@
 export interface CommentItem {
   id: number
+  path: string
   content: string
   level: 'PARENT' | 'CHILD'
   parentId: number | null
@@ -22,6 +23,14 @@ export interface CommentItem {
 }
 
 export interface ParentCommentItem extends CommentItem {
+  children: CommentItem[]
+}
+
+export interface UserCommentItem extends CommentItem {
+  parent: { content: string } | null
+}
+
+export interface UserParentCommentItem extends UserCommentItem {
   children: CommentItem[]
 }
 

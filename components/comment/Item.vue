@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
+import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem, UserCommentItem, UserParentCommentItem } from '~/types/comment'
 import { useStore } from '~/store'
 
-const props = defineProps<{
-  comment: CommentItem | ParentCommentItem
+type Comment = CommentItem | ParentCommentItem | UserCommentItem | UserParentCommentItem
+
+const props = withDefaults(defineProps<{
+  comment: Comment
   activeCommentId?: number
-}>()
+  recordMode?: boolean
+}>(), {
+  recordMode: false,
+})
 
 const emits = defineEmits<{
   (e: 'reply', value: IReplyComment): void
@@ -23,8 +28,11 @@ const isMe = computed(() => userInfo.value?.id === props.comment.author?.id)
 const isActive = computed(() => props.activeCommentId === props.comment.id)
 
 // Type Guard
-function isParentCommentItem(comment: CommentItem | ParentCommentItem): comment is ParentCommentItem {
+function isParentCommentItem(comment: Comment): comment is ParentCommentItem {
   return (comment as ParentCommentItem).children !== undefined
+}
+function isUserCommentItem(comment: Comment): comment is UserCommentItem {
+  return (comment as UserCommentItem).parent !== undefined
 }
 
 function handleReply() {
@@ -65,6 +73,22 @@ function confirmDelete() {
 function handleActivate(id: number | undefined) {
   emits('activate', id)
 }
+
+const isReplyToParentComment = computed(() =>
+  props.recordMode
+  && isUserCommentItem(props.comment)
+  && props.comment.parent
+  && !props.comment.replyToComment)
+
+const isReplyToChildComment = computed(() =>
+  props.recordMode
+  && isUserCommentItem(props.comment)
+  && props.comment.replyToComment)
+
+const blockquoteContent = computed(() =>
+  isReplyToParentComment.value
+    ? (props.comment as UserCommentItem).parent!.content
+    : props.comment.replyToComment!.content)
 </script>
 
 <template>
@@ -79,26 +103,32 @@ function handleActivate(id: number | undefined) {
           <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
           <span v-if="comment.replyToUser" class="text-hana-blue-400">{{ comment.replyToUser.username }}</span>
           <div
-            v-if="comment.replyToComment"
+            v-if="comment.replyToComment && !recordMode"
             @mouseenter="handleActivate(comment.replyToComment.id)"
             @mouseleave="handleActivate(undefined)"
           >
             <HanaButton icon="lucide:map-pin" icon-button />
           </div>
         </div>
+        <ProseBlockquote v-if="recordMode && (isReplyToParentComment || isReplyToChildComment)">
+          {{ blockquoteContent }}
+        </ProseBlockquote>
         <p class="whitespace-pre-wrap leading-6 text-black">
           {{ comment.content }}
         </p>
-        <div class="flex h-6 items-center gap-2">
-          <span class="text-sm">{{ comment.publishedAt }}</span>
-          <HanaTooltip v-if="loggedIn" content="点击回复">
+        <div class="flex h-6 items-center gap-2 overflow-x-auto scrollbar-hidden">
+          <span class="text-nowrap text-sm">{{ comment.publishedAt }}</span>
+          <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap font-code text-sm text-text transition-colors hover:text-hana-blue">
+            {{ comment.path }}
+          </NuxtLink>
+          <HanaTooltip v-if="loggedIn && !recordMode" content="点击回复">
             <HanaButton
               icon="lucide:reply"
               icon-button
               @click="handleReply"
             />
           </HanaTooltip>
-          <HanaTooltip v-if="isMe" content="删除评论">
+          <HanaTooltip v-if="isMe && !recordMode" content="删除评论">
             <HanaButton
               icon="lucide:x"
               icon-button
@@ -115,6 +145,7 @@ function handleActivate(id: number | undefined) {
             :key="child.id"
             :comment="child"
             :active-comment-id="activeCommentId"
+            :record-mode="recordMode"
             @reply="emits('reply', $event)"
             @delete="emits('delete', $event)"
             @activate="emits('activate', $event)"

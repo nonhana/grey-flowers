@@ -2,6 +2,7 @@ import type * as p from '@prisma/client'
 
 export const selectCommentObj: p.Prisma.CommentSelect = {
   id: true,
+  path: true,
   content: true,
   level: true,
   parentId: true,

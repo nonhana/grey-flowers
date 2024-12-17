@@ -14,9 +14,9 @@ const [editMode, toggleEditMode] = useToggle(false)
     <div class="mb-4 flex flex-col items-center gap-2 font-code text-sm text-text">
       <NuxtImg :src="userInfo!.avatar!" width="100" height="100" class="rounded-full" />
       <span>根据邮箱使用 <strong>weavatar</strong> 自动生成</span>
-      <span>您可以前往 <ProseA href="https://weavatar.com" target="_blank">weavatar.com</ProseA> 修改头像，并等待刷新</span>
+      <span>您可以前往 <ProseA href="https://weavatar.com" target="_blank">weavatar.com</ProseA> 修改头像</span>
     </div>
-    <table class="m-auto w-4/5">
+    <table class="w-full md:m-auto md:w-4/5">
       <tbody>
         <tr class="h-10 border-b-2 border-hana-blue-200">
           <td class="w-20 font-code font-bold text-text">

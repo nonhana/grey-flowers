@@ -117,6 +117,8 @@ async function handleSubmit(type: 'login' | 'register', e: Event) {
 }
 
 const userInfoDialogVisible = ref(false)
+const messagesDialogVisible = ref(false)
+const commentsDialogVisible = ref(false)
 
 function handleUserCommand(command: string | number | object) {
   switch (command) {
@@ -143,6 +145,12 @@ function handleUserCommand(command: string | number | object) {
       break
     case '个人资料':
       userInfoDialogVisible.value = true
+      break
+    case '消息':
+      messagesDialogVisible.value = true
+      break
+    case '评论':
+      commentsDialogVisible.value = true
       break
     default:
       callHanaMessage({
@@ -229,4 +237,5 @@ function handleUserCommand(command: string | number | object) {
     </form>
   </HanaDialog>
   <UserInfoDialog v-model="userInfoDialogVisible" />
+  <UserCommentsDialog v-model="commentsDialogVisible" />
 </template>

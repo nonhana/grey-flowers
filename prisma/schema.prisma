@@ -64,7 +64,7 @@ model Session {
 
 model Comment {
   id               Int          @id @default(autoincrement())
-  path             String?
+  path             String
   content          String
   level            CommentLevel @default(PARENT)
   parent           Comment?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
