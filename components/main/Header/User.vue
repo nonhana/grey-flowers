@@ -236,6 +236,6 @@ function handleUserCommand(command: string | number | object) {
       </div>
     </form>
   </HanaDialog>
-  <UserInfoDialog v-model="userInfoDialogVisible" />
-  <UserCommentsDialog v-model="commentsDialogVisible" />
+  <UserInfoDialog v-if="loggedIn" v-model="userInfoDialogVisible" />
+  <UserCommentsDialog v-if="loggedIn" v-model="commentsDialogVisible" />
 </template>

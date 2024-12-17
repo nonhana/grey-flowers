@@ -11,7 +11,7 @@ export interface MessageItem {
     id: number
     username: string
     site: string | null
-    avatar: string | null
+    avatar: string
   } | null
   isNew?: boolean
 }

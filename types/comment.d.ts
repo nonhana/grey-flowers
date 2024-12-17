@@ -10,7 +10,7 @@ export interface CommentItem {
     id: number
     username: string
     site: string | null
-    avatar: string | null
+    avatar: string
   } | null
   replyToUser: {
     id: number
