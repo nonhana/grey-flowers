@@ -116,7 +116,7 @@ const blockquoteContent = computed(() =>
         <p class="whitespace-pre-wrap leading-6 text-black">
           {{ comment.content }}
         </p>
-        <div class="flex h-6 items-center gap-2 overflow-x-auto scrollbar-hidden">
+        <div class="flex h-6 items-center gap-2" :class="{ 'overflow-x-auto scrollbar-hidden': recordMode }">
           <span class="text-nowrap text-sm">{{ comment.publishedAt }}</span>
           <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap font-code text-sm text-text transition-colors hover:text-hana-blue">
             {{ comment.path }}
