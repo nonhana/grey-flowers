@@ -62,6 +62,23 @@ async function publishComment(objData: IPostComment) {
     body: JSON.stringify(objData),
   })
   if (data.success) {
+    const receiverId = data.payload!.parent
+      ? data.payload!.replyToUser
+        ? data.payload!.replyToUser.id
+        : data.payload!.parent.author.id
+      : 1 // 文章作者的 id，因为是我的博客所以就是我自己的 id
+    if (userInfo.value!.id !== receiverId) {
+      await $fetch('/api/user/send-message', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          receiverId,
+          commentId: data.payload!.id,
+        }),
+      })
+    }
     emits('published', data.payload!)
     content.value = ''
     visible.value = false

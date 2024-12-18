@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
 
 const { userStore } = useStore()
 const { userInfo } = toRefs(userStore)
-const isMe = computed(() => props.message.author!.id === userInfo.value?.id)
+const isMe = computed(() => props.message.author.id === userInfo.value?.id)
 
 const opacity = ref(0)
 const top = ref('10px')
@@ -38,10 +38,10 @@ watch(() => props.index, () => resetAnimation)
     :class="{ 'flex-row-reverse self-end': isMe }"
     :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
   >
-    <HanaAvatar :size="10" :avatar="message.author!.avatar" :username="message.author!.username" :site="message.author!.site" />
+    <HanaAvatar :size="10" :avatar="message.author.avatar" :username="message.author.username" :site="message.author.site" />
     <div class="flex flex-col gap-1">
       <div class="text-sm text-text" :class="{ 'self-end': isMe }">
-        <span>{{ message.author!.username }}</span>
+        <span>{{ message.author.username }}</span>
       </div>
       <div v-if="message.parent" class="flex self-end text-text">
         <div class="line-clamp-1 max-w-40">

@@ -128,6 +128,15 @@ function handleUserCommand(command: string | number | object) {
     case '注册':
       registerWindowVisible.value = true
       break
+    case '个人资料':
+      userInfoDialogVisible.value = true
+      break
+    case '消息':
+      messagesDialogVisible.value = true
+      break
+    case '评论':
+      commentsDialogVisible.value = true
+      break
     case '退出登录':
       callHanaDialog({
         title: '提示',
@@ -141,21 +150,6 @@ function handleUserCommand(command: string | number | object) {
             type: 'success',
           })
         },
-      })
-      break
-    case '个人资料':
-      userInfoDialogVisible.value = true
-      break
-    case '消息':
-      messagesDialogVisible.value = true
-      break
-    case '评论':
-      commentsDialogVisible.value = true
-      break
-    default:
-      callHanaMessage({
-        message: '功能开发中...',
-        type: 'error',
       })
       break
   }
@@ -237,5 +231,6 @@ function handleUserCommand(command: string | number | object) {
     </form>
   </HanaDialog>
   <UserInfoDialog v-if="loggedIn" v-model="userInfoDialogVisible" />
+  <UserMessagesDialog v-if="loggedIn" v-model="messagesDialogVisible" />
   <UserCommentsDialog v-if="loggedIn" v-model="commentsDialogVisible" />
 </template>

@@ -44,46 +44,56 @@ model Category {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  username String    @unique
-  password String
-  site     String?
-  avatar   String
-  comments Comment[]
-  replies  Comment[] @relation("ReplyToUser")
-  messages Message[]
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  username    String        @unique
+  password    String
+  site        String?
+  avatar      String
+  comments    Comment[]
+  replies     Comment[]     @relation("ReplyToUser")
+  messages    Message[]
+  userMessage UserMessage[]
 }
 
 model Comment {
-  id               Int          @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   path             String
   content          String
-  level            CommentLevel @default(PARENT)
-  parent           Comment?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  level            CommentLevel  @default(PARENT)
+  author           User          @relation(fields: [authorId], references: [id])
+  authorId         Int
+  parent           Comment?      @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
   parentId         Int?
-  children         Comment[]    @relation("ParentChild")
-  author           User?        @relation(fields: [authorId], references: [id])
-  authorId         Int?
-  replyToUser      User?        @relation("ReplyToUser", fields: [replyToUserId], references: [id])
+  children         Comment[]     @relation("ParentChild")
+  replyToUser      User?         @relation("ReplyToUser", fields: [replyToUserId], references: [id])
   replyToUserId    Int?
-  replyToComment   Comment?     @relation("ReplyToComment", fields: [replyToCommentId], references: [id])
+  replyToComment   Comment?      @relation("ReplyToComment", fields: [replyToCommentId], references: [id])
   replyToCommentId Int?
-  replies          Comment[]    @relation("ReplyToComment")
-  publishedAt      DateTime     @default(now())
-  editedAt         DateTime     @updatedAt
+  replies          Comment[]     @relation("ReplyToComment")
+  publishedAt      DateTime      @default(now())
+  editedAt         DateTime      @updatedAt
+  userMessage      UserMessage[]
 }
 
 model Message {
   id          Int       @id @default(autoincrement())
   content     String
-  parentId    Int?
   parent      Message?  @relation("ParentChild", fields: [parentId], references: [id])
+  parentId    Int?
   children    Message[] @relation("ParentChild")
-  author      User?     @relation(fields: [authorId], references: [id])
-  authorId    Int?
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    Int
   publishedAt DateTime  @default(now())
   editedAt    DateTime  @updatedAt
+}
+
+model UserMessage {
+  id         Int     @id @default(autoincrement())
+  receiver   User    @relation(fields: [receiverId], references: [id])
+  receiverId Int
+  comment    Comment @relation(fields: [commentId], references: [id])
+  commentId  Int
 }
 
 enum CommentLevel {

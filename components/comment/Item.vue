@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem, UserCommentItem, UserParentCommentItem } from '~/types/comment'
+import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
 import { useStore } from '~/store'
 
-type Comment = CommentItem | ParentCommentItem | UserCommentItem | UserParentCommentItem
+type Comment = CommentItem | ParentCommentItem
 
 const props = withDefaults(defineProps<{
   comment: Comment
@@ -31,14 +31,11 @@ const isActive = computed(() => props.activeCommentId === props.comment.id)
 function isParentCommentItem(comment: Comment): comment is ParentCommentItem {
   return (comment as ParentCommentItem).children !== undefined
 }
-function isUserCommentItem(comment: Comment): comment is UserCommentItem {
-  return (comment as UserCommentItem).parent !== undefined
-}
 
 function handleReply() {
   const replyToData = {
-    userId: props.comment.author!.id,
-    username: props.comment.author!.username,
+    userId: props.comment.author.id,
+    username: props.comment.author.username,
     commentId: props.comment.id,
     content: props.comment.content,
   }
@@ -46,7 +43,7 @@ function handleReply() {
     emits('reply', { ...replyToData, parentId: props.comment.id, targetCommentLevel: 'PARENT' })
   }
   else {
-    emits('reply', { ...replyToData, parentId: props.comment.parentId!, targetCommentLevel: 'CHILD' })
+    emits('reply', { ...replyToData, parentId: props.comment.parent!.id, targetCommentLevel: 'CHILD' })
   }
 }
 
@@ -58,7 +55,7 @@ function handleDelete() {
     emits('delete', { ...deleteData, level: 'PARENT' })
   }
   else {
-    emits('delete', { ...deleteData, level: 'CHILD', parentId: props.comment.parentId! })
+    emits('delete', { ...deleteData, level: 'CHILD', parentId: props.comment.parent!.id })
   }
 }
 function confirmDelete() {
@@ -76,18 +73,16 @@ function handleActivate(id: number | undefined) {
 
 const isReplyToParentComment = computed(() =>
   props.recordMode
-  && isUserCommentItem(props.comment)
   && props.comment.parent
   && !props.comment.replyToComment)
 
 const isReplyToChildComment = computed(() =>
   props.recordMode
-  && isUserCommentItem(props.comment)
   && props.comment.replyToComment)
 
 const blockquoteContent = computed(() =>
   isReplyToParentComment.value
-    ? (props.comment as UserCommentItem).parent!.content
+    ? props.comment.parent!.content
     : props.comment.replyToComment!.content)
 </script>
 
@@ -95,11 +90,11 @@ const blockquoteContent = computed(() =>
   <ClientOnly>
     <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none">
       <div class="hidden md:block">
-        <HanaAvatar :size="10" :avatar="comment.author!.avatar" :site="comment.author!.site" :username="comment.author!.username" />
+        <HanaAvatar :size="10" :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
       </div>
       <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
         <div class="flex h-5 items-center gap-2">
-          <span class="font-bold text-hana-blue-400">{{ comment.author!.username }}</span>
+          <span class="font-bold text-hana-blue-400">{{ comment.author.username }}</span>
           <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
           <span v-if="comment.replyToUser" class="text-hana-blue-400">{{ comment.replyToUser.username }}</span>
           <div

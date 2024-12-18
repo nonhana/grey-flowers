@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UserCommentItem } from '~/types/comment'
+import type { CommentItem } from '~/types/comment'
 import { useStore } from '~/store'
 
 const { userStore } = useStore()
@@ -11,14 +11,10 @@ const route = useRoute()
 const { path } = toRefs(route)
 watch(path, () => visible.value = false)
 
-const comments = ref<UserCommentItem[]>([])
+const comments = ref<CommentItem[]>([])
 
 async function fetchUserComments() {
-  const data = await $fetch('/api/comments/user', {
-    query: {
-      id: userInfo.value!.id,
-    },
-  })
+  const data = await $fetch('/api/user/comments', { query: { id: userInfo.value!.id } })
   if (data.success) {
     comments.value = data.payload ?? []
   }

@@ -105,7 +105,7 @@ function handlePublished(comment: CommentItem) {
     commentList.value.unshift({ ...comment, children: [] })
   }
   else {
-    const parent = commentList.value.find(item => item.id === comment.parentId)
+    const parent = commentList.value.find(item => item.id === comment.parent?.id)
     if (parent) {
       parent.children!.push(comment)
     }

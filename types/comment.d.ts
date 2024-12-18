@@ -1,16 +1,15 @@
+import type { SimpleUserInfo } from './user'
+
 export interface CommentItem {
   id: number
   path: string
   content: string
   level: 'PARENT' | 'CHILD'
-  parentId: number | null
-  publishedAt: string
-  editedAt: string
-  author: {
+  author: SimpleUserInfo
+  parent: {
     id: number
-    username: string
-    site: string | null
-    avatar: string
+    content: string
+    author: SimpleUserInfo
   } | null
   replyToUser: {
     id: number
@@ -20,17 +19,11 @@ export interface CommentItem {
     id: number
     content: string
   } | null
+  publishedAt: string
+  editedAt: string
 }
 
 export interface ParentCommentItem extends CommentItem {
-  children: CommentItem[]
-}
-
-export interface UserCommentItem extends CommentItem {
-  parent: { content: string } | null
-}
-
-export interface UserParentCommentItem extends UserCommentItem {
   children: CommentItem[]
 }
 

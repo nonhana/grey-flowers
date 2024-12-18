@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import { useZodVerify } from '~/server/composables/useZodVerify'
-import { selectCommentObj } from '~/server/prisma/select'
 
 const verifySchema = z.object({
   path: z.string(),
@@ -33,7 +32,7 @@ export default formattedEventHandler(async (event) => {
     replyToCommentId,
   } = result
 
-  const { id: newId } = await prisma.comment.create({
+  const newItem = await prisma.comment.create({
     data: {
       path,
       content,
@@ -43,11 +42,18 @@ export default formattedEventHandler(async (event) => {
       replyToUserId,
       replyToCommentId,
     },
-  })
-
-  const newItem = await prisma.comment.findUnique({
-    where: { id: newId },
-    select: selectCommentObj,
+    select: {
+      id: true,
+      path: true,
+      content: true,
+      level: true,
+      author: { select: { id: true, username: true, site: true, avatar: true } },
+      parent: { select: { id: true, content: true, author: { select: { id: true, username: true, site: true, avatar: true } } } },
+      replyToUser: { select: { id: true, username: true } },
+      replyToComment: { select: { id: true, content: true } },
+      publishedAt: true,
+      editedAt: true,
+    },
   })
 
   const formattedItem = {
