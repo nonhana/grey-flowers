@@ -8,8 +8,10 @@ const props = withDefaults(defineProps<{
   comment: Comment
   activeCommentId?: number
   recordMode?: boolean
+  isChild?: boolean
 }>(), {
   recordMode: false,
+  isChild: false,
 })
 
 const emits = defineEmits<{
@@ -105,7 +107,7 @@ const blockquoteContent = computed(() =>
             <HanaButton icon="lucide:map-pin" icon-button />
           </div>
         </div>
-        <ProseBlockquote v-if="recordMode && (isReplyToParentComment || isReplyToChildComment)">
+        <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
           {{ blockquoteContent }}
         </ProseBlockquote>
         <p class="whitespace-pre-wrap leading-6 text-black">
@@ -141,6 +143,7 @@ const blockquoteContent = computed(() =>
             :comment="child"
             :active-comment-id="activeCommentId"
             :record-mode="recordMode"
+            is-child
             @reply="emits('reply', $event)"
             @delete="emits('delete', $event)"
             @activate="emits('activate', $event)"

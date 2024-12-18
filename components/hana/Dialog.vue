@@ -53,7 +53,17 @@ function handleAfterLeave() {
 
 const overlayRef = ref<HTMLDivElement | null>(null)
 watch(visible, (newV) => {
-  toggleScrollable(newV)
+  const curDialogCount = document.querySelectorAll('#hana-dialog').length
+  if (newV) {
+    if (curDialogCount === 0) {
+      toggleScrollable(newV)
+    }
+  }
+  else {
+    if (curDialogCount === 1) {
+      toggleScrollable(newV)
+    }
+  }
   if (overlayRef.value) {
     if (newV) {
       requestAnimationFrame(() => {
@@ -96,6 +106,7 @@ defineExpose({
     <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
       <div
         v-if="visible"
+        id="hana-dialog"
         class="fixed left-1/2 top-1/2 z-50 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow"
         :style="{ width }"
       >

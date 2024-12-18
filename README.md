@@ -12,3 +12,5 @@ Built with:
 - [Vue3](https://vuejs.org)
 - [Nuxt Content2](https://content.nuxt.com)
 - [TailwindCSS](https://tailwindcss.com)
+- [Prisma](https://prisma.io)
+- [PostgreSQL](https://postgresql.org)

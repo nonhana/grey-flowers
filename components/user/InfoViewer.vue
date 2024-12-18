@@ -10,7 +10,7 @@ const visible = defineModel<boolean>()
 
 <template>
   <HanaDialog v-model="visible" width="300px">
-    <div class="relative -top-5 flex flex-col items-center gap-4">
+    <div class="relative mb-5 flex flex-col items-center gap-4">
       <NuxtImg :src="avatar" class="size-20 rounded-full" />
       <span class="text-xl font-bold">{{ username }}</span>
       <NuxtLink

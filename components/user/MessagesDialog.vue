@@ -28,7 +28,7 @@ onMounted(fetchUserMessages)
     <div class="px-4">
       <UserMessageItem v-for="message in messages" :key="message.id" :message="message" />
       <div v-if="!fetching && !messages.length" class="flex w-full flex-col items-center justify-center gap-4 text-xl">
-        <NuxtImg src="/images/not-found.webp" alt="空空如也" class="size-40 rounded-lg" />
+        <NuxtImg src="/images/empty.webp" alt="空空如也" class="size-40 rounded-lg" />
         <span>空空如也...</span>
       </div>
     </div>
