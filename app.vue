@@ -9,8 +9,9 @@ useHead({
   htmlAttrs: {
     lang: 'zh-Hans',
   },
-  meta: () => siteMetaData,
 })
+
+useSeoMeta(siteMetaData)
 </script>
 
 <template>

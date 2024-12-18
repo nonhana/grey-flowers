@@ -44,31 +44,27 @@ export const seoData = {
   keywords: '全栈开发, Web 开发教程, JavaScript 技巧, Vue, React, Angular, Svelte, Solid.js, Node.js 后端, 前端性能优化, 面向开发人员的 TypeScript, 编码挑战, 软件工程原理',
   image: 'https://moe.greyflowers.pics/greyflowers-ogimg.webp',
   mySite: 'https://www.greyflowers.moe',
+  twitterHandle: '@non_hanaz',
   mailAddress: 'zhouxiang757@gmail.com',
 }
 
-export const siteMetaData = [
-  {
-    name: 'description',
-    content: seoData.description,
-  },
+export const siteMetaData = {
+  title: seoData.ogTitle,
+  ogTitle: seoData.ogTitle,
+  description: seoData.description,
+
   // Test on: https://developers.facebook.com/tools/debug/ or https://socialsharepreview.com/
-  { property: 'og:site_name', content: seoData.mySite },
-  { property: 'og:type', content: 'website' },
-  {
-    property: 'og:url',
-    content: seoData.mySite,
-  },
-  {
-    property: 'og:title',
-    content: seoData.ogTitle,
-  },
-  {
-    property: 'og:description',
-    content: seoData.description,
-  },
-  {
-    property: 'og:image',
-    content: seoData.image,
-  },
-]
+  ogDescription: seoData.description,
+  ogImage: seoData.image,
+  ogSiteName: seoData.mySite,
+  ogType: 'website',
+  ogUrl: seoData.mySite,
+
+  // Test on: https://cards-dev.twitter.com/validator or https://socialsharepreview.com/
+  twitterSite: seoData.twitterHandle,
+  twitterCard: 'summary_large_image',
+  twitterUrl: seoData.mySite,
+  twitterTitle: seoData.ogTitle,
+  twitterDescription: seoData.description,
+  twitterImage: seoData.image,
+} as const
