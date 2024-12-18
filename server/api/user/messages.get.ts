@@ -20,6 +20,7 @@ async function getUserMessages(userId: number) {
         },
       },
     },
+    take: 10,
   })
   const result = messages.map(message => ({
     ...message.comment,
