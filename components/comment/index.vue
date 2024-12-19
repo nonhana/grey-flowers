@@ -118,16 +118,16 @@ function handleActivate(id: number | undefined) {
   activeCommentId.value = id
 }
 
-onMounted(() => {
-  if (hash === '#comments') {
-    const comments = document.getElementById('comments')
-    if (comments) {
-      setTimeout(() => {
+watch(() => hash, (newV) => {
+  if (newV === '#comments') {
+    setTimeout(() => {
+      const comments = document.getElementById('comments')
+      if (comments) {
         comments.scrollIntoView({ behavior: 'smooth' })
-      }, 1000)
-    }
+      }
+    }, 1000)
   }
-})
+}, { immediate: true })
 </script>
 
 <template>

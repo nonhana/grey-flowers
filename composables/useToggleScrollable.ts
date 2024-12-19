@@ -1,10 +1,6 @@
 export function useToggleScrollable() {
   const isScrollableDisabled = ref(false)
 
-  const hasScrollbar = () => {
-    return window.innerWidth > document.documentElement.clientWidth
-  }
-
   const disableScroll = () => {
     if (isScrollableDisabled.value)
       return
