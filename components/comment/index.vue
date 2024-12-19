@@ -7,7 +7,7 @@ const { loggedIn } = toRefs(userStore)
 const { callHanaMessage } = useMessage()
 
 const route = useRoute()
-const { path } = route
+const { path, hash } = route
 
 const page = ref(1)
 const pageSize = ref(10)
@@ -117,6 +117,17 @@ const activeCommentId = ref<number>()
 function handleActivate(id: number | undefined) {
   activeCommentId.value = id
 }
+
+onMounted(() => {
+  if (hash === '#comments') {
+    const comments = document.getElementById('comments')
+    if (comments) {
+      setTimeout(() => {
+        comments.scrollIntoView({ behavior: 'smooth' })
+      }, 1000)
+    }
+  }
+})
 </script>
 
 <template>

@@ -1,10 +1,60 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 
+const appConfig = useAppConfig()
+const siteLaunchDate = dayjs(appConfig.siteLaunchDate)
+
+const runDays = ref(0)
+
+onMounted(() => {
+  const today = dayjs()
+  runDays.value = today.diff(siteLaunchDate, 'day')
+})
 </script>
 
 <template>
-  <div class="mx-auto flex h-20 items-center justify-between px-8 md:max-w-[90%] xl:max-w-[70%]">
-    <span>Copyright © 2024 Hana's Garden</span>
-    <span class="hidden md:block">灰色的花终会绽放。</span>
+  <div class="mx-auto flex flex-col gap-4 px-8 py-4 md:max-w-[90%] xl:max-w-[70%]">
+    <div class="flex w-full flex-col gap-4 md:flex-row md:items-center">
+      <div class="flex items-center gap-2">
+        <span class="font-code text-text">快捷导航</span>
+        <Icon name="lucide:chevron-right" class="text-text" />
+        <ProseA href="/about" target="_self">
+          关于
+        </ProseA>
+        <ProseA href="/links" target="_self">
+          友链
+        </ProseA>
+        <ProseA href="/about#comments" target="_self">
+          留言
+        </ProseA>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-code text-text">联系我</span>
+        <Icon name="lucide:chevron-right" class="text-text" />
+        <ProseA href="https://github.com/nonhana">
+          GitHub
+        </ProseA>
+        <ProseA href="https://qm.qq.com/q/nkm9pWgpTc">
+          QQ
+        </ProseA>
+        <ProseA href="mailto:zhouxiang757@gmail.com">
+          发邮件
+        </ProseA>
+      </div>
+    </div>
+    <div class="flex w-full items-center gap-2">
+      <span>灰色的花终会绽放</span>
+      <span class="text-text">·</span>
+      <span>苗圃已浇灌 {{ runDays }} 天</span>
+    </div>
+    <div class="flex w-full flex-col gap-2 text-sm md:flex-row md:items-center">
+      <span>Copyright © 2024 Hana's Garden</span>
+      <span class="hidden text-text md:block">|</span>
+      <span>Powered by <ProseA href="https://github.com/nonhana/GreyFlowers">GreyFlowers</ProseA></span>
+      <span class="hidden text-text md:block">|</span>
+      <NuxtLink href="https://icp.gov.moe/?keyword=20241500" target="_blank">
+        萌ICP备20241500号
+      </NuxtLink>
+    </div>
   </div>
 </template>

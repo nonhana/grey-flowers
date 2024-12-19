@@ -7,6 +7,7 @@ const { headerStatusStore } = useStore()
 const { fullPath } = toRefs(route)
 
 const isHome = computed(() => fullPath.value === '/')
+const isThoughts = computed(() => fullPath.value === '/thoughts')
 
 const headerTop = ref('0px')
 let lastScrollY = 0
@@ -49,7 +50,7 @@ onUnmounted(() => {
         <slot />
       </div>
     </main>
-    <footer class="bg-white">
+    <footer v-if="!isThoughts" class="bg-primary-100">
       <MainFooter />
     </footer>
     <HanaController />
