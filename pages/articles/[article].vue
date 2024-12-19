@@ -4,6 +4,8 @@ import dayjs from 'dayjs'
 import { navbarData, seoData } from '~/data/meta'
 import { useStore } from '~/store'
 
+const img = useImage()
+
 definePageMeta({
   name: 'article-detail',
 })
@@ -50,7 +52,7 @@ useSeoMeta({
   description: articleHeader.value.description,
   ogTitle: articleHeader.value.title,
   ogDescription: articleHeader.value.description,
-  ogImage: `${seoData.mySite}/_ipx/q_85${articleHeader.value.ogImage}`,
+  ogImage: seoData.mySite + img(articleHeader.value.ogImage, { q: 85 }),
   ogSiteName: navbarData.homeTitle,
   ogType: 'website',
   ogUrl: `${seoData.mySite}/${path}`,
