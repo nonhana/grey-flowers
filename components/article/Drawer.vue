@@ -22,6 +22,8 @@ watch(hash, (newHash) => {
 const { data: neighbors } = await useAsyncData(`article-${path.value}-prev-next`, () => queryContent()
   .only(['title', '_path'])
   .sort({ publishedAt: -1 })
+  .where({ title: { $ne: 'About' } })
+  .where({ title: { $ne: 'Friends' } })
   .findSurround(path.value))
 
 const [prev, next] = neighbors.value || []
