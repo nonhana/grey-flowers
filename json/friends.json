@@ -30,5 +30,13 @@
     "desc": "Stay Hungry, Stay Foolish",
     "image": "https://api.kloudy.cn/img/icon.webp",
     "color": "#0099ff"
+  },
+  {
+    "site": "天翔TNXGの空间站",
+    "owner": "天翔TNXG",
+    "url": "https://tnxg.top",
+    "desc": "明日尚未到来，希望凝于心上",
+    "image": "https://api-space.tnxg.top/avatar?s=qq",
+    "color": "#77BBDD"
   }
 ]
