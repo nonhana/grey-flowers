@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const route = useRoute()
-const { path } = toRefs(route)
-
+const { progress } = useLoadingIndicator()
 const canScroll = ref(false)
 
 onMounted(() => {
@@ -9,10 +7,12 @@ onMounted(() => {
     canScroll.value = hasScrollbar()
   }, 300)
 })
-watch(path, () => {
-  setTimeout(() => {
-    canScroll.value = hasScrollbar()
-  }, 300)
+watch(progress, (newV) => {
+  if (newV === 100) {
+    setTimeout(() => {
+      canScroll.value = hasScrollbar()
+    }, 300)
+  }
 })
 
 const curScrollPercent = ref(0)
@@ -47,11 +47,13 @@ onMounted(() => {
     comments ? hasComments.value = true : hasComments.value = false
   }, 300)
 })
-watch(path, () => {
-  setTimeout(() => {
-    comments = document.querySelector('#comments')
-    comments ? hasComments.value = true : hasComments.value = false
-  }, 300)
+watch(progress, (newV) => {
+  if (newV === 100) {
+    setTimeout(() => {
+      comments = document.querySelector('#comments')
+      comments ? hasComments.value = true : hasComments.value = false
+    }, 300)
+  }
 })
 
 function scrollToComments() {
