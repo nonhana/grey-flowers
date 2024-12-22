@@ -5,7 +5,9 @@ const { path } = toRefs(route)
 const canScroll = ref(false)
 
 onMounted(() => {
-  canScroll.value = hasScrollbar()
+  setTimeout(() => {
+    canScroll.value = hasScrollbar()
+  }, 300)
 })
 watch(path, () => {
   setTimeout(() => {
@@ -40,8 +42,10 @@ const hasComments = ref(false)
 let comments: Element | null
 
 onMounted(() => {
-  comments = document.querySelector('#comments')
-  comments ? hasComments.value = true : hasComments.value = false
+  setTimeout(() => {
+    comments = document.querySelector('#comments')
+    comments ? hasComments.value = true : hasComments.value = false
+  }, 300)
 })
 watch(path, () => {
   setTimeout(() => {
