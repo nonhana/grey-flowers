@@ -96,9 +96,15 @@ const blockquoteContent = computed(() =>
       </div>
       <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
         <div class="flex h-5 items-center gap-2">
-          <span class="font-bold text-hana-blue-400">{{ comment.author.username }}</span>
+          <HanaUsername :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
           <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
-          <span v-if="comment.replyToUser" class="text-hana-blue-400">{{ comment.replyToUser.username }}</span>
+          <HanaUsername
+            v-if="comment.replyToUser"
+            :avatar="comment.author.avatar"
+            :site="comment.author.site"
+            :username="comment.replyToUser.username"
+            class="font-normal"
+          />
           <div
             v-if="comment.replyToComment && !recordMode"
             @mouseenter="handleActivate(comment.replyToComment.id)"

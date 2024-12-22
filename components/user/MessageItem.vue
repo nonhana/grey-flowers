@@ -23,7 +23,7 @@ const blockquoteContent = computed(() =>
     </div>
     <div class="flex w-full flex-col gap-4">
       <div class="flex h-5 items-center gap-2">
-        <span class="font-bold text-hana-blue-400">{{ message.author.username }}</span>
+        <HanaUsername :avatar="message.author.avatar" :site="message.author.site" :username="message.author.username" />
         <span>{{ messageTip }}</span>
       </div>
       <ProseBlockquote v-if="props.message.parent">

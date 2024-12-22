@@ -40,8 +40,13 @@ watch(() => props.index, () => resetAnimation)
   >
     <HanaAvatar :size="10" :avatar="message.author.avatar" :username="message.author.username" :site="message.author.site" />
     <div class="flex flex-col gap-1">
-      <div class="text-sm text-text" :class="{ 'self-end': isMe }">
-        <span>{{ message.author.username }}</span>
+      <div :class="{ 'self-end': isMe }">
+        <HanaUsername
+          :avatar="message.author.avatar"
+          :username="message.author.username"
+          :site="message.author.site"
+          class="text-sm font-normal text-text"
+        />
       </div>
       <div v-if="message.parent" class="flex self-end text-text">
         <div class="line-clamp-1 max-w-40">
