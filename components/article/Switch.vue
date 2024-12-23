@@ -1,12 +1,15 @@
 <script setup lang="ts">
 const { path } = useRoute()
 
-const { data: neighbors } = await useAsyncData(`article-${path}-prev-next`, () => queryContent()
-  .only(['title', '_path'])
-  .sort({ publishedAt: -1 })
-  .where({ title: { $ne: 'About' } })
-  .where({ title: { $ne: 'Friends' } })
-  .findSurround(path))
+const { data: neighbors } = await useAsyncData(
+  `article-${path}-prev-next`,
+  () => queryContent()
+    .only(['title', '_path'])
+    .sort({ publishedAt: -1 })
+    .where({ title: { $ne: 'About' } })
+    .where({ title: { $ne: 'Friends' } })
+    .findSurround(path),
+)
 
 const [prev, next] = neighbors.value || []
 </script>

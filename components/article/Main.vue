@@ -44,18 +44,26 @@ const displayCols = computed(() => {
 const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
 
-const { data: fetchedTotal } = await useAsyncData(`articles-count-${props.type}`, () => $fetch('/api/articles/count', {
-  query: whereObj.value,
-}), { watch: [whereObj] })
+const { data: fetchedTotal } = await useAsyncData(
+  `articles-count-${props.type}`,
+  () => $fetch('/api/articles/count', {
+    query: whereObj.value,
+  }),
+  { watch: [whereObj] },
+)
 const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
 
-const { data: fetchedArticleData } = await useAsyncData(`articles-list-${props.type}`, () => $fetch('/api/articles/list', {
-  query: {
-    page: page.value,
-    pageSize: pageSize.value,
-    ...whereObj.value,
-  },
-}), { watch: [page, pageSize, whereObj] })
+const { data: fetchedArticleData } = await useAsyncData(
+  `articles-list-${props.type}`,
+  () => $fetch('/api/articles/list', {
+    query: {
+      page: page.value,
+      pageSize: pageSize.value,
+      ...whereObj.value,
+    },
+  }),
+  { watch: [page, pageSize, whereObj] },
+)
 const articleData = computed(() => fetchedArticleData.value ? fetchedArticleData.value.payload ?? [] : [])
 
 watch(page, async (newPage) => {

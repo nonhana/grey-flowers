@@ -12,7 +12,10 @@ definePageMeta({
 
 const { path } = useRoute()
 
-const { data: article } = await useAsyncData(`article-${path}`, () => queryContent(path).findOne())
+const { data: article } = await useAsyncData(
+  `article-${path}`,
+  () => queryContent(path).findOne(),
+)
 
 const articleHeader = computed<ArticleHeader>(() => ({
   title: article.value?.title || '暂无标题',

@@ -56,17 +56,17 @@ function handleForm() {
 
 async function submitForm(objData: Record<string, string | null>) {
   submitting.value = true
-  const { data } = await useFetch('/api/user/edit', { method: 'POST', body: JSON.stringify(objData) })
-  if (data.value?.success) {
+  const data = await $fetch('/api/user/edit', { method: 'POST', body: JSON.stringify(objData) })
+  if (data.success) {
     callHanaMessage({
       message: '修改成功',
       type: 'success',
     })
-    userStore.setUserInfo(data.value.payload!)
+    userStore.setUserInfo(data.payload!)
     visible.value = false
   }
   else {
-    const errorList = data.value?.error?.map(item => item.message).join(', ')
+    const errorList = data.error?.map(item => item.message).join(', ')
     callHanaMessage({
       message: errorList || '修改失败。',
       type: 'error',

@@ -48,10 +48,10 @@ async function handleLogin(e: Event) {
       return
     }
     logging.value = true
-    const { data } = await useFetch('/api/auth/login', { method: 'POST', body: JSON.stringify(objData) })
-    if (data.value?.success) {
-      localStorage.setItem('token', data.value.payload!.token)
-      userStore.setUserInfo(data.value.payload!.userInfo)
+    const data = await $fetch('/api/auth/login', { method: 'POST', body: JSON.stringify(objData) })
+    if (data.success) {
+      localStorage.setItem('token', data.payload!.token)
+      userStore.setUserInfo(data.payload!.userInfo)
       loginWindowVisible.value = false
       callHanaMessage({
         message: `欢迎回来，${userInfo.value?.username}。`,
@@ -60,7 +60,7 @@ async function handleLogin(e: Event) {
     }
     else {
       callHanaMessage({
-        message: data.value?.statusMessage || '登录失败。',
+        message: data.statusMessage || '登录失败。',
         type: 'error',
       })
     }
@@ -85,8 +85,8 @@ async function handleRegister(e: Event) {
       delete objData.site
     }
     registering.value = true
-    const { data } = await useFetch('/api/auth/register', { method: 'POST', body: JSON.stringify(objData) })
-    if (data.value?.success) {
+    const data = await $fetch('/api/auth/register', { method: 'POST', body: JSON.stringify(objData) })
+    if (data.success) {
       callHanaMessage({
         message: '注册成功，请登录',
         type: 'success',
@@ -95,7 +95,7 @@ async function handleRegister(e: Event) {
       loginWindowVisible.value = true
     }
     else {
-      const errorList = data.value?.payload?.map(item => item.message).join(', ')
+      const errorList = data.payload?.map(item => item.message).join(', ')
       callHanaMessage({
         message: errorList || '注册失败。',
         type: 'error',
