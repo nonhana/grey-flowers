@@ -27,7 +27,7 @@ function handleScroll() {
   }
 }
 
-const debouncedHandleScroll = useDebounceFn(handleScroll, 50)
+const debouncedHandleScroll = useThrottleFn(handleScroll, 50)
 
 onMounted(() => {
   window.addEventListener('scroll', debouncedHandleScroll)
