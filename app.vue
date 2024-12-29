@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { siteMetaData } from '~/data/meta'
 
-const initializing = ref(true)
+const route = useRoute()
+
+const initializing = ref(route.meta.name !== 'article-detail')
 
 onMounted(() => initializing.value = false)
 
