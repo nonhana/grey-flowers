@@ -80,6 +80,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     '@nuxtjs/google-fonts',
+    '@nuxtjs/color-mode',
     '@nuxt/image',
     '@nuxt/content',
     '@nuxtjs/seo',
