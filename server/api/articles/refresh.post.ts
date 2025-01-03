@@ -1,23 +1,10 @@
 import type { ParsedContent } from '@nuxt/content'
 import type * as p from '@prisma/client'
+import { serverQueryContent } from '#content/server'
 import prisma from '~/lib/prisma'
 import { flatStr } from '~/utils/handleStr'
 
 const titleBlacklist = ['About', 'Friends']
-
-// 从 Nuxt Content 中获取文章数据
-async function getNuxtContent() {
-  const _params = { without: ['body'] }
-
-  const queryString = new URLSearchParams({
-    _params: JSON.stringify(_params),
-  }).toString()
-
-  const url = `/api/_content/query?${queryString}`
-
-  const result = await $fetch(url) as ParsedContent[]
-  return result
-}
 
 // 处理 tag 数据，返回 tagName 和 tagId 的映射
 async function handleTags(articles: ParsedContent[]): Promise<Record<string, number>> {
@@ -173,7 +160,7 @@ async function handleArticles(articles: ParsedContent[]) {
   ])
 }
 
-export default formattedEventHandler(async () => {
-  const articles = await getNuxtContent()
+export default formattedEventHandler(async (event) => {
+  const articles = await serverQueryContent(event).without(['body']).find() as ParsedContent[]
   await handleArticles(articles.filter(article => !titleBlacklist.includes(article.title!)))
 })

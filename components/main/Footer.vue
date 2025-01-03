@@ -27,6 +27,9 @@ onMounted(() => {
         <ProseA href="/about#comments" target="_self">
           留言
         </ProseA>
+        <ProseA href="/rss.xml">
+          RSS Feed
+        </ProseA>
       </div>
       <div class="flex items-center gap-2">
         <span class="font-code text-text dark:text-hana-white-700">联系我</span>
