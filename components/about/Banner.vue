@@ -81,11 +81,11 @@ const SNSList: SNSItem[] = [
     to: 'mailto:zhouxiang757@gmail.com',
   },
   {
-    icon: 'Bilibili',
-    name: '哔哩哔哩',
-    bgColor: '#00A1D6',
+    icon: 'RSS',
+    name: 'RSS',
+    bgColor: '#ffa500',
     iconColor: '#fff',
-    to: 'https://space.bilibili.com/70501952',
+    to: '/rss.xml',
   },
   {
     icon: 'CloudMusic',

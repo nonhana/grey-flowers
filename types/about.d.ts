@@ -11,6 +11,6 @@ export type SNSNames =
   | 'QQ'
   | 'X'
   | 'Telegram'
-  | 'Bilibili'
+  | 'RSS'
   | 'CloudMusic'
   | 'Mail'
