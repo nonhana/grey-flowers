@@ -31,17 +31,17 @@ useCopy(copyBtn, codeblock)
 
 <template>
   <figure
-    class="relative text-clip rounded-lg border-2 border-primary-400 bg-primary-100 text-sm"
+    class="relative text-clip rounded-lg border-2 border-primary-400 bg-primary-100 text-sm dark:border-hana-black-200 dark:bg-hana-black"
   >
     <figcaption
-      class="sticky z-10 flex items-center justify-between gap-4 px-4 pt-2 text-text transition-all"
+      class="sticky z-10 flex items-center justify-between gap-4 px-4 pt-2 text-text transition-all dark:text-hana-white-700"
       :class="[headerStatusStore.hidden ? 'top-2' : 'top-14']"
     >
       <div class="flex items-center gap-2">
         <span v-if="language">{{ language }}</span>
-        <Icon v-if="filename" class="hidden text-text md:block" name="lucide:arrow-right" />
+        <Icon v-if="filename" class="hidden text-text dark:text-hana-white-700 md:block" name="lucide:arrow-right" />
         <span v-if="filename" class="hidden items-center border-2 border-solid px-1 md:flex">
-          <Icon class="text-text" name="lucide:file-terminal" />
+          <Icon class="text-text dark:text-hana-white-700" name="lucide:file-terminal" />
           {{ filename }}
         </span>
       </div>
@@ -57,7 +57,7 @@ useCopy(copyBtn, codeblock)
     ><slot /></pre>
     <button
       v-if="collapsible"
-      class="absolute bottom-0 flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-b from-[#ffffff00] to-[#ffffff] text-text/40 transition-colors hover:text-text"
+      class="absolute bottom-0 flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-b from-[#ffffff00] to-[#ffffff] text-text/40 transition-colors hover:text-text dark:from-[#3d3d3d00] dark:to-[#3d3d3d] dark:text-hana-white-700/40 dark:hover:dark:text-hana-white-700"
       :class="{ 'bg-none': !isCollapsed }"
       @click="toggleCollapsed()"
     >

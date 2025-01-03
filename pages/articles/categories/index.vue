@@ -23,7 +23,7 @@ useHead({
 <template>
   <div>
     <header class="mb-5">
-      <div class="text-xl text-hana-blue">
+      <div class="text-xl text-hana-blue dark:text-hana-blue-200">
         <span class="text-xl">目前共计 <span class="font-bold">{{ categories.length }}</span> 个目录...我还有很多想写的东西</span>
       </div>
     </header>

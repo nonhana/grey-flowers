@@ -27,7 +27,7 @@ useHead({
       </div>
     </HanaInfoCard>
     <HanaInfoCard title="来做朋友吧" icon="lucide:sticker">
-      <ContentDoc path="/friends" class="flex flex-col gap-4 leading-7" />
+      <ContentDoc path="/friends" class="flex flex-col gap-4 leading-7 dark:text-hana-white" />
     </HanaInfoCard>
     <Comment />
   </div>

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+const colorMode = useColorMode()
+
+const imgSrc = computed(() => colorMode.value === 'dark' ? '/images/banner.webp' : '/images/ende_nea.webp')
+
 function scrollToHead() {
   window.scrollTo({
     top: 732,
@@ -9,7 +13,9 @@ function scrollToHead() {
 
 <template>
   <div class="relative h-[732px] w-full">
-    <NuxtImg class="size-full object-cover" src="/images/ende_nea.webp" alt="ende_nea" />
+    <ClientOnly>
+      <NuxtImg class="size-full object-cover" :src="imgSrc" alt="ende_nea" />
+    </ClientOnly>
     <div class="absolute left-0 top-0 grid size-full">
       <div class="flex items-center justify-center">
         <MainBannerLogo />

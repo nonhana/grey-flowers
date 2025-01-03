@@ -46,31 +46,29 @@ module.exports = {
           3: '#4d4d4d',
           4: '#242424',
         },
-      },
-      dark: {
-        primary: {
-          100: '#e7e7e7',
-          200: '#d1d1d1',
-          300: '#b0b0b0',
-          400: '#888888',
-          500: '#6d6d6d',
-          600: '#5d5d5d',
-          700: '#4f4f4f',
-          800: '#454545',
-          900: '#3d3d3d',
+        'hana-black': {
+          DEFAULT: '#3D3D3D',
+          100: '#8A8A8A',
+          200: '#7D7D7D',
+          300: '#707070',
+          400: '#636363',
+          500: '#575757',
+          600: '#4A4A4A',
+          700: '#3D3D3D',
+          800: '#262626',
+          900: '#0F0F0F',
         },
-        error: {
-          0: '#ffebe9',
-          1: '#ffaba8',
-          2: '#ff8182',
-          3: '#fa4549',
-          4: '#cf222e',
-        },
-        text: {
-          0: '#e5e5e5',
-          1: '#cccccc',
-          2: '#b3b3b3',
-          3: '#999999',
+        'hana-white': {
+          DEFAULT: '#F7F7F7',
+          100: '#FFFFFF',
+          200: '#F7F7F7',
+          300: '#EAEAEA',
+          400: '#DDDDDD',
+          500: '#D1D1D1',
+          600: '#C4C4C4',
+          700: '#B7B7B7',
+          800: '#AAAAAA',
+          900: '#9D9D9D',
         },
       },
       fontFamily: {
@@ -104,6 +102,14 @@ module.exports = {
           background: 'linear-gradient(to right, #2A669F, #2A669F) no-repeat right bottom',
           backgroundSize: '0% 2px',
           transition: 'background-size 0.5s',
+        },
+        '.dark': {
+          '.with-underline': {
+            cursor: 'pointer',
+            background: 'linear-gradient(to right, #9CD7E5, #9CD7E5) no-repeat right bottom',
+            backgroundSize: '0% 2px',
+            transition: 'background-size 0.5s',
+          },
         },
         '.with-underline:hover': {
           backgroundPosition: 'left bottom',
@@ -144,24 +150,49 @@ module.exports = {
           )`,
           'background-size': '100px 100px',
         },
+        '.background-grid-dark': {
+          'background-image': `linear-gradient(
+            0deg,
+            transparent 24%,
+            #262626 25%,
+            #262626 26%,
+            transparent 27%,
+            transparent 74%,
+            #262626 75%,
+            #262626 76%,
+            transparent 77%
+          ),
+          linear-gradient(
+            90deg,
+            transparent 24%,
+            #262626 25%,
+            #262626 26%,
+            transparent 27%,
+            transparent 74%,
+            #262626 75%,
+            #262626 76%,
+            transparent 77%
+          )`,
+          'background-size': '100px 100px',
+        },
       })
     },
     function ({ addComponents }) {
       addComponents({
         '.hana-button': {
-          '@apply flex shrink-0 cursor-pointer select-none items-center justify-between rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-150 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200': {},
+          '@apply flex shrink-0 cursor-pointer select-none items-center justify-between rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-150 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200 dark:hover:bg-hana-black-800 dark:hover:text-hana-blue-200 dark:active:bg-hana-black-800': {},
         },
         '.hana-button--active': {
-          '@apply bg-hana-blue-150 text-hana-blue': {},
+          '@apply bg-hana-blue-150 text-hana-blue dark:bg-hana-black-800 dark:text-hana-blue-200': {},
         },
         '.hana-button--disabled': {
           '@apply cursor-not-allowed opacity-50': {},
         },
         '.hana-card': {
-          '@apply rounded-lg bg-white p-2 text-text shadow-md': {},
+          '@apply rounded-lg bg-white p-2 text-text shadow-md dark:bg-hana-black dark:text-hana-white-700': {},
         },
         '.hana-article-title': {
-          '@apply flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-[\'#\'] hover:text-hana-blue': {},
+          '@apply flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-[\'#\'] hover:text-hana-blue dark:hover:text-hana-blue-200': {},
         },
       })
     },

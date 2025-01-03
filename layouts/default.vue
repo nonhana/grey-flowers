@@ -50,7 +50,7 @@ onUnmounted(() => {
         <slot />
       </div>
     </main>
-    <footer v-if="!isThoughts" class="bg-primary-100">
+    <footer v-if="!isThoughts" class="bg-primary-100 dark:bg-hana-black-800">
       <MainFooter />
     </footer>
     <HanaController />

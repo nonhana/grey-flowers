@@ -99,14 +99,14 @@ async function publishComment(objData: IPostComment) {
 
 <template>
   <HanaDialog v-model="visible" :title="dialogTitle" width="700px">
-    <div v-if="replyTo" class="mb-5 rounded-lg border-l-4 border-solid border-primary-400 bg-primary-100 py-2 pl-4 text-text">
+    <ProseBlockquote v-if="replyTo" class="mb-5">
       <span class="line-clamp-2">{{ replyTo.content }}</span>
-    </div>
+    </ProseBlockquote>
     <div class="mb-5 flex items-center gap-2">
       <HanaAvatar :size="10" :avatar="userInfo!.avatar" :username="userInfo!.username" :site="userInfo!.site" :show-info="false" />
       <div class="flex flex-col gap-1">
-        <span class="font-bold text-black">{{ userInfo!.username }}</span>
-        <span class="text-sm text-text">@{{ userInfo!.email }}</span>
+        <span class="font-bold text-black dark:text-hana-white">{{ userInfo!.username }}</span>
+        <span class="text-sm text-text dark:text-hana-white-700">@{{ userInfo!.email }}</span>
       </div>
     </div>
     <div class="mb-5 flex flex-col gap-4">

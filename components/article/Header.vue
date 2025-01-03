@@ -45,16 +45,16 @@ onUnmounted(() => {
     <div class="overflow-hidden rounded-lg">
       <NuxtImg :src="cover" :alt="alt" class="size-full object-cover transition-transform hover:scale-110" />
     </div>
-    <h1 class="font-bold">
+    <h1 class="font-bold dark:text-hana-white">
       {{ title }}
     </h1>
-    <p class="text-text">
+    <p class="text-text dark:text-hana-white-700">
       {{ description }}
     </p>
     <div class="flex gap-2 overflow-auto">
       <ArticleTag v-for="tag in tags" :key="tag" :name="tag" :to="`/articles/tags/filter?tag=${tag}`" />
     </div>
-    <div class="flex flex-wrap items-center gap-4 text-text">
+    <div class="flex flex-wrap items-center gap-4 text-text dark:text-hana-white-700">
       <span class="flex items-center gap-2">
         <Icon name="lucide:calendar" />
         <time :datetime="publishedAt">{{ publishedAt }}</time>

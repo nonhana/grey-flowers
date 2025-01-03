@@ -72,7 +72,7 @@ useSeoMeta({
     <div class="flex gap-8">
       <div class="w-full xl:max-w-[calc(100%-272px)]">
         <ArticleHeader v-if="article" v-bind="articleHeader" />
-        <div class="max-w-none leading-7">
+        <div class="max-w-none leading-7 dark:text-hana-white">
           <ContentRenderer v-if="article" :value="article" class="flex flex-col gap-4">
             <template #empty>
               <p>No content found.</p>

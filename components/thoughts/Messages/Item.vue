@@ -45,10 +45,10 @@ watch(() => props.index, () => resetAnimation)
           :avatar="message.author.avatar"
           :username="message.author.username"
           :site="message.author.site"
-          class="text-sm font-normal text-text"
+          class="text-sm font-normal text-text dark:text-hana-white-700"
         />
       </div>
-      <div v-if="message.parent" class="flex self-end text-text">
+      <div v-if="message.parent" class="flex self-end text-text dark:text-hana-white-700">
         <div class="line-clamp-1 max-w-40">
           <span>{{ message.parent.content }}</span>
         </div>
@@ -56,11 +56,11 @@ watch(() => props.index, () => resetAnimation)
       </div>
       <div
         class="w-fit rounded-lg p-3"
-        :class="[isMe ? 'self-end bg-hana-blue-400 text-white' : 'bg-white text-text']"
+        :class="[isMe ? 'self-end bg-hana-blue-400 text-white' : 'bg-white text-text dark:bg-hana-black dark:text-hana-white-700']"
       >
         <span class="whitespace-pre-wrap">{{ message.content }}</span>
       </div>
-      <div class="text-sm text-text" :class="{ 'self-end': isMe }">
+      <div class="text-sm text-text dark:text-hana-white-700" :class="{ 'self-end': isMe }">
         <span>{{ message.publishedAt }}</span>
       </div>
     </div>

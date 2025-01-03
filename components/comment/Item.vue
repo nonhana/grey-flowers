@@ -90,14 +90,14 @@ const blockquoteContent = computed(() =>
 
 <template>
   <ClientOnly>
-    <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none">
+    <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none dark:border-hana-black-200">
       <div class="hidden md:block">
         <HanaAvatar :size="10" :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
       </div>
-      <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150': isActive }">
+      <div class="flex w-full flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150 dark:bg-hana-black-800': isActive }">
         <div class="flex h-5 items-center gap-2">
           <HanaUsername :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
-          <Icon v-if="comment.replyToUser" size="20" name="lucide:chevron-right" />
+          <Icon v-if="comment.replyToUser" class="dark:text-hana-white" size="20" name="lucide:chevron-right" />
           <HanaUsername
             v-if="comment.replyToUser"
             :avatar="comment.author.avatar"
@@ -116,12 +116,12 @@ const blockquoteContent = computed(() =>
         <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
           {{ blockquoteContent }}
         </ProseBlockquote>
-        <p class="whitespace-pre-wrap leading-6 text-black">
+        <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white">
           {{ comment.content }}
         </p>
         <div class="flex h-6 items-center gap-2" :class="{ 'overflow-x-auto scrollbar-hidden': recordMode }">
-          <span class="text-nowrap text-sm">{{ comment.publishedAt }}</span>
-          <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap font-code text-sm text-text transition-colors hover:text-hana-blue">
+          <span class="text-nowrap text-sm dark:text-hana-white">{{ comment.publishedAt }}</span>
+          <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap font-code text-sm text-text transition-colors hover:text-hana-blue dark:text-hana-white-700 dark:hover:text-hana-blue-200">
             {{ comment.path }}
           </NuxtLink>
           <HanaTooltip v-if="loggedIn && !recordMode" content="点击回复">
@@ -141,7 +141,7 @@ const blockquoteContent = computed(() =>
         </div>
         <div
           v-if="isParentCommentItem(comment) && comment.children?.length"
-          class="rounded-lg bg-primary-100 px-4"
+          class="rounded-lg bg-primary-100 px-4 dark:bg-hana-black-600"
         >
           <CommentItem
             v-for="child in comment.children"

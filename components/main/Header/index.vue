@@ -10,11 +10,6 @@ watchEffect(() => {
   activeStatus.value[Array.from(routesMap.keys()).indexOf(rootRoute.value)] = true
 })
 
-const curMode = ref<'light' | 'dark'>('light')
-function changeMode() {
-  curMode.value = curMode.value === 'light' ? 'dark' : 'light'
-}
-
 const drawerVisible = ref(false)
 function toggleDrawerVisible() {
   drawerVisible.value = !drawerVisible.value
@@ -22,7 +17,7 @@ function toggleDrawerVisible() {
 </script>
 
 <template>
-  <div class="relative flex h-12 w-full justify-center bg-[#fff8] shadow-md backdrop-blur">
+  <div class="relative flex h-12 w-full justify-center bg-[#fff8] shadow-md backdrop-blur dark:bg-hana-black">
     <div class="relative mx-auto flex size-full items-center justify-between px-2 md:max-w-[90%] xl:max-w-[70%]">
       <HanaButton
         class="block md:hidden"
@@ -49,12 +44,7 @@ function toggleDrawerVisible() {
       </div>
 
       <div class="flex gap-4">
-        <HanaButton
-          icon-button
-          :icon="curMode === 'light' ? 'lucide:moon' : 'lucide:sun'"
-          class="ml-auto hidden"
-          @click="changeMode"
-        />
+        <MainHeaderThemes />
         <MainHeaderUser />
       </div>
     </div>

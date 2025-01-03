@@ -99,7 +99,7 @@ defineExpose({
   <teleport to="body">
     <div
       ref="overlayRef"
-      class="fixed inset-0 z-50 bg-black opacity-0 transition-opacity duration-300"
+      class="fixed inset-0 z-40 bg-black opacity-0 transition-opacity duration-300"
       :class="{ 'pointer-events-none': !visible }"
       @click="handleClose"
     />
@@ -107,7 +107,7 @@ defineExpose({
       <div
         v-if="visible"
         id="hana-dialog"
-        class="fixed left-1/2 top-1/2 z-50 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow"
+        class="fixed left-1/2 top-1/2 z-40 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow dark:bg-hana-black"
         :style="{ width }"
       >
         <div class="mb-5">
@@ -116,13 +116,13 @@ defineExpose({
             :close="handleClose"
           >
             <div v-if="!hideHeader" class="flex items-center">
-              <span v-if="title" class="text-2xl font-bold">{{ title }}</span>
+              <span v-if="title" class="text-2xl font-bold dark:text-hana-white">{{ title }}</span>
               <HanaButton v-if="!programmatic" icon="lucide:x" class="relative -right-2 -top-2 ml-auto" icon-button @click="handleClose" />
             </div>
           </slot>
         </div>
         <div v-if="programmatic">
-          <span>{{ content }}</span>
+          <span class="dark:text-hana-white">{{ content }}</span>
         </div>
         <div v-else class="max-h-[80vh] overflow-y-auto" :style="{ height }">
           <slot />

@@ -99,7 +99,7 @@ const SNSList: SNSItem[] = [
 
 <template>
   <div class="flex flex-col justify-between gap-20 lg:flex-row">
-    <div class="flex flex-col gap-8 text-black">
+    <div class="flex flex-col gap-8 text-black dark:text-hana-white">
       <p ref="welcomeRef" class="m-auto text-center text-xl lg:m-0 lg:text-start">
         <span
           v-for="(char, index) in welcomeCharArr"

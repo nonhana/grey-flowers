@@ -29,7 +29,10 @@ export default defineNuxtConfig({
   content: {
     highlight: {
       langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http'],
-      theme: 'github-light',
+      theme: {
+        default: 'github-light',
+        dark: 'github-dark',
+      },
     },
     markdown: {
       toc: {
@@ -75,6 +78,9 @@ export default defineNuxtConfig({
     display: 'swap',
     preload: true,
     download: true,
+  },
+  colorMode: {
+    classSuffix: '',
   },
   modules: [
     '@nuxtjs/tailwindcss',

@@ -135,7 +135,7 @@ watch(() => hash, (newV) => {
     <div class="hana-card w-full p-4">
       <header class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <span class="text-2xl font-bold text-hana-blue">评论</span>
+          <span class="text-2xl font-bold text-hana-blue dark:text-hana-blue-200">评论</span>
           <span class="text-xl text-hana-blue-200">{{ totalCount }}</span>
         </div>
         <HanaButton

@@ -20,7 +20,7 @@ const component = computed(() => {
     :is="component"
     v-if="!count"
     :to="to"
-    class="cursor-pointer select-none rounded-md bg-[#3d3d3d] text-white transition-all hover:opacity-80"
+    class="cursor-pointer select-none rounded-md bg-hana-black text-white transition-all hover:opacity-80 dark:bg-hana-white-700 dark:text-hana-black"
     :class="[size === 'small' ? 'px-2 py-0.5 text-sm' : 'px-4 py-2']"
   >
     {{ name }}
@@ -28,7 +28,7 @@ const component = computed(() => {
   <NuxtLink
     v-else
     :to="`/articles/tags/filter?tag=${name}`"
-    class="cursor-pointer transition-all hover:text-hana-blue"
+    class="cursor-pointer transition-all hover:text-hana-blue dark:hover:text-hana-blue-200"
     :class="{
       'text-2xl text-error-2': count >= 5,
       'text-xl text-hana-blue-300': count >= 3 && count < 5,

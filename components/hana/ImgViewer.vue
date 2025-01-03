@@ -96,6 +96,6 @@ function handleClick() {
         @click="handleClick"
       >
     </div>
-    <span v-if="alt">{{ alt }}</span>
+    <span v-if="alt" class="dark:text-hana-white">{{ alt }}</span>
   </div>
 </template>

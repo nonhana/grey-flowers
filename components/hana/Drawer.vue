@@ -58,14 +58,14 @@ onBeforeUnmount(() => {
     <aside
       v-if="visible"
       v-click-outside="() => handleClose()"
-      class="fixed top-0 z-50 flex h-screen w-4/5 flex-col bg-white px-5"
+      class="fixed top-0 z-50 flex h-screen w-4/5 flex-col bg-white px-5 dark:bg-hana-black"
       :class="[direction === 'right' ? 'right-0' : 'left-0']"
       :style="{ maxWidth: width }"
     >
       <slot name="header">
         <div v-if="!hideHeader" class="flex h-12 items-center gap-2">
-          <Icon v-if="icon" :name="icon" size="20" class="text-hana-blue" />
-          <span v-if="title" class="text-xl text-hana-blue">{{ title }}</span>
+          <Icon v-if="icon" :name="icon" size="20" class="text-hana-blue dark:text-hana-blue-200" />
+          <span v-if="title" class="text-xl text-hana-blue dark:text-hana-blue-200">{{ title }}</span>
           <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />
         </div>
         <hr>
@@ -73,10 +73,10 @@ onBeforeUnmount(() => {
       <div v-if="showInfo" class="mt-5">
         <div class="flex shrink-0 flex-col items-center justify-items-end gap-2">
           <NuxtImg class="rounded-full" src="/images/avatar.webp" alt="non_hana" width="96" height="96" />
-          <h2 class="text-xl text-hana-blue with-underline">
+          <h2 class="text-xl text-hana-blue dark:text-hana-blue-200">
             non_hana
           </h2>
-          <p class="text-sm">
+          <p class="text-sm dark:text-hana-white">
             不要为每一件事都赋予意义。
           </p>
         </div>

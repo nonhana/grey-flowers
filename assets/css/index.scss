@@ -9,12 +9,18 @@ html {
 :root {
   --hana-blue: rgba(156, 215, 229, 1);
   --hana-blue-light: rgba(156, 215, 229, 0.4);
-  --hana-blue-deep: rgba(42, 102, 159, 1);
-  --hana-white: rgba(255, 255, 255, 1);
+  --hana-black: rgb(74, 74, 74, 1);
+  --hana-black-light: rgba(125, 125, 125, 1);
 }
 
 ::selection {
   background-color: var(--hana-blue-light);
+}
+
+.dark {
+  ::selection {
+    background-color: var(--hana-black-light);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -27,9 +33,23 @@ html {
   border-radius: 8px;
 }
 
+.dark {
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--hana-black-light);
+    border-radius: 8px;
+  }
+}
+
 ::-webkit-scrollbar-track {
   background-color: var(--hana-blue-light);
   border-radius: 8px;
+}
+
+.dark {
+  ::-webkit-scrollbar-track {
+    background-color: var(--hana-black);
+    border-radius: 8px;
+  }
 }
 
 ::-webkit-scrollbar-button {
@@ -38,4 +58,10 @@ html {
 
 ::-webkit-scrollbar-corner {
   background-color: var(--hana-blue-light);
+}
+
+.dark {
+  ::-webkit-scrollbar-corner {
+    background-color: var(--hana-black);
+  }
 }

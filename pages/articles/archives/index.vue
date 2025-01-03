@@ -94,7 +94,7 @@ useHead({
 <template>
   <div>
     <header class="mb-5 flex flex-col gap-5">
-      <div class="text-xl text-hana-blue">
+      <div class="text-xl text-hana-blue dark:text-hana-blue-200">
         <span>目前共计 <span class="font-bold">{{ count }}</span> 篇文章...继续加油</span>
       </div>
       <div class="hana-card flex gap-2 overflow-auto">

@@ -207,7 +207,7 @@ function handleUserCommand(command: string | number | object) {
           {{ loginBtnText }}
         </HanaButton>
         <HanaButton class="w-full" @click="toggleLoginRegisterWindow">
-          <span class="text-hana-blue">创建账户</span>
+          <span class="text-hana-blue dark:text-hana-blue-200">创建账户</span>
         </HanaButton>
       </div>
     </form>
@@ -225,7 +225,7 @@ function handleUserCommand(command: string | number | object) {
           {{ registerBtnText }}
         </HanaButton>
         <HanaButton class="w-full" @click="toggleLoginRegisterWindow">
-          <span class="text-hana-blue">已有帐号</span>
+          <span class="text-hana-blue dark:text-hana-blue-200">已有帐号</span>
         </HanaButton>
       </div>
     </form>

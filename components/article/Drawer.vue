@@ -35,7 +35,7 @@ const [prev, next] = neighbors.value || []
 <template>
   <HanaDrawer v-model="visible" show-info title="文章目录" icon="lucide:table-of-contents">
     <template #default="{ close }">
-      <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-1 overflow-auto text-text">
+      <div v-if="activatedId !== null" class="mx-auto flex w-4/5 flex-col gap-1 overflow-auto text-text dark:text-hana-white-700">
         <div @click="close">
           <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
         </div>
@@ -50,7 +50,7 @@ const [prev, next] = neighbors.value || []
         :to="prev._path"
         :aria-label="prev.title"
         :title="prev.title"
-        class="hana-button w-full justify-start gap-5 text-text"
+        class="hana-button w-full justify-start gap-5 text-text dark:text-hana-white-700"
         @click="close"
       >
         <span class="shrink-0">上一篇</span>
@@ -60,7 +60,7 @@ const [prev, next] = neighbors.value || []
       <NuxtLink
         v-if="next"
         :to="next._path"
-        class="hana-button w-full justify-start gap-5 text-text"
+        class="hana-button w-full justify-start gap-5 text-text dark:text-hana-white-700"
         @click="close"
       >
         <span class="shrink-0">下一篇</span>
