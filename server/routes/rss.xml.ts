@@ -32,7 +32,8 @@ export default defineEventHandler(async (event) => {
       link: basePath + doc._path,
       description: doc.description,
       content: doc.description,
-      date: new Date(doc.date),
+      date: new Date(doc.publishedAt),
+      image: `${basePath}/_ipx/q_85${doc.cover}`,
     })
   })
 
