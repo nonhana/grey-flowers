@@ -68,7 +68,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="min-h-screen w-full">
+  <div class="min-h-dvh w-full">
     <div class="flex gap-8">
       <div class="w-full xl:max-w-[calc(100%-272px)]">
         <ArticleHeader v-if="article" v-bind="articleHeader" />

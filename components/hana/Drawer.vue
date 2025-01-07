@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
     <aside
       v-if="visible"
       v-click-outside="() => handleClose()"
-      class="fixed top-0 z-50 flex h-screen w-4/5 flex-col bg-white px-5 dark:bg-hana-black"
+      class="fixed top-0 z-50 flex h-dvh w-4/5 flex-col bg-white px-5 dark:bg-hana-black"
       :class="[direction === 'right' ? 'right-0' : 'left-0']"
       :style="{ maxWidth: width }"
     >
