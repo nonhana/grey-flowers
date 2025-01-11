@@ -51,7 +51,7 @@ onMounted(() => {
       <span>苗圃已浇灌 {{ runDays }} 天</span>
     </div>
     <div class="flex w-full flex-col gap-2 text-sm dark:text-hana-white md:flex-row md:items-center">
-      <span>Copyright © 2024 Hana's Garden</span>
+      <span>Copyright © 2024-2025 Hana's Garden</span>
       <span class="hidden text-text dark:text-hana-white-700 md:block">|</span>
       <span>Powered by <ProseA href="https://github.com/nonhana/GreyFlowers">GreyFlowers</ProseA></span>
       <span class="hidden text-text dark:text-hana-white-700 md:block">|</span>
