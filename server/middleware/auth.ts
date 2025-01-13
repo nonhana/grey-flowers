@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import env from '~/server/env/dotenv'
-import { blackList } from '~/server/utils/blackList'
 
 export default eventHandler((event) => {
   if (!blackList.includes(event.path)) {
