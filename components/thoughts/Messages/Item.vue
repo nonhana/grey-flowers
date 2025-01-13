@@ -16,27 +16,16 @@ const isMe = computed(() => props.message.author.id === userInfo.value?.id)
 const opacity = ref(0)
 const top = ref('10px')
 
-function resetAnimation() {
-  opacity.value = 0
-  top.value = '10px'
-  setTimeout(() => {
-    opacity.value = 1
-    top.value = '0'
-  }, 0)
-}
-
 onMounted(() => {
-  resetAnimation()
+  floatAnimation(opacity, top)
 })
-
-watch(() => props.index, () => resetAnimation)
 </script>
 
 <template>
   <div
     class="relative flex max-w-[80%] items-start gap-2 md:gap-5"
     :class="{ 'flex-row-reverse self-end': isMe }"
-    :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }"
+    :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }"
   >
     <HanaAvatar :size="10" :avatar="message.author.avatar" :username="message.author.username" :site="message.author.site" />
     <div class="flex flex-col gap-1">

@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const props = withDefaults(defineProps<ArticleCardProps & { index: number, displayCols?: number }>(), { type: 'common', displayCols: 1 })
+withDefaults(defineProps<ArticleCardProps & { index: number, displayCols?: number }>(), { type: 'common', displayCols: 1 })
 
 const opacity = ref(0)
 const top = ref('10px')
 
-function resetAnimation() {
-  opacity.value = 0
-  top.value = '10px'
-  setTimeout(() => {
-    opacity.value = 1
-    top.value = '0'
-  }, 0)
-}
-
-onMounted(resetAnimation)
-
-watch(() => props.index, () => resetAnimation)
+onMounted(() => {
+  floatAnimation(opacity, top)
+})
 </script>
 
 <template>
-  <div class="relative" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }">
+  <div :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }">
     <NuxtLink
       :to="to"
       :aria-label="title"

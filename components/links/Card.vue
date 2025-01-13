@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import type { LinkCardProps } from '~/types/link'
 
-const props = defineProps<LinkCardProps & { index: number }>()
+defineProps<LinkCardProps & { index: number }>()
 
 const opacity = ref(0)
 const top = ref('10px')
 
-function resetAnimation() {
-  opacity.value = 0
-  top.value = '10px'
-  setTimeout(() => {
-    opacity.value = 1
-    top.value = '0'
-  }, 0)
-}
-
-onMounted(resetAnimation)
-
-watch(() => props.index, () => resetAnimation)
+onMounted(() => {
+  floatAnimation(opacity, top)
+})
 </script>
 
 <template>
-  <div class="relative" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, top }">
+  <div class="relative" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }">
     <NuxtLink
       :to="url"
       :aria-label="`${owner}的个人网站`"
