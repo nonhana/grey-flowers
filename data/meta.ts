@@ -32,6 +32,11 @@ export const thoughtsPageData = {
   description: 'I have a lot of thoughts in my mind. I hope you can find something interesting here.',
 }
 
+export const recentlyPageData = {
+  title: 'Recently',
+  description: 'Here are some of my recent activities, including articles, thoughts, and other things.',
+}
+
 export const linksPageData = {
   title: 'Links',
   description: 'Here are some friends and some works of mine. If you like my blog, you may also like their blogs.',
