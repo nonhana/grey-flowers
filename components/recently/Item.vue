@@ -12,6 +12,12 @@ const top = ref('10px')
 onMounted(() => {
   floatAnimation(opacity, top)
 })
+
+const detailDialogVisible = defineModel<boolean>()
+
+function toggleDetailDialog() {
+  detailDialogVisible.value = !detailDialogVisible.value
+}
 </script>
 
 <template>
@@ -28,7 +34,7 @@ onMounted(() => {
         </div>
       </div>
       <HanaTooltip content="查看原文">
-        <HanaButton icon-button icon="lucide:external-link" />
+        <HanaButton icon-button icon="lucide:external-link" @click="toggleDetailDialog" />
       </HanaTooltip>
     </header>
     <main class="my-5 text-black dark:text-hana-white">
@@ -42,10 +48,12 @@ onMounted(() => {
         <span>{{ item.id }}</span>
       </span>
       <HanaTooltip content="点击评论">
-        <HanaButton icon="lucide:message-circle">
+        <HanaButton icon="lucide:message-circle" @click="toggleDetailDialog">
           {{ item.commentCount }}
         </HanaButton>
       </HanaTooltip>
     </footer>
   </div>
+
+  <RecentlyDetailDialog v-model="detailDialogVisible" :item="item" />
 </template>
