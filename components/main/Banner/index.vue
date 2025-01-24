@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
+const isDark = ref(false)
 
-const imgSrc = computed(() => colorMode.value === 'dark' ? '/images/banner.webp' : '/images/ende_nea.webp')
+onMounted(() => isDark.value = colorMode.value === 'dark')
+watch(colorMode, () => isDark.value = colorMode.value === 'dark')
 
 function scrollToHead() {
   window.scrollTo({
@@ -13,9 +15,10 @@ function scrollToHead() {
 
 <template>
   <div class="relative h-[732px] w-full">
-    <ClientOnly>
-      <NuxtImg class="size-full object-cover" :src="imgSrc" alt="ende_nea" />
-    </ClientOnly>
+    <transition name="page">
+      <NuxtImg v-if="isDark" class="absolute inset-0 size-full object-cover" src="/images/banner.webp" alt="banner" />
+      <NuxtImg v-else class="absolute inset-0 size-full object-cover" src="/images/ende_nea.webp" alt="ende_nea" />
+    </transition>
     <div class="absolute left-0 top-0 grid size-full">
       <div class="flex items-center justify-center">
         <MainBannerLogo />
