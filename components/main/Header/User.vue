@@ -5,7 +5,9 @@ const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
 const { callHanaDialog } = useDialog()
 
-const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible } = toRefs(userStore)
+const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible, activityWindowVisible } = toRefs(userStore)
+
+const isMe = computed(() => userInfo.value?.id === hanaInfo.id)
 
 const notLoggedInMap = [{
   text: '登录',
@@ -24,6 +26,23 @@ const loggedInMap = [{
 }, {
   text: '评论',
   icon: 'lucide:message-square-more',
+}, {
+  text: '退出登录',
+  icon: 'lucide:log-out',
+}]
+
+const hanaMap = [{
+  text: '个人资料',
+  icon: 'lucide:user',
+}, {
+  text: '消息',
+  icon: 'lucide:mail',
+}, {
+  text: '评论',
+  icon: 'lucide:message-square-more',
+}, {
+  text: '发布动态',
+  icon: 'lucide:notebook',
 }, {
   text: '退出登录',
   icon: 'lucide:log-out',
@@ -137,6 +156,9 @@ function handleUserCommand(command: string | number | object) {
     case '评论':
       commentsDialogVisible.value = true
       break
+    case '发布动态':
+      activityWindowVisible.value = true
+      break
     case '退出登录':
       callHanaDialog({
         title: '提示',
@@ -185,7 +207,7 @@ function handleUserCommand(command: string | number | object) {
       <template #dropdown>
         <HanaDropdownMenu>
           <HanaDropdownItem
-            v-for="item in loggedInMap"
+            v-for="item in (isMe ? hanaMap : loggedInMap)"
             :key="item.text"
             :icon="item.icon"
             :command="item.text"
@@ -230,6 +252,7 @@ function handleUserCommand(command: string | number | object) {
       </div>
     </form>
   </HanaDialog>
+  <RecentlySubmit v-model="activityWindowVisible" />
   <ClientOnly>
     <UserInfoDialog v-if="loggedIn" v-model="userInfoDialogVisible" />
   </ClientOnly>

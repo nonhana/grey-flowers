@@ -38,7 +38,7 @@ function gotoDetail() {
       </HanaTooltip>
     </header>
     <main class="my-5 text-black dark:text-hana-white">
-      <p class="my-5 whitespace-pre-wrap leading-6">
+      <p class="my-5 line-clamp-6 whitespace-pre-wrap leading-6">
         {{ item.content }}
       </p>
       <RecentlyPhotoGrid :images="item.images" @click="gotoDetail" />

@@ -7,3 +7,9 @@ export interface ActivityItem {
   publishedAt: string
   editedAt: string
 }
+
+export interface IPostActivity {
+  title: string
+  content: string
+  images: string[]
+}

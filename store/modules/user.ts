@@ -3,6 +3,7 @@ import type { JwtPayload } from '~/server/types/jwt'
 export const useUserInfoStore = defineStore('userInfo', () => {
   const loginWindowVisible = ref(false)
   const registerWindowVisible = ref(false)
+  const activityWindowVisible = ref(false)
 
   const userInfo = ref<JwtPayload>()
   const loggedIn = computed(() => !!userInfo.value)
@@ -13,6 +14,10 @@ export const useUserInfoStore = defineStore('userInfo', () => {
 
   function toggleRegisterWindow(status?: boolean) {
     registerWindowVisible.value = status ?? !registerWindowVisible.value
+  }
+
+  function toggleActivityWindow(status?: boolean) {
+    activityWindowVisible.value = status ?? !activityWindowVisible.value
   }
 
   function setUserInfo(info: JwtPayload) {
@@ -26,10 +31,12 @@ export const useUserInfoStore = defineStore('userInfo', () => {
   return {
     loginWindowVisible,
     registerWindowVisible,
+    activityWindowVisible,
     userInfo,
     loggedIn,
     toggleLoginWindow,
     toggleRegisterWindow,
+    toggleActivityWindow,
     setUserInfo,
     logout,
   }
