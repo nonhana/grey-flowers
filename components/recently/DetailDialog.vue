@@ -19,12 +19,21 @@ const visible = defineModel<boolean>()
       </div>
     </header>
     <main class="my-5 text-black dark:text-hana-white">
-      <p class="whitespace-pre-wrap leading-6">
+      <p class="mb-5 whitespace-pre-wrap leading-6">
         {{ item.content }}
       </p>
+      <div class="flex flex-col gap-5">
+        <HanaImgViewer
+          v-for="image in item.images"
+          :key="image"
+          :src="image"
+          class="size-full cursor-pointer overflow-hidden rounded-xl object-cover"
+          loading="lazy"
+        />
+      </div>
     </main>
     <footer class="py-5">
-      <Comment />
+      <Comment type="recently" />
     </footer>
   </HanaDialog>
 </template>

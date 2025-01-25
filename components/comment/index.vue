@@ -2,12 +2,20 @@
 import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
 import { useStore } from '~/store'
 
+const props = withDefaults(defineProps<{
+  type?: 'default' | 'recently'
+}>(), {
+  type: 'default',
+})
+
+const isRecently = computed(() => props.type === 'recently')
+
 const { userStore } = useStore()
 const { loggedIn } = toRefs(userStore)
 const { callHanaMessage } = useMessage()
 
 const route = useRoute()
-const { path, hash } = route
+const { fullPath, path, hash } = route
 
 const page = ref(1)
 const pageSize = ref(10)
@@ -18,7 +26,7 @@ const commentList = ref<ParentCommentItem[]>([])
 
 async function fetchTotal() {
   const data = await $fetch('/api/comments/count', {
-    query: { path },
+    query: { path: isRecently.value ? fullPath : path },
   })
   if (data.success) {
     totalCount.value = data.payload?.totalCount || 0
@@ -28,7 +36,7 @@ async function fetchTotal() {
 
 async function fetchComments() {
   const data = await $fetch('/api/comments/list', {
-    query: { path, page: page.value, pageSize: pageSize.value },
+    query: { path: isRecently.value ? fullPath : path, page: page.value, pageSize: pageSize.value },
   })
   if (data.success) {
     commentList.value = data.payload || []
@@ -132,7 +140,7 @@ watch(() => hash, (newV) => {
 
 <template>
   <div id="comments" class="flex flex-col gap-5">
-    <div class="hana-card w-full p-4">
+    <div class="hana-card w-full p-4" :class="{ 'border-2 border-hana-blue shadow-none': isRecently }">
       <header class="flex items-center justify-between">
         <div class="flex items-center gap-4">
           <span class="text-2xl font-bold text-hana-blue dark:text-hana-blue-200">评论</span>
@@ -161,9 +169,9 @@ watch(() => hash, (newV) => {
         />
       </main>
     </div>
-    <div class="m-auto">
+    <div v-if="type !== 'recently'" class="m-auto">
       <HanaPaginator v-model="page" :total="parentCount" :page-size="pageSize" />
     </div>
   </div>
-  <CommentSubmit v-model="submitDialogVisible" :reply-to="replyTo" @published="handlePublished" />
+  <CommentSubmit v-model="submitDialogVisible" :is-recently="isRecently" :reply-to="replyTo" @published="handlePublished" />
 </template>

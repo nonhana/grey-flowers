@@ -3,6 +3,7 @@ import type { CommentItem, IPostComment, IReplyComment } from '~/types/comment'
 import { useStore } from '~/store'
 
 const props = defineProps<{
+  isRecently: boolean
   replyTo: IReplyComment | null
 }>()
 
@@ -11,7 +12,7 @@ const emits = defineEmits<{
 }>()
 
 const route = useRoute()
-const { path } = route
+const { fullPath, path } = route
 
 const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
@@ -38,7 +39,7 @@ async function handlePublish() {
     return
   }
   const objData: IPostComment = {
-    path,
+    path: props.isRecently ? fullPath : path,
     content: content.value,
   }
   if (replyTo.value) {
@@ -66,7 +67,7 @@ async function publishComment(objData: IPostComment) {
       ? data.payload!.replyToUser
         ? data.payload!.replyToUser.id
         : data.payload!.parent.author.id
-      : 1 // 文章作者的 id，因为是我的博客所以就是我自己的 id
+      : hanaInfo.id
     if (userInfo.value!.id !== receiverId) {
       await $fetch('/api/user/send-message', {
         headers: {

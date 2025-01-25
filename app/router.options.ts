@@ -1,5 +1,7 @@
 import type { RouterConfig } from '@nuxt/schema'
 
+const blackList = ['/recently']
+
 // https://router.vuejs.org/api/#routeroptions
 export default <RouterConfig>{
   scrollBehavior: (to, from, savedPosition) => {
@@ -25,6 +27,9 @@ export default <RouterConfig>{
     }
 
     // this will use saved scroll position on browser forward/back navigation
+    if (blackList.includes(to.path)) {
+      return
+    }
     return new Promise((resolve) => {
       resolve({
         left: savedPosition?.left || 0,

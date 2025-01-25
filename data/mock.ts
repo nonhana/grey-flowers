@@ -8,8 +8,9 @@ export const activityData: ActivityItem[] = Array.from({ length: 10 }, (_, i) =>
   This is the content of activity ${i}.
   This is the content of activity ${i}.
   This is the content of activity ${i}.
-This is the content of activity ${i}.`,
+  This is the content of activity ${i}.`,
   publishedAt: '2021-10-10',
   commentCount: 10,
   editedAt: '2021-10-10',
+  images: ['https://moe.nonhana.pics/120273520.jpg', 'https://moe.nonhana.pics/120273520.jpg', 'https://moe.nonhana.pics/120273520.jpg'],
 }))
