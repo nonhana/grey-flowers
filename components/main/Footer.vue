@@ -28,7 +28,7 @@ onMounted(() => {
           留言
         </ProseA>
         <ProseA href="/rss.xml">
-          RSS Feed
+          RSS
         </ProseA>
       </div>
       <div class="flex items-center gap-2">
