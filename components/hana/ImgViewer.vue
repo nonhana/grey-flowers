@@ -60,17 +60,22 @@ function toggleEventListener(type: 'on' | 'off') {
 }
 
 function toggleDisplay() {
+  const curDialogCount = document.querySelectorAll('#hana-dialog').length
   if (displaying.value) {
     clearDOM()
     setTimeout(() => {
       displaying.value = false
-      toggleScrollable(false)
+      if (!curDialogCount) {
+        toggleScrollable(false)
+      }
       toggleEventListener('off')
     }, 500)
   }
   else {
     displaying.value = true
-    toggleScrollable(true)
+    if (!curDialogCount) {
+      toggleScrollable(true)
+    }
     toggleEventListener('on')
   }
 }
