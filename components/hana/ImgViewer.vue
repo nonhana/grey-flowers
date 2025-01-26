@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
+import { useStore } from '~/store'
 
 const props = defineProps<{
   src: string
@@ -7,6 +8,9 @@ const props = defineProps<{
   width?: number | string
   height?: number | string
 }>()
+
+const { dialogStore } = useStore()
+const { dialogCount } = toRefs(dialogStore)
 
 const { toggleScrollable } = useToggleScrollable()
 
@@ -60,12 +64,11 @@ function toggleEventListener(type: 'on' | 'off') {
 }
 
 function toggleDisplay() {
-  const curDialogCount = document.querySelectorAll('#hana-dialog').length
   if (displaying.value) {
     clearDOM()
     setTimeout(() => {
       displaying.value = false
-      if (!curDialogCount) {
+      if (!dialogCount.value) {
         toggleScrollable(false)
       }
       toggleEventListener('off')
@@ -73,7 +76,7 @@ function toggleDisplay() {
   }
   else {
     displaying.value = true
-    if (!curDialogCount) {
+    if (!dialogCount.value) {
       toggleScrollable(true)
     }
     toggleEventListener('on')

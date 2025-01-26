@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
 import type { DialogOptions } from '~/composables/useDialog'
+import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
   title: '',
@@ -17,6 +18,10 @@ const emits = defineEmits<{
   (e: 'destroy'): void
   (e: 'update:modelValue', value: boolean): void
 }>()
+
+const { dialogStore } = useStore()
+const { increaseDialogCount, decreaseDialogCount } = dialogStore
+const { dialogCount } = toRefs(dialogStore)
 
 const { toggleScrollable } = useToggleScrollable()
 
@@ -53,16 +58,17 @@ function handleAfterLeave() {
 
 const overlayRef = ref<HTMLDivElement | null>(null)
 watch(visible, (newV) => {
-  const curDialogCount = document.querySelectorAll('#hana-dialog').length
   if (newV) {
-    if (curDialogCount === 0) {
+    if (!dialogCount.value) {
       toggleScrollable(newV)
     }
+    increaseDialogCount()
   }
   else {
-    if (curDialogCount === 1) {
+    if (dialogCount.value) {
       toggleScrollable(newV)
     }
+    decreaseDialogCount()
   }
   if (overlayRef.value) {
     if (newV) {
