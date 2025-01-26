@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ActivityItem } from '~/types/activity'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -22,11 +24,16 @@ watch(detailDialogVisible, (newVisible) => {
 })
 onMounted(() => detailDialogVisible.value = route.query.id !== undefined)
 
-const { data: fetchedActivities } = useAsyncData(
-  'recent-activity',
-  () => $fetch('/api/activity/list'),
-)
-const activities = computed(() => fetchedActivities.value ? fetchedActivities.value.payload : [])
+const activities = ref<ActivityItem[]>([])
+
+async function fetchActivities() {
+  const data = await $fetch('/api/activity/list')
+  if (data.success) {
+    activities.value = data.payload || []
+  }
+}
+
+onMounted(fetchActivities)
 </script>
 
 <template>
