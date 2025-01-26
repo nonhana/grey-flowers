@@ -4,8 +4,8 @@ import type { ActivityItem } from '~/types/activity'
 const route = useRoute()
 const router = useRouter()
 
-const beforeClasses = 'before:absolute before:inset-y-0 before:-left-8 before:h-full before:w-0.5 before:bg-hana-blue before:content-[\'\'] dark:before:bg-hana-blue-200'
-const afterClasses = 'after:absolute after:left-[calc(-2rem-5px)] after:top-1/2 after:size-3 after:rounded-full after:bg-hana-blue after:content-[\'\'] dark:after:bg-hana-blue-200'
+const beforeClasses = 'before:hidden before:md:block before:absolute before:inset-y-0 before:-left-8 before:h-full before:w-0.5 before:bg-hana-blue before:content-[\'\'] dark:before:bg-hana-blue-200'
+const afterClasses = 'after:hidden after:md:block after:absolute after:left-[calc(-2rem-5px)] after:top-1/2 after:size-3 after:rounded-full after:bg-hana-blue after:content-[\'\'] dark:after:bg-hana-blue-200'
 
 const detailDialogVisible = defineModel<boolean>()
 const curActivityId = ref<number | null>(null)
@@ -37,7 +37,7 @@ onMounted(fetchActivities)
 </script>
 
 <template>
-  <ul class="relative m-auto flex max-w-screen-md flex-col pl-8">
+  <ul class="relative m-auto flex max-w-screen-md flex-col pl-0 md:pl-8">
     <li
       v-for="(item, index) in activities"
       :key="item.id"
