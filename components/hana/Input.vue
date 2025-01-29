@@ -22,16 +22,6 @@ const emits = defineEmits<{
 
 const value = defineModel<string>()
 
-const hovering = ref(false)
-
-function handleMouseEnter() {
-  hovering.value = true
-}
-
-function handleMouseLeave() {
-  hovering.value = false
-}
-
 function handleKeyDown(event: KeyboardEvent) {
   emits('keydown', event)
 }
@@ -51,11 +41,7 @@ const curType = computed(() => {
 </script>
 
 <template>
-  <div
-    class="relative w-full p-1"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-  >
+  <div class="relative w-full p-1">
     <template v-if="type !== 'textarea'">
       <div class="relative w-full">
         <span
