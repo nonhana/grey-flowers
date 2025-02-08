@@ -55,8 +55,12 @@ const curType = computed(() => {
           v-model="value"
           :name="name"
           :type="curType"
-          class="w-full border-hana-blue-50 bg-hana-blue-50 py-2 pl-10 pr-3 text-sm transition-all placeholder:text-text focus:border-hana-blue-400 focus:outline-0 dark:border-hana-black-600 dark:bg-hana-black-600 dark:text-hana-white dark:placeholder:text-hana-white-700 dark:focus:border-hana-blue-200"
-          :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
+          class="w-full border-hana-blue-50 bg-hana-blue-50 py-2 text-sm transition-all placeholder:text-text focus:border-hana-blue-400 focus:outline-0 dark:border-hana-black-600 dark:bg-hana-black-600 dark:text-hana-white dark:placeholder:text-hana-white-700 dark:focus:border-hana-blue-200"
+          :class="[
+            shape === 'rounded' ? 'rounded-full' : 'rounded-lg',
+            prefixIcon || $slots.prefix ? 'pl-10' : 'pl-3',
+            suffixIcon || $slots.suffix || type === 'password' ? 'pr-10' : 'pr-3',
+          ]"
           :placeholder="placeholder"
           @keydown="handleKeyDown"
         >
