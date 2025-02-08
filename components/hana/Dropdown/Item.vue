@@ -1,14 +1,10 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  type?: 'common' | 'link'
   icon?: string
   to?: string
-  active?: boolean
   command?: string
   center?: boolean
 }>(), {
-  type: 'common',
-  active: false,
   center: false,
 })
 
