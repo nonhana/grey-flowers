@@ -1,34 +1,14 @@
 import type { CommentListQuery } from '~/server/types/comments'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
+import { commentSelectObj } from '~/server/utils/prismaShortcut'
 
 async function getComments(path: string, page: number, pageSize: number) {
   const comments = await prisma.comment.findMany({
     where: { path, level: 'PARENT' },
-    // TODO: 这里的 select object 单独提出来会导致 TS 的类型检查失效，什么逆天
     select: {
-      id: true,
-      path: true,
-      content: true,
-      level: true,
-      author: { select: { id: true, username: true, site: true, avatar: true } },
-      parent: { select: { id: true, content: true, author: { select: { id: true, username: true, site: true, avatar: true } } } },
-      replyToUser: { select: { id: true, username: true } },
-      replyToComment: { select: { id: true, content: true } },
-      publishedAt: true,
-      editedAt: true,
-      children: { select: {
-        id: true,
-        path: true,
-        content: true,
-        level: true,
-        author: { select: { id: true, username: true, site: true, avatar: true } },
-        parent: { select: { id: true, content: true, author: { select: { id: true, username: true, site: true, avatar: true } } } },
-        replyToUser: { select: { id: true, username: true } },
-        replyToComment: { select: { id: true, content: true } },
-        publishedAt: true,
-        editedAt: true,
-      }, orderBy: { publishedAt: 'asc' } },
+      ...commentSelectObj,
+      children: { select: { ...commentSelectObj }, orderBy: { publishedAt: 'asc' } },
     },
     skip: (page - 1) * pageSize,
     take: pageSize,

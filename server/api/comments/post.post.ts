@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import { useZodVerify } from '~/server/composables/useZodVerify'
+import { commentSelectObj } from '~/server/utils/prismaShortcut'
 
 const verifySchema = z.object({
   path: z.string(),
@@ -42,18 +43,7 @@ export default formattedEventHandler(async (event) => {
       replyToUserId,
       replyToCommentId,
     },
-    select: {
-      id: true,
-      path: true,
-      content: true,
-      level: true,
-      author: { select: { id: true, username: true, site: true, avatar: true } },
-      parent: { select: { id: true, content: true, author: { select: { id: true, username: true, site: true, avatar: true } } } },
-      replyToUser: { select: { id: true, username: true } },
-      replyToComment: { select: { id: true, content: true } },
-      publishedAt: true,
-      editedAt: true,
-    },
+    select: commentSelectObj,
   })
 
   const formattedItem = {
