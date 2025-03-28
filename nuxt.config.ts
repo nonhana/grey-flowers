@@ -11,9 +11,6 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
   },
-  sitemap: {
-    strictNuxtContentPaths: true,
-  },
   site: {
     url: seoData.mySite,
     identity: {
@@ -27,16 +24,18 @@ export default defineNuxtConfig({
     },
   },
   content: {
-    highlight: {
-      langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http'],
-      theme: {
-        default: 'github-light',
-        dark: 'github-dark',
-      },
-    },
-    markdown: {
-      toc: {
-        depth: 2,
+    build: {
+      markdown: {
+        highlight: {
+          langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http'],
+          theme: {
+            default: 'github-light',
+            dark: 'github-dark',
+          },
+        },
+        toc: {
+          depth: 2,
+        },
       },
     },
   },
@@ -88,11 +87,11 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@nuxtjs/color-mode',
     '@nuxt/image',
-    '@nuxt/content',
     '@nuxtjs/seo',
     '@vueuse/nuxt',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    '@nuxt/content',
   ],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },
