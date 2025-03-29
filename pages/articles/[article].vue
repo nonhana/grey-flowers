@@ -14,7 +14,7 @@ const { path } = useRoute()
 
 const { data: article } = await useAsyncData(
   `article-${path}`,
-  () => queryContent(path).findOne(),
+  () => queryCollection('content').path(path).first(),
 )
 
 const articleHeader = computed<ArticleHeader>(() => ({
@@ -87,7 +87,7 @@ useSeoMeta({
         <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !visible }">
           <ArticleAuthor />
           <ArticleSwitch />
-          <ArticleToc v-if="article" :article="article" />
+          <ArticleToc v-if="article" :toc="article.body.toc" />
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@ useSeoMeta({
       </div>
     </div>
     <div class="block xl:hidden">
-      <ArticleDrawer v-if="article" v-model="drawerVisible" :article="article" />
+      <ArticleDrawer v-if="article" v-model="drawerVisible" :toc="article.body.toc" />
     </div>
   </div>
 </template>

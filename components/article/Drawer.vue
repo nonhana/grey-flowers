@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content'
+import type { Toc } from '@nuxt/content'
 
-const props = defineProps<{ article: ParsedContent }>()
+const props = defineProps<{ toc: Toc }>()
 const visible = defineModel<boolean>()
 
-const links = props.article.body?.toc?.links || []
+const links = props.toc.links || []
 
 const route = useRoute()
 const { hash, path } = toRefs(route)
@@ -21,12 +21,14 @@ watch(hash, (newHash) => {
 
 const { data: neighbors } = await useAsyncData(
   `article-${path.value}-prev-next`,
-  () => queryContent()
-    .only(['title', '_path'])
-    .sort({ publishedAt: -1 })
-    .where({ title: { $ne: 'About' } })
-    .where({ title: { $ne: 'Friends' } })
-    .findSurround(path.value),
+  () => queryCollectionItemSurroundings(
+    'content',
+    route.path,
+    { fields: ['title', 'path'] },
+  )
+    .where('title', '<>', 'About')
+    .where('title', '<>', 'Friends')
+    .order('publishedAt', 'DESC'),
 )
 
 const [prev, next] = neighbors.value || []
@@ -47,7 +49,7 @@ const [prev, next] = neighbors.value || []
     <template #footer="{ close }">
       <NuxtLink
         v-if="prev"
-        :to="prev._path"
+        :to="prev.path"
         :aria-label="prev.title"
         :title="prev.title"
         class="hana-button w-full justify-start gap-5 text-text dark:text-hana-white-700"
@@ -59,7 +61,7 @@ const [prev, next] = neighbors.value || []
       </NuxtLink>
       <NuxtLink
         v-if="next"
-        :to="next._path"
+        :to="next.path"
         class="hana-button w-full justify-start gap-5 text-text dark:text-hana-white-700"
         @click="close"
       >

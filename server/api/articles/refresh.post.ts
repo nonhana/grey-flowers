@@ -1,13 +1,34 @@
-import type { ParsedContent } from '@nuxt/content'
+import type { ContentCollectionItem } from '@nuxt/content'
 import type * as p from '@prisma/client'
-import { serverQueryContent } from '#content/server'
 import prisma from '~/lib/prisma'
 import { flatStr } from '~/utils/handleStr'
+
+const fieldsCreator = <T extends (keyof ContentCollectionItem)[]>(...fields: T): T => fields
+
+const ARTICLE_FIELDS = fieldsCreator(
+  'title',
+  'path',
+  'description',
+  'cover',
+  'tags',
+  'category',
+  'publishedAt',
+  'alt',
+  'ogImage',
+  'published',
+  'wordCount',
+  'editedAt',
+)
+
+type DatabaseArticleType = Pick<
+  ContentCollectionItem,
+  typeof ARTICLE_FIELDS[number]
+>
 
 const titleBlacklist = ['About', 'Friends']
 
 // 处理 tag 数据，返回 tagName 和 tagId 的映射
-async function handleTags(articles: ParsedContent[]): Promise<Record<string, number>> {
+async function handleTags(articles: DatabaseArticleType[]): Promise<Record<string, number>> {
   // 统计所有文章的 tag
   const tagMap = new Map<string, number>()
   articles.forEach(({ tags }) => {
@@ -53,7 +74,7 @@ async function handleTags(articles: ParsedContent[]): Promise<Record<string, num
 }
 
 // 处理 category 数据，返回 categoryName 和 categoryId 的映射
-async function handleCategories(articles: ParsedContent[]): Promise<Record<string, number>> {
+async function handleCategories(articles: DatabaseArticleType[]): Promise<Record<string, number>> {
   const categoryMap = new Map<string, number>()
   articles.forEach(({ category }) => {
     categoryMap.set(category, (categoryMap.get(category) || 0) + 1)
@@ -99,7 +120,7 @@ async function handleCategories(articles: ParsedContent[]): Promise<Record<strin
 }
 
 // 处理 article 数据
-async function handleArticles(articles: ParsedContent[]) {
+async function handleArticles(articles: DatabaseArticleType[]) {
   // 获取 tags 和 categories 的映射
   const tagMap = await handleTags(articles) // name -> id
   const categoryMap = await handleCategories(articles) // name -> id
@@ -115,7 +136,7 @@ async function handleArticles(articles: ParsedContent[]) {
   const { createArticles, updateArticles } = articles.reduce(
     (acc, article) => {
       const baseData = {
-        to: article._path!,
+        to: article.path!,
         title: article.title!,
         description: article.description,
         cover: article.cover,
@@ -161,6 +182,8 @@ async function handleArticles(articles: ParsedContent[]) {
 }
 
 export default formattedEventHandler(async (event) => {
-  const articles = await serverQueryContent(event).without(['body']).find() as ParsedContent[]
+  const articles = await queryCollection(event, 'content')
+    .select(...ARTICLE_FIELDS)
+    .all()
   await handleArticles(articles.filter(article => !titleBlacklist.includes(article.title!)))
 })

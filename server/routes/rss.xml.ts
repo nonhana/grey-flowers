@@ -1,4 +1,3 @@
-import { serverQueryContent } from '#content/server'
 import { Feed } from 'feed'
 
 const titleBlacklist = ['About', 'Friends']
@@ -7,7 +6,10 @@ const basePath = 'https://www.greyflowers.moe'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'content-type', 'text/xml')
-  const result = await serverQueryContent(event).without(['body']).sort({ date: -1 }).find()
+  const result = await queryCollection(event, 'content')
+    .select('title', 'path', 'description', 'publishedAt', 'cover')
+    .order('publishedAt', 'DESC')
+    .all()
   const articles = result.filter(article => !titleBlacklist.includes(article.title!))
   const feed = new Feed({
     title: 'GreyFlowers',
@@ -25,15 +27,15 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  articles.forEach((doc) => {
+  articles.forEach((article) => {
     feed.addItem({
-      title: doc.title || '',
-      id: basePath + doc._path,
-      link: basePath + doc._path,
-      description: doc.description,
-      content: doc.description,
-      date: new Date(doc.publishedAt),
-      image: `${basePath}/_ipx/q_85${doc.cover}`,
+      title: article.title || '',
+      id: basePath + article.path,
+      link: basePath + article.path,
+      description: article.description,
+      content: article.description,
+      date: new Date(article.publishedAt),
+      image: `${basePath}/_ipx/q_85${article.cover}`,
     })
   })
 

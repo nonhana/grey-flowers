@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { ParsedContent, TocLink } from '@nuxt/content'
+import type { Toc, TocLink } from '@nuxt/content'
 
-const props = withDefaults(defineProps<{
-  article: ParsedContent
-}>(), {})
+const props = defineProps<{ toc: Toc }>()
 
-const links = props.article.body?.toc?.links || []
+const links = props.toc.links || []
 const linkIds = computed(() => {
   const result: string[] = []
   const collectIds = (links: TocLink[]) => {

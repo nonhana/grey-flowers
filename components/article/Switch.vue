@@ -1,14 +1,16 @@
 <script setup lang="ts">
-const { path } = useRoute()
+const route = useRoute()
 
 const { data: neighbors } = await useAsyncData(
-  `article-${path}-prev-next`,
-  () => queryContent()
-    .only(['title', '_path'])
-    .sort({ publishedAt: -1 })
-    .where({ title: { $ne: 'About' } })
-    .where({ title: { $ne: 'Friends' } })
-    .findSurround(path),
+  `article-${route.path}-prev-next`,
+  () => queryCollectionItemSurroundings(
+    'content',
+    route.path,
+    { fields: ['title', 'path'] },
+  )
+    .where('title', '<>', 'About')
+    .where('title', '<>', 'Friends')
+    .order('publishedAt', 'DESC'),
 )
 
 const [prev, next] = neighbors.value || []
@@ -18,7 +20,7 @@ const [prev, next] = neighbors.value || []
   <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
     <HanaTooltip v-if="prev" position="left" :content="prev.title">
       <NuxtLink
-        :to="prev._path"
+        :to="prev.path"
         :aria-label="prev.title"
         class="hana-button w-full justify-center gap-10"
       >
@@ -28,7 +30,7 @@ const [prev, next] = neighbors.value || []
     </HanaTooltip>
     <HanaTooltip v-if="next" position="left" :content="next.title">
       <NuxtLink
-        :to="next._path"
+        :to="next.path"
         :aria-label="next.title"
         class="hana-button w-full justify-center gap-10"
       >
