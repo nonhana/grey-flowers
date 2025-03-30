@@ -18,7 +18,7 @@ const { path } = toRefs(route)
       :key="to"
       :to="to"
       :aria-label="value.title"
-      class="group hana-button w-auto text-base md:text-xl lg:w-36"
+      class="group hana-button justify-between w-auto text-base md:text-xl lg:w-36"
       :class="{ 'hana-button--active': path === to }"
     >
       <div class="flex items-center gap-2">

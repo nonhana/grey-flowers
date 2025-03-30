@@ -17,7 +17,7 @@ onMounted(() => {
       :to="to"
       :aria-label="title"
       :title="title"
-      class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all hover:-translate-y-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200 dark:bg-hana-black-700 dark:hover:bg-hana-black-800"
+      class="bg-white group relative top-0 block w-full overflow-hidden rounded-3xl transition-all hover:-translate-y-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200 dark:bg-hana-black-700 dark:hover:bg-hana-black-800"
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"
     >
       <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail', 'md:hidden': displayCols > 1 && type === 'detail' }">
@@ -30,7 +30,7 @@ onMounted(() => {
         <div class="flex h-6 flex-wrap gap-2 overflow-hidden">
           <ArticleTag v-for="tag in tags" :key="tag" :name="tag" size="small" />
         </div>
-        <span class="line-clamp-1 text-lg font-bold leading-none dark:text-hana-white">{{ title }}</span>
+        <span class="text-lg font-bold leading-none dark:text-hana-white">{{ title }}</span>
         <div class="inline-block">
           <span class="line-clamp-1 text-text dark:text-hana-white-700" :class="{ 'md:text-center': type === 'detail' }">
             {{ description }}
@@ -43,7 +43,7 @@ onMounted(() => {
           </span>
           <span class="flex items-center space-x-1">
             <Icon name="lucide:file-text" size="14" />
-            {{ wordCount }}字
+            <span>{{ wordCount }}字</span>
           </span>
         </div>
       </div>

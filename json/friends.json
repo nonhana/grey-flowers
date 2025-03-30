@@ -30,5 +30,13 @@
     "desc": "明日尚未到来，希望凝于心上",
     "image": "https://api-space.tnxg.top/avatar?s=qq",
     "color": "#77BBDD"
+  },
+  {
+    "site": "Mias/'s blog",
+    "owner": "AsperforMias",
+    "url": "https://www.mias.moe",
+    "desc": "『我追寻最初梦的光点，只为让噩梦迎来终焉。』",
+    "image": "https://mias.moe/avatar.avif",
+    "color": "#858585"
   }
 ]

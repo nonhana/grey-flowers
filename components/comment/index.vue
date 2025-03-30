@@ -140,7 +140,7 @@ watch(() => hash, (newV) => {
 
 <template>
   <div id="comments" class="flex flex-col gap-5">
-    <div class="hana-card w-full p-4" :class="{ 'border-2 border-hana-blue shadow-none': isRecently }">
+    <div class="hana-card w-full p-4!" :class="{ 'border-2 border-hana-blue shadow-none': isRecently }">
       <header class="flex items-center justify-between">
         <div class="flex items-center gap-4">
           <span class="text-2xl font-bold text-hana-blue dark:text-hana-blue-200">评论</span>

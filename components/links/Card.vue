@@ -18,7 +18,7 @@ onMounted(() => {
       :aria-label="`${owner}的个人网站`"
       target="_blank"
       :title="desc"
-      class="hana-card relative top-0 flex gap-5 p-5 transition-all hover:-translate-y-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200 dark:bg-hana-black-700 dark:hover:bg-hana-black-800"
+      class="hana-card relative top-0 flex gap-5 p-5! transition-all hover:-translate-y-1 hover:bg-hana-blue-150! hover:shadow-lg! active:scale-95 active:bg-hana-blue-200! dark:bg-hana-black-700! dark:hover:bg-hana-black-800!"
     >
       <NuxtImg :src="image" :alt="`${owner}_avatar`" class="size-16 rounded-lg" />
       <div class="flex h-16 flex-col">

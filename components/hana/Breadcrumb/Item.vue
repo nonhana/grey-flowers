@@ -20,7 +20,7 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
     <component
       :is="component"
       v-bind="to ? { to } : {}"
-      class="hana-button inline"
+      class="inline-block! hana-button"
       :class="{
         'hover:text-hana-blue dark:text-hana-blue-200': to,
         'hana-button--active': path === to?.split('?')[0],

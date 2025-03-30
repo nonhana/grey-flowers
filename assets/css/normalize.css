@@ -26,14 +26,6 @@ body {
 }
 
 /**
- * Render the `main` element consistently in IE.
- */
-
-main {
-  display: block;
-}
-
-/**
  * Correct the font size and margin on `h1` elements within `section` and
  * `article` contexts in Chrome, Firefox, and Safari.
  */
@@ -63,20 +55,12 @@ hr {
  */
 
 pre {
-  font-family: monospace, monospace; /* 1 */
+  font-family: 'Fira Code', 'consolas', 'monospace', 'Microsoft YaHei UI'; /* 1 */
   font-size: 1em; /* 2 */
 }
 
 /* Text-level semantics
    ========================================================================== */
-
-/**
- * Remove the gray background on active links in IE 10.
- */
-
-a {
-  background-color: transparent;
-}
 
 /**
  * 1. Remove the bottom border in Chrome 57-
@@ -106,7 +90,7 @@ strong {
 code,
 kbd,
 samp {
-  font-family: monospace, monospace; /* 1 */
+  font-family: 'Fira Code', 'consolas', 'monospace', 'Microsoft YaHei UI'; /* 1 */
   font-size: 1em; /* 2 */
 }
 

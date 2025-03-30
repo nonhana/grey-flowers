@@ -18,7 +18,7 @@ const [prev, next] = neighbors.value || []
 
 <template>
   <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
-    <HanaTooltip v-if="prev" position="left" :content="prev.title">
+    <HanaTooltip v-if="prev" position="left" :content="prev.title" animation="slide">
       <NuxtLink
         :to="prev.path"
         :aria-label="prev.title"
@@ -28,7 +28,7 @@ const [prev, next] = neighbors.value || []
         <Icon name="lucide:arrow-left" class="animate-bounce-x" />
       </NuxtLink>
     </HanaTooltip>
-    <HanaTooltip v-if="next" position="left" :content="next.title">
+    <HanaTooltip v-if="next" position="left" :content="next.title" animation="slide">
       <NuxtLink
         :to="next.path"
         :aria-label="next.title"

@@ -1,3 +1,182 @@
-@tailwind base; 
-@tailwind components; 
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --font-noto: 'Noto Serif', 'Noto Serif SC', 'Noto Serif JP', 'sans-serif';
+  --font-code: 'Fira Code', 'consolas', 'monospace', 'Microsoft YaHei UI';
+
+  --color-primary: oklch(0.73 0.0336 251.22);
+
+  --color-primary-100: oklch(0.95 0.0059 239.82);
+  --color-primary-200: oklch(0.91 0.011 234.83);
+  --color-primary-300: oklch(0.86 0.0181 240.03);
+  --color-primary-400: oklch(0.79 0.0259 246.28);
+  --color-primary-500: oklch(0.73 0.0336 251.22);
+  --color-primary-600: oklch(0.66 0.0398 259.78);
+  --color-primary-700: oklch(0.58 0.0386 261.85);
+  --color-primary-800: oklch(0.51 0.0317 260.26);
+  --color-primary-900: oklch(0.45 0.0237 260.13);
+
+  --color-hana-blue: oklch(0.5 0.1102 250.04);
+
+  --color-hana-blue-50: oklch(0.96 0.02 200.64);
+  --color-hana-blue-100: oklch(0.93 0.0358 205.23);
+  --color-hana-blue-150: oklch(0.93 0.0305 212.05);
+  --color-hana-blue-200: oklch(0.84 0.0632 214.03);
+  --color-hana-blue-300: oklch(0.75 0.0883 226.04);
+  --color-hana-blue-400: oklch(0.64 0.1176 239.66);
+  --color-hana-blue-500: oklch(0.5 0.1102 250.04);
+  --color-hana-blue-600: oklch(0.41 0.1042 257.32);
+  --color-hana-blue-700: oklch(0.33 0.0946 263.24);
+  --color-hana-blue-800: oklch(0.26 0.0796 268.39);
+  --color-hana-blue-900: oklch(0.19 0.0598 273.58);
+
+  --color-error-0: oklch(0.96 0.022 24.44);
+  --color-error-1: oklch(0.82 0.099566 21.7035);
+  --color-error-2: oklch(0.75 0.1536 20.96);
+  --color-error-3: oklch(0.66 0.217 24.44);
+  --color-error-4: oklch(0.55 0.2051 24.53);
+
+  --color-text: oklch(0.16 0.0413 254.41 / 53.33%);
+
+  --color-text-0: oklch(0.16 0.0413 254.41 / 53.33%);
+  --color-text-1: oklch(0.57 0 0);
+  --color-text-2: oklch(0.51 0 0);
+  --color-text-3: oklch(0.42 0 0);
+  --color-text-4: oklch(0.26 0 0);
+
+  --color-hana-black: oklch(0.36 0 0);
+
+  --color-hana-black-100: oklch(0.63 0 0);
+  --color-hana-black-200: oklch(0.59 0 0);
+  --color-hana-black-300: oklch(0.55 0 0);
+  --color-hana-black-400: oklch(0.5 0 0);
+  --color-hana-black-500: oklch(0.46 0 0);
+  --color-hana-black-600: oklch(0.41 0 0);
+  --color-hana-black-700: oklch(0.36 0 0);
+  --color-hana-black-800: oklch(0.27 0 0);
+  --color-hana-black-900: oklch(0.17 0 0);
+
+  --color-hana-white: oklch(0.98 0 0);
+
+  --color-hana-white-100: oklch(1 0 0);
+  --color-hana-white-200: oklch(0.98 0 0);
+  --color-hana-white-300: oklch(0.94 0 0);
+  --color-hana-white-400: oklch(0.9 0 0);
+  --color-hana-white-500: oklch(0.86 0 0);
+  --color-hana-white-600: oklch(0.82 0 0);
+  --color-hana-white-700: oklch(0.78 0 0);
+  --color-hana-white-800: oklch(0.74 0 0);
+  --color-hana-white-900: oklch(0.7 0 0);
+
+  --animate-bounce-x: bounce-x 1s infinite;
+
+  @keyframes bounce-x {
+    0%, 100% {
+      transform: translateX(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateX(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+
+  --underline-color: oklch(0.5 0.1102 250.04);
+  --underline-color-dark: oklch(0.84 0.0632 214.03);
+
+  --background-grid-color: oklch(0.95 0.0059 239.82);
+  --background-grid-color-dark: oklch(0.27 0 0);
+}
+
+@utility with-underline {
+  cursor: pointer;
+  background: linear-gradient(to right, var(--underline-color), var(--underline-color)) no-repeat right bottom;
+  background-size: 0% 2px;
+  transition: background-size 0.5s;
+  &:hover {
+    background-position: left bottom;
+    background-size: 100% 2px;
+  }
+}
+
+@utility dark {
+  .with-underline {
+    --underline-color: var(--underline-color-dark);
+  }
+}
+
+@utility scrollbar-hidden {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scrollbar-sticky {
+  &::-webkit-scrollbar {
+    position: sticky;
+  }
+}
+
+@utility background-grid {
+  background-image: linear-gradient(
+    0deg,
+    transparent 24%,
+    var(--background-grid-color) 25%,
+    var(--background-grid-color) 26%,
+    transparent 27%,
+    transparent 74%,
+    var(--background-grid-color) 75%,
+    var(--background-grid-color) 76%,
+    transparent 77%
+  ),
+  linear-gradient(
+    90deg,
+    transparent 24%,
+    var(--background-grid-color) 25%,
+    var(--background-grid-color) 26%,
+    transparent 27%,
+    transparent 74%,
+    var(--background-grid-color) 75%,
+    var(--background-grid-color) 76%,
+    transparent 77%
+  );
+  background-size: 100px 100px;
+}
+
+@utility dark {
+  .background-grid {
+    --background-grid-color: var(--background-grid-color-dark);
+  }
+}
+
+@utility perspective-* {
+  perspective: calc(--value(integer) * 100px);
+}
+
+@utility transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.hana-button {
+  @apply flex shrink-0 cursor-pointer select-none items-center rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-150 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200 dark:hover:bg-hana-black-800 dark:hover:text-hana-blue-200 dark:active:bg-hana-black-800
+}
+
+.hana-button--active {
+  @apply bg-hana-blue-150 text-hana-blue dark:bg-hana-black-800 dark:text-hana-blue-200
+}
+
+.hana-button--disabled {
+  @apply cursor-not-allowed opacity-50
+}
+
+.hana-card {
+  @apply rounded-lg bg-white p-2 text-text shadow-md dark:bg-hana-black dark:text-hana-white-700
+}
+
+.hana-article-title {
+  @apply flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-['#'] hover:text-hana-blue dark:hover:text-hana-blue-200
+}

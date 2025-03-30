@@ -12,6 +12,8 @@ useHead({
     },
   ],
 })
+
+const { data } = useAsyncData('friends-article', () => queryCollection('content').path('/friends').first())
 </script>
 
 <template>
@@ -27,7 +29,7 @@ useHead({
       </div>
     </HanaInfoCard>
     <HanaInfoCard title="来做朋友吧" icon="lucide:sticker">
-      <ContentDoc path="/friends" class="flex flex-col gap-4 leading-7 dark:text-hana-white" />
+      <ContentRenderer v-if="data" :value="data" class="flex flex-col gap-4 leading-7 dark:text-hana-white" />
     </HanaInfoCard>
     <Comment />
   </div>

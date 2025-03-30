@@ -81,7 +81,7 @@ watch(hash, (newHash, _, onCleanup) => {
       <Icon name="lucide:list" />
       <span class="with-underline">文章目录</span>
     </div>
-    <hr class="my-2">
+    <hr class="my-2 border-text dark:border-hana-white-700">
     <div v-if="activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">
       <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
     </div>

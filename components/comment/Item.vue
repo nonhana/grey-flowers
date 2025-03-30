@@ -124,14 +124,14 @@ const blockquoteContent = computed(() =>
           <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap font-code text-sm text-text transition-colors hover:text-hana-blue dark:text-hana-white-700 dark:hover:text-hana-blue-200">
             {{ comment.path }}
           </NuxtLink>
-          <HanaTooltip v-if="loggedIn && !recordMode" content="点击回复">
+          <HanaTooltip v-if="loggedIn && !recordMode" content="点击回复" animation="slide">
             <HanaButton
               icon="lucide:reply"
               icon-button
               @click="handleReply"
             />
           </HanaTooltip>
-          <HanaTooltip v-if="isMe && !recordMode" content="删除评论">
+          <HanaTooltip v-if="isMe && !recordMode" content="删除评论" animation="slide">
             <HanaButton
               icon="lucide:x"
               icon-button

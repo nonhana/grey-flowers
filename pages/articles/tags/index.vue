@@ -29,7 +29,7 @@ useHead({
     </header>
     <div class="w-full rounded-md bg-white p-5 shadow-md dark:bg-hana-black">
       <div class="m-8 flex flex-wrap items-center justify-center gap-8">
-        <HanaTooltip v-for="tag in tags" :key="tag.name" :content="`有${tag.count}篇文章`">
+        <HanaTooltip v-for="tag in tags" :key="tag.name" :content="`有${tag.count}篇文章`" animation="slide">
           <ArticleTag :name="tag.name" :count="tag.count" />
         </HanaTooltip>
       </div>

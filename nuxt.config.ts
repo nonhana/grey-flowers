@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 import { seoData } from './data/meta'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -55,19 +56,9 @@ export default defineNuxtConfig({
     strict: true,
   },
   vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler',
-        },
-      },
-    },
+    plugins: [tailwindcss()],
   },
-  css: ['~/assets/css/index.scss'],
-  tailwindcss: {
-    exposeConfig: true,
-    viewer: false,
-  },
+  css: ['~/assets/css/index.css'],
   googleFonts: {
     families: {
       'Noto+Serif': [500, 700],
@@ -82,7 +73,6 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
   modules: [
-    '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     '@nuxtjs/google-fonts',
     '@nuxtjs/color-mode',

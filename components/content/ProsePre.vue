@@ -45,13 +45,13 @@ useCopy(copyBtn, codeblock)
           {{ filename }}
         </span>
       </div>
-      <button ref="copyBtnRef">
+      <button ref="copyBtnRef" class="cursor-pointer">
         <span>copy</span>
       </button>
     </figcaption>
     <pre
       ref="codeblockRef"
-      class="overflow-auto px-4 py-2 scrollbar-hidden"
+      class="overflow-auto px-4 py-2 scrollbar-hidden font-code"
       :class="[props.class, { 'animate-none overflow-hidden': isCollapsed }]"
       :style="{ maxHeight: isCollapsed ? collapsibleHeight : 'none' }"
     ><slot /></pre>

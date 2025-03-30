@@ -122,7 +122,7 @@ defineExpose({
             :close="handleClose"
           >
             <div v-if="!hideHeader" class="flex items-center">
-              <span v-if="title" class="text-2xl font-bold dark:text-hana-white">{{ title }}</span>
+              <span v-if="title" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
               <HanaButton v-if="!programmatic" icon="lucide:x" class="relative -right-2 -top-2 ml-auto" icon-button @click="handleClose" />
             </div>
           </slot>

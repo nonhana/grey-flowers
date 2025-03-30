@@ -65,10 +65,10 @@ onBeforeUnmount(() => {
       <slot name="header">
         <div v-if="!hideHeader" class="flex h-12 items-center gap-2">
           <Icon v-if="icon" :name="icon" size="20" class="text-hana-blue dark:text-hana-blue-200" />
-          <span v-if="title" class="text-xl text-hana-blue dark:text-hana-blue-200">{{ title }}</span>
+          <span v-if="title" class="flex-1 text-xl text-hana-blue dark:text-hana-blue-200">{{ title }}</span>
           <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />
         </div>
-        <hr>
+        <hr class="border-text dark:border-hana-white-700">
       </slot>
       <div v-if="showInfo" class="mt-5">
         <div class="flex shrink-0 flex-col items-center justify-items-end gap-2">
@@ -80,13 +80,13 @@ onBeforeUnmount(() => {
             不要为每一件事都赋予意义。
           </p>
         </div>
-        <hr class="mt-5">
+        <hr class="mt-5 border-text dark:border-hana-white-700">
       </div>
       <div class="mt-5 flex-1 overflow-auto">
         <slot :close="handleClose" />
       </div>
       <div v-if="$slots.footer" class="my-5">
-        <hr class="mb-5">
+        <hr class="mb-5 border-text dark:border-hana-white-700">
         <slot name="footer" :close="handleClose" />
       </div>
     </aside>

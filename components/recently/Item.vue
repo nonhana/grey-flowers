@@ -21,7 +21,7 @@ function gotoDetail() {
 </script>
 
 <template>
-  <div class="hana-card p-5" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }">
+  <div class="hana-card p-5!" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }">
     <header class="flex justify-between">
       <div class="flex items-center gap-2">
         <HanaAvatar :size="10" :avatar="hanaInfo.avatar" :username="hanaInfo.username" :site="hanaInfo.site" :show-info="false" />
@@ -33,7 +33,7 @@ function gotoDetail() {
           </span>
         </div>
       </div>
-      <HanaTooltip content="查看原文">
+      <HanaTooltip content="查看原文" animation="slide">
         <HanaButton icon-button icon="lucide:external-link" @click="gotoDetail" />
       </HanaTooltip>
     </header>
@@ -48,7 +48,7 @@ function gotoDetail() {
         <Icon name="lucide:at-sign" size="14" />
         <span>{{ item.id }}</span>
       </span>
-      <HanaTooltip content="点击评论">
+      <HanaTooltip content="点击评论" animation="slide">
         <HanaButton icon="lucide:message-circle" @click="gotoDetail">
           {{ item.commentCount }}
         </HanaButton>
