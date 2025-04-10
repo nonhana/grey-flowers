@@ -38,5 +38,13 @@
     "desc": "适用于 Vue3 + TS 的图片查看器",
     "image": "https://moe.greyflowers.pics/hana-img-viewer-logo.webp",
     "color": "#00BFFF"
+  },
+  {
+    "site": "Campanula Music",
+    "owner": "non_hana",
+    "url": "https://campanulamusic.xyz/",
+    "desc": "基于 SvelteKit 的 Web 音乐播放器",
+    "image": "https://moe.greyflowers.pics/campanula-logo.webp",
+    "color": "#A8E6CF"
   }
 ]
