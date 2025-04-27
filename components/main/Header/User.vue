@@ -7,6 +7,18 @@ const { callHanaDialog } = useDialog()
 
 const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible, activityWindowVisible } = toRefs(userStore)
 
+// 如果用户已经登录，检查 token 是否过期
+async function checkUserStatus() {
+  if (loggedIn.value) {
+    const data = await $fetch('/api/user/check-status', { method: 'GET' })
+    if (!data.success) {
+      userStore.logout()
+    }
+  }
+}
+
+onMounted(checkUserStatus)
+
 const isMe = computed(() => userInfo.value?.id === hanaInfo.id)
 
 const notLoggedInMap = [{
