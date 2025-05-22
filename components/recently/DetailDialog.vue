@@ -2,8 +2,11 @@
 import type { ActivityItem } from '~/types/activity'
 
 const props = defineProps<{ activityId: number | null }>()
-const visible = defineModel<boolean>()
+const { activityId } = toRefs(props)
 
+const visible = defineModel<boolean>()
+const loading = ref(false)
+const fetchedActivity = ref<ActivityItem | null>(null)
 const defaultActivity: ActivityItem = {
   id: 0,
   title: '未找到动态',
@@ -14,21 +17,28 @@ const defaultActivity: ActivityItem = {
   commentCount: 0,
 }
 
-const { data: fetchedActivity, status: loading } = useAsyncData(
-  `activity-${props.activityId}`,
-  () => $fetch('/api/activity/single', { query: { id: props.activityId } }),
-  {
-    watch: [() => props.activityId],
-    immediate: true,
-  },
-)
-const curActivity = computed(() => fetchedActivity.value ? fetchedActivity.value.payload ?? defaultActivity : defaultActivity)
+watchEffect(() => {
+  if (visible.value && activityId.value) {
+    loading.value = true
+    $fetch('/api/activity/single', { query: { id: activityId.value } })
+      .then((res) => {
+        if (res.success) {
+          fetchedActivity.value = res.payload
+        }
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
+})
+
+const curActivity = computed(() => fetchedActivity.value ?? defaultActivity)
 </script>
 
 <template>
   <HanaDialog v-model="visible" title="动态详情" width="800px">
     <!-- 加载状态 -->
-    <div v-if="loading === 'pending'" class="my-5 flex items-center justify-center">
+    <div v-if="loading" class="my-5 flex items-center justify-center">
       <Icon name="svg-spinners:8-dots-rotate" />&emsp;Loading...
     </div>
 

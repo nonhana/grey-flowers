@@ -22,7 +22,10 @@ watch(detailDialogVisible, (newVisible) => {
     router.replace({ query: {} })
   }
 })
-onMounted(() => detailDialogVisible.value = route.query.id !== undefined)
+onMounted(() => {
+  curActivityId.value = Number(route.query.id)
+  detailDialogVisible.value = route.query.id !== undefined
+})
 
 const activities = ref<ActivityItem[]>([])
 
