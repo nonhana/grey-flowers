@@ -79,14 +79,19 @@ watch(hash, (newHash, _, onCleanup) => {
   <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
     <div class="flex items-center gap-2 text-xl">
       <Icon name="lucide:list" />
-      <span class="with-underline">文章目录</span>
+      <span>文章目录</span>
     </div>
     <hr class="my-2 border-text dark:border-hana-white-700">
-    <div v-if="activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">
+    <div v-if="links.length > 0 && activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">
       <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
     </div>
-    <div v-else class="text-center text-xl">
-      <Icon name="svg-spinners:8-dots-rotate" />
+    <div v-else-if="links.length === 0" class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
+      <Icon name="lucide:file-text" size="32" />
+      <span>暂无目录</span>
+    </div>
+    <div v-else class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
+      <Icon name="svg-spinners:8-dots-rotate" size="32" />
+      <span>加载中...</span>
     </div>
   </div>
 </template>
