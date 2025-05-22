@@ -17,7 +17,7 @@ onMounted(() => {
       :to="to"
       :aria-label="title"
       :title="title"
-      class="bg-white group relative top-0 block w-full overflow-hidden rounded-3xl transition-all hover:-translate-y-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200 dark:bg-hana-black-700 dark:hover:bg-hana-black-800"
+      class="bg-white group relative top-0 block w-full overflow-hidden rounded-3xl transition-all hover:-translate-y-1 hover:bg-hana-blue-150 hover:shadow-lg active:scale-95 active:bg-hana-blue-200 dark:bg-hana-black-700 dark:hover:bg-hana-black-800 dark:active:bg-hana-black-800"
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"
     >
       <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail', 'md:hidden': displayCols > 1 && type === 'detail' }">
