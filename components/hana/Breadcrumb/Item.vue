@@ -16,7 +16,7 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
 </script>
 
 <template>
-  <span id="breadcrumb-item">
+  <span id="breadcrumb-item" class="flex items-center">
     <component
       :is="component"
       v-bind="to ? { to } : {}"

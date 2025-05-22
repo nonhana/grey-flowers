@@ -16,7 +16,7 @@ onMounted(() => {
   <div class="mx-auto flex flex-col gap-4 px-8 py-4 md:max-w-[90%] xl:max-w-[70%]">
     <div class="flex w-full flex-col gap-4 md:flex-row md:items-center">
       <div class="flex items-center gap-2">
-        <span class="font-code text-text dark:text-hana-white-700">快捷导航</span>
+        <span class="font-code text-text dark:text-hana-white-700">导航</span>
         <Icon name="lucide:chevron-right" class="text-text dark:text-hana-white-700" />
         <ProseA href="/about" target="_self">
           关于

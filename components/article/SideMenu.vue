@@ -27,7 +27,7 @@ const { path } = toRefs(route)
       </div>
       <Icon
         name="lucide:arrow-right"
-        class="hidden animate-bounce-x opacity-0 transition-all group-hover:opacity-100 lg:block"
+        class="hidden! animate-bounce-x opacity-0 transition-all group-hover:opacity-100 lg:block!"
         :class="[path === to ? 'animate-none opacity-100' : '']"
       />
     </NuxtLink>
