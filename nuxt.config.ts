@@ -44,7 +44,6 @@ export default defineNuxtConfig({
     dir: 'public',
     quality: 85,
     formats: ['webp', 'gif', 'jpeg', 'png', 'avif'],
-    domains: ['moe.greyflowers.pics'],
   },
   devServer: {
     host: '127.0.0.1',
