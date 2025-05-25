@@ -46,5 +46,21 @@
     "desc": "自知之明是最可贵的知识！",
     "image": "https://q2.qlogo.cn/headimg_dl?dst_uin=507249007&spec=640",
     "color": "#00BFFF"
+  },
+  {
+    "site": "yume",
+    "owner": "sayoriqwq",
+    "url": "https://sayoriqwq.com",
+    "desc": "个人技术博客，分享编程和生活的点滴",
+    "image": "https://s3-yume.s3.ap-northeast-1.amazonaws.com/avatar.webp",
+    "color": "#00BFFF"
+  },
+  {
+    "site": "微光档案",
+    "owner": "御守真幻",
+    "url": "https://bikari.top",
+    "desc": "虚幻的幸福",
+    "image": "https://bikari.top/image/avatar/maestrale.webp",
+    "color": "#00BFFF"
   }
 ]
