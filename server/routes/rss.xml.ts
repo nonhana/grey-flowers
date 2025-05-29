@@ -2,7 +2,7 @@ import { Feed } from 'feed'
 
 const titleBlacklist = ['About', 'Friends']
 
-const basePath = 'https://www.greyflowers.moe'
+const basePath = 'https://caelum.moe'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'content-type', 'text/xml')

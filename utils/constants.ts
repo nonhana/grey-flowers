@@ -11,6 +11,6 @@ export const tailwindBreakpoints = {
 export const hanaInfo: SimpleUserInfo = {
   id: 1,
   username: 'non_hana',
-  site: 'https://www.greyflowers.moe',
+  site: 'https://caelum.moe',
   avatar: '/images/avatar.webp',
 }

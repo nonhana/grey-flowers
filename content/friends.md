@@ -6,7 +6,7 @@
 {
   "site": "Greyflowers",
   "owner": "non_hana",
-  "url": "https://www.greyflowers.moe",
+  "url": "https://caelum.moe",
   "desc": "『灰色的花，终有一天会盛开吧。』",
   "image": "https://moe.greyflowers.pics/avatar.webp",
   "color": "#858585"

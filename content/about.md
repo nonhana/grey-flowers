@@ -4,7 +4,7 @@
 
 **没有使用任何现成的框架，从零使用 `Nuxt3 + Nuxt Content + Tailwind` 设计并搭建。后端使用 `Prisma` 作为 `ORM`、`PostgreSQL` 做持久化。**
 
-完全开源，遵循 [MIT](https://mit-license.org) 开源协议。若感兴趣，可以访问 [Github 链接🔗](https://github.com/nonhana/GreyFlowers)。
+完全开源，遵循 [MIT](https://mit-license.org) 开源协议。若感兴趣，可以访问 [Github 链接🔗](https://github.com/nonhana/grey-flowers)。
 
 无论如何，与你相遇是一件幸运的事情❤️
 
@@ -58,7 +58,7 @@ PC 游戏主要有 **APEX** 和 **MHWI**，每天不开几把排位打几只金�
 2. [ApiPlayer](https://github.com/nonhana/ApiPlayer-Frontend)，这是当初带队参加字节青训营决赛的一个大项目，前端采用 Vue3 + TS，后端直接用的原生 Express + TS 进行编写。虽然最后拿了个还不错的奖，不过现在看来确实很稚嫩（笑），但是我不想重构了
 3. [littleSharing](https://github.com/nonhana/littleSharing-Frontend)。在大二刚学 Vue 的时候，用 Vue2 + JS 随便给自己搓了一个放文章的地方。
 4. [hana-img-viewer](https://github.com/nonhana/hana-img-viewer)，一个用来点击预览大图的小组件，给 Vue 用的。这个东西本来只是打算作为这个博客的一个小组件而写出来的，后来想想说不定能提出来单独发个包也可以，所以就拿出来了。
-5. [GreyFlowers](https://github.com/nonhana/GreyFlowers)，从最近一段实习离职之后就 All in 的一个 Nuxt3 项目，目前快写完了（应该），之后打算就在这里发发文章了。~~顺便会塞一些自己写的小玩具~~
+5. [GreyFlowers](https://github.com/nonhana/grey-flowers)，从最近一段实习离职之后就 All in 的一个 Nuxt3 项目，目前快写完了（应该），之后打算就在这里发发文章了。~~顺便会塞一些自己写的小玩具~~
 6. 一些纯凭兴趣参与的奇奇怪怪可可爱爱的开源（划水）
 
 ### 这里有什么？
