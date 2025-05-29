@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     language: 'zh-CN',
     favicon: `${basePath}/favicon.ico`,
     copyright: 'MIT',
-    image: 'https://moe.greyflowers.pics/greyflowers-ogimg.webp',
+    image: 'https://static-r2.caelum.moe/greyflowers-ogimg.webp',
     author: {
       name: 'non_hana',
       email: 'zhouxiang757@gmail.com',

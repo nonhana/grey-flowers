@@ -8,7 +8,7 @@
   "owner": "non_hana",
   "url": "https://caelum.moe",
   "desc": "『灰色的花，终有一天会盛开吧。』",
-  "image": "https://moe.greyflowers.pics/avatar.webp",
+  "image": "https://static-r2.caelum.moe/avatar.webp",
   "color": "#858585"
 }
 ```

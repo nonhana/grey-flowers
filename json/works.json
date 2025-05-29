@@ -4,7 +4,7 @@
     "owner": "non_hana",
     "url": "https://caelum.moe",
     "desc": "『灰色的花，终有一天会盛开吧。』",
-    "image": "https://moe.greyflowers.pics/greyflowers-nea.webp",
+    "image": "https://static-r2.caelum.moe/greyflowers-nea.webp",
     "color": "#858585"
   },
   {
@@ -12,7 +12,7 @@
     "owner": "non_hana",
     "url": "https://www.picals.moe",
     "desc": "一个受 Pixiv 启发的插画收藏交流平台",
-    "image": "https://moe.greyflowers.pics/picals-logo.webp",
+    "image": "https://static-r2.caelum.moe/picals-logo.webp",
     "color": "#00BFFF"
   },
   {
@@ -20,7 +20,7 @@
     "owner": "non_hana",
     "url": "https://api-player.vercel.app",
     "desc": "一个模仿 Apifox 的 HTTP 接口管理平台",
-    "image": "https://moe.greyflowers.pics/apiplayer-logo.webp",
+    "image": "https://static-r2.caelum.moe/apiplayer-logo.webp",
     "color": "#00BFFF"
   },
   {
@@ -28,7 +28,7 @@
     "owner": "non_hana",
     "url": "https://littlesharing.cn",
     "desc": "用 Vue2 + JS 搓的一个小型 Markdown 社区",
-    "image": "https://moe.greyflowers.pics/littlesharing-logo.webp",
+    "image": "https://static-r2.caelum.moe/littlesharing-logo.webp",
     "color": "#00BFFF"
   },
   {
@@ -36,7 +36,7 @@
     "owner": "non_hana",
     "url": "https://hana-img-viewer.vercel.app",
     "desc": "适用于 Vue3 + TS 的图片查看器",
-    "image": "https://moe.greyflowers.pics/hana-img-viewer-logo.webp",
+    "image": "https://static-r2.caelum.moe/hana-img-viewer-logo.webp",
     "color": "#00BFFF"
   },
   {
@@ -44,7 +44,7 @@
     "owner": "non_hana",
     "url": "https://campanulamusic.xyz/",
     "desc": "基于 SvelteKit 的 Web 音乐播放器",
-    "image": "https://moe.greyflowers.pics/campanula-logo.webp",
+    "image": "https://static-r2.caelum.moe/campanula-logo.webp",
     "color": "#A8E6CF"
   }
 ]
