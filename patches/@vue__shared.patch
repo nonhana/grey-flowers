@@ -1,0 +1,13 @@
+diff --git a/dist/shared.cjs.prod.js b/dist/shared.cjs.prod.js
+index af081bde64b2ec2e32e6fa91aa604ce6af1a32b1..fc34c9096658d4a344d58ac66ed51f729688b6a3 100644
+--- a/dist/shared.cjs.prod.js
++++ b/dist/shared.cjs.prod.js
+@@ -421,7 +421,7 @@ function escapeHtml(string) {
+ }
+ const commentStripRE = /^-?>|<!--|-->|--!>|<!-$/g;
+ function escapeHtmlComment(src) {
+-  return src.replace(commentStripRE, "");
++  return src.toString().replace(commentStripRE, "");
+ }
+ const cssVarNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~]/g;
+ function getEscapedCssVarName(key, doubleEscape) {

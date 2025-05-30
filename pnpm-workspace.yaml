@@ -1,3 +1,5 @@
+patchedDependencies:
+  '@vue/shared': patches/@vue__shared.patch
 catalog:
   '@antfu/eslint-config': ^4.13.2
   '@iconify-json/lucide': ^1.2.44

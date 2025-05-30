@@ -124,6 +124,11 @@ catalogs:
       specifier: ^3.25.13
       version: 3.25.13
 
+patchedDependencies:
+  '@vue/shared':
+    hash: 0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01
+    path: patches/@vue__shared.patch
+
 importers:
 
   .:
@@ -6995,7 +7000,7 @@ snapshots:
 
   '@nuxt/schema@3.17.4':
     dependencies:
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       consola: 3.4.2
       defu: 6.1.4
       pathe: 2.0.3
@@ -8058,7 +8063,7 @@ snapshots:
       '@babel/types': 7.27.1
       '@vue/babel-helper-vue-transform-on': 1.4.0
       '@vue/babel-plugin-resolve-type': 1.4.0(@babel/core@7.27.1)
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
     optionalDependencies:
       '@babel/core': 7.27.1
     transitivePeerDependencies:
@@ -8078,7 +8083,7 @@ snapshots:
   '@vue/compiler-core@3.5.14':
     dependencies:
       '@babel/parser': 7.27.2
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       entities: 4.5.0
       estree-walker: 2.0.2
       source-map-js: 1.2.1
@@ -8086,7 +8091,7 @@ snapshots:
   '@vue/compiler-dom@3.5.14':
     dependencies:
       '@vue/compiler-core': 3.5.14
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
 
   '@vue/compiler-sfc@3.5.14':
     dependencies:
@@ -8094,7 +8099,7 @@ snapshots:
       '@vue/compiler-core': 3.5.14
       '@vue/compiler-dom': 3.5.14
       '@vue/compiler-ssr': 3.5.14
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       estree-walker: 2.0.2
       magic-string: 0.30.17
       postcss: 8.5.3
@@ -8103,7 +8108,7 @@ snapshots:
   '@vue/compiler-ssr@3.5.14':
     dependencies:
       '@vue/compiler-dom': 3.5.14
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
 
   '@vue/compiler-vue2@2.7.16':
     dependencies:
@@ -8147,7 +8152,7 @@ snapshots:
       '@volar/language-core': 2.4.12
       '@vue/compiler-dom': 3.5.14
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       alien-signals: 1.0.10
       minimatch: 9.0.5
       muggle-string: 0.4.1
@@ -8157,27 +8162,27 @@ snapshots:
 
   '@vue/reactivity@3.5.14':
     dependencies:
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
 
   '@vue/runtime-core@3.5.14':
     dependencies:
       '@vue/reactivity': 3.5.14
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
 
   '@vue/runtime-dom@3.5.14':
     dependencies:
       '@vue/reactivity': 3.5.14
       '@vue/runtime-core': 3.5.14
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       csstype: 3.1.3
 
   '@vue/server-renderer@3.5.14(vue@3.5.14(typescript@5.8.3))':
     dependencies:
       '@vue/compiler-ssr': 3.5.14
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       vue: 3.5.14(typescript@5.8.3)
 
-  '@vue/shared@3.5.14': {}
+  '@vue/shared@3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)': {}
 
   '@vueuse/core@13.2.0(vue@3.5.14(typescript@5.8.3))':
     dependencies:
@@ -11223,7 +11228,7 @@ snapshots:
       '@nuxt/telemetry': 2.6.6(magicast@0.3.5)
       '@nuxt/vite-builder': 3.17.4(@types/node@22.15.21)(eslint@9.27.0(jiti@2.4.2))(lightningcss@1.30.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.41.0)(sass@1.86.0)(terser@5.37.0)(typescript@5.8.3)(vue@3.5.14(typescript@5.8.3))(yaml@2.7.1)
       '@unhead/vue': 2.0.9(vue@3.5.14(typescript@5.8.3))
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
       c12: 3.0.4(magicast@0.3.5)
       chokidar: 4.0.3
       compatx: 0.2.0
@@ -12993,7 +12998,7 @@ snapshots:
       '@vue/compiler-sfc': 3.5.14
       '@vue/runtime-dom': 3.5.14
       '@vue/server-renderer': 3.5.14(vue@3.5.14(typescript@5.8.3))
-      '@vue/shared': 3.5.14
+      '@vue/shared': 3.5.14(patch_hash=0e5632f37add797b0c1b05314d8f77ae45ec0bb3c82d4bba4c6b3c5abbe5fc01)
     optionalDependencies:
       typescript: 5.8.3
 
