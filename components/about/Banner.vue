@@ -78,7 +78,7 @@ const SNSList: SNSItem[] = [
     name: 'Mail',
     bgColor: '#D44638',
     iconColor: '#fff',
-    to: 'mailto:zhouxiang757@gmail.com',
+    to: 'mailto:nonhana@outlook.com',
   },
   {
     icon: 'RSS',

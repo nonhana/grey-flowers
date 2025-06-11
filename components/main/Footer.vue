@@ -40,7 +40,7 @@ onMounted(() => {
         <ProseA href="https://qm.qq.com/q/nkm9pWgpTc">
           QQ
         </ProseA>
-        <ProseA href="mailto:zhouxiang757@gmail.com">
+        <ProseA href="mailto:nonhana@outlook.com">
           发邮件
         </ProseA>
       </div>

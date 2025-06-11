@@ -50,7 +50,7 @@ export const seoData = {
   image: 'https://static-r2.caelum.moe/greyflowers-ogimg.webp',
   mySite: 'https://caelum.moe',
   twitterHandle: '@non_hanaz',
-  mailAddress: 'zhouxiang757@gmail.com',
+  mailAddress: 'nonhana@outlook.com',
 }
 
 export const siteMetaData = {

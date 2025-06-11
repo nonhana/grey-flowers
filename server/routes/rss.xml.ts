@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     image: 'https://static-r2.caelum.moe/greyflowers-ogimg.webp',
     author: {
       name: 'non_hana',
-      email: 'zhouxiang757@gmail.com',
+      email: 'nonhana@outlook.com',
       link: basePath,
     },
   })
