@@ -10,7 +10,7 @@
   {
     "site": "Picals",
     "owner": "non_hana",
-    "url": "https://www.picals.moe",
+    "url": "https://picals.caelum.moe",
     "desc": "一个受 Pixiv 启发的插画收藏交流平台",
     "image": "https://static-r2.caelum.moe/picals-logo.webp",
     "color": "#00BFFF"
@@ -18,7 +18,7 @@
   {
     "site": "ApiPlayer",
     "owner": "non_hana",
-    "url": "https://api-player.vercel.app",
+    "url": "https://apiplayer.caelum.moe",
     "desc": "一个模仿 Apifox 的 HTTP 接口管理平台",
     "image": "https://static-r2.caelum.moe/apiplayer-logo.webp",
     "color": "#00BFFF"
@@ -26,7 +26,7 @@
   {
     "site": "littleSharing",
     "owner": "non_hana",
-    "url": "https://littlesharing.cn",
+    "url": "https://littlesharing.caelum.moe",
     "desc": "用 Vue2 + JS 搓的一个小型 Markdown 社区",
     "image": "https://static-r2.caelum.moe/littlesharing-logo.webp",
     "color": "#00BFFF"
@@ -34,7 +34,7 @@
   {
     "site": "hana-img-viewer",
     "owner": "non_hana",
-    "url": "https://hana-img-viewer.vercel.app",
+    "url": "https://hana-img-viewer.netlify.app",
     "desc": "适用于 Vue3 + TS 的图片查看器",
     "image": "https://static-r2.caelum.moe/hana-img-viewer-logo.webp",
     "color": "#00BFFF"
@@ -42,9 +42,17 @@
   {
     "site": "Campanula Music",
     "owner": "non_hana",
-    "url": "https://campanulamusic.xyz/",
+    "url": "https://campanula.caelum.moe",
     "desc": "基于 SvelteKit 的 Web 音乐播放器",
     "image": "https://static-r2.caelum.moe/campanula-logo.webp",
+    "color": "#A8E6CF"
+  },
+  {
+    "site": "Campanula Gallery",
+    "owner": "non_hana",
+    "url": "https://gallery.caelum.moe",
+    "desc": "随便弹的一些旋律。基于 SolidJS",
+    "image": "https://static-r2.caelum.moe/gallery-logo.webp",
     "color": "#A8E6CF"
   }
 ]
