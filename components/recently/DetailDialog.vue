@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ActivityItem } from '~/types/activity'
+import { HanaImgViewer as ImgViewer } from 'hana-img-viewer'
 
 const props = defineProps<{ activityId: number | null }>()
 const { activityId } = toRefs(props)
@@ -66,7 +67,7 @@ const curActivity = computed(() => fetchedActivity.value ?? defaultActivity)
           {{ curActivity.content }}
         </p>
         <div v-if="curActivity.images && curActivity.images.length" class="flex flex-col gap-5">
-          <HanaImgViewer
+          <ImgViewer
             v-for="image in curActivity.images"
             :key="image"
             :src="image"
