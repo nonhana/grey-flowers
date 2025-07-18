@@ -26,7 +26,7 @@ const whereObj = computed<ArticleListQuery>(() => {
       result.category = antiFlatStr(route.params.category as string)
       break
     case 'archives':
-      result.publishedAtMonth = `${query.value.year}-${remainTwoDigits(query.value.month as string)}`
+      result.publishedAtMonth = `${query.value.year}-${remainTwoDigits(String(query.value.month ?? '01'))}`
       break
   }
   return result
