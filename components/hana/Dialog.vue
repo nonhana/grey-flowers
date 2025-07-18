@@ -20,13 +20,15 @@ const emits = defineEmits<{
 }>()
 
 const { dialogStore } = useStore()
-const { increaseDialogCount, decreaseDialogCount } = dialogStore
+const { increaseDialogCount, decreaseDialogCount, getDialogCount } = dialogStore
 const { dialogCount } = toRefs(dialogStore)
 
 const { toggleScrollable } = useToggleScrollable()
 
 const programmaticVisible = ref(false)
 const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
+
+const dialogZIndex = ref(40)
 
 onMounted(() => {
   if (props.programmatic) {
@@ -62,12 +64,14 @@ watch(visible, (newV) => {
     if (!dialogCount.value) {
       toggleScrollable(newV)
     }
+    dialogZIndex.value = 40 + getDialogCount()
     increaseDialogCount()
   }
   else {
     if (dialogCount.value) {
       toggleScrollable(newV)
     }
+    dialogZIndex.value = 40
     decreaseDialogCount()
   }
   if (overlayRef.value) {
@@ -105,16 +109,17 @@ defineExpose({
   <teleport to="body">
     <div
       ref="overlayRef"
-      class="fixed inset-0 z-40 bg-black opacity-0 transition-opacity duration-300"
+      class="fixed inset-0 bg-black opacity-0 transition-opacity duration-300"
       :class="{ 'pointer-events-none': !visible }"
+      :style="{ zIndex: dialogZIndex }"
       @click="handleClose"
     />
     <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
       <div
         v-if="visible"
         id="hana-dialog"
-        class="fixed left-1/2 top-1/2 z-40 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow dark:bg-hana-black"
-        :style="{ width }"
+        class="fixed left-1/2 top-1/2 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow dark:bg-hana-black"
+        :style="{ width, zIndex: dialogZIndex }"
       >
         <div class="mb-5">
           <slot
