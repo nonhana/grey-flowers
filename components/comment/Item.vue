@@ -116,7 +116,7 @@ const blockquoteContent = computed(() =>
         <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
           {{ blockquoteContent }}
         </ProseBlockquote>
-        <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white">
+        <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white break-words">
           {{ comment.content }}
         </p>
         <div class="flex h-6 items-center gap-2" :class="{ 'overflow-x-auto scrollbar-hidden': recordMode }">

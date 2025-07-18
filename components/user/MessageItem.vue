@@ -29,7 +29,7 @@ const blockquoteContent = computed(() =>
       <ProseBlockquote v-if="props.message.parent">
         {{ blockquoteContent }}
       </ProseBlockquote>
-      <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white">
+      <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white break-words">
         {{ message.content }}
       </p>
       <span class="h-6 text-nowrap text-sm dark:text-hana-white">{{ message.publishedAt }}</span>
