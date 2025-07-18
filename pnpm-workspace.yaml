@@ -28,7 +28,7 @@ catalog:
   eslint: ^9.27.0
   feed: ^5.0.1
   gsap: ^3.13.0
-  hana-img-viewer: ^1.2.2
+  hana-img-viewer: ^1.2.3
   jsonwebtoken: ^9.0.2
   nuxt: ^3.17.4
   pinia: ^3.0.2

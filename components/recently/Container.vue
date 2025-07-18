@@ -15,6 +15,10 @@ watch(() => route.query.id, (newId) => {
     curActivityId.value = Number(newId)
     detailDialogVisible.value = true
   }
+  else {
+    detailDialogVisible.value = false
+    curActivityId.value = null
+  }
 })
 watch(detailDialogVisible, (newVisible) => {
   if (!newVisible) {
