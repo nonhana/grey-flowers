@@ -59,29 +59,26 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
   css: ['~/assets/css/index.css'],
-  googleFonts: {
-    families: {
-      'Noto+Serif': [500, 700],
-      'Noto+Serif+SC': [500, 700],
-      'Noto+Serif+JP': [500, 700],
-    },
-    display: 'swap',
-    preload: true,
-    download: true,
+  fonts: {
+    families: [
+      { name: 'Noto Serif', provider: 'google', weights: [500, 700] },
+      { name: 'Noto Serif SC', provider: 'google', weights: [500, 700] },
+      { name: 'Noto Serif JP', provider: 'google', weights: [500, 700] },
+    ],
   },
   colorMode: {
     classSuffix: '',
   },
   modules: [
     '@nuxt/icon',
-    '@nuxtjs/google-fonts',
-    '@nuxtjs/color-mode',
+    '@nuxt/fonts',
     '@nuxt/image',
+    '@nuxt/content',
     '@nuxtjs/seo',
+    '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
-    '@nuxt/content',
   ],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },
