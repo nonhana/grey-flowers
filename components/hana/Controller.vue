@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
+
+const { layoutScrollStore } = useStore()
+const { scrollTop, scrollHeight } = toRefs(layoutScrollStore)
+
 const { progress } = useLoadingIndicator()
 const canScroll = ref(false)
 
@@ -7,6 +12,7 @@ onMounted(() => {
     canScroll.value = hasScrollbar()
   }, 300)
 })
+
 watch(progress, (newV) => {
   if (newV === 100) {
     setTimeout(() => {

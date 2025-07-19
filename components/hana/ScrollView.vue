@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { throttle } from 'throttle-debounce'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
-interface Props {
+const props = defineProps<{
   contentWrapperClass?: string
   contentClass?: string
   scrollbarClass?: string
   scrollEvents?: ((e: Event) => void)[]
-}
-
-const props = defineProps<Props>()
+}>()
 
 const emit = defineEmits<{
-  (e: 'scrollWatch', offset: number): void
   (e: 'heightChange', height: number): void
 }>()
+
+const scrollTop = defineModel<number>()
 
 const containerElement = ref<HTMLDivElement | null>(null)
 const contentWrapperElement = ref<HTMLDivElement | null>(null)
@@ -26,6 +24,9 @@ const containerWidth = ref(0)
 const contentHeight = ref(0)
 const contentWidth = ref(0)
 const scrollOffset = ref(0)
+
+// 添加标志位防止循环更新
+const isUpdatingFromExternal = ref(false)
 
 const isRight = computed(() => scrollBarPos.value === 'right')
 const isBottom = computed(() => scrollBarPos.value === 'bottom')
@@ -77,13 +78,36 @@ const scrollBarStyle = computed(() => {
   return {}
 })
 
-const throttledEmit = throttle(100, (offset: number) => {
-  emit('scrollWatch', offset)
-})
+const throttledEmit = useThrottleFn((offset: number) => {
+  if (!isUpdatingFromExternal.value) {
+    scrollTop.value = offset
+  }
+}, 50)
 
-watch(scrollOffset, (newOffset) => {
-  throttledEmit(newOffset)
-})
+watch(scrollOffset, newOffset => throttledEmit(newOffset))
+
+// 添加对外部 scrollTop 变化的监听
+watch(scrollTop, (newScrollTop) => {
+  if (newScrollTop !== undefined && !isUpdatingFromExternal.value && contentWrapperElement.value) {
+    isUpdatingFromExternal.value = true
+
+    nextTick(() => {
+      if (contentWrapperElement.value) {
+        if (isRight.value) {
+          // 垂直滚动
+          contentWrapperElement.value.scrollTop = newScrollTop
+        }
+        else if (isBottom.value) {
+          // 水平滚动
+          contentWrapperElement.value.scrollLeft = newScrollTop
+        }
+      }
+
+      // 重置标志位
+      isUpdatingFromExternal.value = false
+    })
+  }
+}, { immediate: false })
 
 let startOffset = 0
 let startScrollOffset = 0

@@ -2,7 +2,8 @@
 import { useStore } from '~/store'
 
 const route = useRoute()
-const { headerStatusStore } = useStore()
+const { headerStatusStore, layoutScrollStore } = useStore()
+const { scrollTop } = toRefs(layoutScrollStore)
 
 const { fullPath } = toRefs(route)
 
@@ -12,10 +13,9 @@ const isThoughts = computed(() => fullPath.value === '/thoughts')
 const headerTop = ref('0px')
 let lastScrollY = 0
 
-function handleScroll() {
-  if (route.meta.name === 'article-detail') {
-    const currentScrollY = window.scrollY
-    if (currentScrollY > lastScrollY) {
+watch(scrollTop, (newTop) => {
+  if (route.name === 'article-detail') {
+    if (newTop > lastScrollY) {
       headerTop.value = '-100px'
       headerStatusStore.setHidden(true)
     }
@@ -23,26 +23,22 @@ function handleScroll() {
       headerTop.value = '0px'
       headerStatusStore.setHidden(false)
     }
-    lastScrollY = currentScrollY
+    lastScrollY = newTop
   }
-}
-
-const debouncedHandleScroll = useThrottleFn(handleScroll, 50)
-
-onMounted(() => {
-  window.addEventListener('scroll', debouncedHandleScroll)
-})
-onUnmounted(() => {
-  window.removeEventListener('scroll', debouncedHandleScroll)
 })
 </script>
 
 <template>
-  <HanaScrollView class="h-dvh" content-class="min-h-dvh flex flex-col">
+  <HanaScrollView
+    v-model:scroll-top="scrollTop"
+    class="h-dvh"
+    content-class="min-h-dvh flex flex-col"
+    @height-change="layoutScrollStore.setScrollHeight"
+  >
     <transition name="banner">
       <MainBanner v-if="isHome" />
     </transition>
-    <header class="sticky top-0 z-20 w-full transition-all" :style="{ top: headerTop }">
+    <header class="sticky top-0 z-20 w-full transition-all" :style="{ transform: `translateY(${headerTop})` }">
       <MainHeader />
     </header>
     <main class="flex-1">
