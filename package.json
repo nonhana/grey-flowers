@@ -39,6 +39,7 @@
     "@types/bcrypt": "catalog:",
     "@types/jsonwebtoken": "catalog:",
     "@types/node": "catalog:",
+    "@types/throttle-debounce": "catalog:",
     "@types/vivus": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/nuxt": "catalog:",
@@ -54,6 +55,7 @@
     "pinia": "catalog:",
     "pinia-plugin-persistedstate": "catalog:",
     "prisma": "catalog:",
+    "throttle-debounce": "catalog:",
     "typescript": "catalog:",
     "vivus": "catalog:",
     "zod": "catalog:"

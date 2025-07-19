@@ -38,7 +38,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-dvh flex-col">
+  <HanaScrollView class="h-dvh" content-class="min-h-dvh flex flex-col">
     <transition name="banner">
       <MainBanner v-if="isHome" />
     </transition>
@@ -54,7 +54,7 @@ onUnmounted(() => {
       <MainFooter />
     </footer>
     <HanaController />
-  </div>
+  </HanaScrollView>
 </template>
 
 <style scoped>
