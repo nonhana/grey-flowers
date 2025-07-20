@@ -12,8 +12,6 @@ const emit = defineEmits<{
   (e: 'heightChange', height: number): void
 }>()
 
-const scrollTop = defineModel<number>()
-
 const containerElement = ref<HTMLDivElement | null>(null)
 const contentWrapperElement = ref<HTMLDivElement | null>(null)
 const contentElement = ref<HTMLDivElement | null>(null)
@@ -23,7 +21,7 @@ const containerHeight = ref(0)
 const containerWidth = ref(0)
 const contentHeight = ref(0)
 const contentWidth = ref(0)
-const scrollOffset = ref(0)
+const scrollOffset = defineModel<number>({ required: true })
 
 // 添加标志位防止循环更新
 const isUpdatingFromExternal = ref(false)
@@ -78,28 +76,20 @@ const scrollBarStyle = computed(() => {
   return {}
 })
 
-const throttledEmit = useThrottleFn((offset: number) => {
-  if (!isUpdatingFromExternal.value) {
-    scrollTop.value = offset
-  }
-}, 50)
-
-watch(scrollOffset, newOffset => throttledEmit(newOffset))
-
-// 添加对外部 scrollTop 变化的监听
-watch(scrollTop, (newScrollTop) => {
-  if (newScrollTop !== undefined && !isUpdatingFromExternal.value && contentWrapperElement.value) {
+// 添加对外部 scrollOffset 变化的监听
+watch(scrollOffset, (newOffset) => {
+  if (newOffset !== undefined && !isUpdatingFromExternal.value && contentWrapperElement.value) {
     isUpdatingFromExternal.value = true
 
     nextTick(() => {
       if (contentWrapperElement.value) {
         if (isRight.value) {
           // 垂直滚动
-          contentWrapperElement.value.scrollTop = newScrollTop
+          contentWrapperElement.value.scrollTop = newOffset
         }
         else if (isBottom.value) {
           // 水平滚动
-          contentWrapperElement.value.scrollLeft = newScrollTop
+          contentWrapperElement.value.scrollLeft = newOffset
         }
       }
 
@@ -204,6 +194,13 @@ onUnmounted(() => {
   resizeObserver?.disconnect()
   document.removeEventListener('mousemove', onMouseMove)
   document.removeEventListener('mouseup', onMouseUp)
+})
+
+defineExpose({
+  containerHeight,
+  containerWidth,
+  contentHeight,
+  contentWidth,
 })
 </script>
 

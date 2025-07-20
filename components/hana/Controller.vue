@@ -1,42 +1,24 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
+const props = defineProps<{
+  scrollHeight: number
+  clientHeight: number
+}>()
 
-const { layoutScrollStore } = useStore()
-const { scrollTop, scrollHeight } = toRefs(layoutScrollStore)
+const { scrollHeight, clientHeight } = toRefs(props)
 
 const { progress } = useLoadingIndicator()
 const canScroll = ref(false)
 
-onMounted(() => {
-  setTimeout(() => {
-    canScroll.value = hasScrollbar()
-  }, 300)
+watchEffect(() => {
+  canScroll.value = scrollHeight.value > clientHeight.value
 })
 
-watch(progress, (newV) => {
-  if (newV === 100) {
-    setTimeout(() => {
-      canScroll.value = hasScrollbar()
-    }, 300)
-  }
-})
+const scrollTop = defineModel<number>({ required: true })
 
-const curScrollPercent = ref(0)
-
-onMounted(() => {
-  window.addEventListener('scroll', () => {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight
-    const clientHeight = document.documentElement.clientHeight || document.body.clientHeight
-    curScrollPercent.value = Math.floor((scrollTop / (scrollHeight - clientHeight)) * 100)
-  })
-})
+const curScrollPercent = computed(() => Math.ceil((scrollTop.value / (scrollHeight.value - clientHeight.value)) * 100))
 
 function backToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  })
+  scrollTop.value = 0
 }
 
 const showPercent = ref(true)
@@ -53,6 +35,7 @@ onMounted(() => {
     comments ? hasComments.value = true : hasComments.value = false
   }, 300)
 })
+
 watch(progress, (newV) => {
   if (newV === 100) {
     setTimeout(() => {
