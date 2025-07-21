@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const props = defineProps<{
   contentWrapperClass?: string
@@ -9,22 +9,20 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  (e: 'scroll', offset: number): void
   (e: 'heightChange', height: number): void
 }>()
 
-const containerElement = ref<HTMLDivElement | null>(null)
-const contentWrapperElement = ref<HTMLDivElement | null>(null)
-const contentElement = ref<HTMLDivElement | null>(null)
+const containerElement = useTemplateRef('containerElement')
+const contentWrapperElement = useTemplateRef('contentWrapperElement')
+const contentElement = useTemplateRef('contentElement')
 
 const scrollBarPos = ref<'right' | 'bottom' | 'none'>('right')
 const containerHeight = ref(0)
 const containerWidth = ref(0)
 const contentHeight = ref(0)
 const contentWidth = ref(0)
-const scrollOffset = defineModel<number>({ required: true })
-
-// 添加标志位防止循环更新
-const isUpdatingFromExternal = ref(false)
+const scrollOffset = ref(0) // 滚动偏移量，内部维护
 
 const isRight = computed(() => scrollBarPos.value === 'right')
 const isBottom = computed(() => scrollBarPos.value === 'bottom')
@@ -76,29 +74,6 @@ const scrollBarStyle = computed(() => {
   return {}
 })
 
-// 添加对外部 scrollOffset 变化的监听
-watch(scrollOffset, (newOffset) => {
-  if (newOffset !== undefined && !isUpdatingFromExternal.value && contentWrapperElement.value) {
-    isUpdatingFromExternal.value = true
-
-    nextTick(() => {
-      if (contentWrapperElement.value) {
-        if (isRight.value) {
-          // 垂直滚动
-          contentWrapperElement.value.scrollTop = newOffset
-        }
-        else if (isBottom.value) {
-          // 水平滚动
-          contentWrapperElement.value.scrollLeft = newOffset
-        }
-      }
-
-      // 重置标志位
-      isUpdatingFromExternal.value = false
-    })
-  }
-}, { immediate: false })
-
 let startOffset = 0
 let startScrollOffset = 0
 
@@ -138,15 +113,11 @@ function onThumbMouseDown(e: MouseEvent) {
 function onScroll(e: Event) {
   const target = e.target as HTMLDivElement
   scrollOffset.value = isRight.value ? target.scrollTop : target.scrollLeft
+  emit('scroll', scrollOffset.value)
 }
 
 function updateSizes() {
-  if (contentWrapperElement.value) {
-    contentWrapperElement.value.scrollTop = 0
-    contentWrapperElement.value.scrollLeft = 0
-    scrollOffset.value = 0
-  }
-
+  // 为了兼容客户端动态加载，内容高度变化时不重置滚动状态
   nextTick(() => {
     if (!containerElement.value || !contentElement.value)
       return
@@ -165,6 +136,24 @@ function updateSizes() {
       scrollBarPos.value = 'none'
     }
   })
+}
+
+// expose: 指定滚动到哪里
+function scrollTo(offset: number) {
+  if (!contentWrapperElement.value)
+    return
+  if (isRight.value) {
+    contentWrapperElement.value.scrollTo({
+      top: offset,
+      behavior: 'smooth',
+    })
+  }
+  else {
+    contentWrapperElement.value.scrollTo({
+      left: offset,
+      behavior: 'smooth',
+    })
+  }
 }
 
 let resizeObserver: ResizeObserver | null = null
@@ -201,6 +190,7 @@ defineExpose({
   containerWidth,
   contentHeight,
   contentWidth,
+  scrollTo,
 })
 </script>
 

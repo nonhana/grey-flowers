@@ -1,10 +1,15 @@
 <script setup lang="ts">
 const props = defineProps<{
+  scrollTop: number // 当前整个容器的滚动偏移量，只接收不修改
   scrollHeight: number
   clientHeight: number
 }>()
 
-const { scrollHeight, clientHeight } = toRefs(props)
+const emits = defineEmits<{
+  (e: 'scrollTo', offset: number): void
+}>()
+
+const { scrollTop, scrollHeight, clientHeight } = toRefs(props)
 
 const { progress } = useLoadingIndicator()
 const canScroll = ref(false)
@@ -13,16 +18,10 @@ watchEffect(() => {
   canScroll.value = scrollHeight.value > clientHeight.value
 })
 
-const scrollTop = defineModel<number>({ required: true })
-
 const curScrollPercent = computed(() => {
   const percent = Math.ceil((scrollTop.value / (scrollHeight.value - clientHeight.value)) * 100)
   return Math.min(percent, 100)
 })
-
-function backToTop() {
-  scrollTop.value = 0
-}
 
 const showPercent = ref(true)
 function toggleShowPercent() {
@@ -53,21 +52,9 @@ watch(progress, (newV) => {
 
 function scrollToComments() {
   const commentsElement = checkCommentsExistence()
-  if (!commentsElement)
-    return
-
-  const scrollViewContent = document.querySelector('#global-scroll-view') as HTMLElement
-
-  let elementOffsetTop = 0
-  let element = commentsElement as HTMLElement
-
-  while (element && element !== scrollViewContent && element.offsetParent) {
-    elementOffsetTop += element.offsetTop
-    element = element.offsetParent as HTMLElement
+  if (commentsElement) {
+    commentsElement.scrollIntoView({ behavior: 'smooth' })
   }
-
-  // 加一点缓冲区，让评论区不会紧贴顶部
-  scrollTop.value = Math.max(0, elementOffsetTop - 20)
 }
 </script>
 
@@ -92,7 +79,7 @@ function scrollToComments() {
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
           class="hana-button size-10 items-center justify-center font-bold"
-          @click="backToTop"
+          @click="emits('scrollTo', 0)"
           @mouseenter="toggleShowPercent"
           @mouseleave="toggleShowPercent"
         >

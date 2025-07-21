@@ -29,17 +29,20 @@ watch(scrollOffset, (newTop) => {
   }
 })
 
-const scrollViewRef = ref<InstanceType<typeof HanaScrollView>>()
+const scrollViewRef = useTemplateRef('scrollViewRef')
+
+function scrollTo(offset: number) {
+  scrollViewRef.value?.scrollTo(offset)
+}
 </script>
 
 <template>
   <div>
     <HanaScrollView
-      id="global-scroll-view"
       ref="scrollViewRef"
-      v-model="scrollOffset"
       class="h-dvh"
       content-class="min-h-dvh flex flex-col"
+      @scroll="scrollOffset = $event"
     >
       <transition name="banner">
         <MainBanner v-if="isHome" />
@@ -57,9 +60,10 @@ const scrollViewRef = ref<InstanceType<typeof HanaScrollView>>()
       </footer>
     </HanaScrollView>
     <HanaController
-      v-model="scrollOffset"
+      :scroll-top="scrollOffset"
       :scroll-height="scrollViewRef?.contentHeight ?? 0"
       :client-height="scrollViewRef?.containerHeight ?? 0"
+      @scroll-to="scrollTo"
     />
   </div>
 </template>
