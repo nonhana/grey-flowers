@@ -13,7 +13,8 @@
     "lint:fix": "eslint . --fix",
     "new": "node ./scripts/newArticle.js",
     "generate:prisma": "prisma generate",
-    "migrate:dev": "prisma migrate dev"
+    "migrate:dev": "prisma migrate dev",
+    "cleanup": "nuxt cleanup"
   },
   "dependencies": {
     "@tailwindcss/vite": "catalog:",
