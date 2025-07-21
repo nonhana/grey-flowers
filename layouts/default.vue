@@ -35,6 +35,7 @@ const scrollViewRef = ref<InstanceType<typeof HanaScrollView>>()
 <template>
   <div>
     <HanaScrollView
+      id="global-scroll-view"
       ref="scrollViewRef"
       v-model="scrollOffset"
       class="h-dvh"

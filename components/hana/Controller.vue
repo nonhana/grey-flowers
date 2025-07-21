@@ -15,7 +15,10 @@ watchEffect(() => {
 
 const scrollTop = defineModel<number>({ required: true })
 
-const curScrollPercent = computed(() => Math.ceil((scrollTop.value / (scrollHeight.value - clientHeight.value)) * 100))
+const curScrollPercent = computed(() => {
+  const percent = Math.ceil((scrollTop.value / (scrollHeight.value - clientHeight.value)) * 100)
+  return Math.min(percent, 100)
+})
 
 function backToTop() {
   scrollTop.value = 0
@@ -27,30 +30,44 @@ function toggleShowPercent() {
 }
 
 const hasComments = ref(false)
-let comments: Element | null
+
+function checkCommentsExistence() {
+  const commentsElement = document.querySelector('#comments')
+  hasComments.value = !!commentsElement
+  return commentsElement
+}
 
 onMounted(() => {
   setTimeout(() => {
-    comments = document.querySelector('#comments')
-    comments ? hasComments.value = true : hasComments.value = false
+    checkCommentsExistence()
   }, 300)
 })
 
 watch(progress, (newV) => {
   if (newV === 100) {
     setTimeout(() => {
-      comments = document.querySelector('#comments')
-      comments ? hasComments.value = true : hasComments.value = false
+      checkCommentsExistence()
     }, 300)
   }
 })
 
 function scrollToComments() {
-  if (comments) {
-    comments.scrollIntoView({
-      behavior: 'smooth',
-    })
+  const commentsElement = checkCommentsExistence()
+  if (!commentsElement)
+    return
+
+  const scrollViewContent = document.querySelector('#global-scroll-view') as HTMLElement
+
+  let elementOffsetTop = 0
+  let element = commentsElement as HTMLElement
+
+  while (element && element !== scrollViewContent && element.offsetParent) {
+    elementOffsetTop += element.offsetTop
+    element = element.offsetParent as HTMLElement
   }
+
+  // 加一点缓冲区，让评论区不会紧贴顶部
+  scrollTop.value = Math.max(0, elementOffsetTop - 20)
 }
 </script>
 
