@@ -6,10 +6,13 @@ onMounted(() => isDark.value = colorMode.value === 'dark')
 watch(colorMode, () => isDark.value = colorMode.value === 'dark')
 
 function scrollToHead() {
-  window.scrollTo({
-    top: 732,
-    behavior: 'smooth',
-  })
+  const scrollView = document.getElementById('global-scroll-view')
+  if (scrollView) {
+    scrollView.scrollTo({
+      top: 732,
+      behavior: 'smooth',
+    })
+  }
 }
 </script>
 

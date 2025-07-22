@@ -6,7 +6,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (e: 'scrollTo', offset: number): void
+  (e: 'scrollToTop'): void
 }>()
 
 const { scrollTop, scrollHeight, clientHeight } = toRefs(props)
@@ -79,7 +79,7 @@ function scrollToComments() {
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
           class="hana-button size-10 items-center justify-center font-bold"
-          @click="emits('scrollTo', 0)"
+          @click="emits('scrollToTop')"
           @mouseenter="toggleShowPercent"
           @mouseleave="toggleShowPercent"
         >

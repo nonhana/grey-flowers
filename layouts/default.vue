@@ -31,8 +31,10 @@ watch(scrollOffset, (newTop) => {
 
 const scrollViewRef = useTemplateRef('scrollViewRef')
 
-function scrollTo(offset: number) {
-  scrollViewRef.value?.scrollTo(offset)
+useRouterOptions(scrollViewRef)
+
+function scrollToTop() {
+  scrollViewRef.value?.scrollTo(0)
 }
 </script>
 
@@ -40,6 +42,7 @@ function scrollTo(offset: number) {
   <div>
     <HanaScrollView
       ref="scrollViewRef"
+      content-wrapper-id="global-scroll-view"
       class="h-dvh"
       content-class="min-h-dvh flex flex-col"
       @scroll="scrollOffset = $event"
@@ -63,7 +66,7 @@ function scrollTo(offset: number) {
       :scroll-top="scrollOffset"
       :scroll-height="scrollViewRef?.contentHeight ?? 0"
       :client-height="scrollViewRef?.containerHeight ?? 0"
-      @scroll-to="scrollTo"
+      @scroll-to-top="scrollToTop"
     />
   </div>
 </template>

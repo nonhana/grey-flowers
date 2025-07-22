@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const props = defineProps<{
+  contentWrapperId?: string
   contentWrapperClass?: string
   contentClass?: string
   scrollbarClass?: string
@@ -203,6 +204,7 @@ defineExpose({
     ]"
   >
     <div
+      :id="contentWrapperId"
       ref="contentWrapperElement"
       class="h-full w-full overflow-auto scrollbar-hidden" :class="[contentWrapperClass]"
       @scroll="onScroll"
