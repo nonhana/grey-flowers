@@ -5,10 +5,6 @@ const props = defineProps<{
   clientHeight: number
 }>()
 
-const emits = defineEmits<{
-  (e: 'scrollToTop'): void
-}>()
-
 const { scrollTop, scrollHeight, clientHeight } = toRefs(props)
 
 const { progress } = useLoadingIndicator()
@@ -56,6 +52,16 @@ function scrollToComments() {
     commentsElement.scrollIntoView({ behavior: 'smooth' })
   }
 }
+
+function scrollToTop() {
+  const scrollView = document.getElementById('global-scroll-view')
+  if (scrollView) {
+    scrollView.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+}
 </script>
 
 <template>
@@ -79,7 +85,7 @@ function scrollToComments() {
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
           class="hana-button size-10 items-center justify-center font-bold"
-          @click="emits('scrollToTop')"
+          @click="scrollToTop"
           @mouseenter="toggleShowPercent"
           @mouseleave="toggleShowPercent"
         >

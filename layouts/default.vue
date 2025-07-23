@@ -32,10 +32,6 @@ watch(scrollOffset, (newTop) => {
 const scrollViewRef = useTemplateRef('scrollViewRef')
 
 useRouterOptions(scrollViewRef)
-
-function scrollToTop() {
-  scrollViewRef.value?.scrollTo(0)
-}
 </script>
 
 <template>
@@ -66,7 +62,6 @@ function scrollToTop() {
       :scroll-top="scrollOffset"
       :scroll-height="scrollViewRef?.contentHeight ?? 0"
       :client-height="scrollViewRef?.containerHeight ?? 0"
-      @scroll-to-top="scrollToTop"
     />
   </div>
 </template>

@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const props = defineProps<{
-  contentWrapperId?: string
+  contentWrapperId?: string // 供外部取 dom 操作滚动事件
   contentWrapperClass?: string
   contentClass?: string
   scrollbarClass?: string
@@ -139,24 +139,6 @@ function updateSizes() {
   })
 }
 
-// expose: 指定滚动到哪里
-function scrollTo(offset: number) {
-  if (!contentWrapperElement.value)
-    return
-  if (isRight.value) {
-    contentWrapperElement.value.scrollTo({
-      top: offset,
-      behavior: 'smooth',
-    })
-  }
-  else {
-    contentWrapperElement.value.scrollTo({
-      left: offset,
-      behavior: 'smooth',
-    })
-  }
-}
-
 let resizeObserver: ResizeObserver | null = null
 
 onMounted(() => {
@@ -191,7 +173,6 @@ defineExpose({
   containerWidth,
   contentHeight,
   contentWidth,
-  scrollTo,
 })
 </script>
 
