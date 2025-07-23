@@ -31,14 +31,15 @@ watch(scrollOffset, (newTop) => {
 
 const scrollViewRef = useTemplateRef('scrollViewRef')
 
-useRouterOptions(scrollViewRef)
+useRouterOptions()
 </script>
 
 <template>
   <div>
     <HanaScrollView
       ref="scrollViewRef"
-      content-wrapper-id="global-scroll-view"
+      container-id="global-scroll-view"
+      content-wrapper-id="global-scroll-view-wrapper"
       class="h-dvh"
       content-class="min-h-dvh flex flex-col"
       @scroll="scrollOffset = $event"

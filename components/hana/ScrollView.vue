@@ -2,8 +2,10 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const props = defineProps<{
-  contentWrapperId?: string // 供外部取 dom 操作滚动事件
+  containerId?: string
+  contentWrapperId?: string
   contentWrapperClass?: string
+  contentId?: string
   contentClass?: string
   scrollbarClass?: string
   scrollEvents?: ((e: Event) => void)[]
@@ -178,6 +180,7 @@ defineExpose({
 
 <template>
   <div
+    :id="containerId"
     ref="containerElement"
     role="group"
     class="relative size-full overflow-hidden" :class="[
@@ -190,7 +193,7 @@ defineExpose({
       class="h-full w-full overflow-auto scrollbar-hidden" :class="[contentWrapperClass]"
       @scroll="onScroll"
     >
-      <div ref="contentElement" :class="contentClass">
+      <div :id="contentId" ref="contentElement" :class="contentClass">
         <slot />
       </div>
     </div>

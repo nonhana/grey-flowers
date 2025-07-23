@@ -1,18 +1,15 @@
-import type { HanaScrollView } from '#components'
-import type { TemplateRef } from 'vue'
-
 const blackList = ['/recently']
 
 const scrollPositions = new Map<string, number>()
 
-export function useRouterOptions(scrollView: TemplateRef<InstanceType<typeof HanaScrollView>>) {
+export function useRouterOptions() {
   const route = useRoute()
 
   function getCurrentScrollPosition() {
-    if (!scrollView.value)
+    const contentWrapper = document.getElementById('global-scroll-view-wrapper')
+    if (!contentWrapper)
       return 0
-    const contentWrapper = scrollView.value.$refs?.contentWrapperElement as HTMLElement
-    return contentWrapper?.scrollTop || 0
+    return contentWrapper.scrollTop || 0
   }
 
   function saveScrollPosition(path: string, position: number) {
@@ -24,9 +21,9 @@ export function useRouterOptions(scrollView: TemplateRef<InstanceType<typeof Han
   }
 
   function scrollTo(position: number, behavior: 'smooth' | 'instant' = 'smooth') {
-    const scrollView = document.getElementById('global-scroll-view')
-    if (scrollView) {
-      scrollView.scrollTo({
+    const contentWrapper = document.getElementById('global-scroll-view-wrapper')
+    if (contentWrapper) {
+      contentWrapper.scrollTo({
         top: position,
         behavior,
       })
@@ -39,7 +36,7 @@ export function useRouterOptions(scrollView: TemplateRef<InstanceType<typeof Han
     if (element) {
       nextTick(() => {
         const rect = element.getBoundingClientRect()
-        const containerElement = scrollView.value?.$refs?.containerElement as HTMLElement
+        const containerElement = document.getElementById('global-scroll-view')
         if (containerElement) {
           const containerRect = containerElement.getBoundingClientRect()
           const targetPosition = rect.top - containerRect.top + getCurrentScrollPosition() - 100

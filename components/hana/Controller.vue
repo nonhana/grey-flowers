@@ -54,9 +54,9 @@ function scrollToComments() {
 }
 
 function scrollToTop() {
-  const scrollView = document.getElementById('global-scroll-view')
-  if (scrollView) {
-    scrollView.scrollTo({
+  const contentWrapper = document.getElementById('global-scroll-view-wrapper')
+  if (contentWrapper) {
+    contentWrapper.scrollTo({
       top: 0,
       behavior: 'smooth',
     })
