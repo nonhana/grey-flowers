@@ -17,9 +17,8 @@
     "cleanup": "nuxt cleanup"
   },
   "dependencies": {
-    "@tailwindcss/vite": "catalog:",
+    "@unocss/reset": "^66.3.3",
     "nuxt": "catalog:",
-    "tailwindcss": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },
@@ -36,12 +35,13 @@
     "@nuxtjs/seo": "catalog:",
     "@pinia/nuxt": "catalog:",
     "@prisma/client": "catalog:",
-    "@tailwindcss/forms": "catalog:",
     "@types/bcrypt": "catalog:",
     "@types/jsonwebtoken": "catalog:",
     "@types/node": "catalog:",
     "@types/throttle-debounce": "catalog:",
     "@types/vivus": "catalog:",
+    "@unocss/nuxt": "catalog:",
+    "@unocss/preset-rem-to-px": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/nuxt": "catalog:",
     "bcrypt": "catalog:",
@@ -58,6 +58,8 @@
     "prisma": "catalog:",
     "throttle-debounce": "catalog:",
     "typescript": "catalog:",
+    "unocss": "catalog:",
+    "unocss-preset-scrollbar": "catalog:",
     "vivus": "catalog:",
     "zod": "catalog:"
   }

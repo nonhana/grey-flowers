@@ -1,4 +1,3 @@
-import tailwindcss from '@tailwindcss/vite'
 import { seoData } from './data/meta'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -55,10 +54,6 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  css: ['~/assets/css/index.css'],
   fonts: {
     families: [
       { name: 'Noto Serif', provider: 'google', weights: [500, 700] },
@@ -69,6 +64,7 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
   },
+  css: ['@unocss/reset/tailwind.css'],
   modules: [
     '@nuxt/icon',
     '@nuxt/fonts',
@@ -79,6 +75,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    '@unocss/nuxt',
   ],
   plugins: ['~/plugins/directives.ts'],
   devtools: { enabled: true },

@@ -109,7 +109,7 @@
   }
 }
 
-@utility scrollbar-hidden {
+@utility scrollbar-none {
   &::-webkit-scrollbar {
     display: none;
   }

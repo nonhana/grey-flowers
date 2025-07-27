@@ -119,7 +119,7 @@ const blockquoteContent = computed(() =>
         <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white break-words">
           {{ comment.content }}
         </p>
-        <div class="flex h-6 items-center gap-2" :class="{ 'overflow-x-auto scrollbar-hidden': recordMode }">
+        <div class="flex h-6 items-center gap-2" :class="{ 'overflow-x-auto scrollbar-none': recordMode }">
           <span class="text-nowrap text-sm dark:text-hana-white">{{ comment.publishedAt }}</span>
           <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap font-code text-sm text-text transition-colors hover:text-hana-blue dark:text-hana-white-700 dark:hover:text-hana-blue-200">
             {{ comment.path }}

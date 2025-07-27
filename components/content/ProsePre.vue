@@ -51,7 +51,7 @@ useCopy(copyBtn, codeblock)
     </figcaption>
     <pre
       ref="codeblockRef"
-      class="overflow-auto px-4 py-2 scrollbar-hidden font-code"
+      class="overflow-auto px-4 py-2 scrollbar-none font-code"
       :class="[props.class, { 'animate-none overflow-hidden': isCollapsed }]"
       :style="{ maxHeight: isCollapsed ? collapsibleHeight : 'none' }"
     ><slot /></pre>

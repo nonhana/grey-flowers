@@ -190,7 +190,7 @@ defineExpose({
     <div
       :id="contentWrapperId"
       ref="contentWrapperElement"
-      class="h-full w-full overflow-auto scrollbar-hidden" :class="[contentWrapperClass]"
+      class="h-full w-full overflow-auto scrollbar-none" :class="[contentWrapperClass]"
       @scroll="onScroll"
     >
       <div :id="contentId" ref="contentElement" :class="contentClass">
