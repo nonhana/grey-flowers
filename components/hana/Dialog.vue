@@ -21,9 +21,6 @@ const emits = defineEmits<{
 
 const { dialogStore } = useStore()
 const { increaseDialogCount, decreaseDialogCount, getDialogCount } = dialogStore
-const { dialogCount } = toRefs(dialogStore)
-
-const { toggleScrollable } = useToggleScrollable()
 
 const programmaticVisible = ref(false)
 const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
@@ -61,16 +58,10 @@ function handleAfterLeave() {
 const overlayRef = ref<HTMLDivElement | null>(null)
 watch(visible, (newV) => {
   if (newV) {
-    if (!dialogCount.value) {
-      toggleScrollable(newV)
-    }
     dialogZIndex.value = 40 + getDialogCount()
     increaseDialogCount()
   }
   else {
-    if (dialogCount.value) {
-      toggleScrollable(newV)
-    }
     dialogZIndex.value = 40
     decreaseDialogCount()
   }

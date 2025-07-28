@@ -49,7 +49,7 @@ export const seoData = {
   keywords: '全栈开发, Web 开发教程, JavaScript 技巧, Vue, React, Angular, Svelte, Solid.js, Node.js 后端, 前端性能优化, 面向开发人员的 TypeScript, 编码挑战, 软件工程原理',
   image: 'https://static-r2.caelum.moe/greyflowers-ogimg.webp',
   mySite: 'https://caelum.moe',
-  twitterHandle: '@non_hanaz',
+  twitterHandle: '@non_hana66927',
   mailAddress: 'nonhana@outlook.com',
 }
 

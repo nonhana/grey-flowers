@@ -35,7 +35,7 @@ let observer: IntersectionObserver | null = null
 
 onMounted(() => {
   observer = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting) {
+    if (entry && entry.isIntersecting) {
       triggerWidth.value = entry.boundingClientRect.width
     }
   }, { threshold: 1 })

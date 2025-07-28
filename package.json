@@ -12,12 +12,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "new": "node ./scripts/newArticle.js",
-    "generate:prisma": "prisma generate",
-    "migrate:dev": "prisma migrate dev",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio",
     "cleanup": "nuxt cleanup"
   },
   "dependencies": {
-    "@unocss/reset": "^66.3.3",
+    "@unocss/reset": "catalog:",
     "nuxt": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

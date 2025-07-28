@@ -17,8 +17,6 @@ const props = withDefaults(defineProps<{
   width: '320px',
 })
 
-const { toggleScrollable } = useToggleScrollable()
-
 const visible = defineModel<boolean>()
 
 function handleClose() {
@@ -39,10 +37,6 @@ function handleKeydown(event: KeyboardEvent) {
     handleClose()
   }
 }
-
-watch(visible, (newV) => {
-  toggleScrollable(newV ?? false)
-})
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)

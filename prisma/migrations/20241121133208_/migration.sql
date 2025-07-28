@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Session" ALTER COLUMN "data" SET DATA TYPE TEXT;
