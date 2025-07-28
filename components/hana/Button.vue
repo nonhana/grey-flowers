@@ -52,7 +52,7 @@ function handleClick(e: Event) {
     :type="type"
     :aria-label="ariaLabel || (props.iconButton && props.icon) ? props.icon : undefined"
     :title="ariaLabel || undefined"
-    class="relative flex shrink-0 select-none items-center justify-center gap-1 transition-all"
+    class="relative flex shrink-0 select-none items-center justify-center gap-1 transition-all line-height-5"
     :class="[
       iconButton ? 'p-2' : 'px-[10px] py-2',
       active

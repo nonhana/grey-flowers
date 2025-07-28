@@ -179,16 +179,22 @@ export default defineConfig({
         }
 
         ::selection {
-          @apply bg-hana-blue-100
+          background-color: var(--selection-color);
         }
 
         :root {
+          /* 背景网格颜色 */
           --background-grid-color: oklch(0.95 0.0059 239.82);
           --background-grid-color-dark: oklch(0.27 0 0);
+
+          /* 选中文字颜色 */
+          --selection-color: oklch(0.93 0.0358 205.23);
+          --selection-color-dark: oklch(0.5 0.1102 250.04);
         }
 
         .dark {
           --background-grid-color: var(--background-grid-color-dark);
+          --selection-color: var(--selection-color-dark);
         }
       `,
     },
