@@ -38,19 +38,16 @@ const curActivity = computed(() => fetchedActivity.value ?? defaultActivity)
 
 <template>
   <HanaDialog v-model="visible" title="动态详情" width="800px">
-    <!-- 加载状态 -->
     <div v-if="loading" class="my-5 flex items-center justify-center">
       <Icon name="svg-spinners:8-dots-rotate" />&emsp;Loading...
     </div>
 
-    <!-- 错误或空状态 -->
     <div v-else-if="!curActivity || !curActivity.content">
       <p class="text-gray-500">
         未找到动态详情，请稍后再试。
       </p>
     </div>
 
-    <!-- 正常内容 -->
     <div v-else>
       <header class="flex items-center gap-2">
         <HanaAvatar :size="10" :avatar="hanaInfo.avatar" :username="hanaInfo.username" :site="hanaInfo.site" :show-info="false" />

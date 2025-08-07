@@ -63,6 +63,9 @@ catalogs:
     '@unocss/preset-rem-to-px':
       specifier: ^66.3.3
       version: 66.3.3
+    '@unocss/reset':
+      specifier: ^66.3.3
+      version: 66.3.3
     '@vueuse/core':
       specifier: ^13.5.0
       version: 13.5.0
@@ -143,7 +146,7 @@ importers:
   .:
     dependencies:
       '@unocss/reset':
-        specifier: ^66.3.3
+        specifier: 'catalog:'
         version: 66.3.3
       nuxt:
         specifier: 'catalog:'

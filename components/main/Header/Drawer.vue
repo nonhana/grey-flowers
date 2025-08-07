@@ -1,9 +1,7 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+defineProps<{
   activeStatus: boolean[]
-}>(), {
-  activeStatus: () => [],
-})
+}>()
 
 const { routesMap } = useRoutesMap()
 

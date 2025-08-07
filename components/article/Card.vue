@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-withDefaults(defineProps<ArticleCardProps & { index: number, displayCols?: number }>(), { type: 'common', displayCols: 1 })
+withDefaults(
+  defineProps<
+    ArticleCardProps & { index: number, displayCols?: number }
+>(),
+  { type: 'common', displayCols: 1 },
+)
 
 const opacity = ref(0)
 const top = ref('10px')
