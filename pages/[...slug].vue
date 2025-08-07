@@ -12,7 +12,7 @@ useHead({
 
 <template>
   <div class="size-full">
-    <div class="m-auto mt-8 flex w-fit flex-col items-center gap-8">
+    <div class="m-auto mt-8 w-fit flex flex-col items-center gap-8">
       <NuxtImg class="rounded-lg" src="/images/not-found.webp" />
       <p class="text-xl dark:text-hana-white">
         404：找不到当前文章 & 页面哦

@@ -7,7 +7,7 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <h5 :id="id" class="w-fit text-lg with-underline">
+  <h5 :id="id" class="w-fit with-underline text-lg">
     <NuxtLink :to="`#${id}`" :aria-label="`锚点链接：${id}`" class="hana-article-title">
       <slot />
     </NuxtLink>

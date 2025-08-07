@@ -31,7 +31,7 @@ onMounted(fetchUserComments)
   <HanaDialog v-model="visible" title="你的评论...仅展示 10 条" width="800px">
     <div class="px-4">
       <CommentItem v-for="comment in comments" :key="comment.id" :comment="comment" record-mode />
-      <div v-if="!fetching && !comments.length" class="flex w-full flex-col items-center justify-center gap-4 text-xl">
+      <div v-if="!fetching && !comments.length" class="w-full flex flex-col items-center justify-center gap-4 text-xl">
         <NuxtImg src="/images/empty.webp" alt="空空如也" class="size-40 rounded-lg" />
         <span>空空如也...</span>
       </div>

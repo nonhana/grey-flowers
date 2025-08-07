@@ -23,7 +23,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="relative flex max-w-[80%] items-start gap-2 md:gap-5"
+    class="relative max-w-[80%] flex items-start gap-2 md:gap-5"
     :class="{ 'flex-row-reverse self-end': isMe }"
     :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }"
   >
@@ -34,11 +34,11 @@ onMounted(() => {
           :avatar="message.author.avatar"
           :username="message.author.username"
           :site="message.author.site"
-          class="text-sm font-normal text-text dark:text-hana-white-700"
+          class="text-sm text-text font-normal dark:text-hana-white-700"
         />
       </div>
       <div v-if="message.parent" class="flex self-end text-text dark:text-hana-white-700">
-        <div class="line-clamp-1 max-w-40">
+        <div class="max-w-40 line-clamp-1">
           <span>{{ message.parent.content }}</span>
         </div>
         <Icon name="material-symbols:reply" />

@@ -22,7 +22,7 @@ watch(isDetail, (_, __, onCleanup) => {
   <div>
     <div class="flex flex-col lg:flex-row lg:items-center lg:gap-20">
       <transition name="title">
-        <h1 v-if="!isDetail" class="m-0 inline-block w-40 shrink-0 text-center font-bold text-hana-blue dark:text-hana-blue-200">
+        <h1 v-if="!isDetail" class="m-0 inline-block w-40 shrink-0 text-center text-3xl text-hana-blue font-bold dark:text-hana-blue-200">
           一些文章
         </h1>
       </transition>

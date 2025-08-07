@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Toc } from '@nuxt/content'
 import type { ArticleHeader } from '~/types/content'
 import dayjs from 'dayjs'
 import { navbarData, seoData } from '~/data/meta'
@@ -12,8 +13,10 @@ definePageMeta({
 
 const { path } = useRoute()
 
+const articleKey = computed(() => `article-${path}`)
+
 const { data: article } = await useAsyncData(
-  `article-${path}`,
+  articleKey,
   () => queryCollection('content').path(path).first(),
 )
 
@@ -68,7 +71,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="min-h-dvh w-full">
+  <div class="w-full min-h-dvh">
     <div class="flex gap-8">
       <div class="w-full xl:max-w-[calc(100%-272px)]">
         <ArticleHeader v-if="article" v-bind="articleHeader" />
@@ -83,23 +86,23 @@ useSeoMeta({
           <Comment />
         </div>
       </div>
-      <div class="hidden max-w-fit xl:block">
+      <div class="max-w-fit hidden xl:block">
         <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !visible }">
           <ArticleAuthor />
           <ArticleSwitch />
-          <ArticleToc v-if="article" :toc="article.body.toc" />
+          <ArticleToc v-if="article" :toc="article.body.toc as Toc" />
         </div>
       </div>
     </div>
     <div class="fixed bottom-5 right-5 z-10 block xl:hidden">
       <div class="hana-card">
-        <div class="hana-button w-full gap-2 text-center" @click="handleClick">
+        <div class="w-full hana-button gap-2 text-center" @click="handleClick">
           <Icon name="lucide:menu" />
         </div>
       </div>
     </div>
     <div class="block xl:hidden">
-      <ArticleDrawer v-if="article" v-model="drawerVisible" :toc="article.body.toc" />
+      <ArticleDrawer v-if="article" v-model="drawerVisible" :toc="article.body.toc as Toc" />
     </div>
   </div>
 </template>

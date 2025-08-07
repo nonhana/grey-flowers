@@ -53,7 +53,7 @@ function handleKeyDown(event: KeyboardEvent) {
   <div class="w-full">
     <HanaInput v-model="value" type="textarea" resize="none" placeholder="有什么想说的呢~" @keydown="handleKeyDown" />
     <div class="flex items-center justify-end">
-      <div class="hana-card my-5 inline-block">
+      <div class="my-5 inline-block hana-card">
         <HanaButton :disabled="value === ''" shape="square" @click="handlePublish">
           发布 / Enter
         </HanaButton>

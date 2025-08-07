@@ -6,11 +6,11 @@ export interface SNSItem {
   iconColor: string
 }
 
-export type SNSNames =
-  | 'GitHub'
-  | 'QQ'
-  | 'X'
-  | 'Telegram'
-  | 'RSS'
-  | 'CloudMusic'
-  | 'Mail'
+export type SNSNames
+  = | 'GitHub'
+    | 'QQ'
+    | 'X'
+    | 'Telegram'
+    | 'RSS'
+    | 'CloudMusic'
+    | 'Mail'

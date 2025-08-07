@@ -54,7 +54,7 @@ watch(newMsgId, async (newV) => {
 </script>
 
 <template>
-  <div ref="msgContainerRef" class="mb-5 flex h-[calc(100dvh-22rem)] w-full flex-col gap-5 overflow-auto scrollbar-none">
+  <div ref="msgContainerRef" class="mb-5 h-[calc(100dvh-22rem)] w-full flex flex-col gap-5 overflow-auto scrollbar-none">
     <ThoughtsMessagesItem v-for="(message, index) in messages" :key="message.id" :index="message.isNew ? 0 : index" :message="message" />
   </div>
 </template>

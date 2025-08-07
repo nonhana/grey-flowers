@@ -17,19 +17,19 @@ const blockquoteContent = computed(() =>
 </script>
 
 <template>
-  <div class="relative flex w-full border-spacing-x-3.5 gap-4 border-b border-primary py-4 last:border-none dark:border-hana-black-200">
+  <div class="relative w-full flex gap-4 border-b border-primary py-4 border-spacing-x-3.5 dark:border-hana-black-200 last:border-none">
     <div class="hidden md:block">
       <HanaAvatar :size="10" :avatar="message.author.avatar" :site="message.author.site" :username="message.author.username" />
     </div>
-    <div class="flex w-full flex-col gap-4">
-      <div class="flex h-5 items-center gap-2">
+    <div class="w-full flex flex-col gap-4">
+      <div class="h-5 flex items-center gap-2">
         <HanaUsername :avatar="message.author.avatar" :site="message.author.site" :username="message.author.username" />
         <span class="dark:text-hana-white">{{ messageTip }}</span>
       </div>
       <ProseBlockquote v-if="props.message.parent">
         {{ blockquoteContent }}
       </ProseBlockquote>
-      <p class="whitespace-pre-wrap leading-6 text-black dark:text-hana-white break-words">
+      <p class="whitespace-pre-wrap break-words text-black leading-6 dark:text-hana-white">
         {{ message.content }}
       </p>
       <span class="h-6 text-nowrap text-sm dark:text-hana-white">{{ message.publishedAt }}</span>

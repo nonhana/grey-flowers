@@ -44,7 +44,7 @@ onMounted(fetchActivities)
 </script>
 
 <template>
-  <ul class="relative m-auto flex max-w-screen-md flex-col pl-0 md:pl-8">
+  <ul class="relative m-auto max-w-screen-md flex flex-col pl-0 md:pl-8">
     <li
       v-for="(item, index) in activities"
       :key="item.id"

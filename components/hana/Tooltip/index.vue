@@ -116,7 +116,7 @@ const positionClass = computed(() => {
         @[hoverTrigger?`mouseleave`:null]="close()"
       >
         <div
-          class="hana-card relative min-w-max max-w-60 text-center"
+          class="relative max-w-60 min-w-max hana-card text-center"
           :class="[content ? 'px-4! py-2!' : 'p-1!']"
         >
           <slot name="content" :close="close">

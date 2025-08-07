@@ -13,7 +13,7 @@ withDefaults(defineProps<{
     :href="href"
     :aria-label="`外部链接：${href}`"
     :target="target"
-    class="text-hana-blue with-underline after:mx-1 after:font-mono after:opacity-50 after:content-['↗'] dark:text-hana-blue-200"
+    class="with-underline text-hana-blue after:mx-1 dark:text-hana-blue-200 after:font-mono after:opacity-50 after:content-['↗']"
     style="word-break: break-word"
   >
     <slot />

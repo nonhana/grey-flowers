@@ -140,10 +140,10 @@ watch(() => hash, (newV) => {
 
 <template>
   <div id="comments" class="flex flex-col gap-5">
-    <div class="hana-card w-full p-4!" :class="{ 'border-2 border-hana-blue dark:border-hana-blue-200 shadow-none': isRecently }">
+    <div class="w-full hana-card p-4!" :class="{ 'border-2 border-hana-blue dark:border-hana-blue-200 shadow-none': isRecently }">
       <header class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <span class="text-2xl font-bold text-hana-blue dark:text-hana-blue-200">评论</span>
+          <span class="text-2xl text-hana-blue font-bold dark:text-hana-blue-200">评论</span>
           <span class="text-xl text-hana-blue-200">{{ totalCount }}</span>
         </div>
         <HanaButton
@@ -154,7 +154,7 @@ watch(() => hash, (newV) => {
           class="group size-10 transition-all hover:w-32"
           @click="checkBeforeToggleVisible"
         >
-          <span class="hidden text-nowrap group-hover:block">发表评论</span>
+          <span class="text-nowrap hidden group-hover:block">发表评论</span>
         </HanaButton>
       </header>
       <main>

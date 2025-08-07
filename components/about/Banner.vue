@@ -116,7 +116,7 @@ const SNSList: SNSItem[] = [
           class="relative top-10 opacity-0"
         >{{ char }}</span>
       </p>
-      <p ref="roleRef" class="m-auto text-center font-code text-base lg:m-0 lg:text-start">
+      <p ref="roleRef" class="m-auto text-center text-base font-code lg:m-0 lg:text-start">
         <span
           v-for="(char, index) in roleCharArr"
           :key="char"

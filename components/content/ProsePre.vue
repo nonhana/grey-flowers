@@ -31,7 +31,7 @@ useCopy(copyBtn, codeblock)
 
 <template>
   <figure
-    class="relative text-clip rounded-lg border-2 border-primary-400 bg-primary-100 text-sm dark:border-hana-black-200 dark:bg-hana-black"
+    class="relative text-clip border-2 border-primary-400 rounded-lg bg-primary-100 text-sm dark:border-hana-black-200 dark:bg-hana-black"
   >
     <figcaption
       class="sticky z-10 flex items-center justify-between gap-4 px-4 pt-2 text-text transition-all dark:text-hana-white-700"
@@ -39,8 +39,8 @@ useCopy(copyBtn, codeblock)
     >
       <div class="flex items-center gap-2">
         <span v-if="language">{{ language }}</span>
-        <Icon v-if="filename" class="hidden text-text dark:text-hana-white-700 md:block" name="lucide:arrow-right" />
-        <span v-if="filename" class="hidden items-center border-2 border-solid px-1 md:flex">
+        <Icon v-if="filename" class="text-text hidden md:block dark:text-hana-white-700" name="lucide:arrow-right" />
+        <span v-if="filename" class="items-center border-2 border-solid px-1 hidden md:flex">
           <Icon class="text-text dark:text-hana-white-700" name="lucide:file-terminal" />
           {{ filename }}
         </span>
@@ -51,13 +51,13 @@ useCopy(copyBtn, codeblock)
     </figcaption>
     <pre
       ref="codeblockRef"
-      class="overflow-auto px-4 py-2 scrollbar-none font-code"
+      class="overflow-auto px-4 py-2 font-code scrollbar-none"
       :class="[props.class, { 'animate-none overflow-hidden': isCollapsed }]"
       :style="{ maxHeight: isCollapsed ? collapsibleHeight : 'none' }"
     ><slot /></pre>
     <button
       v-if="collapsible"
-      class="absolute bottom-0 flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-b from-[#ffffff00] to-[#ffffff] text-text/40 transition-colors hover:text-text dark:from-[#3d3d3d00] dark:to-[#3d3d3d] dark:text-hana-white-700/40 dark:hover:dark:text-hana-white-700"
+      class="absolute bottom-0 h-10 w-full flex items-center justify-center rounded-lg text-text/40 transition-colors from-[#ffffff00] to-[#ffffff] bg-gradient-to-b dark:text-hana-white-700/40 hover:text-text dark:from-[#3d3d3d00] dark:to-[#3d3d3d] dark:hover:dark:text-hana-white-700"
       :class="{ 'bg-none': !isCollapsed }"
       @click="toggleCollapsed()"
     >

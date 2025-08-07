@@ -18,7 +18,7 @@ const visible = defineModel<boolean>()
         :to="site"
         :aria-label="`${username}的个人主页：${site}`"
         target="_blank"
-        class="text-hana-blue with-underline after:mx-1 after:font-mono after:opacity-50 after:content-['↗'] dark:text-hana-blue-200"
+        class="with-underline text-hana-blue after:mx-1 dark:text-hana-blue-200 after:font-mono after:opacity-50 after:content-['↗']"
       >
         {{ site }}
       </NuxtLink>

@@ -106,7 +106,7 @@ async function publishComment(objData: IPostComment) {
     <div class="mb-5 flex items-center gap-2">
       <HanaAvatar :size="10" :avatar="userInfo!.avatar" :username="userInfo!.username" :site="userInfo!.site" :show-info="false" />
       <div class="flex flex-col gap-1">
-        <span class="font-bold text-black dark:text-hana-white">{{ userInfo!.username }}</span>
+        <span class="text-black font-bold dark:text-hana-white">{{ userInfo!.username }}</span>
         <span class="text-sm text-text dark:text-hana-white-700">@{{ userInfo!.email }}</span>
       </div>
     </div>

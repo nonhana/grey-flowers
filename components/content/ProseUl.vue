@@ -1,5 +1,5 @@
 <template>
-  <ul class="list-disc pl-4 marker:text-hana-blue dark:marker:text-hana-blue-200">
+  <ul class="pl-4 list-disc marker:text-hana-blue dark:marker:text-hana-blue-200">
     <slot />
   </ul>
 </template>

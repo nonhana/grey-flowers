@@ -37,21 +37,21 @@ onMounted(() => {
       :class="{ 'rotate-y-180': isFlipped }"
     >
       <div
-        class="absolute inset-0 flex items-center justify-center rounded-lg text-xl font-bold text-white backface-hidden"
+        class="backface-hidden absolute inset-0 flex items-center justify-center rounded-lg text-xl text-white font-bold"
       >
-        <NuxtImg :src="category.cover || ''" :alt="category.name" class="absolute -z-10 size-full rounded-lg object-cover" />
+        <NuxtImg :src="category.cover || ''" :alt="category.name" class="absolute size-full rounded-lg object-cover -z-10" />
         <span class="relative select-none">{{ category.name }}</span>
       </div>
       <div
-        class="absolute inset-0 rounded-lg bg-white p-4 shadow-md backface-hidden rotate-y-180 dark:bg-hana-black"
+        class="backface-hidden absolute inset-0 rotate-y-180 rounded-lg bg-white p-4 shadow-md dark:bg-hana-black"
       >
         <div class="relative size-full">
-          <header class="flex w-fit items-center gap-1 text-text dark:text-hana-white-700">
+          <header class="w-fit flex items-center gap-1 text-text dark:text-hana-white-700">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
             </svg>
             <NuxtLink
-              class="leading-5 with-underline hover:text-hana-blue dark:hover:text-hana-blue-200"
+              class="with-underline leading-5 hover:text-hana-blue dark:hover:text-hana-blue-200"
               :to="`/articles/categories/${flatStr(category.name)}`"
               :aria-label="`前往 ${category.name} 目录`"
               :title="category.name"
@@ -59,7 +59,7 @@ onMounted(() => {
               {{ category.name }}
             </NuxtLink>
           </header>
-          <main class="mt-5 grid grid-cols-2">
+          <main class="grid grid-cols-2 mt-5">
             <NuxtLink
               v-for="article in articleData"
               :key="article.id"
@@ -73,7 +73,7 @@ onMounted(() => {
               </span>
             </NuxtLink>
           </main>
-          <footer class="absolute bottom-0 left-0 flex w-full justify-between text-text dark:text-hana-white-700">
+          <footer class="absolute bottom-0 left-0 w-full flex justify-between text-text dark:text-hana-white-700">
             <div class="flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">

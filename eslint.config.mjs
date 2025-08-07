@@ -7,4 +7,5 @@ export default antfu({
   typescript: true,
   jsonc: true,
   yaml: true,
+  unocss: true,
 })

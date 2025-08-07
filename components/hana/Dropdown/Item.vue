@@ -19,7 +19,7 @@ const component = computed(() => {
   <component
     :is="component"
     :to="to"
-    class="hana-button min-w-[100px] gap-2"
+    class="min-w-[100px] hana-button gap-2"
     :class="[center ? 'justify-center' : 'justify-start']"
     v-bind="command ? { 'data-command': command } : {}"
   >

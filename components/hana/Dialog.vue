@@ -109,7 +109,7 @@ defineExpose({
       <div
         v-if="visible"
         id="hana-dialog"
-        class="fixed left-1/2 top-1/2 max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-5 shadow dark:bg-hana-black"
+        class="fixed left-1/2 top-1/2 max-w-[90%] rounded-2xl bg-white p-5 shadow -translate-x-1/2 -translate-y-1/2 dark:bg-hana-black"
         :style="{ width, zIndex: dialogZIndex }"
       >
         <div class="mb-5">
@@ -119,7 +119,7 @@ defineExpose({
           >
             <div v-if="!hideHeader" class="flex items-center">
               <span v-if="title" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
-              <HanaButton v-if="!programmatic" icon="lucide:x" class="relative -right-2 -top-2 ml-auto" icon-button @click="handleClose" />
+              <HanaButton v-if="!programmatic" icon="lucide:x" class="relative ml-auto -right-2 -top-2" icon-button @click="handleClose" />
             </div>
           </slot>
         </div>

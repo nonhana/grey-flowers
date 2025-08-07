@@ -14,9 +14,9 @@ onMounted(() => {
 
 <template>
   <div class="mx-auto flex flex-col gap-4 px-8 py-4 md:max-w-[90%] xl:max-w-[70%]">
-    <div class="flex w-full flex-col gap-4 md:flex-row md:items-center">
+    <div class="w-full flex flex-col gap-4 md:flex-row md:items-center">
       <div class="flex items-center gap-2">
-        <span class="font-code text-text dark:text-hana-white-700">导航</span>
+        <span class="text-text font-code dark:text-hana-white-700">导航</span>
         <Icon name="lucide:chevron-right" class="text-text dark:text-hana-white-700" />
         <ProseA href="/about" target="_self">
           关于
@@ -32,7 +32,7 @@ onMounted(() => {
         </ProseA>
       </div>
       <div class="flex items-center gap-2">
-        <span class="font-code text-text dark:text-hana-white-700">联系我</span>
+        <span class="text-text font-code dark:text-hana-white-700">联系我</span>
         <Icon name="lucide:chevron-right" class="text-text dark:text-hana-white-700" />
         <ProseA href="https://github.com/nonhana">
           GitHub
@@ -45,16 +45,16 @@ onMounted(() => {
         </ProseA>
       </div>
     </div>
-    <div class="flex w-full items-center gap-2 dark:text-hana-white">
+    <div class="w-full flex items-center gap-2 dark:text-hana-white">
       <span>灰色的花终会绽放</span>
       <span class="text-text dark:text-hana-white-700">·</span>
       <span>苗圃已浇灌 {{ runDays }} 天</span>
     </div>
-    <div class="flex w-full flex-col gap-2 text-sm dark:text-hana-white md:flex-row md:items-center">
+    <div class="w-full flex flex-col gap-2 text-sm md:flex-row md:items-center dark:text-hana-white">
       <span>Copyright © 2024-2025 Hana's Garden</span>
-      <span class="hidden text-text dark:text-hana-white-700 md:block">|</span>
+      <span class="text-text hidden md:block dark:text-hana-white-700">|</span>
       <span>Powered by <ProseA href="https://github.com/nonhana/grey-flowers">GreyFlowers</ProseA></span>
-      <span class="hidden text-text dark:text-hana-white-700 md:block">|</span>
+      <span class="text-text hidden md:block dark:text-hana-white-700">|</span>
       <NuxtLink href="https://icp.gov.moe/?keyword=20241500" target="_blank">
         萌ICP备20241500号
       </NuxtLink>

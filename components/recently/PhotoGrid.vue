@@ -23,7 +23,7 @@ defineEmits<{
     </div>
 
     <!-- Two images -->
-    <div v-else-if="images.length === 2" class="grid aspect-[16/9] grid-cols-2 gap-1">
+    <div v-else-if="images.length === 2" class="grid grid-cols-2 aspect-[16/9] gap-1">
       <NuxtImg
         v-for="(image, index) in images"
         :key="index"
@@ -35,7 +35,7 @@ defineEmits<{
     </div>
 
     <!-- Three images -->
-    <div v-else-if="images.length === 3" class="grid aspect-[16/9] grid-cols-2 gap-1">
+    <div v-else-if="images.length === 3" class="grid grid-cols-2 aspect-[16/9] gap-1">
       <NuxtImg
         :src="images[0]"
         class="row-span-2 size-full cursor-pointer object-cover"
@@ -53,7 +53,7 @@ defineEmits<{
     </div>
 
     <!-- Four images -->
-    <div v-else-if="images.length === 4" class="grid aspect-[16/9] grid-cols-2 gap-1">
+    <div v-else-if="images.length === 4" class="grid grid-cols-2 aspect-[16/9] gap-1">
       <NuxtImg
         v-for="(image, index) in images"
         :key="index"

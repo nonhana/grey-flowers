@@ -41,6 +41,7 @@
     "@types/node": "catalog:",
     "@types/throttle-debounce": "catalog:",
     "@types/vivus": "catalog:",
+    "@unocss/eslint-plugin": "catalog:",
     "@unocss/nuxt": "catalog:",
     "@unocss/preset-rem-to-px": "catalog:",
     "@vueuse/core": "catalog:",

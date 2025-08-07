@@ -97,23 +97,23 @@ useHead({
       <div class="text-xl text-hana-blue dark:text-hana-blue-200">
         <span>目前共计 <span class="font-bold">{{ count }}</span> 篇文章...继续加油</span>
       </div>
-      <div class="hana-card flex gap-2 overflow-auto">
+      <div class="flex gap-2 overflow-auto hana-card">
         <div
           v-for="year in yearList"
           :key="year"
           :class="{ 'hana-button--active': curYear === year }"
-          class="hana-button inline-block"
+          class="inline-block hana-button"
           @click="toggleYear(year)"
         >
           <span>{{ year }}</span>
         </div>
       </div>
-      <div v-if="monthList.length" class="hana-card flex gap-2 overflow-auto">
+      <div v-if="monthList.length" class="flex gap-2 overflow-auto hana-card">
         <div
           v-for="month in monthList"
           :key="month"
           :class="{ 'hana-button--active': curMonth === month }"
-          class="hana-button inline-block"
+          class="inline-block hana-button"
           @click="toggleMonth(month)"
         >
           <span>{{ month }} 月</span>

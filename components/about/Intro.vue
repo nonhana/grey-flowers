@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 const { data } = useAsyncData('about-article', () => queryCollection('content').path('/about').first())
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ArticleCountQuery, ArticleListQuery } from '~/server/types/articles'
+import type { ArticleFilterQuery } from '~/server/types/articles'
 import type { ArticleCardProps } from '~/types/article'
 
 const props = withDefaults(defineProps<{
@@ -16,8 +16,8 @@ function remainTwoDigits(num: string) {
   return num.length === 1 ? `0${num}` : num
 }
 
-const whereObj = computed<ArticleListQuery>(() => {
-  const result: ArticleCountQuery = {}
+const whereObj = computed(() => {
+  const result: ArticleFilterQuery = {}
   switch (props.type) {
     case 'tags':
       result.tag = route.query.tag as string
@@ -44,8 +44,10 @@ const displayCols = computed(() => {
 const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
 
+const articlesCountKey = computed(() => `articles-count-${props.type}`)
+
 const { data: fetchedTotal } = await useAsyncData(
-  `articles-count-${props.type}`,
+  articlesCountKey,
   () => $fetch('/api/articles/count', {
     query: whereObj.value,
   }),
@@ -53,29 +55,25 @@ const { data: fetchedTotal } = await useAsyncData(
 )
 const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
 
+const fetchArticleQuery = computed(() => ({
+  page: page.value,
+  pageSize: pageSize.value,
+  ...whereObj.value,
+}))
+
+const articlesListKey = computed(() => {
+  const queryStr = new URLSearchParams(fetchArticleQuery.value as Record<string, any>).toString()
+  return `articles-list?type=${props.type}&${queryStr}`
+})
+
 const { data: fetchedArticleData } = await useAsyncData(
-  `articles-list-${props.type}`,
+  articlesListKey,
   () => $fetch('/api/articles/list', {
-    query: {
-      page: page.value,
-      pageSize: pageSize.value,
-      ...whereObj.value,
-    },
+    query: fetchArticleQuery.value,
   }),
-  { watch: [page, pageSize, whereObj] },
+  { watch: [fetchArticleQuery] },
 )
 const articleData = computed(() => fetchedArticleData.value ? fetchedArticleData.value.payload ?? [] : [])
-
-watch(page, async (newPage) => {
-  router.replace({ query: { ...route.query, page: newPage.toString() } })
-}, { immediate: true })
-
-watch(() => route.query.page, (pageQuery) => {
-  const newPage = Number(pageQuery) || 1
-  if (newPage !== page.value) {
-    page.value = newPage
-  }
-})
 
 const articleCards = computed<ArticleCardProps[]>(() =>
   articleData.value.map((article) => {
@@ -91,10 +89,21 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }),
 )
+
+watch(page, async (newPage) => {
+  router.replace({ query: { ...route.query, page: newPage.toString() } })
+}, { immediate: true })
+
+watch(() => route.query.page, (pageQuery) => {
+  const newPage = Number(pageQuery) || 1
+  if (newPage !== page.value) {
+    page.value = newPage
+  }
+})
 </script>
 
 <template>
-  <div class="flex size-full flex-col">
+  <div class="size-full flex flex-col">
     <div class="flex-1">
       <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
         <ArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index, displayCols }" />

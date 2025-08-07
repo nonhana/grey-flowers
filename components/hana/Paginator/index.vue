@@ -35,7 +35,7 @@ const sideButtonCount = (maxButtonCount - 3) / 2
 </script>
 
 <template>
-  <div class="hana-card flex w-fit gap-2" :class="{ hidden: totalPages === 1 }">
+  <div class="w-fit flex gap-2 hana-card" :class="{ hidden: totalPages === 1 }">
     <HanaButton
       class="hidden md:block"
       icon-button

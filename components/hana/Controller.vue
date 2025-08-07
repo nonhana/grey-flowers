@@ -66,9 +66,9 @@ function scrollToTop() {
 
 <template>
   <transition name="page">
-    <div v-if="hasComments" class="hana-card fixed bottom-32 right-10 hidden xl:block">
+    <div v-if="hasComments" class="fixed bottom-32 right-10 hana-card hidden xl:block">
       <HanaTooltip content="滚到评论" position="left" animation="slide">
-        <div class="hana-button size-10 items-center justify-center font-bold" @click="scrollToComments">
+        <div class="size-10 hana-button items-center justify-center font-bold" @click="scrollToComments">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
             <path d="M8 12h.01" />
@@ -81,10 +81,10 @@ function scrollToTop() {
   </transition>
 
   <transition name="page">
-    <div v-if="canScroll" class="hana-card fixed bottom-10 right-10 hidden xl:block">
+    <div v-if="canScroll" class="fixed bottom-10 right-10 hana-card hidden xl:block">
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
-          class="hana-button size-10 items-center justify-center font-bold"
+          class="size-10 hana-button items-center justify-center font-bold"
           @click="scrollToTop"
           @mouseenter="toggleShowPercent"
           @mouseleave="toggleShowPercent"

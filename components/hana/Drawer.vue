@@ -59,12 +59,12 @@ onBeforeUnmount(() => {
       <aside
         v-if="visible"
         v-click-outside="() => handleClose()"
-        class="fixed top-0 z-50 flex h-dvh w-4/5 flex-col bg-white px-5 dark:bg-hana-black"
+        class="fixed top-0 z-50 w-4/5 flex flex-col bg-white px-5 h-dvh dark:bg-hana-black"
         :class="[direction === 'right' ? 'right-0' : 'left-0']"
         :style="{ maxWidth: width }"
       >
         <slot name="header">
-          <div v-if="!hideHeader" class="flex h-12 items-center gap-2">
+          <div v-if="!hideHeader" class="h-12 flex items-center gap-2">
             <Icon v-if="icon" :name="icon" size="20" class="text-hana-blue dark:text-hana-blue-200" />
             <span v-if="title" class="flex-1 text-xl text-hana-blue dark:text-hana-blue-200">{{ title }}</span>
             <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />

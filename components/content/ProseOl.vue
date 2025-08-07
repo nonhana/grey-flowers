@@ -1,5 +1,5 @@
 <template>
-  <ol class="list-decimal pl-4 marker:text-hana-blue dark:marker:text-hana-blue-200">
+  <ol class="pl-4 list-decimal marker:text-hana-blue dark:marker:text-hana-blue-200">
     <slot />
   </ol>
 </template>

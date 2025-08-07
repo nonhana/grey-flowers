@@ -52,8 +52,8 @@ const curActivity = computed(() => fetchedActivity.value ?? defaultActivity)
       <header class="flex items-center gap-2">
         <HanaAvatar :size="10" :avatar="hanaInfo.avatar" :username="hanaInfo.username" :site="hanaInfo.site" :show-info="false" />
         <div class="flex flex-col gap-1">
-          <span class="font-bold text-black dark:text-hana-white">{{ hanaInfo.username }}</span>
-          <span class="flex items-center space-x-1 text-sm text-text dark:text-hana-white-700">
+          <span class="text-black font-bold dark:text-hana-white">{{ hanaInfo.username }}</span>
+          <span class="flex items-center text-sm text-text dark:text-hana-white-700 space-x-1">
             <Icon name="lucide:clock" size="14" />
             <time :datetime="curActivity.publishedAt">{{ curActivity.publishedAt }}</time>
           </span>

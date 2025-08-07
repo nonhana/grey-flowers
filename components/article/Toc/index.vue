@@ -76,13 +76,13 @@ watch(hash, (newHash, _, onCleanup) => {
 </script>
 
 <template>
-  <div class="hana-card h-fit w-60 shrink-0 justify-self-end">
+  <div class="h-fit w-60 shrink-0 justify-self-end hana-card">
     <div class="flex items-center gap-2 text-xl">
       <Icon name="lucide:list" />
       <span>文章目录</span>
     </div>
     <hr class="my-2 border-text dark:border-hana-white-700">
-    <div v-if="links.length > 0 && activatedId !== null" class="flex max-h-60 flex-col gap-1 overflow-auto">
+    <div v-if="links.length > 0 && activatedId !== null" class="max-h-60 flex flex-col gap-1 overflow-auto">
       <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
     </div>
     <div v-else-if="links.length === 0" class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">

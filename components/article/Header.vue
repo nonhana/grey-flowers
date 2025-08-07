@@ -43,9 +43,9 @@ onUnmounted(() => {
 <template>
   <header ref="articleHeadRef" class="mb-10 flex flex-col gap-5">
     <div class="overflow-hidden rounded-lg">
-      <NuxtImg :src="cover" :alt="alt" class="size-full object-cover transition-transform hover:scale-110" />
+      <NuxtImg :src="cover" :alt="alt" class="size-full transition-transform object-cover hover:scale-110" />
     </div>
-    <h1 class="font-bold dark:text-hana-white">
+    <h1 class="text-3xl font-bold dark:text-hana-white">
       {{ title }}
     </h1>
     <p class="text-text dark:text-hana-white-700">

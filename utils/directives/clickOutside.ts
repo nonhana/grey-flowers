@@ -51,8 +51,8 @@ function createDocumentHandler(
       || (excludes.length && excludes.includes(mouseDownTarget as HTMLElement))
     const isContainedByPopper
       = popperRef
-      && (popperRef.contains(mouseUpTarget)
-        || popperRef.contains(mouseDownTarget))
+        && (popperRef.contains(mouseUpTarget)
+          || popperRef.contains(mouseDownTarget))
     if (
       isBound
       || isTargetExists

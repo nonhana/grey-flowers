@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="breadcrumbRef" class="my-5 text-text dark:text-hana-white-700 flex overflow-auto">
+  <div ref="breadcrumbRef" class="my-5 flex overflow-auto text-text dark:text-hana-white-700">
     <slot />
   </div>
 </template>

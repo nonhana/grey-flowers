@@ -46,7 +46,7 @@ const curType = computed(() => {
       <div class="relative w-full">
         <span
           v-if="prefixIcon || $slots.prefix"
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-text dark:text-hana-white-700"
+          class="absolute left-3 top-1/2 text-text -translate-y-1/2 dark:text-hana-white-700"
         >
           <slot name="prefix" />
           <Icon v-if="prefixIcon" :name="prefixIcon" size="20" />
@@ -55,7 +55,7 @@ const curType = computed(() => {
           v-model="value"
           :name="name"
           :type="curType"
-          class="w-full border-hana-blue-50 bg-hana-blue-50 py-2 text-sm transition-all placeholder:text-text focus:border-hana-blue-400 focus:outline-0 dark:border-hana-black-600 dark:bg-hana-black-600 dark:text-hana-white dark:placeholder:text-hana-white-700 dark:focus:border-hana-blue-200"
+          class="w-full border-hana-blue-50 bg-hana-blue-50 py-2 text-sm transition-all dark:border-hana-black-600 focus:border-hana-blue-400 dark:bg-hana-black-600 dark:text-hana-white placeholder:text-text focus:outline-0 dark:focus:border-hana-blue-200 dark:placeholder:text-hana-white-700"
           :class="[
             shape === 'rounded' ? 'rounded-full' : 'rounded-lg',
             prefixIcon || $slots.prefix ? 'pl-10' : 'pl-3',
@@ -66,7 +66,7 @@ const curType = computed(() => {
         >
         <span
           v-if="suffixIcon || $slots.suffix || type === 'password'"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-text dark:text-hana-white-700"
+          class="absolute right-3 top-1/2 text-text -translate-y-1/2 dark:text-hana-white-700"
         >
           <slot name="suffix" />
           <Icon v-if="suffixIcon && type !== 'password'" :name="suffixIcon" size="20" />
@@ -85,7 +85,7 @@ const curType = computed(() => {
       <textarea
         v-model="value"
         :name="name"
-        class="w-full border-hana-blue-50 bg-hana-blue-50 px-3 py-2 text-sm transition-all placeholder:text-text focus:border-hana-blue-400 focus:outline-0 dark:border-hana-black-600 dark:bg-hana-black-600 dark:text-hana-white dark:placeholder:text-hana-white-700 dark:focus:border-hana-blue-200"
+        class="w-full border-hana-blue-50 bg-hana-blue-50 px-3 py-2 text-sm transition-all dark:border-hana-black-600 focus:border-hana-blue-400 dark:bg-hana-black-600 dark:text-hana-white placeholder:text-text focus:outline-0 dark:focus:border-hana-blue-200 dark:placeholder:text-hana-white-700"
         :class="shape === 'rounded' ? 'rounded-full' : 'rounded-lg'"
         :style="{ resize }"
         :placeholder="placeholder"

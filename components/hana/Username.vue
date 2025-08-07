@@ -19,6 +19,6 @@ function handleClick() {
 </script>
 
 <template>
-  <span class="cursor-pointer font-bold text-hana-blue-400 dark:text-hana-white-700" :class="props.class" @click="handleClick">{{ username }}</span>
+  <span class="cursor-pointer text-hana-blue-400 font-bold dark:text-hana-white-700" :class="props.class" @click="handleClick">{{ username }}</span>
   <UserInfoViewer v-model="visible" v-bind="{ avatar, username, site }" />
 </template>

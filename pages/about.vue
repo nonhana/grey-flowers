@@ -16,13 +16,13 @@ useHead({
   <div class="flex flex-col">
     <div class="relative h-[calc(100dvh-80px)] w-full">
       <AboutBanner class="relative top-8 lg:top-1/4 lg:translate-y-0" />
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-text dark:text-hana-white-700">
+      <div class="absolute bottom-0 left-1/2 text-text -translate-x-1/2 dark:text-hana-white-700">
         <Icon class="animate-bounce" size="24" name="lucide:chevron-down" />
       </div>
     </div>
     <div class="relative h-[calc(100dvh-48px)]">
       <AboutSlogan class="relative top-1/2 -translate-y-1/2" />
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-text dark:text-hana-white-700">
+      <div class="absolute bottom-0 left-1/2 text-text -translate-x-1/2 dark:text-hana-white-700">
         <Icon class="animate-bounce" size="24" name="lucide:chevron-down" />
       </div>
     </div>

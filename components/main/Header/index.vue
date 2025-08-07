@@ -17,8 +17,8 @@ function toggleDrawerVisible() {
 </script>
 
 <template>
-  <div class="relative flex h-12 w-full justify-center bg-[#fff8] shadow-md backdrop-blur dark:bg-hana-black">
-    <div class="relative mx-auto flex size-full items-center justify-between px-2 md:max-w-[90%] xl:max-w-[70%]">
+  <div class="relative h-12 w-full flex justify-center bg-[#fff8] shadow-md backdrop-blur dark:bg-hana-black">
+    <div class="relative mx-auto size-full flex items-center justify-between px-2 md:max-w-[90%] xl:max-w-[70%]">
       <HanaButton
         class="block md:hidden"
         icon-button
@@ -26,9 +26,9 @@ function toggleDrawerVisible() {
         @click="toggleDrawerVisible"
       />
 
-      <HanaLogo class="absolute left-1/2 -translate-x-1/2 md:relative md:left-0 md:translate-x-0" />
+      <HanaLogo class="absolute left-1/2 md:relative md:left-0 -translate-x-1/2 md:translate-x-0" />
 
-      <div class="absolute left-1/2 hidden -translate-x-1/2 gap-0 transition-all md:flex lg:gap-4">
+      <div class="absolute left-1/2 gap-0 transition-all hidden md:flex -translate-x-1/2 lg:gap-4">
         <HanaButton
           v-for="([key, value], index) in routesMap" :key="key"
           :type="value.to === rootRoute ? 'common' : 'icon'"

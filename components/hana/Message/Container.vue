@@ -28,7 +28,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="fixed left-1/2 top-4 z-50 flex -translate-x-1/2 flex-col items-center gap-4">
+  <div class="fixed left-1/2 top-4 z-50 flex flex-col items-center gap-4 -translate-x-1/2">
     <transition-group name="message-container">
       <div v-for="msg in messages" :key="msg.key" class="relative">
         <Message v-bind="msg" />
