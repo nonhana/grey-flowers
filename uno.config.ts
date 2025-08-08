@@ -1,7 +1,6 @@
 import { presetRemToPx } from '@unocss/preset-rem-to-px'
 import {
   defineConfig,
-  presetAttributify,
   presetIcons,
   presetMini,
   presetTypography,
@@ -17,7 +16,6 @@ export default defineConfig({
     /* Core Presets */
     presetMini(),
     presetWind3(),
-    presetAttributify(),
     presetIcons(),
     presetTypography(),
     presetWebFonts({
