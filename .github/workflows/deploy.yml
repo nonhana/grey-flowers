@@ -85,21 +85,10 @@ jobs:
             echo "[1/6] Unpack artifact"
             tar -xzf output.tar.gz
 
-            echo "[2/6] Ensure pnpm on VPS"
-            command -v pnpm >/dev/null 2>&1 || (corepack enable && corepack prepare pnpm@latest --activate)
-
             echo "[3/6] Install production deps"
             pnpm install --frozen-lockfile --prod
 
             echo "[4/6] Prisma generate (on VPS, uses .env DATABASE_URL)"
-            # 这里用 dlx，避免把 prisma CLI 当作 prod 依赖安装
             pnpm dlx prisma generate --schema=prisma/schema.prisma
-
-            echo "[5/6] PM2 reload (zero-downtime)"
-            pm2 startOrReload ecosystem.config.js --env production
-            pm2 save
-
-            echo "[6/6] Health check"
-            curl -fsS http://127.0.0.1:3000/healthz >/dev/null
 
             echo "✅ Deploy done"

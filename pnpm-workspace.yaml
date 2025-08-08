@@ -1,8 +1,6 @@
-patchedDependencies:
-  '@vue/shared': patches/@vue__shared.patch
 catalog:
   '@antfu/eslint-config': ^5.2.0
-  '@iconify-json/lucide': ^1.2.60
+  '@iconify-json/lucide': ^1.2.61
   '@iconify-json/mingcute': ^1.2.3
   '@iconify-json/svg-spinners': ^1.2.2
   '@nuxt/content': ^3.6.3
@@ -18,10 +16,10 @@ catalog:
   '@types/node': ^24.2.0
   '@types/throttle-debounce': ^5.0.2
   '@types/vivus': ^0.4.7
-  '@unocss/eslint-plugin': ^66.4.1
-  '@unocss/nuxt': ^66.4.1
-  '@unocss/preset-rem-to-px': ^66.4.1
-  '@unocss/reset': ^66.4.1
+  '@unocss/eslint-plugin': ^66.4.2
+  '@unocss/nuxt': ^66.4.2
+  '@unocss/preset-rem-to-px': ^66.4.2
+  '@unocss/reset': ^66.4.2
   '@vueuse/core': ^13.6.0
   '@vueuse/nuxt': ^13.6.0
   bcrypt: ^6.0.0
@@ -39,7 +37,7 @@ catalog:
   prisma: ^6.13.0
   throttle-debounce: ^5.0.2
   typescript: ^5.9.2
-  unocss: ^66.4.1
+  unocss: ^66.4.2
   unocss-preset-scrollbar: ^3.2.0
   vivus: ^0.4.6
   vue: ^3.5.18
