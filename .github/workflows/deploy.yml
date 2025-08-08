@@ -21,13 +21,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
 
       - name: Enable pnpm via corepack
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
-          pnpm --version   # 确认 pnpm 已经可用
+          pnpm --version
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
