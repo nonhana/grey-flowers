@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node (20.x)
+      - name: Setup Node (20.x) and pnpm
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -27,6 +27,7 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
+          pnpm --version   # 确认 pnpm 已经可用
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -34,11 +35,6 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # 重要：把运行所需内容打包。包含：
-      # - .output（Nuxt 产物）
-      # - package.json / pnpm-lock.yaml（VPS 装 prod 依赖用）
-      # - prisma/（VPS 上执行 migrate 用）
-      # - ecosystem.config.cjs（PM2 启动配置）
       - name: Pack artifact
         run: |
           tar -czf output.tar.gz \
