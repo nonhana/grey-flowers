@@ -73,7 +73,7 @@ export function useRouterOptions() {
       }
 
       const savedPosition = getSavedScrollPosition(to.fullPath)
-      scrollTo(savedPosition, 'instant')
+      scrollTo(savedPosition)
     })
   }
 
@@ -94,7 +94,7 @@ export function useRouterOptions() {
       const savedPosition = getSavedScrollPosition(route.fullPath)
       if (savedPosition > 0) {
         nextTick(() => {
-          scrollTo(savedPosition, 'instant')
+          scrollTo(savedPosition)
         })
       }
     }
