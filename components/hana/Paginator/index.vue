@@ -37,7 +37,7 @@ const sideButtonCount = (maxButtonCount - 3) / 2
 <template>
   <div class="w-fit flex gap-2 hana-card" :class="{ hidden: totalPages === 1 }">
     <HanaButton
-      class="hidden md:block"
+      class="hidden md:flex"
       icon-button
       icon="lucide:chevron-left"
       :disabled="currentPage === 1"
@@ -51,7 +51,7 @@ const sideButtonCount = (maxButtonCount - 3) / 2
       @click="goToPage"
     />
     <HanaButton
-      class="hidden md:block"
+      class="hidden md:flex"
       icon-button
       icon="lucide:chevron-right"
       :disabled="currentPage === totalPages"
