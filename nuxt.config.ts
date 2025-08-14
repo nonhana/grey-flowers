@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     formats: ['webp', 'gif', 'jpeg', 'png', 'avif'],
   },
   devServer: {
-    host: '127.0.0.1',
+    host: 'localhost',
     port: 2408,
   },
   experimental: {

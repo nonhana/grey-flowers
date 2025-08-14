@@ -19,10 +19,12 @@
   },
   "dependencies": {
     "@unocss/reset": "catalog:",
+    "better-sqlite3": "catalog:",
     "nodemailer": "catalog:",
     "nuxt": "catalog:",
     "resend": "catalog:",
     "vue": "catalog:",
+    "vue-component-type-helpers": "catalog:",
     "vue-router": "catalog:"
   },
   "devDependencies": {
