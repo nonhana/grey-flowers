@@ -43,6 +43,7 @@ export const linksPageData = {
 }
 
 export const seoData = {
+  siteName: 'GreyFlowers',
   title: '在失去了意义的世界里，会绽放出什么颜色的花朵呢',
   ogTitle: 'A garden to study programming, explore myself, and vent emotions.',
   description: 'Even in a grey world, flowers bloom as ever.',

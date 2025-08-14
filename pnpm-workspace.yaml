@@ -37,6 +37,7 @@ catalog:
   pinia: ^3.0.3
   pinia-plugin-persistedstate: ^4.4.1
   prisma: ^6.13.0
+  resend: ^6.0.1
   throttle-debounce: ^5.0.2
   typescript: ^5.9.2
   unocss: ^66.4.2

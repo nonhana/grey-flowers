@@ -21,6 +21,7 @@
     "@unocss/reset": "catalog:",
     "nodemailer": "catalog:",
     "nuxt": "catalog:",
+    "resend": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },
