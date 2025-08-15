@@ -25,7 +25,8 @@ const { increaseDialogCount, decreaseDialogCount, getDialogCount } = dialogStore
 const programmaticVisible = ref(false)
 const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
 
-const dialogZIndex = ref(40)
+const BASE_Z_INDEX = 40
+const dialogZIndex = ref(BASE_Z_INDEX)
 
 onMounted(() => {
   if (props.programmatic) {
@@ -58,11 +59,11 @@ function handleAfterLeave() {
 const overlayRef = useTemplateRef('overlayRef')
 watch(visible, (newV) => {
   if (newV) {
-    dialogZIndex.value = 40 + getDialogCount()
+    dialogZIndex.value = BASE_Z_INDEX + getDialogCount()
     increaseDialogCount()
   }
   else {
-    dialogZIndex.value = 40
+    dialogZIndex.value = BASE_Z_INDEX
     decreaseDialogCount()
   }
   if (overlayRef.value) {
@@ -78,7 +79,12 @@ watch(visible, (newV) => {
 })
 
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
+  if (event.key !== 'Escape')
+    return
+  if (!visible.value)
+    return
+  const topZ = BASE_Z_INDEX + (getDialogCount() - 1)
+  if (dialogZIndex.value === topZ) {
     handleClose()
   }
 }
