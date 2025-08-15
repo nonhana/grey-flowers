@@ -7,8 +7,8 @@ import { useZodVerify } from '~/server/composables/useZodVerify'
 const verifySchema = z.object({
   id: z.string().transform(Number),
   username: z.string().min(1, { message: 'Username must not be empty' }).max(16, { message: 'Username must not exceed 16 characters' }).optional(),
-  email: z.string().email({ message: 'Invalid email format' }).optional(),
-  site: z.string().url({ message: 'Invalid site URL' }).optional().nullable(),
+  email: z.email({ message: 'Invalid email format' }).optional(),
+  site: z.url({ message: 'Invalid site URL' }).optional().nullable(),
   password: z.string().min(8, { message: 'Password must be at least 8 characters' }).max(32, { message: 'Password must not exceed 32 characters' }).optional(),
 })
 
