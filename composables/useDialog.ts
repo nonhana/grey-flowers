@@ -25,7 +25,10 @@ interface DialogProgrammaticOptions {
   onCancel?: () => void
 }
 
-export type DialogOptions = DialogDeclarativeOptions & DialogProgrammaticOptions & { programmatic?: boolean }
+export type DialogOptions
+= |({ programmatic: true } & DialogProgrammaticOptions)
+  | ({ programmatic: false } & DialogDeclarativeOptions)
+  | { programmatic?: undefined }
 
 export default function useDialog() {
   // 编程式调用 Dialog
@@ -40,7 +43,7 @@ export default function useDialog() {
       programmatic: true,
       onOk: () => {
         try {
-          options.onOk?.()
+          options.programmatic && options.onOk?.()
         }
         finally {
           dialogVNode.component?.exposed?.handleClose()
@@ -48,7 +51,7 @@ export default function useDialog() {
       },
       onCancel: () => {
         try {
-          options.onCancel?.()
+          options.programmatic && options.onCancel?.()
         }
         finally {
           dialogVNode.component?.exposed?.handleClose()

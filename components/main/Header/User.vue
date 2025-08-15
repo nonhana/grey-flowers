@@ -173,6 +173,7 @@ function handleUserCommand(command: string | number | object) {
       break
     case '退出登录':
       callHanaDialog({
+        programmatic: true,
         title: '提示',
         content: '确定要退出登录吗？',
         showCancelButton: true,

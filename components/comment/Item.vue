@@ -62,6 +62,7 @@ function handleDelete() {
 }
 function confirmDelete() {
   callHanaDialog({
+    programmatic: true,
     title: '提示',
     content: '确定要删除这条评论吗？',
     showCancelButton: true,

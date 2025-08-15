@@ -55,7 +55,7 @@ function handleAfterLeave() {
   emits('destroy')
 }
 
-const overlayRef = ref<HTMLDivElement | null>(null)
+const overlayRef = useTemplateRef('overlayRef')
 watch(visible, (newV) => {
   if (newV) {
     dialogZIndex.value = 40 + getDialogCount()
@@ -68,7 +68,7 @@ watch(visible, (newV) => {
   if (overlayRef.value) {
     if (newV) {
       requestAnimationFrame(() => {
-        overlayRef.value!.style.opacity = String(props.overlayOpacity)
+        !props.programmatic && (overlayRef.value!.style.opacity = String(props.overlayOpacity))
       })
     }
     else {
