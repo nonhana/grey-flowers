@@ -29,7 +29,7 @@ function close() {
   toggleVisible(false)
 }
 
-const triggerRef = ref<HTMLDivElement | null>(null)
+const triggerRef = useTemplateRef('triggerRef')
 const triggerWidth = ref(0)
 let observer: IntersectionObserver | null = null
 

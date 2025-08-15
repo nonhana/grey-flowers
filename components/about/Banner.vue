@@ -9,10 +9,10 @@ const welcomeCharArr = Array.from(welcomeStr)
 const introCharArr = Array.from(introStr)
 const roleCharArr = Array.from(roleStr)
 
-const welcomeRef = ref<HTMLParagraphElement | null>(null)
-const introRef = ref<HTMLParagraphElement | null>(null)
-const roleRef = ref<HTMLParagraphElement | null>(null)
-const SNSRef = ref<HTMLDivElement | null>(null)
+const welcomeRef = useTemplateRef('welcomeRef')
+const introRef = useTemplateRef('introRef')
+const roleRef = useTemplateRef('roleRef')
+const SNSRef = useTemplateRef('SNSRef')
 
 function animateChildren(children: HTMLCollection): Promise<void> {
   const childrenArr = Array.from(children) as HTMLElement[]

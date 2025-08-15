@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
   separator: '>',
 })
 
-const breadcrumbRef = ref<HTMLDivElement>()
+const breadcrumbRef = useTemplateRef('breadcrumbRef')
 
 provide('breadcrumbKey', props)
 

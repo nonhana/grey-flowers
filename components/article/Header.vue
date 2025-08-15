@@ -19,7 +19,7 @@ withDefaults(defineProps<ArticleHeader>(), {
 const { articleHeadStatusStore } = useStore()
 const { setVisible } = articleHeadStatusStore
 
-const articleHeadRef = ref<HTMLElement | null>(null)
+const articleHeadRef = useTemplateRef('articleHeadRef')
 let headObserver: IntersectionObserver | null = null
 
 onMounted(() => {

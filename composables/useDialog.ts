@@ -26,7 +26,7 @@ interface DialogProgrammaticOptions {
 }
 
 export type DialogOptions
-= |({ programmatic: true } & DialogProgrammaticOptions)
+= | ({ programmatic: true } & DialogProgrammaticOptions)
   | ({ programmatic: false } & DialogDeclarativeOptions)
   | { programmatic?: undefined }
 

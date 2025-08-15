@@ -23,8 +23,8 @@ const collapsible = computed(() => rows.value > codeBlockVisibleRows)
 const [isCollapsed, toggleCollapsed] = useToggle(collapsible.value)
 const collapsedIcon = computed(() => (isCollapsed.value ? 'lucide:chevrons-down' : 'lucide:chevrons-up'))
 
-const copyBtn = useTemplateRef<HTMLButtonElement>('copyBtnRef')
-const codeblock = useTemplateRef<HTMLPreElement>('codeblockRef')
+const copyBtn = useTemplateRef('copyBtnRef')
+const codeblock = useTemplateRef('codeblockRef')
 
 useCopy(copyBtn, codeblock)
 </script>

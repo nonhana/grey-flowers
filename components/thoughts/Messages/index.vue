@@ -9,7 +9,7 @@ const emits = defineEmits<{
   (e: 'refreshed'): void
 }>()
 
-const msgContainerRef = ref<HTMLDivElement | null>(null)
+const msgContainerRef = useTemplateRef('msgContainerRef')
 
 const { newMsgId } = toRefs(props)
 
