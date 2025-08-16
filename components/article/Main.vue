@@ -44,17 +44,6 @@ const displayCols = computed(() => {
 const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(6)
 
-const articlesCountKey = computed(() => `articles-count-${props.type}`)
-
-const { data: fetchedTotal } = await useAsyncData(
-  articlesCountKey,
-  () => $fetch('/api/articles/count', {
-    query: whereObj.value,
-  }),
-  { watch: [whereObj] },
-)
-const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
-
 const fetchArticleQuery = computed(() => ({
   page: page.value,
   pageSize: pageSize.value,
@@ -73,6 +62,7 @@ const { data: fetchedArticleData } = await useAsyncData(
   }),
   { watch: [fetchArticleQuery] },
 )
+
 const articleData = computed(() => fetchedArticleData.value ? fetchedArticleData.value.payload ?? [] : [])
 
 const articleCards = computed<ArticleCardProps[]>(() =>
@@ -89,6 +79,20 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }),
 )
+
+const articlesCountKey = computed(() => {
+  const queryStr = new URLSearchParams(whereObj.value as Record<string, any>).toString()
+  return `articles-count?type=${props.type}&${queryStr}`
+})
+
+const { data: fetchedTotal } = await useAsyncData(
+  articlesCountKey,
+  () => $fetch('/api/articles/count', {
+    query: whereObj.value,
+  }),
+  { watch: [whereObj] },
+)
+const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
 
 watch(page, async (newPage) => {
   router.replace({ query: { ...route.query, page: newPage.toString() } })
