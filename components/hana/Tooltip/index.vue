@@ -14,6 +14,11 @@ const props = withDefaults(defineProps<{
   trigger: 'hover',
   animation: 'fade',
 })
+
+const tooltipRef = useTemplateRef('tooltipRef')
+
+onClickOutside(tooltipRef, close)
+
 const { trigger } = toRefs(props)
 const visible = ref(false)
 const hoverTrigger = ref(trigger.value === 'hover')
@@ -96,7 +101,7 @@ const positionClass = computed(() => {
 </script>
 
 <template>
-  <div v-click-outside="() => close()" class="relative">
+  <div ref="tooltipRef" class="relative">
     <div
       ref="triggerRef"
       @[clickTrigger?`click`:null]="toggleVisible(!visible)"

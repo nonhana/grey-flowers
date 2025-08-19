@@ -17,6 +17,10 @@ const props = withDefaults(defineProps<{
   width: '320px',
 })
 
+const drawerRef = useTemplateRef('drawerRef')
+
+onClickOutside(drawerRef, handleClose)
+
 const visible = defineModel<boolean>()
 
 function handleClose() {
@@ -58,7 +62,7 @@ onBeforeUnmount(() => {
     <transition v-bind="transitionClasses">
       <aside
         v-if="visible"
-        v-click-outside="() => handleClose()"
+        ref="drawerRef"
         class="fixed top-0 z-50 w-4/5 flex flex-col bg-white px-5 h-dvh dark:bg-hana-black"
         :class="[direction === 'right' ? 'right-0' : 'left-0']"
         :style="{ maxWidth: width }"
