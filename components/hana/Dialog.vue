@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<DialogOptions>(), {
   width: '400px',
   height: 'auto',
   programmatic: false,
+  closable: true,
 })
 
 const emits = defineEmits<{
@@ -23,18 +24,27 @@ const { dialogStore } = useStore()
 const { increaseDialogCount, decreaseDialogCount, getDialogCount } = dialogStore
 
 const programmaticVisible = ref(false)
-const visible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
+const dialogVisible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
+
+const isClient = ref(false)
 
 const BASE_Z_INDEX = 40
 const dialogZIndex = ref(BASE_Z_INDEX)
 
 onMounted(() => {
+  isClient.value = true
   if (props.programmatic) {
-    programmaticVisible.value = true
+    requestAnimationFrame(() => {
+      programmaticVisible.value = true
+    })
   }
 })
 
 function handleClose() {
+  if (props.programmatic && props.closable === false) {
+    return
+  }
+
   if (props.programmatic) {
     programmaticVisible.value = false
   }
@@ -56,32 +66,33 @@ function handleAfterLeave() {
   emits('destroy')
 }
 
-const overlayRef = useTemplateRef('overlayRef')
-watch(visible, (newV) => {
+const overlayOpacity = ref(0)
+const computedOverlayOpacity = computed(() => {
+  if (!dialogVisible.value)
+    return 0
+  return props.programmatic ? 0.5 : props.overlayOpacity
+})
+
+watch(dialogVisible, (newV) => {
   if (newV) {
     dialogZIndex.value = BASE_Z_INDEX + getDialogCount()
     increaseDialogCount()
+    // 使用 nextTick 确保 DOM 更新后再触发动画
+    nextTick(() => {
+      overlayOpacity.value = computedOverlayOpacity.value
+    })
   }
   else {
+    overlayOpacity.value = 0
     dialogZIndex.value = BASE_Z_INDEX
     decreaseDialogCount()
-  }
-  if (overlayRef.value) {
-    if (newV) {
-      requestAnimationFrame(() => {
-        !props.programmatic && (overlayRef.value!.style.opacity = String(props.overlayOpacity))
-      })
-    }
-    else {
-      overlayRef.value!.style.opacity = '0'
-    }
   }
 })
 
 function handleKeydown(event: KeyboardEvent) {
   if (event.key !== 'Escape')
     return
-  if (!visible.value)
+  if (!dialogVisible.value)
     return
   const topZ = BASE_Z_INDEX + (getDialogCount() - 1)
   if (dialogZIndex.value === topZ) {
@@ -89,12 +100,22 @@ function handleKeydown(event: KeyboardEvent) {
   }
 }
 
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-})
+watch(dialogVisible, (isVisible) => {
+  if (typeof window === 'undefined')
+    return
+
+  if (isVisible) {
+    window.addEventListener('keydown', handleKeydown)
+  }
+  else {
+    window.removeEventListener('keydown', handleKeydown)
+  }
+}, { immediate: true })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keydown', handleKeydown)
+  }
 })
 
 defineExpose({
@@ -103,18 +124,23 @@ defineExpose({
 </script>
 
 <template>
-  <teleport to="body">
+  <teleport v-if="isClient" to="body">
     <div
-      ref="overlayRef"
-      class="fixed inset-0 bg-black opacity-0 transition-opacity duration-300"
-      :class="{ 'pointer-events-none': !visible }"
-      :style="{ zIndex: dialogZIndex }"
+      class="fixed inset-0 bg-black transition-opacity duration-300"
+      :class="{ 'pointer-events-none': !dialogVisible }"
+      :style="{
+        zIndex: dialogZIndex,
+        opacity: overlayOpacity,
+      }"
       @click="handleClose"
     />
     <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
       <div
-        v-if="visible"
+        v-if="dialogVisible"
         id="hana-dialog"
+        role="dialog"
+        :aria-labelledby="title ? 'dialog-title' : undefined"
+        aria-modal="true"
         class="fixed left-1/2 top-1/2 max-w-[90%] rounded-2xl bg-white p-5 shadow -translate-x-1/2 -translate-y-1/2 dark:bg-hana-black"
         :style="{ width, zIndex: dialogZIndex }"
       >
@@ -124,7 +150,7 @@ defineExpose({
             :close="handleClose"
           >
             <div v-if="!hideHeader" class="flex items-center">
-              <span v-if="title" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
+              <span v-if="title" id="dialog-title" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
               <HanaButton v-if="!programmatic" icon="lucide:x" class="relative ml-auto -right-2 -top-2" icon-button @click="handleClose" />
             </div>
           </slot>
