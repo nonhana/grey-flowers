@@ -66,6 +66,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           envs: VPS_DIR
           script: |
+            source ~/.bashrc
             set -e
             mkdir -p "$VPS_DIR"
             cd "$VPS_DIR"
