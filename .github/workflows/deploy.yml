@@ -59,14 +59,17 @@ jobs:
           overwrite: true
 
       - name: Apply DB migrations and reload PM2 (zero-downtime)
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           envs: VPS_DIR
           script: |
-            source ~/.bashrc
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            npm --help
+
             set -e
             mkdir -p "$VPS_DIR"
             cd "$VPS_DIR"
