@@ -8,9 +8,9 @@ Even in a gray world, flowers bloom as usual.
 
 Built with:
 
-- [Nuxt3](https://nuxt.com)
+- [Nuxt4](https://nuxt.com)
 - [Vue3](https://vuejs.org)
-- [Nuxt Content2](https://content.nuxt.com)
-- [TailwindCSS](https://tailwindcss.com)
+- [Nuxt Content3](https://content.nuxt.com)
+- [UnoCSS](https://unocss.dev)
 - [Prisma](https://prisma.io)
 - [PostgreSQL](https://postgresql.org)
