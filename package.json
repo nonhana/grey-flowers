@@ -33,7 +33,6 @@
     "@iconify-json/mingcute": "catalog:",
     "@iconify-json/svg-spinners": "catalog:",
     "@nuxt/content": "catalog:",
-    "@nuxt/fonts": "catalog:",
     "@nuxt/icon": "catalog:",
     "@nuxt/image": "catalog:",
     "@nuxtjs/color-mode": "catalog:",

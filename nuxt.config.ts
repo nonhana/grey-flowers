@@ -54,20 +54,12 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
-  fonts: {
-    families: [
-      { name: 'Noto Serif', provider: 'google', weights: [500, 700] },
-      { name: 'Noto Serif SC', provider: 'google', weights: [500, 700] },
-      { name: 'Noto Serif JP', provider: 'google', weights: [500, 700] },
-    ],
-  },
   colorMode: {
     classSuffix: '',
   },
   css: ['@unocss/reset/tailwind.css'],
   modules: [
     '@nuxt/icon',
-    '@nuxt/fonts',
     '@nuxt/image',
     '@nuxt/content',
     '@nuxtjs/seo',
