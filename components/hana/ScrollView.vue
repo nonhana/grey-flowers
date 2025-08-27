@@ -16,9 +16,9 @@ const emit = defineEmits<{
   (e: 'heightChange', height: number): void
 }>()
 
-const containerElement = useTemplateRef('containerElement')
-const contentWrapperElement = useTemplateRef('contentWrapperElement')
-const contentElement = useTemplateRef('contentElement')
+const containerElement = useTemplateRef('containerRef')
+const contentWrapperElement = useTemplateRef('contentWrapperRef')
+const contentElement = useTemplateRef('contentRef')
 
 const scrollBarPos = ref<'right' | 'bottom' | 'none'>('right')
 const containerHeight = ref(0)
@@ -181,25 +181,27 @@ defineExpose({
 <template>
   <div
     :id="containerId"
-    ref="containerElement"
+    ref="containerRef"
     role="group"
-    class="relative size-full overflow-hidden" :class="[
-      { 'md:pr-2.5': isRight, 'md:pb-2.5': isBottom },
-    ]"
+    class="relative size-full overflow-hidden"
+    :class="[{ 'md:pr-2.5': isRight, 'md:pb-2.5': isBottom }]"
   >
     <div
       :id="contentWrapperId"
-      ref="contentWrapperElement"
-      class="h-full w-full overflow-auto scrollbar-none" :class="[contentWrapperClass]"
+      ref="contentWrapperRef"
+      class="h-full w-full overflow-auto scrollbar-none"
+      :class="contentWrapperClass"
       @scroll="onScroll"
     >
-      <div :id="contentId" ref="contentElement" :class="contentClass">
+      <div :id="contentId" ref="contentRef" :class="contentClass">
         <slot />
       </div>
     </div>
 
+    <!-- 滚动条 -->
     <div
-      class="absolute rounded bg-hana-blue-100 hidden md:block" :class="[
+      class="absolute rounded bg-hana-blue-100 hidden md:block"
+      :class="[
         scrollbarClass,
         {
           'right-0 top-0 w-2 h-full': isRight,
