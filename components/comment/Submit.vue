@@ -66,7 +66,7 @@ async function publishComment(objData: IPostComment) {
     const receiverId = data.payload!.parent
       ? data.payload!.replyToUser
         ? data.payload!.replyToUser.id
-        : data.payload!.parent.author.id
+        : data.payload!.parent.authorId
       : hanaInfo.id
     if (userInfo.value!.id !== receiverId) {
       await $fetch('/api/user/send-message', {
@@ -80,7 +80,7 @@ async function publishComment(objData: IPostComment) {
         }),
       })
     }
-    emits('published', data.payload!)
+    emits('published', data.payload! as CommentItem)
     content.value = ''
     visible.value = false
     callHanaMessage({
