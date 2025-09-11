@@ -41,6 +41,8 @@ async function fetchActivities() {
 }
 
 onMounted(fetchActivities)
+
+const curActivity = computed(() => activities.value.find(item => item.id === curActivityId.value))
 </script>
 
 <template>
@@ -54,5 +56,5 @@ onMounted(fetchActivities)
       <RecentlyItem :item="item" :index="index" />
     </li>
   </ul>
-  <RecentlyDetailDialog v-model="detailDialogVisible" :activity-id="curActivityId" />
+  <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
 </template>
