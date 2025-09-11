@@ -19,7 +19,7 @@ async function fetchUserComments() {
   fetching.value = true
   const data = await $fetch('/api/user/comments', { query: { id: userInfo.value!.id } })
   if (data.success) {
-    comments.value = data.payload ?? []
+    comments.value = (data.payload as CommentItem[]) ?? []
   }
   fetching.value = false
 }

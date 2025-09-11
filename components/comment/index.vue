@@ -39,7 +39,7 @@ async function fetchComments() {
     query: { path: isRecently.value ? fullPath : path, page: page.value, pageSize: pageSize.value },
   })
   if (data.success) {
-    commentList.value = data.payload || []
+    commentList.value = (data.payload as ParentCommentItem[]) ?? []
   }
 }
 
@@ -90,7 +90,7 @@ async function handleDelete(value: IDeleteComment) {
 function removeComment(target: IDeleteComment) {
   if (target.level === 'PARENT') {
     const index = commentList.value.findIndex(item => item.id === target.id)
-    const childrenLength = commentList.value[index].children?.length || 0
+    const childrenLength = commentList.value[index]?.children?.length || 0
     if (index !== -1) {
       commentList.value.splice(index, 1)
     }

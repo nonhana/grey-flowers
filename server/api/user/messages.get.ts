@@ -9,6 +9,7 @@ async function getUserMessages(userId: number) {
       comment: { select: commentSelectObj },
     },
     take: 10,
+    orderBy: { comment: { publishedAt: 'desc' } },
   })
   const result = messages.map(message => ({
     ...message.comment,

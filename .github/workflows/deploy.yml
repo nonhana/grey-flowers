@@ -28,8 +28,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4.4.0
         with:
-          node-version: '22.18.0'
-          cache: 'pnpm'
+          node-version: 22.18.0
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -54,8 +54,8 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
-          source: ".deploy/**"
-          target: "${{ secrets.APP_DIR }}"
+          source: .deploy/**
+          target: ${{ secrets.APP_DIR }}
           overwrite: true
 
       - name: Apply DB migrations and reload PM2 (zero-downtime)

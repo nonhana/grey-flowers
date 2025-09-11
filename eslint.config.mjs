@@ -8,4 +8,5 @@ export default antfu({
   jsonc: true,
   yaml: true,
   unocss: true,
+  ignores: ['content/**/*'],
 })
