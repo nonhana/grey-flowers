@@ -97,8 +97,8 @@ catalogs:
       specifier: ^3.13.0
       version: 3.13.0
     hana-img-viewer:
-      specifier: ^1.2.3
-      version: 1.2.3
+      specifier: ^1.2.5
+      version: 1.2.5
     jsonwebtoken:
       specifier: ^9.0.2
       version: 9.0.2
@@ -257,7 +257,7 @@ importers:
         version: 3.13.0
       hana-img-viewer:
         specifier: 'catalog:'
-        version: 1.2.3
+        version: 1.2.5
       jsonwebtoken:
         specifier: 'catalog:'
         version: 9.0.2
@@ -3803,8 +3803,8 @@ packages:
   h3@1.15.4:
     resolution: {integrity: sha512-z5cFQWDffyOe4vQ9xIqNfCZdV4p//vy6fBnr8Q1AWnVZ0teurKMG66rLj++TKwKPUP3u7iMUvrvKaEUiQw2QWQ==}
 
-  hana-img-viewer@1.2.3:
-    resolution: {integrity: sha512-TqEaIZB5nnum72eGI6sMRjMkVDTAv5qvJ8G4oRjNmZN6/HPKmZ5ROBX0a93nP9Qsn7m0VAReJ1QvXidyiZ9f6A==}
+  hana-img-viewer@1.2.5:
+    resolution: {integrity: sha512-L5QzB5vZltGLm1MhavF2o3WIiOj1/LRaTU4vL0tqT8FYTX3rUWLz2Y5JgRDx8oNjReL2/fYtedljyYrMmoDnTg==}
 
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -10617,7 +10617,7 @@ snapshots:
       ufo: 1.6.1
       uncrypto: 0.1.3
 
-  hana-img-viewer@1.2.3: {}
+  hana-img-viewer@1.2.5: {}
 
   has-flag@4.0.0: {}
 

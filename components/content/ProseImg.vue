@@ -47,9 +47,7 @@ const refinedSrc = computed(() => {
 </script>
 
 <template>
-  <ClientOnly>
-    <div class="m-auto w-full md:w-3/5">
-      <ImgViewer v-bind="{ ...props, src: refinedSrc }" />
-    </div>
-  </ClientOnly>
+  <div class="m-auto w-full md:w-3/5">
+    <ImgViewer v-bind="{ ...props, src: refinedSrc }" />
+  </div>
 </template>
