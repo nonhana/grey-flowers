@@ -10,7 +10,12 @@ const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible, activityW
 // 如果用户已经登录，检查 token 是否过期
 async function checkUserStatus() {
   if (loggedIn.value) {
-    const data = await $fetch('/api/user/check-status', { method: 'GET' })
+    const data = await $fetch('/api/user/check-status', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
     if (!data.success) {
       userStore.logout()
     }
