@@ -20,7 +20,7 @@ onMounted(() => {
       :title="desc"
       class="relative top-0 flex gap-5 hana-card transition-all active:scale-95 p-5! hover:-translate-y-1 active:bg-hana-blue-200! dark:bg-hana-black-700! hover:bg-hana-blue-150! hover:shadow-lg! dark:active:bg-hana-black-800! dark:hover:bg-hana-black-800!"
     >
-      <NuxtImg :src="image" :alt="`${owner}_avatar`" width="64" height="64" class="shrink-0 rounded-lg" />
+      <LinksCardImg :site="site" :image="image" />
       <div class="h-16 flex flex-col">
         <span class="text-black line-clamp-1 dark:text-hana-white">{{ site }}</span>
         <div class="flex flex-1 items-center">

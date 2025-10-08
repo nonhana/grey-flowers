@@ -60,6 +60,7 @@
     "pinia": "catalog:",
     "pinia-plugin-persistedstate": "catalog:",
     "prisma": "catalog:",
+    "sass-embedded": "catalog:",
     "throttle-debounce": "catalog:",
     "typescript": "catalog:",
     "unocss": "catalog:",
