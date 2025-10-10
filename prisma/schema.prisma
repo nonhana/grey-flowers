@@ -101,8 +101,28 @@ model Activity {
   title       String
   content     String   @default("")
   images      String[] @default([])
+  music       Music[]
   publishedAt DateTime @default(now())
   editedAt    DateTime @updatedAt
+}
+
+model Music {
+  id         Int       @id @default(autoincrement())
+  title      String
+  src        String
+  seconds    Int
+  albumId    Int?
+  album      Album?    @relation(fields: [albumId], references: [id])
+  activityId Int?
+  activity   Activity? @relation(fields: [activityId], references: [id])
+}
+
+model Album {
+  id          Int     @id @default(autoincrement())
+  title       String
+  cover       String
+  description String?
+  music       Music[]
 }
 
 enum CommentLevel {

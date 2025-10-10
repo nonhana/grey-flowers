@@ -9,6 +9,12 @@ const title = ref('')
 const content = ref('')
 const images = ref('')
 
+const musicKeys = ['title', 'src', 'seconds', 'albumTitle', 'albumCover', 'albumDescription'] as const
+type MusicKeys = typeof musicKeys[number]
+type MusicRecord = Partial<Record<MusicKeys, string>>
+
+const music = ref<MusicRecord[]>([])
+
 const publishing = ref(false)
 const buttonText = computed(() => publishing.value ? '发布中...' : '发布动态')
 
@@ -24,6 +30,7 @@ async function handlePublish() {
     title: title.value,
     content: content.value,
     images: images.value.split(',').filter(Boolean),
+    music: music.value,
   }
   publishing.value = true
   await publishActivity(objData)
@@ -60,6 +67,7 @@ async function publishActivity(objData: IPostActivity) {
       <HanaInput v-model="title" placeholder="请输入动态标题" />
       <HanaInput v-model="content" type="textarea" placeholder="请输入动态内容" resize="none" :rows="8" />
       <HanaInput v-model="images" type="textarea" placeholder="请输入图片 url 地址，多个图片用 ',' 隔开" resize="none" :rows="8" />
+      <HanaMultiForm v-model="music" :keys="musicKeys" />
     </div>
     <div class="flex flex-col gap-4">
       <HanaButton class="w-full" dark-mode :disabled="publishing" @click="handlePublish">

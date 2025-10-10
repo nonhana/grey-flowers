@@ -18,12 +18,17 @@ const props = withDefaults(defineProps<{
 
 const emits = defineEmits<{
   (e: 'keydown', event: KeyboardEvent): void
+  (e: 'input', event: Event): void
 }>()
 
 const value = defineModel<string>()
 
 function handleKeyDown(event: KeyboardEvent) {
   emits('keydown', event)
+}
+
+function handleInput(event: Event) {
+  emits('input', event)
 }
 
 const showPassword = ref(false)
@@ -63,6 +68,7 @@ const curType = computed(() => {
           ]"
           :placeholder="placeholder"
           @keydown="handleKeyDown"
+          @input="handleInput"
         >
         <span
           v-if="suffixIcon || $slots.suffix || type === 'password'"
