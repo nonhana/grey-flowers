@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   name?: string
-  type?: 'text' | 'textarea' | 'password'
+  type?: 'text' | 'textarea' | 'password' | 'number'
   placeholder?: string
   resize?: 'none' | 'vertical' | 'horizontal' | 'both'
   rows?: number
@@ -38,7 +38,7 @@ function toggleShowPassword() {
 }
 
 const curType = computed(() => {
-  if (props.type === 'textarea') {
+  if (props.type !== 'text' && props.type !== 'password') {
     return props.type
   }
   return showPassword.value ? 'text' : props.type

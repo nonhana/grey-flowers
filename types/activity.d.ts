@@ -1,9 +1,9 @@
 export interface MusicItem {
-  title?: string
-  src?: string
-  seconds?: number
-  albumTitle?: string
-  albumCover?: string
+  title: string
+  src: string
+  seconds: number
+  albumTitle: string
+  albumCover: string
   albumDescription?: string
 }
 
