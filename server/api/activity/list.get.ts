@@ -11,6 +11,24 @@ async function getActivityCommentCount(activityId: number) {
 async function selectActivityList() {
   const retrievedRes = await prisma.activity.findMany({
     orderBy: { publishedAt: 'desc' },
+    include: {
+      music: {
+        select: {
+          id: true,
+          title: true,
+          src: true,
+          seconds: true,
+          album: {
+            select: {
+              id: true,
+              title: true,
+              cover: true,
+              description: true,
+            },
+          },
+        },
+      },
+    },
   })
   const result = await Promise.all(
     retrievedRes.map(async activity => ({

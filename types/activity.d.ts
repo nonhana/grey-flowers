@@ -1,10 +1,14 @@
-export interface MusicItem {
+export interface Track {
+  id: number
   title: string
   src: string
   seconds: number
-  albumTitle: string
-  albumCover: string
-  albumDescription?: string
+  album: {
+    id: number
+    title: string
+    cover: string
+    description?: string
+  }
 }
 
 export interface ActivityItem {
@@ -12,7 +16,7 @@ export interface ActivityItem {
   title: string
   content?: string
   images?: string[]
-  music?: MusicItem[]
+  music?: Track[]
   commentCount: number
   publishedAt: string
   editedAt: string
@@ -22,5 +26,12 @@ export interface IPostActivity {
   title: string
   content: string
   images: string[]
-  music: MusicItem[]
+  music: {
+    title: string
+    src: string
+    seconds: number
+    albumTitle: string
+    albumCover: string
+    albumDescription?: string
+  }[]
 }
