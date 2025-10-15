@@ -42,6 +42,7 @@ function gotoDetail() {
         {{ item.content }}
       </p>
       <RecentlyPhotoGrid :images="item.images" @click="gotoDetail" />
+      <RecentlyMusicCard v-if="item.music && item.music.length > 0" :music="item.music" />
     </main>
     <footer class="flex items-center justify-between border-t border-primary pt-5 text-text dark:text-hana-white-700">
       <span class="flex items-center space-x-1">

@@ -25,6 +25,7 @@ export type Listener = (state: PlayerState) => void
 export class AudioPlayer {
   private static instance: AudioPlayer
 
+  // 获取单例
   public static getInstance(): AudioPlayer {
     if (!AudioPlayer.instance) {
       AudioPlayer.instance = new AudioPlayer()
@@ -73,6 +74,16 @@ export class AudioPlayer {
       console.error('Autoplay failed:', error)
       this.updateState({ playbackState: 'paused' })
     }
+  }
+
+  /**
+   * 加载一首新歌
+   * @param track - 要播放的曲目对象
+   */
+  public load(track: Track): void {
+    this.updateState({ currentTrack: track, playbackState: 'loading' })
+    this.audio.src = track.src
+    this.audio.load()
   }
 
   /**
@@ -185,5 +196,3 @@ export class AudioPlayer {
   private handleError = () => this.updateState({ playbackState: 'error' })
   private handleWaiting = () => this.updateState({ playbackState: 'loading' })
 }
-
-export const audioPlayer = AudioPlayer.getInstance()
