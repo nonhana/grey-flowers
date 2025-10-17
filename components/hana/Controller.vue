@@ -66,6 +66,10 @@ function scrollToTop() {
 
 <template>
   <transition name="page">
+    <HanaVolumeController />
+  </transition>
+
+  <transition name="page">
     <div v-if="hasComments" class="fixed bottom-32 right-10 hana-card hidden xl:block">
       <HanaTooltip content="滚到评论" position="left" animation="slide">
         <div class="size-10 hana-button items-center justify-center font-bold" @click="scrollToComments">

@@ -123,7 +123,7 @@ function stepMusic(type: 'prev' | 'next') {
   </div>
 </template>
 
-<style>
+<style scoped>
 #music-progress {
   background: linear-gradient(to right,
     oklch(0.5 0.1102 250.04) calc(var(--progress) * 100%),

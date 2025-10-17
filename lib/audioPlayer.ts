@@ -121,7 +121,7 @@ export class AudioPlayer {
       isPlaying: false,
       currentTime: 0,
       duration: 0,
-      volume: 0,
+      volume: 0.2,
       isMuted: false,
     }
   }
