@@ -61,7 +61,7 @@ function stepMusic(type: 'prev' | 'next') {
 </script>
 
 <template>
-  <div class="w-full flex flex-col gap-3 overflow-hidden border border-hana-blue-200 rounded-lg bg-hana-blue-200/10 p-4 sm:flex-row sm:items-center">
+  <div class="w-full flex flex-col gap-3 overflow-hidden border border-hana-blue-200 rounded-lg bg-hana-blue-200/10 p-4 sm:flex-row sm:items-center dark:bg-hana-black">
     <nuxt-img
       :src="curMusic.album.cover"
       :alt="curMusic.album.title"
@@ -69,10 +69,10 @@ function stepMusic(type: 'prev' | 'next') {
     />
     <div class="min-w-0 flex flex-1 flex-col gap-3">
       <div class="min-w-0 flex flex-col gap-1">
-        <h3 class="truncate text-base font-bold leading-snug md:text-lg">
+        <h3 class="truncate text-base font-bold leading-snug md:text-lg dark:text-hana-white">
           {{ curMusic.title }}
         </h3>
-        <p class="truncate text-sm text-text-3">
+        <p class="truncate text-sm text-text dark:text-hana-white-700">
           {{ curMusic.album.title }}
         </p>
       </div>
@@ -98,9 +98,9 @@ function stepMusic(type: 'prev' | 'next') {
           @click="stepMusic('next')"
         />
       </div>
-      <input
+      <!-- <input
         id="music-progress"
-        class="h-2 appearance-none rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300"
+        class="h-2 appearance-none rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300 dark:accent-hana-blue-300"
         type="range"
         min="0"
         max="1"
@@ -114,8 +114,22 @@ function stepMusic(type: 'prev' | 'next') {
         @input="handleInput"
         @change="handleChange"
         @pointerdown="isSeeking = true"
-      >
-      <div class="w-full flex items-center justify-between text-xs text-text tabular-nums">
+      > -->
+      <hana-range-input
+        id="music-progress"
+        :min="0"
+        :max="1"
+        :step="0.001"
+        :value="currentProgress"
+        :aria-valuemin="0"
+        :aria-valuemax="1"
+        :aria-valuenow="progressPercent"
+        aria-label="播放进度"
+        @input="handleInput"
+        @change="handleChange"
+        @pointerdown="isSeeking = true"
+      />
+      <div class="w-full flex items-center justify-between text-xs text-text tabular-nums dark:text-hana-white-700">
         <p>{{ formatTime(currentTime) }}</p>
         <p>{{ formatTime(curMusic.seconds) }}</p>
       </div>
@@ -129,5 +143,14 @@ function stepMusic(type: 'prev' | 'next') {
     oklch(0.5 0.1102 250.04) calc(var(--progress) * 100%),
     oklch(0.93 0.0358 205.23) calc(var(--progress) * 100%)
   );
+}
+
+.dark {
+  #music-progress {
+    background: linear-gradient(to right,
+      oklch(0.75 0.0883 226.04) calc(var(--progress) * 100%),
+      oklch(0.93 0.0358 205.23) calc(var(--progress) * 100%)
+    );
+  }
 }
 </style>

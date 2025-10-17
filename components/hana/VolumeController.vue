@@ -58,7 +58,7 @@ function handleInput(e: Event) {
     @mouseleave="toggleShowVolumePanel"
   >
     <div class="absolute bottom-2 flex flex-col items-center gap-4">
-      <p class="text-xs text-text">
+      <p class="text-xs text-text dark:text-hana-white-700">
         {{ Math.round(volume * 100) }}%
       </p>
       <input
@@ -92,7 +92,7 @@ function handleInput(e: Event) {
     oklch(0.5 0.1102 250.04) calc(var(--progress) * 100%),
     oklch(0.93 0.0358 205.23) calc(var(--progress) * 100%)
   );
-  appearance: slider-vertical;
-  writing-mode: bt-lr;
+  writing-mode: vertical-lr;
+  direction: rtl;
 }
 </style>
