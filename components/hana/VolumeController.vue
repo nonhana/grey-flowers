@@ -52,7 +52,7 @@ function handleInput(e: Event) {
 <template>
   <div
     v-if="!isIdle"
-    class="fixed bottom-54 right-10 w-14 overflow-hidden hana-card transition-all duration-300 hidden xl:block"
+    class="relative w-14 overflow-hidden hana-card transition-all duration-300 hidden xl:block"
     :style="{ height: controllerHeight }"
     @mouseenter="toggleShowVolumePanel"
     @mouseleave="toggleShowVolumePanel"
@@ -63,7 +63,7 @@ function handleInput(e: Event) {
       </p>
       <input
         id="volume-progress"
-        class="h-24 w-2 rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300"
+        class="h-2 appearance-none rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300 dark:accent-hana-blue-300"
         type="range"
         min="0"
         max="1"
@@ -94,5 +94,14 @@ function handleInput(e: Event) {
   );
   writing-mode: vertical-lr;
   direction: rtl;
+}
+
+.dark {
+  #volume-progress {
+    background: linear-gradient(to right,
+      oklch(0.75 0.0883 226.04) calc(var(--progress) * 100%),
+      oklch(0.93 0.0358 205.23) calc(var(--progress) * 100%)
+    );
+  }
 }
 </style>

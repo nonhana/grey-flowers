@@ -38,6 +38,9 @@ export class AudioPlayer {
     this.audio = new Audio()
     this.state = this.getInitialState()
 
+    // 初始化状态
+    this.audio.volume = this.state.volume
+
     this.attachEvents()
   }
 

@@ -98,7 +98,7 @@ function stepMusic(type: 'prev' | 'next') {
           @click="stepMusic('next')"
         />
       </div>
-      <!-- <input
+      <input
         id="music-progress"
         class="h-2 appearance-none rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300 dark:accent-hana-blue-300"
         type="range"
@@ -114,21 +114,7 @@ function stepMusic(type: 'prev' | 'next') {
         @input="handleInput"
         @change="handleChange"
         @pointerdown="isSeeking = true"
-      > -->
-      <hana-range-input
-        id="music-progress"
-        :min="0"
-        :max="1"
-        :step="0.001"
-        :value="currentProgress"
-        :aria-valuemin="0"
-        :aria-valuemax="1"
-        :aria-valuenow="progressPercent"
-        aria-label="播放进度"
-        @input="handleInput"
-        @change="handleChange"
-        @pointerdown="isSeeking = true"
-      />
+      >
       <div class="w-full flex items-center justify-between text-xs text-text tabular-nums dark:text-hana-white-700">
         <p>{{ formatTime(currentTime) }}</p>
         <p>{{ formatTime(curMusic.seconds) }}</p>

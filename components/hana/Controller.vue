@@ -62,15 +62,96 @@ function scrollToTop() {
     })
   }
 }
+
+/* 音量控制相关逻辑 */
+const isIdle = ref(true)
+const volume = ref(0)
+const previousVolume = ref(0)
+
+const volumeIcon = computed(() =>
+  volume.value > 0.5 ? 'lucide:volume-2' : volume.value > 0 ? 'lucide:volume-1' : 'lucide:volume-off',
+)
+
+onMounted(() => {
+  const { $audioPlayer } = useNuxtApp()
+
+  const unsubscribeIdle = $audioPlayer.subscribe((state) => {
+    isIdle.value = state.playbackState === 'idle'
+  })
+
+  const unsubscribeVolume = $audioPlayer.subscribe((state) => {
+    volume.value = state.volume
+  })
+
+  onUnmounted(() => {
+    unsubscribeIdle()
+    unsubscribeVolume()
+  })
+})
+
+function toggleMuted() {
+  const { $audioPlayer } = useNuxtApp()
+  if ($audioPlayer.getState().isMuted) {
+    $audioPlayer.setVolume(previousVolume.value)
+  }
+  else {
+    previousVolume.value = volume.value
+    $audioPlayer.setVolume(0)
+  }
+}
+
+const showVolumePanel = ref(false)
+function toggleShowVolumePanel() {
+  showVolumePanel.value = !showVolumePanel.value
+}
+
+const controllerHeight = computed(() => showVolumePanel.value ? '208px' : '56px')
+
+function handleInput(e: Event) {
+  const { $audioPlayer } = useNuxtApp()
+  const target = e.target as HTMLInputElement
+  $audioPlayer.setVolume(target.valueAsNumber)
+}
 </script>
 
 <template>
-  <transition name="page">
-    <HanaVolumeController />
-  </transition>
+  <transition-group name="controller" tag="div" class="fixed bottom-10 right-10 flex flex-col gap-4">
+    <div
+      v-if="!isIdle"
+      class="relative w-14 overflow-hidden hana-card transition-all duration-300 hidden xl:block"
+      :style="{ height: controllerHeight }"
+      @mouseenter="toggleShowVolumePanel"
+      @mouseleave="toggleShowVolumePanel"
+    >
+      <div class="absolute bottom-2 flex flex-col items-center gap-4">
+        <p class="text-xs text-text dark:text-hana-white-700">
+          {{ Math.round(volume * 100) }}%
+        </p>
+        <input
+          id="volume-progress"
+          class="h-24 w-2 rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          :value="volume"
+          :aria-valuemin="0"
+          :aria-valuemax="1"
+          :aria-valuenow="volume"
+          aria-label="音量"
+          :style="`--progress: ${volume}`"
+          @input="handleInput"
+        >
+        <div
+          class="mt-auto size-10 hana-button items-end items-center justify-center font-bold"
+          @click="toggleMuted"
+        >
+          <icon :name="volumeIcon" size="20" />
+        </div>
+      </div>
+    </div>
 
-  <transition name="page">
-    <div v-if="hasComments" class="fixed bottom-32 right-10 hana-card hidden xl:block">
+    <div v-if="hasComments" class="relative hana-card hidden xl:block">
       <HanaTooltip content="滚到评论" position="left" animation="slide">
         <div class="size-10 hana-button items-center justify-center font-bold" @click="scrollToComments">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -82,10 +163,8 @@ function scrollToTop() {
         </div>
       </HanaTooltip>
     </div>
-  </transition>
 
-  <transition name="page">
-    <div v-if="canScroll" class="fixed bottom-10 right-10 hana-card hidden xl:block">
+    <div v-if="canScroll" class="relative hana-card hidden xl:block">
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
           class="size-10 hana-button items-center justify-center font-bold"
@@ -100,5 +179,41 @@ function scrollToTop() {
         </div>
       </HanaTooltip>
     </div>
-  </transition>
+  </transition-group>
 </template>
+
+<style scoped>
+.controller-move,
+.controller-enter-active,
+.controller-leave-active {
+  transition: all 0.3s ease;
+}
+
+.controller-enter-from,
+.controller-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.controller-leave-active {
+  position: absolute;
+}
+
+#volume-progress {
+  background: linear-gradient(to right,
+    oklch(0.5 0.1102 250.04) calc(var(--progress) * 100%),
+    oklch(0.93 0.0358 205.23) calc(var(--progress) * 100%)
+  );
+  writing-mode: vertical-lr;
+  direction: rtl;
+}
+
+.dark {
+  #volume-progress {
+    background: linear-gradient(to right,
+      oklch(0.75 0.0883 226.04) calc(var(--progress) * 100%),
+      oklch(0.93 0.0358 205.23) calc(var(--progress) * 100%)
+    );
+  }
+}
+</style>
