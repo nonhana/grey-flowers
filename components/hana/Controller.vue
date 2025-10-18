@@ -1,21 +1,28 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
+
 const props = defineProps<{
   scrollTop: number // 当前整个容器的滚动偏移量，只接收不修改
   scrollHeight: number
   clientHeight: number
 }>()
 
-const { scrollTop, scrollHeight, clientHeight } = toRefs(props)
+const { dialogStore } = useStore()
+const { dialogCount } = toRefs(dialogStore)
 
+const route = useRoute()
+const { path } = toRefs(route)
+
+// #region 滚动相关逻辑
 const { progress } = useLoadingIndicator()
 const canScroll = ref(false)
 
 watchEffect(() => {
-  canScroll.value = scrollHeight.value > clientHeight.value
+  canScroll.value = props.scrollHeight > props.clientHeight
 })
 
 const curScrollPercent = computed(() => {
-  const percent = Math.ceil((scrollTop.value / (scrollHeight.value - clientHeight.value)) * 100)
+  const percent = Math.ceil((props.scrollTop / (props.scrollHeight - props.clientHeight)) * 100)
   return Math.min(percent, 100)
 })
 
@@ -23,10 +30,16 @@ const showPercent = ref(true)
 function toggleShowPercent() {
   showPercent.value = !showPercent.value
 }
+// #endregion
+
+// #region 评论相关逻辑
+const commentWhiteList = ['/recently'] // 在白名单中的路径不显示评论
 
 const hasComments = ref(false)
 
 function checkCommentsExistence() {
+  if (commentWhiteList.includes(path.value))
+    return null
   const commentsElement = document.querySelector('#comments')
   hasComments.value = !!commentsElement
   return commentsElement
@@ -62,8 +75,9 @@ function scrollToTop() {
     })
   }
 }
+// #endregion
 
-/* 音量控制相关逻辑 */
+// #region 音量控制相关逻辑
 const isIdle = ref(true)
 const volume = ref(0)
 const previousVolume = ref(0)
@@ -112,13 +126,14 @@ function handleInput(e: Event) {
   const target = e.target as HTMLInputElement
   $audioPlayer.setVolume(target.valueAsNumber)
 }
+// #endregion
 </script>
 
 <template>
   <transition-group name="controller" tag="div" class="fixed bottom-10 right-10 flex flex-col gap-4">
     <div
-      v-if="!isIdle"
-      class="relative w-14 overflow-hidden hana-card transition-all duration-300 hidden xl:block"
+      v-if="dialogCount === 0 && !isIdle"
+      class="relative w-14 overflow-hidden hana-card transition-all duration-300"
       :style="{ height: controllerHeight }"
       @mouseenter="toggleShowVolumePanel"
       @mouseleave="toggleShowVolumePanel"
@@ -151,7 +166,7 @@ function handleInput(e: Event) {
       </div>
     </div>
 
-    <div v-if="hasComments" class="relative hana-card hidden xl:block">
+    <div v-if="dialogCount === 0 && hasComments" class="relative hana-card">
       <HanaTooltip content="滚到评论" position="left" animation="slide">
         <div class="size-10 hana-button items-center justify-center font-bold" @click="scrollToComments">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -164,7 +179,7 @@ function handleInput(e: Event) {
       </HanaTooltip>
     </div>
 
-    <div v-if="canScroll" class="relative hana-card hidden xl:block">
+    <div v-if="dialogCount === 0 && canScroll" class="relative hana-card">
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
           class="size-10 hana-button items-center justify-center font-bold"

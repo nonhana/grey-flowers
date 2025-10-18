@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ActivityItem } from '~/types/activity'
-import { HanaImgViewer as ImgViewer } from 'hana-img-viewer'
+import { HanaImgViewer } from 'hana-img-viewer'
 
 const props = defineProps<{ item?: ActivityItem }>()
 
@@ -31,7 +31,7 @@ const visible = defineModel<boolean>()
           {{ props.item.content }}
         </p>
         <div v-if="props.item.images && props.item.images.length" class="flex flex-col gap-5">
-          <ImgViewer
+          <HanaImgViewer
             v-for="image in props.item.images"
             :key="image"
             :src="image"
@@ -39,6 +39,7 @@ const visible = defineModel<boolean>()
             loading="lazy"
           />
         </div>
+        <RecentlyMusicCard v-if="props.item?.music && props.item.music.length > 0" :music="props.item.music" />
       </main>
       <footer class="py-5">
         <Comment type="recently" />

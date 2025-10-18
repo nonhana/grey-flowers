@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HanaImgViewer as ImgViewer } from 'hana-img-viewer'
+import { HanaImgViewer } from 'hana-img-viewer'
 
 const props = defineProps<{
   src: string
@@ -48,6 +48,6 @@ const refinedSrc = computed(() => {
 
 <template>
   <div class="m-auto w-full md:w-3/5">
-    <ImgViewer v-bind="{ ...props, src: refinedSrc }" />
+    <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
   </div>
 </template>
