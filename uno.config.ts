@@ -26,7 +26,7 @@ export default defineConfig({
           'Noto Serif SC:400,700',
           'Noto Serif JP:400,700',
         ],
-        code: ['Fira Code', 'consolas', 'monospace', 'Microsoft YaHei UI'],
+        code: ['JetBrains Mono'],
       },
     }),
 

@@ -71,9 +71,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="w-full min-h-dvh">
-    <div class="flex gap-8">
-      <div class="w-full xl:max-w-[calc(100%-272px)]">
+  <div class="mx-auto max-w-5xl w-full min-h-dvh">
+    <div class="flex items-start gap-8">
+      <div class="w-full xl:min-w-0 xl:flex-1">
         <ArticleHeader v-if="article" v-bind="articleHeader" />
         <div class="max-w-none leading-7 dark:text-hana-white">
           <ContentRenderer v-if="article" :value="article" class="flex flex-col gap-4">
@@ -86,7 +86,7 @@ useSeoMeta({
           <Comment />
         </div>
       </div>
-      <div class="max-w-fit hidden xl:block">
+      <div class="hidden xl:block xl:w-60 xl:shrink-0">
         <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !visible }">
           <ArticleAuthor />
           <ArticleSwitch />
