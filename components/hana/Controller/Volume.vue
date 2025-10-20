@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const isIdle = ref(true)
 const volume = ref(0)
 const previousVolume = ref(0)
 
@@ -10,16 +9,11 @@ const volumeIcon = computed(() =>
 onMounted(() => {
   const { $audioPlayer } = useNuxtApp()
 
-  const unsubscribeIdle = $audioPlayer.subscribe((state) => {
-    isIdle.value = state.playbackState === 'idle'
-  })
-
   const unsubscribeVolume = $audioPlayer.subscribe((state) => {
     volume.value = state.volume
   })
 
   onUnmounted(() => {
-    unsubscribeIdle()
     unsubscribeVolume()
   })
 })
@@ -51,8 +45,7 @@ function handleInput(e: Event) {
 
 <template>
   <div
-    v-if="!isIdle"
-    class="relative w-14 overflow-hidden hana-card transition-all duration-300 hidden xl:block"
+    class="relative w-14 overflow-hidden hana-card transition-all duration-300"
     :style="{ height: controllerHeight }"
     @mouseenter="toggleShowVolumePanel"
     @mouseleave="toggleShowVolumePanel"
@@ -63,7 +56,7 @@ function handleInput(e: Event) {
       </p>
       <input
         id="volume-progress"
-        class="h-2 appearance-none rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300 dark:accent-hana-blue-300"
+        class="h-24 w-2 rounded outline-none transition-[box-shadow] duration-200 accent-hana-blue dark:bg-hana-black-700 focus-visible:ring-2 focus-visible:ring-hana-blue-300"
         type="range"
         min="0"
         max="1"
