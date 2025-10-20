@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Toc } from '@nuxt/content'
 
-const props = defineProps<{ toc: Toc }>()
+const props = defineProps<{ toc: Toc, prev?: { title: string, path: string }, next?: { title: string, path: string } }>()
 const visible = defineModel<boolean>()
 
 const links = props.toc.links || []
@@ -19,21 +19,7 @@ watch(hash, (newHash) => {
   activatedId.value = newHash.slice(1)
 })
 
-const articleSurroundingsKey = computed(() => `article-${route.path}-surroundings`)
-
-const { data: neighbors } = await useAsyncData(
-  articleSurroundingsKey,
-  () => queryCollectionItemSurroundings(
-    'content',
-    route.path,
-    { fields: ['title', 'path'] },
-  )
-    .where('title', '<>', 'About')
-    .where('title', '<>', 'Friends')
-    .order('publishedAt', 'DESC'),
-)
-
-const [prev, next] = neighbors.value || []
+const { prev, next } = toRefs(props)
 </script>
 
 <template>

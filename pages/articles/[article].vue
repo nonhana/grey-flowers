@@ -20,6 +20,23 @@ const { data: article } = await useAsyncData(
   () => queryCollection('content').path(path).first(),
 )
 
+const articleSurroundingsKey = computed(() => `article-${path}-surroundings`)
+
+const { data: neighbors } = await useAsyncData(
+  articleSurroundingsKey,
+  () =>
+    queryCollectionItemSurroundings(
+      'content',
+      path,
+      { fields: ['title', 'path'] },
+    )
+      .where('title', '<>', 'About')
+      .where('title', '<>', 'Friends')
+      .order('publishedAt', 'DESC'),
+)
+
+const [prev, next] = neighbors.value || []
+
 const articleHeader = computed<ArticleHeader>(() => ({
   title: article.value?.title || '暂无标题',
   description: article.value?.description || '暂无简介~',
@@ -89,7 +106,7 @@ useSeoMeta({
       <div class="hidden xl:block xl:w-60 xl:shrink-0">
         <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !visible }">
           <ArticleAuthor />
-          <ArticleSwitch />
+          <ArticleSwitch :prev="prev" :next="next" />
           <ArticleToc v-if="article" :toc="article.body.toc as Toc" />
         </div>
       </div>
@@ -102,7 +119,7 @@ useSeoMeta({
       </div>
     </div>
     <div class="block xl:hidden">
-      <ArticleDrawer v-if="article" v-model="drawerVisible" :toc="article.body.toc as Toc" />
+      <ArticleDrawer v-if="article" v-model="drawerVisible" :toc="article.body.toc as Toc" :prev="prev" :next="next" />
     </div>
   </div>
 </template>

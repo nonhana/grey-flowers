@@ -1,21 +1,6 @@
 <script setup lang="ts">
-const route = useRoute()
-
-const articleSurroundingsKey = computed(() => `article-${route.path}-surroundings`)
-
-const { data: neighbors } = await useAsyncData(
-  articleSurroundingsKey,
-  () => queryCollectionItemSurroundings(
-    'content',
-    route.path,
-    { fields: ['title', 'path'] },
-  )
-    .where('title', '<>', 'About')
-    .where('title', '<>', 'Friends')
-    .order('publishedAt', 'DESC'),
-)
-
-const [prev, next] = neighbors.value || []
+const props = defineProps<{ prev?: { title: string; path: string }; next?: { title: string; path: string } }>()
+const { prev, next } = toRefs(props)
 </script>
 
 <template>
