@@ -74,7 +74,7 @@ export default defineConfig({
   ],
   shortcuts: {
     'animate-bounce-x': 'animate-[bounce-x_1s_infinite]',
-    'with-underline': 'cursor-pointer bg-gradient-to-r from-hana-blue to-hana-blue-200 bg-no-repeat bg-right-bottom bg-[length:0%_2px] transition-bg-size duration-500 hover:bg-left-bottom hover:bg-[length:100%_2px] dark:from-hana-blue-200 dark:to-hana-blue-200',
+    'with-underline': 'cursor-pointer bg-gradient-to-r from-hana-blue to-hana-blue bg-no-repeat bg-right-bottom bg-[length:0%_2px] transition-bg-size duration-500 hover:bg-left-bottom hover:bg-[length:100%_2px] dark:from-hana-blue-200 dark:to-hana-blue-200',
     'hana-button': 'flex shrink-0 cursor-pointer select-none items-center rounded-lg px-[10px] py-2 transition-all hover:bg-hana-blue-150 hover:text-hana-blue active:scale-95 active:bg-hana-blue-200 dark:hover:bg-hana-black-800 dark:hover:text-hana-blue-200 dark:active:bg-hana-black-800',
     'hana-button--active': 'bg-hana-blue-150 text-hana-blue dark:bg-hana-black-800 dark:text-hana-blue-200',
     'hana-button--disabled': 'cursor-not-allowed opacity-50',
