@@ -31,7 +31,7 @@ const { prev, next } = toRefs(props)
         </div>
       </div>
       <div v-else class="text-center text-xl">
-        <Icon name="svg-spinners:8-dots-rotate" />
+        <Icon name="lucide:loader-circle" class="animate-spin" />
       </div>
     </template>
     <template #footer="{ close }">

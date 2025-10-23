@@ -90,7 +90,7 @@ watch(hash, (newHash, _, onCleanup) => {
       <span>暂无目录</span>
     </div>
     <div v-else class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
-      <Icon name="svg-spinners:8-dots-rotate" size="32" />
+      <Icon name="lucide:loader-circle" size="32" class="animate-spin" />
       <span>加载中...</span>
     </div>
   </div>

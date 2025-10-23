@@ -150,7 +150,7 @@ export default defineConfig({
         900: 'oklch(0.7 0 0)',
       },
     },
-    animation: {
+    extend: {
       keyframes: {
         'bounce-x': `0%, 100% {
           transform: translateX(-25%);
@@ -160,6 +160,9 @@ export default defineConfig({
           transform: translateX(0);
           animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
         }`,
+      },
+      animation: {
+        'bounce-x': 'bounce-x 1s infinite',
       },
     },
   },
@@ -193,6 +196,17 @@ export default defineConfig({
         .dark {
           --background-grid-color: var(--background-grid-color-dark);
           --selection-color: var(--selection-color-dark);
+        }
+
+        @keyframes bounce-x {
+          0%, 100% {
+            transform: translateX(-25%);
+            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+          }
+          50% {
+            transform: translateX(0);
+            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+          }
         }
       `,
     },

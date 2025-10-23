@@ -21,7 +21,6 @@ const rows = computed(() => props.code.split('\n').length)
 const collapsibleHeight = computed(() => `${codeBlockVisibleRows}rem`)
 const collapsible = computed(() => rows.value > codeBlockVisibleRows)
 const [isCollapsed, toggleCollapsed] = useToggle(collapsible.value)
-const collapsedIcon = computed(() => (isCollapsed.value ? 'lucide:chevrons-down' : 'lucide:chevrons-up'))
 
 const copyBtn = useTemplateRef('copyBtnRef')
 const codeblock = useTemplateRef('codeblockRef')
@@ -61,7 +60,8 @@ useCopy(copyBtn, codeblock)
       :class="{ 'bg-none': !isCollapsed }"
       @click="toggleCollapsed()"
     >
-      <Icon class="animate-bounce" size="20" :name="collapsedIcon" />
+      <Icon v-show="isCollapsed" class="animate-bounce" size="20" name="lucide:chevrons-down" />
+      <Icon v-show="!isCollapsed" class="animate-bounce" size="20" name="lucide:chevrons-up" />
     </button>
   </figure>
 </template>

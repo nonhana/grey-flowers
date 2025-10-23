@@ -41,8 +41,6 @@ function handleChange(e: Event) {
   isSeeking.value = false
 }
 
-const playIcon = computed(() => isPlaying.value ? 'lucide:pause' : 'lucide:play')
-
 function togglePlayPause() {
   if ($audioPlayer.getState().playbackState === 'idle') {
     $audioPlayer.loadAndPlay(curMusic.value)
@@ -85,9 +83,17 @@ function stepMusic(type: 'prev' | 'next') {
           @click="stepMusic('prev')"
         />
         <hana-button
+          v-show="isPlaying"
           icon-button
-          :icon="playIcon"
-          aria-label="播放/暂停"
+          icon="lucide:pause"
+          aria-label="暂停"
+          @click="togglePlayPause"
+        />
+        <hana-button
+          v-show="!isPlaying"
+          icon-button
+          icon="lucide:play"
+          aria-label="播放"
           @click="togglePlayPause"
         />
         <hana-button
