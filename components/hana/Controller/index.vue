@@ -80,16 +80,26 @@ onMounted(() => {
   onUnmounted($audioPlayer.subscribe(state => isIdle.value = state.playbackState === 'idle'))
 })
 
-const { width: windowWidth } = useWindowSize()
-const isMobile = computed(() => windowWidth.value < 1280)
+const isClient = ref(false)
+onMounted(() => {
+  isClient.value = true
+})
+
+const isMobile = ref(false)
+if (import.meta.client) {
+  const { width: windowWidth } = useWindowSize()
+  watchEffect(() => {
+    isMobile.value = windowWidth.value < 1280
+  })
+}
 const isArticlePage = computed(() => route.name === 'article-detail')
 </script>
 
 <template>
   <transition-group name="controller" tag="div" class="fixed bottom-10 right-10 z-10 flex flex-col gap-4">
-    <HanaControllerVolume v-if="dialogCount === 0 && !isIdle" />
+    <HanaControllerVolume v-if="dialogCount === 0 && !isIdle" key="volume" />
 
-    <div v-if="dialogCount === 0 && hasComments" class="relative hana-card">
+    <div v-if="dialogCount === 0 && hasComments" key="comments" class="relative hana-card">
       <HanaTooltip content="滚到评论" position="left" animation="slide">
         <div class="size-10 hana-button items-center justify-center font-bold" @click="scrollToComments">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -102,7 +112,7 @@ const isArticlePage = computed(() => route.name === 'article-detail')
       </HanaTooltip>
     </div>
 
-    <div v-if="dialogCount === 0 && canScroll" class="relative hana-card">
+    <div v-if="dialogCount === 0 && canScroll" key="to-top" class="relative hana-card">
       <HanaTooltip content="返回顶部" position="left" animation="slide">
         <div
           class="size-10 hana-button items-center justify-center font-bold"
@@ -118,7 +128,11 @@ const isArticlePage = computed(() => route.name === 'article-detail')
       </HanaTooltip>
     </div>
 
-    <HanaControllerArticleDrawer v-if="dialogCount === 0 && isArticlePage && isMobile" />
+    <div v-if="isClient && dialogCount === 0 && isArticlePage && isMobile" key="article-drawer">
+      <ClientOnly>
+        <HanaControllerArticleDrawer />
+      </ClientOnly>
+    </div>
   </transition-group>
 </template>
 
