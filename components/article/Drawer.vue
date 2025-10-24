@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import type { Toc } from '@nuxt/content'
 
-const props = defineProps<{ toc: Toc, prev?: { title: string, path: string }, next?: { title: string, path: string } }>()
+const props = defineProps<{
+  toc: Toc
+  prev?: { title: string, path: string }
+  next?: { title: string, path: string }
+}>()
+
 const visible = defineModel<boolean>()
 
-const links = props.toc.links || []
+const links = computed(() => props.toc.links || [])
 
 const route = useRoute()
 const { hash } = toRefs(route)
