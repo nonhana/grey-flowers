@@ -5,6 +5,9 @@ import dayjs from 'dayjs'
 import { navbarData, seoData } from '~/data/meta'
 import { useStore } from '~/store'
 
+const { articleStore } = useStore()
+const { headerVisible } = toRefs(articleStore)
+
 const img = useImage()
 
 definePageMeta({
@@ -19,6 +22,10 @@ const { data: article } = await useAsyncData(
   articleKey,
   () => queryCollection('content').path(path).first(),
 )
+
+if (article.value) {
+  articleStore.setContent(article.value)
+}
 
 const articleSurroundingsKey = computed(() => `article-${path}-surroundings`)
 
@@ -35,6 +42,10 @@ const { data: neighbors } = await useAsyncData(
       .order('publishedAt', 'DESC'),
 )
 
+if (neighbors.value && neighbors.value.length > 0) {
+  articleStore.setNeighbors(neighbors.value)
+}
+
 const [prev, next] = neighbors.value || []
 
 const articleHeader = computed<ArticleHeader>(() => ({
@@ -50,15 +61,6 @@ const articleHeader = computed<ArticleHeader>(() => ({
   published: article.value?.published || false,
   wordCount: article.value?.wordCount || 0,
 }))
-
-const drawerVisible = ref(false)
-
-function handleClick() {
-  drawerVisible.value = !drawerVisible.value
-}
-
-const { articleHeadStatusStore } = useStore()
-const { visible } = toRefs(articleHeadStatusStore)
 
 useHead({
   title: articleHeader.value.title,
@@ -104,22 +106,12 @@ useSeoMeta({
         </div>
       </div>
       <div class="hidden xl:block xl:w-60 xl:shrink-0">
-        <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !visible }">
+        <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !headerVisible }">
           <ArticleAuthor />
           <ArticleSwitch :prev="prev" :next="next" />
           <ArticleToc v-if="article" :toc="article.body.toc as Toc" />
         </div>
       </div>
-    </div>
-    <div class="fixed bottom-5 right-5 z-10 block xl:hidden">
-      <div class="hana-card">
-        <div class="w-full hana-button gap-2 text-center" @click="handleClick">
-          <Icon name="lucide:menu" />
-        </div>
-      </div>
-    </div>
-    <div class="block xl:hidden">
-      <ArticleDrawer v-if="article" v-model="drawerVisible" :toc="article.body.toc as Toc" :prev="prev" :next="next" />
     </div>
   </div>
 </template>

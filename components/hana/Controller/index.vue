@@ -79,10 +79,14 @@ onMounted(() => {
   const { $audioPlayer } = useNuxtApp()
   onUnmounted($audioPlayer.subscribe(state => isIdle.value = state.playbackState === 'idle'))
 })
+
+const { width: windowWidth } = useWindowSize()
+const isMobile = computed(() => windowWidth.value < 1280)
+const isArticlePage = computed(() => route.name === 'article-detail')
 </script>
 
 <template>
-  <transition-group name="controller" tag="div" class="fixed bottom-10 right-10 flex flex-col gap-4">
+  <transition-group name="controller" tag="div" class="fixed bottom-10 right-10 z-10 flex flex-col gap-4">
     <HanaControllerVolume v-if="dialogCount === 0 && !isIdle" />
 
     <div v-if="dialogCount === 0 && hasComments" class="relative hana-card">
@@ -113,6 +117,8 @@ onMounted(() => {
         </div>
       </HanaTooltip>
     </div>
+
+    <HanaControllerArticleDrawer v-if="dialogCount === 0 && isArticlePage && isMobile" />
   </transition-group>
 </template>
 

@@ -16,8 +16,8 @@ withDefaults(defineProps<ArticleHeader>(), {
   wordCount: 0,
 })
 
-const { articleHeadStatusStore } = useStore()
-const { setVisible } = articleHeadStatusStore
+const { articleStore } = useStore()
+const { setHeaderVisible } = articleStore
 
 const articleHeadRef = useTemplateRef('articleHeadRef')
 let headObserver: IntersectionObserver | null = null
@@ -28,7 +28,7 @@ onMounted(() => {
 
   headObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      setVisible(entry.isIntersecting)
+      setHeaderVisible(entry.isIntersecting)
     })
   })
 

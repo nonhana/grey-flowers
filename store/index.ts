@@ -1,11 +1,11 @@
-import { useArticleHeadStatusStore } from './modules/articleHeadStatus'
+import { useArticleStore } from './modules/article'
 import { useDialogStore } from './modules/dialog'
 import { useHeaderStatusStore } from './modules/headerStatus'
 import { useUserInfoStore } from './modules/user'
 
 export function useStore() {
   return {
-    articleHeadStatusStore: useArticleHeadStatusStore(),
+    articleStore: useArticleStore(),
     dialogStore: useDialogStore(),
     headerStatusStore: useHeaderStatusStore(),
     userStore: useUserInfoStore(),
