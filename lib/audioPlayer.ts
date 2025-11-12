@@ -108,7 +108,13 @@ export class AudioPlayer {
   public setVolume(volume: number): void {
     const clampedVolume = Math.max(0, Math.min(1, volume))
     this.audio.volume = clampedVolume
-    this.updateState({ volume: clampedVolume, isMuted: clampedVolume === 0 })
+    this.updateState({ volume: clampedVolume })
+  }
+
+  /** 切换静音状态 */
+  public toggleMuted(): void {
+    this.audio.muted = !this.audio.muted
+    this.updateState({ isMuted: this.audio.muted })
   }
 
   /** 获取当前播放器状态的快照 */

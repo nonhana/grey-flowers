@@ -2,7 +2,7 @@
   "name": "hana-blog",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.19.0",
+  "packageManager": "pnpm@10.21.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -20,6 +20,7 @@
   "dependencies": {
     "@unocss/reset": "catalog:",
     "better-sqlite3": "catalog:",
+    "lucide-vue-next": "catalog:",
     "nuxt": "catalog:",
     "resend": "catalog:",
     "vue": "catalog:",

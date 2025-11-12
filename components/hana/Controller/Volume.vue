@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-const volume = ref(0)
-const previousVolume = ref(0)
+import { Volume, Volume1, Volume2, VolumeOff } from 'lucide-vue-next'
 
-const volumeIcon = computed(() =>
-  volume.value > 0.5 ? 'lucide:volume-2' : volume.value > 0 ? 'lucide:volume-1' : 'lucide:volume-off',
-)
+const volume = ref(0)
+
+const isMuted = ref(false)
 
 onMounted(() => {
   const { $audioPlayer } = useNuxtApp()
 
   const unsubscribeVolume = $audioPlayer.subscribe((state) => {
     volume.value = state.volume
+    isMuted.value = state.isMuted
   })
 
   onUnmounted(() => {
@@ -20,20 +20,10 @@ onMounted(() => {
 
 function toggleMuted() {
   const { $audioPlayer } = useNuxtApp()
-  if ($audioPlayer.getState().isMuted) {
-    $audioPlayer.setVolume(previousVolume.value)
-  }
-  else {
-    previousVolume.value = volume.value
-    $audioPlayer.setVolume(0)
-  }
+  $audioPlayer.toggleMuted()
 }
 
 const showVolumePanel = ref(false)
-function toggleShowVolumePanel() {
-  showVolumePanel.value = !showVolumePanel.value
-}
-
 const controllerHeight = computed(() => showVolumePanel.value ? '208px' : '56px')
 
 function handleInput(e: Event) {
@@ -47,8 +37,8 @@ function handleInput(e: Event) {
   <div
     class="relative w-14 overflow-hidden hana-card transition-all duration-300"
     :style="{ height: controllerHeight }"
-    @mouseenter="toggleShowVolumePanel"
-    @mouseleave="toggleShowVolumePanel"
+    @mouseenter="showVolumePanel = true"
+    @mouseleave="showVolumePanel = false"
   >
     <div class="absolute bottom-2 flex flex-col items-center gap-4">
       <p class="text-xs text-text dark:text-hana-white-700">
@@ -62,6 +52,7 @@ function handleInput(e: Event) {
         max="1"
         step="0.01"
         :value="volume"
+        :disabled="isMuted"
         :aria-valuemin="0"
         :aria-valuemax="1"
         :aria-valuenow="volume"
@@ -73,7 +64,14 @@ function handleInput(e: Event) {
         class="mt-auto size-10 hana-button items-end items-center justify-center font-bold"
         @click="toggleMuted"
       >
-        <icon :name="volumeIcon" size="20" />
+        <div v-if="!isMuted">
+          <Volume v-if="volume === 0" :size="20" />
+          <Volume1 v-else-if="volume > 0 && volume <= 0.5" :size="20" />
+          <Volume2 v-else-if="volume > 0.5 && volume <= 1" :size="20" />
+        </div>
+        <div v-else>
+          <VolumeOff :size="20" />
+        </div>
       </div>
     </div>
   </div>
