@@ -103,14 +103,16 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 </script>
 
 <template>
-  <div class="size-full flex flex-col">
-    <div class="flex-1">
-      <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
-        <ArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index, displayCols }" />
+  <HanaHydrateSafe>
+    <div class="size-full flex flex-col">
+      <div class="flex-1">
+        <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
+          <ArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index, displayCols }" />
+        </div>
+      </div>
+      <div class="sticky bottom-5 mx-auto mt-5 w-fit">
+        <HanaPaginator v-model="page" :total="total" />
       </div>
     </div>
-    <div class="sticky bottom-5 mx-auto mt-5 w-fit">
-      <HanaPaginator v-model="page" :total="total" />
-    </div>
-  </div>
+  </HanaHydrateSafe>
 </template>
