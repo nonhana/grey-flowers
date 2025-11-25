@@ -11,6 +11,9 @@ const router = useRouter()
 const opacity = ref(0)
 const top = ref('10px')
 
+const transitionDelay = computed(() => `${(props.index % 20) * 0.1}s`)
+const transitionStyle = computed(() => `all 0.2s ${transitionDelay.value}`)
+
 onMounted(() => {
   floatAnimation(opacity, top)
 })
@@ -21,7 +24,7 @@ function gotoDetail() {
 </script>
 
 <template>
-  <div class="hana-card p-5!" :style="{ transition: `all 0.2s ${index * 0.1}s`, opacity, transform: `translateY(${top})` }">
+  <div class="hana-card p-5!" :style="{ transition: transitionStyle, opacity, transform: `translateY(${top})` }">
     <header class="flex justify-between">
       <div class="flex items-center gap-2">
         <HanaAvatar :size="10" :avatar="hanaInfo.avatar" :username="hanaInfo.username" :site="hanaInfo.site" :show-info="false" />

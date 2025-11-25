@@ -33,14 +33,109 @@ onMounted(() => {
 
 const activities = ref<ActivityItem[]>([])
 
+const page = ref(1)
+const pageSize = 20
+const loading = ref(false)
+const hasMore = ref(true)
+const errorMessage = ref<string | null>(null)
+
+const loadMoreTrigger = useTemplateRef('loadMoreTrigger')
+let observer: IntersectionObserver | null = null
+
 async function fetchActivities() {
-  const data = await $fetch('/api/activity/list')
-  if (data.success) {
-    activities.value = data.payload || []
+  if (loading.value || !hasMore.value)
+    return false
+
+  loading.value = true
+  errorMessage.value = null
+
+  try {
+    const data = await $fetch('/api/activity/list', {
+      params: {
+        page: page.value,
+        pageSize,
+      },
+    })
+
+    if (data.success) {
+      const list = (data.payload || []) as ActivityItem[]
+      activities.value.push(...list)
+
+      if (list.length < pageSize) {
+        hasMore.value = false
+      }
+      else {
+        page.value += 1
+      }
+
+      return true
+    }
+
+    errorMessage.value = '加载失败，请稍后重试'
+    return false
+  }
+  catch (error) {
+    console.error('[Recently] fetchActivities error:', error)
+    errorMessage.value = '加载失败，请检查网络连接'
+    return false
+  }
+  finally {
+    loading.value = false
   }
 }
 
-onMounted(fetchActivities)
+// 如果携带当前动态查询参数，需要确保当前动态已经加载
+async function ensureCurActivityLoaded() {
+  if (!curActivityId.value)
+    return
+
+  while (!activities.value.find(item => item.id === curActivityId.value) && hasMore.value) {
+    const ok = await fetchActivities()
+    if (!ok)
+      break
+  }
+}
+
+function setupObserver() {
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
+
+  if (typeof window === 'undefined')
+    return
+
+  if (!('IntersectionObserver' in window))
+    return
+
+  observer = new IntersectionObserver((entries) => {
+    const entry = entries[0]
+    if (entry && entry.isIntersecting) {
+      void fetchActivities()
+    }
+  }, {
+    root: null,
+    rootMargin: '0px 0px 200px 0px',
+    threshold: 0,
+  })
+
+  if (loadMoreTrigger.value)
+    observer.observe(loadMoreTrigger.value)
+}
+
+onMounted(async () => {
+  curActivityId.value = Number(route.query.id)
+  detailDialogVisible.value = route.query.id !== undefined
+
+  await fetchActivities()
+  await ensureCurActivityLoaded()
+  setupObserver()
+})
+
+onBeforeUnmount(() => {
+  if (observer)
+    observer.disconnect()
+})
 
 const curActivity = computed(() => activities.value.find(item => item.id === curActivityId.value))
 </script>
@@ -56,5 +151,14 @@ const curActivity = computed(() => activities.value.find(item => item.id === cur
       <RecentlyItem :item="item" :index="index" />
     </li>
   </ul>
+  <div ref="loadMoreTrigger" class="h-8" />
+  <Icon v-if="loading" name="lucide:loader-circle" size="32" class="mx-auto mt-2 block text-text animate-spin" />
+  <Icon v-else-if="!hasMore && activities.length > 0" name="lucide:check-circle" size="32" class="mx-auto mt-2 block text-text" />
+  <p
+    v-if="errorMessage"
+    class="mt-2 text-center text-sm text-error-3"
+  >
+    {{ errorMessage }}
+  </p>
   <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
 </template>
