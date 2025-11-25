@@ -4,7 +4,7 @@ import type { ArticleCardProps } from '~/types/article'
 withDefaults(
   defineProps<
     ArticleCardProps & { index: number, displayCols?: number }
->(),
+  >(),
   { type: 'common', displayCols: 1 },
 )
 

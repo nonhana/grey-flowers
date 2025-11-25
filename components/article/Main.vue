@@ -8,7 +8,6 @@ const props = withDefaults(defineProps<{
   type: 'common',
 })
 const route = useRoute()
-const router = useRouter()
 
 const { query } = toRefs(route)
 
@@ -41,7 +40,29 @@ const displayCols = computed(() => {
   }
 })
 
-const page = ref(Number(route.query.page) || 1)
+const articlesCountKey = computed(() => {
+  const queryStr = new URLSearchParams(whereObj.value as Record<string, any>).toString()
+  return `articles-count?type=${props.type}&${queryStr}`
+})
+
+const { data: fetchedTotal } = await useAsyncData(
+  articlesCountKey,
+  () => $fetch('/api/articles/count', {
+    query: whereObj.value,
+  }),
+  { watch: [whereObj] },
+)
+const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
+
+function transformPage(val: string) {
+  const page = Number(val)
+  return page >= 1 && page <= total.value ? page : 1
+}
+const mode = computed({
+  get: () => useRoute().query.page ? 'replace' : 'push',
+  set: () => {},
+})
+const page = useRouteQuery('page', '1', { transform: transformPage, mode })
 const pageSize = ref(6)
 
 const fetchArticleQuery = computed(() => ({
@@ -79,31 +100,6 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }),
 )
-
-const articlesCountKey = computed(() => {
-  const queryStr = new URLSearchParams(whereObj.value as Record<string, any>).toString()
-  return `articles-count?type=${props.type}&${queryStr}`
-})
-
-const { data: fetchedTotal } = await useAsyncData(
-  articlesCountKey,
-  () => $fetch('/api/articles/count', {
-    query: whereObj.value,
-  }),
-  { watch: [whereObj] },
-)
-const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
-
-watch(page, async (newPage) => {
-  router.replace({ query: { ...route.query, page: newPage.toString() } })
-}, { immediate: true })
-
-watch(() => route.query.page, (pageQuery) => {
-  const newPage = Number(pageQuery) || 1
-  if (newPage !== page.value) {
-    page.value = newPage
-  }
-})
 </script>
 
 <template>

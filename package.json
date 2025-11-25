@@ -2,7 +2,7 @@
   "name": "hana-blog",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.21.0",
+  "packageManager": "pnpm@10.23.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -49,6 +49,7 @@
     "@unocss/preset-rem-to-px": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/nuxt": "catalog:",
+    "@vueuse/router": "catalog:",
     "bcrypt": "catalog:",
     "clipboard": "catalog:",
     "dayjs": "catalog:",

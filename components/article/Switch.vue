@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ prev?: { title: string; path: string }; next?: { title: string; path: string } }>()
+const props = defineProps<{ prev?: { title: string, path: string }, next?: { title: string, path: string } }>()
 const { prev, next } = toRefs(props)
 </script>
 
