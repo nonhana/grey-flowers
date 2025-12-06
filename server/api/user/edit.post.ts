@@ -1,4 +1,4 @@
-import type * as p from '@prisma/client'
+import type { UserUpdateInput } from '~/prisma/generated/models'
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
@@ -27,7 +27,7 @@ export default formattedEventHandler(async (event) => {
 
   const { id, username, email, site, password } = result
 
-  const updateObj: p.Prisma.UserUpdateInput = {}
+  const updateObj: UserUpdateInput = {}
   if (username !== undefined) {
     updateObj.username = username
   }

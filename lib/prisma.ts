@@ -1,8 +1,13 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '~/prisma/generated/client'
 import env from '~/server/env/dotenv'
 
+const connectionString = env.HANA_DATABASE_URL
+
+const adapter = new PrismaPg({ connectionString })
+
 function prismaClientSingleton() {
-  return new PrismaClient()
+  return new PrismaClient({ adapter })
 }
 
 declare const globalThis: {

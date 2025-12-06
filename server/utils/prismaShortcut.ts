@@ -1,6 +1,6 @@
-import type * as p from '@prisma/client'
+import type { CommentSelect } from '~/prisma/generated/models'
 
-export const commentSelectObj: p.Prisma.CommentSelect = {
+export const commentSelectObj: CommentSelect = {
   id: true,
   path: true,
   content: true,
