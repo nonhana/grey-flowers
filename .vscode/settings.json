@@ -50,5 +50,6 @@
     "postcss"
   ],
 
-  "css.customData": [".vscode/tailwind.json"]
+  "css.customData": [".vscode/tailwind.json"],
+  "prisma.pinToPrisma6": true
 }

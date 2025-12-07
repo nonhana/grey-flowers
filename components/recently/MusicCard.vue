@@ -7,19 +7,37 @@ const props = defineProps<{
 
 const { $audioPlayer } = useNuxtApp()
 
-const curMusicIndex = ref(0) // 当前播放的歌曲索引
-const curMusic = computed(() => props.music[curMusicIndex.value]!) // 拿到当前播放的歌曲
+const curMusicIndex = ref(0) // 当前卡片选中的歌曲索引
+const curMusic = computed(() => props.music[curMusicIndex.value]!) // 拿到当前卡片选中的歌曲
 
-watch((curMusic), () => $audioPlayer.loadAndPlay(curMusic.value))
+const globalCurTrack = shallowRef<Track | null>(null)
+const globalCurTime = ref(0)
+const globalIsPlaying = ref(false)
+
+onUnmounted($audioPlayer.subscribe((state) => {
+  globalCurTrack.value = state.currentTrack
+  globalCurTime.value = state.currentTime
+  globalIsPlaying.value = state.isPlaying
+}))
+
+// 当前卡片选中的歌曲是否正在播放
+const isCurTrackActive = computed(() => globalCurTrack.value?.id === curMusic.value.id)
+
+const isPlaying = computed(() => isCurTrackActive.value && globalIsPlaying.value)
+
+const currentTime = computed({
+  get: () => isCurTrackActive.value ? globalCurTime.value : 0,
+  set: (val) => { globalCurTime.value = val },
+})
+
+watch(curMusic, (newTrack, oldTrack) => {
+  if (globalCurTrack.value?.id === oldTrack?.id) {
+    $audioPlayer.loadAndPlay(newTrack)
+  }
+})
 
 const inputtingProgress = ref(0) // 用户正在拖动进度条滑块时的进度
 const isSeeking = ref(false) // 是否正在拖拽进度条滑块
-
-const currentTime = ref(0) // 双向绑定：组件可控制 currentTime，立即同步状态到 AudioPlayer 实例；反之亦然
-onUnmounted($audioPlayer.subscribe(state => currentTime.value = state.currentTime))
-
-const isPlaying = ref(false) // 单向：从 AudioPlayer 实例获取
-onUnmounted($audioPlayer.subscribe(state => isPlaying.value = state.isPlaying))
 
 const currentProgress = computed(() =>
   isSeeking.value ? inputtingProgress.value : (currentTime.value / curMusic.value.seconds),
@@ -42,7 +60,7 @@ function handleChange(e: Event) {
 }
 
 function togglePlayPause() {
-  if ($audioPlayer.getState().playbackState === 'idle') {
+  if (!isCurTrackActive.value) {
     $audioPlayer.loadAndPlay(curMusic.value)
   }
   else {

@@ -17,12 +17,10 @@ catalog:
   '@nuxtjs/color-mode': ^4.0.0
   '@nuxtjs/seo': ^3.2.2
   '@pinia/nuxt': ^0.11.3
-  '@prisma/adapter-pg': ^7.1.0
-  '@prisma/client': ^7.1.0
+  '@prisma/client': 6.19.0
   '@types/bcrypt': ^6.0.0
   '@types/jsonwebtoken': ^9.0.10
   '@types/node': ^24.10.1
-  '@types/pg': ^8.15.6
   '@types/throttle-debounce': ^5.0.2
   '@types/vivus': ^0.4.7
   '@unocss/eslint-plugin': ^66.5.10
@@ -44,10 +42,9 @@ catalog:
   jsonwebtoken: ^9.0.3
   lucide-vue-next: ^0.556.0
   nuxt: ^4.2.1
-  pg: ^8.16.3
   pinia: ^3.0.4
   pinia-plugin-persistedstate: ^4.7.1
-  prisma: ^7.1.0
+  prisma: 6.19.0
   resend: ^6.5.2
   sass-embedded: ^1.93.3
   throttle-debounce: ^5.0.2

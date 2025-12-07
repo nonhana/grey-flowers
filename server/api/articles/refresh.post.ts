@@ -1,5 +1,5 @@
 import type { ContentCollectionItem } from '@nuxt/content'
-import type { ArticleCreateInput, ArticleUpdateInput } from '~/prisma/generated/models'
+import type { Prisma } from '@prisma/client'
 import { queryCollection } from '@nuxt/content/server'
 import prisma from '~/lib/prisma'
 import { flatStr } from '~/utils/handleStr'
@@ -164,8 +164,8 @@ async function handleArticles(articles: DatabaseArticleType[]) {
       return acc
     },
     { createArticles: [], updateArticles: [] } as {
-      createArticles: ArticleCreateInput[]
-      updateArticles: Array<ArticleUpdateInput & { id: number }>
+      createArticles: Prisma.ArticleCreateInput[]
+      updateArticles: Array<Prisma.ArticleUpdateInput & { id: number }>
     },
   )
 
