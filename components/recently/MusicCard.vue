@@ -2,13 +2,13 @@
 import type { Track } from '~/types/activity'
 
 const props = defineProps<{
-  music: Track[]
+  music: Track[] // 一个音乐卡片包含多个歌曲
 }>()
 
 const { $audioPlayer } = useNuxtApp()
 
 const curMusicIndex = ref(0) // 当前卡片选中的歌曲索引
-const curMusic = computed(() => props.music[curMusicIndex.value]!) // 拿到当前卡片选中的歌曲
+const curMusic = computed(() => props.music[curMusicIndex.value]!) // 当前卡片选中的歌曲
 
 const globalCurTrack = shallowRef<Track | null>(null)
 const globalCurTime = ref(0)
@@ -74,6 +74,24 @@ function stepMusic(type: 'prev' | 'next') {
   else
     curMusicIndex.value < props.music.length - 1 && curMusicIndex.value++
 }
+
+onMounted(() => {
+  $audioPlayer.registerMediaSessionHandlers({
+    onPlay: () => {
+      if (!isCurTrackActive.value) {
+        $audioPlayer.loadAndPlay(curMusic.value)
+      }
+      else {
+        $audioPlayer.play()
+      }
+    },
+    onPause: () => {
+      $audioPlayer.pause()
+    },
+    onPreviousTrack: () => stepMusic('prev'),
+    onNextTrack: () => stepMusic('next'),
+  })
+})
 </script>
 
 <template>

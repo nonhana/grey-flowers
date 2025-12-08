@@ -42,6 +42,12 @@ export class AudioPlayer {
     this.audio.volume = this.state.volume
 
     this.attachEvents()
+    this.updateMediaSessionPauseStatus(true)
+  }
+
+  /** 重置播放器状态 */
+  public reset(): void {
+    this.updateState(this.getInitialState())
   }
 
   /** 订阅播放器状态变化 */
@@ -56,7 +62,9 @@ export class AudioPlayer {
 
   /** 加载一首新歌并开始播放 */
   public async loadAndPlay(track: Track): Promise<void> {
+    this.reset()
     this.updateState({ currentTrack: track, playbackState: 'loading' })
+    this.updateMediaSessionMetadata(track)
     this.audio.src = track.src
     this.audio.load()
 
@@ -71,7 +79,9 @@ export class AudioPlayer {
 
   /** 加载一首新歌 */
   public load(track: Track): void {
+    this.reset()
     this.updateState({ currentTrack: track, playbackState: 'loading' })
+    this.updateMediaSessionMetadata(track)
     this.audio.src = track.src
     this.audio.load()
   }
@@ -122,6 +132,76 @@ export class AudioPlayer {
     return { ...this.state }
   }
 
+  // 更新 Media Session 元数据
+  public updateMediaSessionMetadata(track: Track) {
+    if (!('mediaSession' in navigator))
+      return
+
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.title,
+        album: track.album.title,
+        artwork: [
+          {
+            src: track.album.cover,
+            sizes: '384x384',
+            type: 'image/jpeg',
+          },
+        ],
+      })
+    }
+    catch (error) {
+      console.warn('Failed to update Media Session metadata:', error)
+    }
+  }
+
+  // 注册 Media Session 事件处理器
+  public registerMediaSessionHandlers(handlers: {
+    onPlay: () => void
+    onPause: () => void
+    onPreviousTrack: () => void
+    onNextTrack: () => void
+  }) {
+    if (!('mediaSession' in navigator))
+      return
+
+    try {
+      navigator.mediaSession.setActionHandler('play', () => {
+        handlers.onPlay()
+      })
+
+      navigator.mediaSession.setActionHandler('pause', () => {
+        handlers.onPause()
+      })
+
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        handlers.onPreviousTrack()
+      })
+
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        handlers.onNextTrack()
+      })
+
+      navigator.mediaSession.playbackState = 'none'
+    }
+    catch (error) {
+      console.warn('Failed to register Media Session handlers:', error)
+    }
+  }
+
+  // 更新 Media Session 的播放状态
+  public updateMediaSessionPauseStatus(isPaused: boolean) {
+    if (!('mediaSession' in navigator))
+      return
+
+    try {
+      navigator.mediaSession.playbackState = isPaused ? 'paused' : 'playing'
+    }
+    catch (error) {
+      console.warn('Failed to update Media Session playback state:', error)
+    }
+  }
+
   /** 获取初始状态 */
   private getInitialState(): PlayerState {
     return {
@@ -159,11 +239,24 @@ export class AudioPlayer {
     this.audio.addEventListener('waiting', this.handleWaiting)
   }
 
-  private handlePlaying = () => this.updateState({ isPlaying: true, playbackState: 'playing' })
-  private handlePlay = () => this.updateState({ isPlaying: true, playbackState: 'playing' })
-  private handlePause = () => this.updateState({ isPlaying: false, playbackState: 'paused' })
+  private handlePlaying = () => {
+    this.updateState({ isPlaying: true, playbackState: 'playing' })
+    this.updateMediaSessionPauseStatus(false)
+  }
+
+  private handlePlay = () => {
+    this.updateState({ isPlaying: true, playbackState: 'playing' })
+    this.updateMediaSessionPauseStatus(false)
+  }
+
+  private handlePause = () => {
+    this.updateState({ isPlaying: false, playbackState: 'paused' })
+    this.updateMediaSessionPauseStatus(true)
+  }
+
   private handleEnded = () => {
     this.updateState({ isPlaying: false, playbackState: 'idle' })
+    this.updateMediaSessionPauseStatus(true) // 播放结束，设为暂停状态
   }
 
   private handleTimeUpdate = () => this.updateState({ currentTime: this.audio.currentTime })
