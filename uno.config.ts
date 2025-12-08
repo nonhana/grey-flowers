@@ -171,12 +171,13 @@ export default defineConfig({
       getCSS: () => `
         html,
         body {
-          @apply font-noto min-w-80;
+          font-family: "Noto Serif", "Noto Serif SC", "Noto Serif JP";
+          min-width: 320px;
         }
 
         code,
         pre {
-          @apply font-code;
+          font-family: "JetBrains Mono";
         }
 
         ::selection {

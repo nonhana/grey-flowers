@@ -42,7 +42,7 @@ export default defineNuxtConfig({
   image: {
     dir: 'public',
     quality: 85,
-    formats: ['webp', 'gif', 'jpeg', 'png', 'avif'],
+    format: ['webp', 'gif', 'jpeg', 'png', 'avif'],
   },
   devServer: {
     host: 'localhost',
@@ -58,10 +58,16 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
   css: ['@unocss/reset/tailwind.css'],
+  postcss: {
+    plugins: {
+      cssnano: { plugins: [] }, // 禁用压缩 CSS 插件，避免 build 时无法解析某些 CSS 规则
+    },
+  },
   modules: [
     '@nuxt/icon',
     '@nuxt/image',
     '@nuxt/content',
+    '@nuxtjs/mdc',
     '@nuxtjs/seo',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
@@ -70,5 +76,6 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
   ],
   devtools: { enabled: true },
+  linkChecker: { enabled: false }, // 中文网站无需检查链接
   compatibilityDate: '2024-10-05',
 })
