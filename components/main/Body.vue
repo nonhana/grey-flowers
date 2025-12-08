@@ -21,9 +21,15 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 </script>
 
 <template>
-  <HanaInfoCard title="最近文章" icon="lucide:newspaper">
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
-      <ArticleCard v-for="(card, index) in articleCards" :key="card.title" v-bind="{ ...card, index }" />
-    </div>
-  </HanaInfoCard>
+  <div class="flex flex-col gap-12">
+    <!-- 最近动态 -->
+    <MainActivity />
+
+    <!-- 最近文章 -->
+    <HanaInfoCard title="最近文章" icon="lucide:newspaper">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
+        <ArticleCard v-for="(card, index) in articleCards" :key="card.title" v-bind="{ ...card, index }" />
+      </div>
+    </HanaInfoCard>
+  </div>
 </template>

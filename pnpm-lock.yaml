@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@antfu/eslint-config':
-      specifier: ^6.4.2
-      version: 6.5.0
+      specifier: 6.5.1
+      version: 6.5.1
     '@iconify-json/lucide':
       specifier: ^1.2.79
       version: 1.2.79
@@ -191,7 +191,7 @@ importers:
     devDependencies:
       '@antfu/eslint-config':
         specifier: 'catalog:'
-        version: 6.5.0(@unocss/eslint-plugin@66.5.10(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.25)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+        version: 6.5.1(@unocss/eslint-plugin@66.5.10(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.25)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@iconify-json/lucide':
         specifier: 'catalog:'
         version: 1.2.79
@@ -321,8 +321,8 @@ importers:
 
 packages:
 
-  '@antfu/eslint-config@6.5.0':
-    resolution: {integrity: sha512-4T44Csxw0wDaRB3ECUjh1qt7XQo0UZmtPvn9H9Tw10f2TwYxz7t8DOIK9nf2ZDz92DQADR7nu3KElsyD2qP45Q==}
+  '@antfu/eslint-config@6.5.1':
+    resolution: {integrity: sha512-EZI2H7CWEYbNWe3DYtpwFnA3TDGPtxb3V4oVQXKwI4QXrqoZCU9iHImuyre1NmHjadlF8JYFGg0O5IOZ1jdZ+w==}
     hasBin: true
     peerDependencies:
       '@eslint-react/eslint-plugin': ^2.0.1
@@ -6190,7 +6190,7 @@ packages:
 
 snapshots:
 
-  '@antfu/eslint-config@6.5.0(@unocss/eslint-plugin@66.5.10(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.25)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@antfu/eslint-config@6.5.1(@unocss/eslint-plugin@66.5.10(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.25)(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
       '@antfu/install-pkg': 1.1.0
       '@clack/prompts': 0.11.0
