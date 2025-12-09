@@ -34,8 +34,12 @@ onMounted(() => {
 
 const router = useRouter()
 
-function gotoDetail(item: ActivityItem) {
-  router.push(`/recently?id=${item.id}`)
+const detailDialogVisible = ref(false)
+const curActivity = ref<ActivityItem>()
+
+function handleViewDetail(item: ActivityItem) {
+  detailDialogVisible.value = true
+  curActivity.value = item
 }
 
 function gotoRecently() {
@@ -89,8 +93,7 @@ function truncateContent(content: string | undefined, maxLength: number): string
       <article
         v-if="featuredActivity"
         class="group relative cursor-pointer overflow-hidden hana-card lg:row-span-2 p-0!"
-        :class="isVisible && 'animate-fade-in'"
-        @click="gotoDetail(featuredActivity)"
+        @click="handleViewDetail(featuredActivity)"
       >
         <div class="absolute inset-0 from-black/60 via-black/20 to-transparent bg-gradient-to-t" />
 
@@ -141,12 +144,10 @@ function truncateContent(content: string | undefined, maxLength: number): string
       </article>
 
       <article
-        v-for="(item, index) in compactActivities"
+        v-for="item in compactActivities"
         :key="item.id"
         class="group relative flex flex-col cursor-pointer overflow-hidden hana-card transition-all duration-300 p-4! hover:shadow-lg hover:-translate-y-0.5"
-        :class="isVisible && 'animate-fade-in'"
-        :style="{ animationDelay: `${(index + 1) * 0.1}s` }"
-        @click="gotoDetail(item)"
+        @click="handleViewDetail(item)"
       >
         <div class="absolute size-16 opacity-5 -right-2 -top-2">
           <Icon :name="getActivityIcon(item)" class="size-full" />
@@ -188,4 +189,5 @@ function truncateContent(content: string | undefined, maxLength: number): string
       </article>
     </div>
   </HanaInfoCard>
+  <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
 </template>
