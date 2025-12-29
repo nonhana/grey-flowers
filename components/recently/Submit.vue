@@ -63,6 +63,7 @@ async function handlePublish() {
   }
   publishing.value = true
   await publishActivity(objData)
+  refreshNuxtData('home-activities')
   publishing.value = false
 }
 

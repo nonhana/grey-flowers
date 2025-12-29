@@ -2,6 +2,7 @@
 import type { ActivityItem } from '~/types/activity'
 
 const { data: fetchData } = await useFetch('/api/activity/list', {
+  key: 'home-activities',
   query: { page: 1, pageSize: 5 },
 })
 
