@@ -32,7 +32,12 @@ const blockquoteContent = computed(() =>
       <p class="whitespace-pre-wrap break-words text-black leading-6 dark:text-hana-white">
         {{ message.content }}
       </p>
-      <span class="h-6 text-nowrap text-sm dark:text-hana-white">{{ message.publishedAt }}</span>
+      <div class="h-6 flex items-center gap-2 overflow-x-auto scrollbar-none">
+        <span class="text-nowrap text-sm dark:text-hana-white">{{ message.publishedAt }}</span>
+        <NuxtLink :to="message.path" class="text-nowrap text-sm text-text font-code transition-colors dark:text-hana-white-700 hover:text-hana-blue dark:hover:text-hana-blue-200">
+          {{ message.path }}
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
