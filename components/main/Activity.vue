@@ -109,7 +109,7 @@ function truncateContent(content: string | undefined, maxLength: number): string
           v-else
           class="absolute inset-0 from-hana-blue-100 via-hana-blue-50 to-white bg-gradient-to-br dark:from-hana-black-800 dark:via-hana-black-700 dark:to-hana-black"
         >
-          <div class="absolute inset-0 opacity-10">
+          <div class="absolute inset-0 opacity-20">
             <Icon name="lucide:quote" class="absolute left-8 top-8 size-24 text-hana-blue" />
           </div>
         </div>
@@ -150,8 +150,8 @@ function truncateContent(content: string | undefined, maxLength: number): string
         class="group relative flex flex-col cursor-pointer overflow-hidden hana-card transition-all duration-300 p-4! hover:shadow-lg hover:-translate-y-0.5"
         @click="handleViewDetail(item)"
       >
-        <div class="absolute size-16 opacity-5 -right-2 -top-2">
-          <Icon :name="getActivityIcon(item)" class="size-full" />
+        <div class="absolute size-16 opacity-10 -right-2 -top-2">
+          <Icon :name="getActivityIcon(item)" class="size-full text-hana-blue" />
         </div>
 
         <div class="mb-2 flex items-center gap-1.5">
