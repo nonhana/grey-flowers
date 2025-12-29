@@ -4,6 +4,7 @@ import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<{
   type?: 'default' | 'recently'
+  path?: string
 }>(), {
   type: 'default',
 })
@@ -17,6 +18,8 @@ const { callHanaMessage } = useMessage()
 const route = useRoute()
 const { fullPath, path, hash } = route
 
+const queryPath = computed(() => props.path ? props.path : isRecently.value ? fullPath : path)
+
 const page = ref(1)
 const pageSize = ref(10)
 
@@ -26,7 +29,7 @@ const commentList = ref<ParentCommentItem[]>([])
 
 async function fetchTotal() {
   const data = await $fetch('/api/comments/count', {
-    query: { path: isRecently.value ? fullPath : path },
+    query: { path: queryPath.value },
   })
   if (data.success) {
     totalCount.value = data.payload?.totalCount || 0
@@ -36,7 +39,7 @@ async function fetchTotal() {
 
 async function fetchComments() {
   const data = await $fetch('/api/comments/list', {
-    query: { path: isRecently.value ? fullPath : path, page: page.value, pageSize: pageSize.value },
+    query: { path: queryPath.value, page: page.value, pageSize: pageSize.value },
   })
   if (data.success) {
     commentList.value = (data.payload as ParentCommentItem[]) ?? []

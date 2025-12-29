@@ -5,6 +5,8 @@ import { HanaImgViewer } from 'hana-img-viewer'
 const props = defineProps<{ item?: ActivityItem }>()
 
 const visible = defineModel<boolean>()
+
+const activityPath = computed(() => `/recently?id=${props.item?.id}`)
 </script>
 
 <template>
@@ -42,7 +44,7 @@ const visible = defineModel<boolean>()
         <RecentlyMusicCard v-if="props.item?.music && props.item.music.length > 0" :music="props.item.music" />
       </main>
       <footer class="py-5">
-        <Comment type="recently" />
+        <Comment type="recently" :path="activityPath" />
       </footer>
     </div>
   </HanaDialog>
