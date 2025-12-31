@@ -25,10 +25,10 @@ catalog:
   '@types/node': ^25.0.3
   '@types/throttle-debounce': ^5.0.2
   '@types/vivus': ^0.4.7
-  '@unocss/eslint-plugin': ^66.5.11
-  '@unocss/nuxt': ^66.5.11
-  '@unocss/preset-rem-to-px': ^66.5.11
-  '@unocss/reset': ^66.5.11
+  '@unocss/eslint-plugin': ^66.5.12
+  '@unocss/nuxt': ^66.5.12
+  '@unocss/preset-rem-to-px': ^66.5.12
+  '@unocss/reset': ^66.5.12
   '@vueuse/core': ^14.1.0
   '@vueuse/nuxt': ^14.1.0
   '@vueuse/router': ^14.1.0
@@ -52,13 +52,13 @@ catalog:
   sass-embedded: ^1.97.1
   throttle-debounce: ^5.0.2
   typescript: ^5.9.3
-  unocss: ^66.5.11
+  unocss: ^66.5.12
   unocss-preset-scrollbar: ^3.2.0
   vivus: ^0.4.6
   vue: ^3.5.26
   vue-component-type-helpers: ^3.2.1
   vue-router: ^4.6.4
-  zod: ^4.2.1
+  zod: ^4.3.2
 
 onlyBuiltDependencies:
   - '@parcel/watcher'
