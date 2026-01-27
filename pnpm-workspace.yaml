@@ -70,3 +70,8 @@ onlyBuiltDependencies:
   - esbuild
   - prisma
   - sharp
+
+peerDependencyRules:
+  allowedVersions:
+    '@unhead/vue': '2'
+    magicast: '0.5'
