@@ -1,9 +1,9 @@
-import type { Prisma } from '@prisma/client'
+import type { ArticleWhereInput } from '~/prisma/generated/models'
 import type { ArticleListQuery } from '~/server/types/articles'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
 
-type Options = Prisma.ArticleWhereInput
+type Options = ArticleWhereInput
   & {
     page: number
     pageSize: number

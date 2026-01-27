@@ -8,5 +8,5 @@ export default antfu({
   jsonc: true,
   yaml: true,
   unocss: true,
-  ignores: ['content/**/*'],
+  ignores: ['content/**/*', 'prisma/**/*', 'node_modules/**/*'],
 })

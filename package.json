@@ -39,6 +39,7 @@
     "@nuxtjs/mdc": "catalog:",
     "@nuxtjs/seo": "catalog:",
     "@pinia/nuxt": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
     "@prisma/client": "catalog:",
     "@types/bcrypt": "catalog:",
     "@types/jsonwebtoken": "catalog:",

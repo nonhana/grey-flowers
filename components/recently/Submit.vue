@@ -97,7 +97,7 @@ async function publishActivity(objData: IPostActivity) {
       <HanaInput v-model="title" placeholder="请输入动态标题" />
       <HanaInput v-model="content" type="textarea" placeholder="请输入动态内容" resize="none" :rows="8" />
       <HanaInput v-model="images" type="textarea" placeholder="请输入图片 url 地址，多个图片用 ',' 隔开" resize="none" :rows="8" />
-      <HanaMultiForm v-model="musicDraft" :key-config="musicKeys" />
+      <HanaMultiForm v-model="musicDraft" :key-config="musicKeys" title="添加一首歌" />
     </div>
     <div class="flex flex-col gap-4">
       <HanaButton class="w-full" dark-mode :disabled="publishing" @click="handlePublish">

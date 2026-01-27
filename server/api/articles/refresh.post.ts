@@ -1,5 +1,5 @@
 import type { ContentCollectionItem } from '@nuxt/content'
-import type { Prisma } from '@prisma/client'
+import type { ArticleCreateInput, ArticleUpdateInput } from '~/prisma/generated/models'
 import { queryCollection } from '@nuxt/content/server'
 import prisma from '~/lib/prisma'
 import { flatStr } from '~/utils/handleStr'
@@ -155,7 +155,7 @@ async function handleArticles(articles: DatabaseArticleType[]) {
       }
 
       if (existingTitles.has(article.title!)) {
-        acc.updateArticles.push({ ...baseData, id: existingArticleMap[article.title!] })
+        acc.updateArticles.push({ ...baseData, id: existingArticleMap[article.title!]! })
       }
       else {
         acc.createArticles.push({ ...baseData, title: article.title! })
@@ -164,8 +164,8 @@ async function handleArticles(articles: DatabaseArticleType[]) {
       return acc
     },
     { createArticles: [], updateArticles: [] } as {
-      createArticles: Prisma.ArticleCreateInput[]
-      updateArticles: Array<Prisma.ArticleUpdateInput & { id: number }>
+      createArticles: ArticleCreateInput[]
+      updateArticles: Array<ArticleUpdateInput & { id: number }>
     },
   )
 

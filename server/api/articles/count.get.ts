@@ -1,9 +1,9 @@
-import type { Prisma } from '@prisma/client'
+import type { ArticleWhereInput } from '~/prisma/generated/models'
 import type { ArticleFilterQuery } from '~/server/types/articles'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
 
-type Options = Prisma.ArticleWhereInput & { publishedAtMonth?: string }
+type Options = ArticleWhereInput & { publishedAtMonth?: string }
 
 async function selectArticleCount(options: Options) {
   const { publishedAtMonth, ...rest } = options

@@ -1,6 +1,7 @@
 <script lang="ts" setup generic="K extends { key: string, type: 'text' | 'number' }">
 // TODO: 仅支持 type: 'text' | 'number' 类型的 input，待扩展
 const props = defineProps<{
+  title: string
   keyConfig: readonly K[]
 }>()
 
@@ -53,7 +54,7 @@ function handleInput(e: Event, item: KRecord, key: K['key']) {
       <hana-button dark-mode class="shrink-0" icon-button icon="lucide:minus" @click="deleteItem(index)" />
     </div>
     <hana-button icon="lucide:plus" @click="addItem()">
-      添加一首歌
+      {{ title }}
     </hana-button>
   </div>
 </template>
