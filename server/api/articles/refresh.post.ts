@@ -39,39 +39,22 @@ async function handleTags(articles: DatabaseArticleType[]): Promise<Record<strin
   })
 
   const tagNames = Array.from(tagMap.keys())
+  if (tagNames.length === 0)
+    return {}
 
-  const existingTags = await prisma.tag.findMany({
-    where: { name: { in: tagNames } },
-    select: { id: true, name: true, articleCount: true },
-  })
+  // 使用 upsert 一次性处理创建和更新，避免 查询→判断→更新 的模式
+  const upsertResults = await Promise.all(
+    tagNames.map(name =>
+      prisma.tag.upsert({
+        where: { name },
+        create: { name, articleCount: tagMap.get(name) || 0 },
+        update: { articleCount: tagMap.get(name) || 0 },
+        select: { id: true, name: true },
+      }),
+    ),
+  )
 
-  const existingTagNames = new Set(existingTags.map(tag => tag.name))
-  const newTagNames = tagNames.filter(tagName => !existingTagNames.has(tagName))
-
-  const updateTags = existingTags.map(tag => ({
-    where: { name: tag.name },
-    data: { articleCount: tagMap.get(tag.name) || tag.articleCount || 0 },
-  }))
-
-  const newTags = newTagNames.map(name => ({
-    name,
-    articleCount: tagMap.get(name) || 0,
-  }))
-
-  await prisma.$transaction([
-    ...updateTags.map(update => prisma.tag.update(update)),
-    prisma.tag.createMany({ data: newTags }),
-  ])
-
-  const updatedTags = await prisma.tag.findMany({
-    where: { name: { in: tagNames } },
-    select: { id: true, name: true },
-  })
-
-  return updatedTags.reduce((acc, tag) => {
-    acc[tag.name] = tag.id
-    return acc
-  }, {} as Record<string, number>)
+  return Object.fromEntries(upsertResults.map(tag => [tag.name, tag.id]))
 }
 
 // 处理 category 数据，返回 categoryName 和 categoryId 的映射
@@ -82,61 +65,65 @@ async function handleCategories(articles: DatabaseArticleType[]): Promise<Record
   })
 
   const categoryNames = Array.from(categoryMap.keys())
+  if (categoryNames.length === 0)
+    return {}
 
+  // 先查询已存在的分类，获取它们的 cover（避免覆盖已有的 cover）
   const existingCategories = await prisma.category.findMany({
     where: { name: { in: categoryNames } },
+    select: { name: true, cover: true },
   })
+  const existingCoverMap = new Map(existingCategories.map(c => [c.name, c.cover]))
 
-  const existingCategoryNames = new Set(existingCategories.map(category => category.name))
-  const newCategoryNames = categoryNames.filter(categoryName => !existingCategoryNames.has(categoryName))
+  // 使用 upsert 一次性处理创建和更新
+  const upsertResults = await Promise.all(
+    categoryNames.map((name) => {
+      const existingCover = existingCoverMap.get(name)
+      return prisma.category.upsert({
+        where: { name },
+        create: {
+          name,
+          articleCount: categoryMap.get(name) || 0,
+          cover: `/categories/${flatStr(name)}.webp`,
+        },
+        update: {
+          articleCount: categoryMap.get(name) || 0,
+          // 只有当 cover 不存在时才设置默认值
+          ...(existingCover ? {} : { cover: `/categories/${flatStr(name)}.webp` }),
+        },
+        select: { id: true, name: true },
+      })
+    }),
+  )
 
-  const updateCategories = existingCategories.map(category => ({
-    where: { name: category.name },
-    data: {
-      articleCount: categoryMap.get(category.name) || category.articleCount || 0,
-      cover: category.cover || `/categories/${flatStr(category.name)}.webp`,
-    },
-  }))
-
-  const newCategories = newCategoryNames.map(name => ({
-    name,
-    articleCount: categoryMap.get(name) || 0,
-    cover: `/categories/${flatStr(name)}.webp`,
-  }))
-
-  await prisma.$transaction([
-    ...updateCategories.map(update => prisma.category.update(update)),
-    prisma.category.createMany({ data: newCategories }),
-  ])
-
-  const updatedCategories = await prisma.category.findMany({
-    where: { name: { in: categoryNames } },
-    select: { id: true, name: true },
-  })
-
-  return updatedCategories.reduce((acc, category) => {
-    acc[category.name] = category.id
-    return acc
-  }, {} as Record<string, number>)
+  return Object.fromEntries(upsertResults.map(category => [category.name, category.id]))
 }
 
 // 处理 article 数据
 async function handleArticles(articles: DatabaseArticleType[]) {
-  // 获取 tags 和 categories 的映射
-  const tagMap = await handleTags(articles) // name -> id
-  const categoryMap = await handleCategories(articles) // name -> id
+  // 优化1：并行处理 tags 和 categories，同时查询已有文章
+  const [tagMap, categoryMap, existingArticles] = await Promise.all([
+    handleTags(articles),
+    handleCategories(articles),
+    prisma.article.findMany({ select: { title: true, id: true } }),
+  ])
 
-  // 查询已有文章的 title
-  const existingArticles = await prisma.article.findMany({
-    select: { title: true, id: true },
-  })
   const existingTitles = new Set(existingArticles.map(article => article.title))
-  const existingArticleMap = Object.fromEntries(existingArticles.map(article => [article.title, article.id]))
+  const existingArticleMap = Object.fromEntries(
+    existingArticles.map(article => [article.title, article.id]),
+  )
 
   // 分类文章为新增和更新
-  const { createArticles, updateArticles } = articles.reduce(
-    (acc, article) => {
-      const baseData = {
+  const createArticles: ArticleCreateInput[] = []
+  const updateArticles: Array<ArticleUpdateInput & { id: number }> = []
+
+  for (const article of articles) {
+    const tagIds = article.tags.map((tag: string) => ({ id: tagMap[tag] }))
+
+    if (existingTitles.has(article.title!)) {
+      // 更新文章：使用 set 替代 connect，自动处理关联的增删
+      updateArticles.push({
+        id: existingArticleMap[article.title!]!,
         to: article.path!,
         title: article.title!,
         description: article.description,
@@ -147,39 +134,43 @@ async function handleArticles(articles: DatabaseArticleType[]) {
         editedAt: new Date(article.editedAt),
         published: article.published,
         wordCount: article.wordCount,
-        // 关联 tags 和 category
-        tags: {
-          connect: article.tags.map((tag: string) => ({ id: tagMap[tag] })),
-        },
+        tags: { set: tagIds },
         category: { connect: { id: categoryMap[article.category] } },
-      }
+      })
+    }
+    else {
+      // 新增文章
+      createArticles.push({
+        to: article.path!,
+        title: article.title!,
+        description: article.description,
+        cover: article.cover,
+        alt: article.alt,
+        ogImage: article.ogImage,
+        publishedAt: new Date(article.publishedAt),
+        editedAt: new Date(article.editedAt),
+        published: article.published,
+        wordCount: article.wordCount,
+        tags: { connect: tagIds },
+        category: { connect: { id: categoryMap[article.category] } },
+      })
+    }
+  }
 
-      if (existingTitles.has(article.title!)) {
-        acc.updateArticles.push({ ...baseData, id: existingArticleMap[article.title!]! })
-      }
-      else {
-        acc.createArticles.push({ ...baseData, title: article.title! })
-      }
-
-      return acc
+  // 优化2：使用事务批量操作，并行执行所有操作
+  await prisma.$transaction(
+    async (tx) => {
+      await Promise.all([
+        // 批量新增文章
+        ...createArticles.map(article => tx.article.create({ data: article })),
+        // 批量更新文章
+        ...updateArticles.map(({ id, ...data }) =>
+          tx.article.update({ where: { id }, data }),
+        ),
+      ])
     },
-    { createArticles: [], updateArticles: [] } as {
-      createArticles: ArticleCreateInput[]
-      updateArticles: Array<ArticleUpdateInput & { id: number }>
-    },
+    { timeout: 300000 },
   )
-
-  // 使用事务批量操作
-  await prisma.$transaction([
-    // 批量新增文章
-    ...createArticles.map(article =>
-      prisma.article.create({ data: article }),
-    ),
-    // 批量更新文章
-    ...updateArticles.map(({ id, ...data }) =>
-      prisma.article.update({ where: { id }, data }),
-    ),
-  ])
 }
 
 export default formattedEventHandler(async (event) => {
