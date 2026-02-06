@@ -1,10 +1,20 @@
 generator client {
-  provider      = "prisma-client"
-  output = "./generated"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum CommentLevel {
+  PARENT
+  CHILD
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model Article {
@@ -15,13 +25,14 @@ model Article {
   cover       String?
   alt         String    @unique
   ogImage     String?
-  publishedAt DateTime  @default(now())
-  editedAt    DateTime  @updatedAt
   published   Boolean   @default(false)
   wordCount   Int       @default(0)
   tags        Tag[]     @relation("ArticleTags")
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  Int?
+  content     String?   @default("") @db.Text
+  publishedAt DateTime  @default(now())
+  editedAt    DateTime  @updatedAt
 }
 
 model Tag {
@@ -46,6 +57,9 @@ model User {
   password    String
   site        String?
   avatar      String
+  role        UserRole      @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   comments    Comment[]
   replies     Comment[]     @relation("ReplyToUser")
   messages    Message[]
@@ -119,9 +133,4 @@ model Album {
   cover       String
   description String?
   music       Music[]
-}
-
-enum CommentLevel {
-  PARENT
-  CHILD
 }

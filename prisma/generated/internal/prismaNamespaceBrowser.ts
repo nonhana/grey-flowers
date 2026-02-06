@@ -87,11 +87,12 @@ export const ArticleScalarFieldEnum = {
   cover: 'cover',
   alt: 'alt',
   ogImage: 'ogImage',
-  publishedAt: 'publishedAt',
-  editedAt: 'editedAt',
   published: 'published',
   wordCount: 'wordCount',
-  categoryId: 'categoryId'
+  categoryId: 'categoryId',
+  content: 'content',
+  publishedAt: 'publishedAt',
+  editedAt: 'editedAt'
 } as const
 
 export type ArticleScalarFieldEnum = (typeof ArticleScalarFieldEnum)[keyof typeof ArticleScalarFieldEnum]
@@ -122,7 +123,10 @@ export const UserScalarFieldEnum = {
   username: 'username',
   password: 'password',
   site: 'site',
-  avatar: 'avatar'
+  avatar: 'avatar',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
