@@ -119,18 +119,11 @@ model Activity {
 model Music {
   id         Int       @id @default(autoincrement())
   title      String
+  artist     String
+  album      String
   src        String
   seconds    Int
-  albumId    Int?
-  album      Album?    @relation(fields: [albumId], references: [id])
+  cover      String?
   activityId Int?
   activity   Activity? @relation(fields: [activityId], references: [id])
-}
-
-model Album {
-  id          Int     @id @default(autoincrement())
-  title       String
-  cover       String
-  description String?
-  music       Music[]
 }
