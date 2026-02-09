@@ -1,5 +1,7 @@
 import type { ContentCollectionItem, ContentNavigationItem } from '@nuxt/content'
 
+export type NeighborItem = ContentNavigationItem | null
+
 export const useArticleStore = defineStore('article', () => {
   const headerVisible = ref(false)
   const setHeaderVisible = (status: boolean) => {
@@ -11,8 +13,8 @@ export const useArticleStore = defineStore('article', () => {
     content.value = v
   }
 
-  const neighbors = ref<ContentNavigationItem[]>([])
-  const setNeighbors = (v: ContentNavigationItem[]) => {
+  const neighbors = ref<[NeighborItem, NeighborItem]>([null, null])
+  const setNeighbors = (v: [NeighborItem, NeighborItem]) => {
     neighbors.value = v
   }
 

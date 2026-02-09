@@ -1,10 +1,20 @@
 generator client {
-  provider      = "prisma-client"
-  output = "./generated"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum CommentLevel {
+  PARENT
+  CHILD
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model Article {
@@ -12,16 +22,17 @@ model Article {
   to          String    @unique
   title       String    @unique
   description String?
-  cover       String?
+  cover       String
   alt         String    @unique
-  ogImage     String?
-  publishedAt DateTime  @default(now())
-  editedAt    DateTime  @updatedAt
+  ogImage     String
   published   Boolean   @default(false)
   wordCount   Int       @default(0)
   tags        Tag[]     @relation("ArticleTags")
   category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  Int?
+  content     String?   @default("") @db.Text
+  publishedAt DateTime  @default(now())
+  editedAt    DateTime  @updatedAt
 }
 
 model Tag {
@@ -34,7 +45,7 @@ model Tag {
 model Category {
   id           Int       @id @default(autoincrement())
   name         String    @unique
-  cover        String?
+  cover        String
   articleCount Int       @default(0)
   articles     Article[]
 }
@@ -46,6 +57,9 @@ model User {
   password    String
   site        String?
   avatar      String
+  role        UserRole      @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   comments    Comment[]
   replies     Comment[]     @relation("ReplyToUser")
   messages    Message[]
@@ -105,23 +119,11 @@ model Activity {
 model Music {
   id         Int       @id @default(autoincrement())
   title      String
+  artist     String
+  album      String
   src        String
   seconds    Int
-  albumId    Int?
-  album      Album?    @relation(fields: [albumId], references: [id])
+  cover      String
   activityId Int?
   activity   Activity? @relation(fields: [activityId], references: [id])
-}
-
-model Album {
-  id          Int     @id @default(autoincrement())
-  title       String
-  cover       String
-  description String?
-  music       Music[]
-}
-
-enum CommentLevel {
-  PARENT
-  CHILD
 }

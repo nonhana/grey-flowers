@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     },
   },
   image: {
+    domains: ['blog-r2.caelum.moe'],
     dir: 'public',
     quality: 85,
     format: ['webp', 'gif', 'jpeg', 'png', 'avif'],

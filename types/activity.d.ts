@@ -1,14 +1,11 @@
 export interface Track {
   id: number
   title: string
+  artist: string
+  album: string
   src: string
   seconds: number
-  album: {
-    id: number
-    title: string
-    cover: string
-    description?: string
-  }
+  cover: string
 }
 
 export interface ActivityItem {

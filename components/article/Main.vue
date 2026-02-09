@@ -16,19 +16,19 @@ function remainTwoDigits(num: string) {
 }
 
 const whereObj = computed(() => {
-  const result: ArticleFilterQuery = {}
+  const filter: ArticleFilterQuery = {}
   switch (props.type) {
     case 'tags':
-      result.tag = route.query.tag as string
+      filter.tag = route.query.tag as string
       break
     case 'category':
-      result.category = antiFlatStr(route.params.category as string)
+      filter.category = antiFlatStr(route.params.category as string)
       break
     case 'archives':
-      result.publishedAtMonth = `${query.value.year}-${remainTwoDigits(String(query.value.month ?? '01'))}`
+      filter.publishedAtMonth = `${query.value.year}-${remainTwoDigits(String(query.value.month ?? '01'))}`
       break
   }
-  return result
+  return filter
 })
 
 const displayCols = computed(() => {
@@ -45,13 +45,11 @@ const articlesCountKey = computed(() => {
   return `articles-count?type=${props.type}&${queryStr}`
 })
 
-const { data: fetchedTotal } = await useAsyncData(
-  articlesCountKey,
-  () => $fetch('/api/articles/count', {
-    query: whereObj.value,
-  }),
-  { watch: [whereObj] },
-)
+const { data: fetchedTotal } = await useFetch('/api/articles/count', {
+  key: articlesCountKey,
+  query: whereObj,
+  watch: [whereObj],
+})
 const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
 
 function transformPage(val: string) {
@@ -76,13 +74,11 @@ const articlesListKey = computed(() => {
   return `articles-list?type=${props.type}&${queryStr}`
 })
 
-const { data: fetchedArticleData } = await useAsyncData(
-  articlesListKey,
-  () => $fetch('/api/articles/list', {
-    query: fetchArticleQuery.value,
-  }),
-  { watch: [fetchArticleQuery] },
-)
+const { data: fetchedArticleData } = await useFetch('/api/articles/list', {
+  key: articlesListKey,
+  query: fetchArticleQuery,
+  watch: [fetchArticleQuery],
+})
 
 const articleData = computed(() => fetchedArticleData.value ? fetchedArticleData.value.payload ?? [] : [])
 
@@ -103,16 +99,14 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 </script>
 
 <template>
-  <HanaHydrateSafe>
-    <div class="size-full flex flex-col">
-      <div class="flex-1">
-        <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
-          <ArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index, displayCols }" />
-        </div>
-      </div>
-      <div class="sticky bottom-5 mx-auto mt-5 w-fit">
-        <HanaPaginator v-model="page" :total="total" />
+  <div class="size-full flex flex-col">
+    <div class="flex-1">
+      <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
+        <ArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index, displayCols }" />
       </div>
     </div>
-  </HanaHydrateSafe>
+    <div class="sticky bottom-5 mx-auto mt-5 w-fit">
+      <HanaPaginator v-model="page" :total="total" />
+    </div>
+  </div>
 </template>

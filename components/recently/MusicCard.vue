@@ -97,8 +97,8 @@ onMounted(() => {
 <template>
   <div class="w-full flex flex-col gap-3 overflow-hidden border border-hana-blue-200 rounded-lg bg-hana-blue-200/10 p-4 sm:flex-row sm:items-center dark:bg-hana-black">
     <nuxt-img
-      :src="curMusic.album.cover"
-      :alt="curMusic.album.title"
+      :src="curMusic.cover"
+      :alt="curMusic.album"
       class="aspect-video w-full rounded-lg object-cover sm:aspect-square sm:size-42"
     />
     <div class="min-w-0 flex flex-1 flex-col gap-3">
@@ -107,7 +107,7 @@ onMounted(() => {
           {{ curMusic.title }}
         </h3>
         <p class="truncate text-sm text-text dark:text-hana-white-700">
-          {{ curMusic.album.title }}
+          {{ curMusic.album }}
         </p>
       </div>
       <div class="mx-auto flex items-center gap-4">

@@ -140,10 +140,10 @@ export class AudioPlayer {
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title,
-        album: track.album.title,
+        album: track.album,
         artwork: [
           {
-            src: track.album.cover,
+            src: track.cover,
             sizes: '384x384',
             type: 'image/jpeg',
           },

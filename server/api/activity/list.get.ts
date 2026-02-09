@@ -25,16 +25,11 @@ async function selectActivityList(options: Options) {
         select: {
           id: true,
           title: true,
+          artist: true,
+          album: true,
           src: true,
           seconds: true,
-          album: {
-            select: {
-              id: true,
-              title: true,
-              cover: true,
-              description: true,
-            },
-          },
+          cover: true,
         },
       },
     },
@@ -43,13 +38,7 @@ async function selectActivityList(options: Options) {
   const result = await Promise.all(
     retrievedRes.map(async activity => ({
       ...activity,
-      music: activity.music.map(music => ({
-        ...music,
-        album: {
-          ...music.album!,
-          description: music.album!.description ?? undefined,
-        },
-      })),
+      music: activity.music,
       commentCount: await getActivityCommentCount(activity.id),
       publishedAt: dayjs(activity.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
       editedAt: dayjs(activity.editedAt).format('YYYY-MM-DD HH:mm:ss'),

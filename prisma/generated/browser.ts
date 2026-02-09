@@ -62,8 +62,3 @@ export type Activity = Prisma.ActivityModel
  * 
  */
 export type Music = Prisma.MusicModel
-/**
- * Model Album
- * 
- */
-export type Album = Prisma.AlbumModel

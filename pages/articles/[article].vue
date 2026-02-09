@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Toc } from '@nuxt/content'
+import type { NeighborItem } from '~/store/modules/article'
 import type { ArticleHeader } from '~/types/content'
 import dayjs from 'dayjs'
 import { navbarData, seoData } from '~/data/meta'
@@ -14,14 +15,20 @@ definePageMeta({
   name: 'article-detail',
 })
 
-const { path } = useRoute()
+const route = useRoute()
+const path = route.path
 
 const articleKey = computed(() => `article-${path}`)
 
-const { data: article } = await useAsyncData(
+// 从数据库获取文章详情
+const { data: articleResponse } = await useAsyncData(
   articleKey,
-  () => queryCollection('content').path(path).first(),
+  () => $fetch('/api/articles/detail', {
+    query: { path },
+  }),
 )
+
+const article = computed(() => articleResponse.value?.payload)
 
 if (article.value) {
   articleStore.setContent(article.value)
@@ -29,24 +36,21 @@ if (article.value) {
 
 const articleSurroundingsKey = computed(() => `article-${path}-surroundings`)
 
-const { data: neighbors } = await useAsyncData(
+// 从数据库获取前后文章
+const { data: neighborsResponse } = await useAsyncData(
   articleSurroundingsKey,
-  () =>
-    queryCollectionItemSurroundings(
-      'content',
-      path,
-      { fields: ['title', 'path'] },
-    )
-      .where('title', '<>', 'About')
-      .where('title', '<>', 'Friends')
-      .order('publishedAt', 'DESC'),
+  () => $fetch('/api/articles/neighbors', {
+    query: { path },
+  }),
 )
+
+const neighbors = computed(() => (neighborsResponse.value?.payload || [null, null]) as [NeighborItem, NeighborItem])
 
 if (neighbors.value && neighbors.value.length > 0) {
   articleStore.setNeighbors(neighbors.value)
 }
 
-const [prev, next] = neighbors.value || []
+const [prev, next] = neighbors.value
 
 const articleHeader = computed<ArticleHeader>(() => ({
   title: article.value?.title || '暂无标题',
@@ -77,7 +81,7 @@ useSeoMeta({
   description: articleHeader.value.description,
   ogTitle: articleHeader.value.title,
   ogDescription: articleHeader.value.description,
-  ogImage: seoData.mySite + img(articleHeader.value.ogImage, { q: 85 }),
+  ogImage: seoData.mySite + img(articleHeader.value.ogImage, { quality: 85 }),
   ogSiteName: navbarData.homeTitle,
   ogType: 'website',
   ogUrl: `${seoData.mySite}/${path}`,
@@ -109,7 +113,7 @@ useSeoMeta({
         <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !headerVisible }">
           <ArticleAuthor />
           <ArticleSwitch :prev="prev" :next="next" />
-          <ArticleToc v-if="article" :toc="article.body.toc as Toc" />
+          <ArticleToc v-if="article" :toc="article.body.toc as unknown as Toc" />
         </div>
       </div>
     </div>

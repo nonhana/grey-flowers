@@ -180,7 +180,7 @@ export type CategoryGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type CategoryGroupByOutputType = {
   id: number
   name: string
-  cover: string | null
+  cover: string
   articleCount: number
   _count: CategoryCountAggregateOutputType | null
   _avg: CategoryAvgAggregateOutputType | null
@@ -210,7 +210,7 @@ export type CategoryWhereInput = {
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   id?: Prisma.IntFilter<"Category"> | number
   name?: Prisma.StringFilter<"Category"> | string
-  cover?: Prisma.StringNullableFilter<"Category"> | string | null
+  cover?: Prisma.StringFilter<"Category"> | string
   articleCount?: Prisma.IntFilter<"Category"> | number
   articles?: Prisma.ArticleListRelationFilter
 }
@@ -218,7 +218,7 @@ export type CategoryWhereInput = {
 export type CategoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  cover?: Prisma.SortOrderInput | Prisma.SortOrder
+  cover?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
   articles?: Prisma.ArticleOrderByRelationAggregateInput
 }
@@ -229,7 +229,7 @@ export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
-  cover?: Prisma.StringNullableFilter<"Category"> | string | null
+  cover?: Prisma.StringFilter<"Category"> | string
   articleCount?: Prisma.IntFilter<"Category"> | number
   articles?: Prisma.ArticleListRelationFilter
 }, "id" | "name">
@@ -237,7 +237,7 @@ export type CategoryWhereUniqueInput = Prisma.AtLeast<{
 export type CategoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  cover?: Prisma.SortOrderInput | Prisma.SortOrder
+  cover?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
   _count?: Prisma.CategoryCountOrderByAggregateInput
   _avg?: Prisma.CategoryAvgOrderByAggregateInput
@@ -252,13 +252,13 @@ export type CategoryScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CategoryScalarWhereWithAggregatesInput | Prisma.CategoryScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Category"> | number
   name?: Prisma.StringWithAggregatesFilter<"Category"> | string
-  cover?: Prisma.StringNullableWithAggregatesFilter<"Category"> | string | null
+  cover?: Prisma.StringWithAggregatesFilter<"Category"> | string
   articleCount?: Prisma.IntWithAggregatesFilter<"Category"> | number
 }
 
 export type CategoryCreateInput = {
   name: string
-  cover?: string | null
+  cover: string
   articleCount?: number
   articles?: Prisma.ArticleCreateNestedManyWithoutCategoryInput
 }
@@ -266,14 +266,14 @@ export type CategoryCreateInput = {
 export type CategoryUncheckedCreateInput = {
   id?: number
   name: string
-  cover?: string | null
+  cover: string
   articleCount?: number
   articles?: Prisma.ArticleUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type CategoryUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
   articles?: Prisma.ArticleUpdateManyWithoutCategoryNestedInput
 }
@@ -281,7 +281,7 @@ export type CategoryUpdateInput = {
 export type CategoryUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
   articles?: Prisma.ArticleUncheckedUpdateManyWithoutCategoryNestedInput
 }
@@ -289,20 +289,20 @@ export type CategoryUncheckedUpdateInput = {
 export type CategoryCreateManyInput = {
   id?: number
   name: string
-  cover?: string | null
+  cover: string
   articleCount?: number
 }
 
 export type CategoryUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type CategoryUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -360,14 +360,14 @@ export type CategoryUpdateOneWithoutArticlesNestedInput = {
 
 export type CategoryCreateWithoutArticlesInput = {
   name: string
-  cover?: string | null
+  cover: string
   articleCount?: number
 }
 
 export type CategoryUncheckedCreateWithoutArticlesInput = {
   id?: number
   name: string
-  cover?: string | null
+  cover: string
   articleCount?: number
 }
 
@@ -389,14 +389,14 @@ export type CategoryUpdateToOneWithWhereWithoutArticlesInput = {
 
 export type CategoryUpdateWithoutArticlesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type CategoryUncheckedUpdateWithoutArticlesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -477,7 +477,7 @@ export type $CategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
-    cover: string | null
+    cover: string
     articleCount: number
   }, ExtArgs["result"]["category"]>
   composites: {}
