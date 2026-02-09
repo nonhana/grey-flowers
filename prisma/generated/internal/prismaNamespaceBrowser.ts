@@ -59,8 +59,7 @@ export const ModelName = {
   Message: 'Message',
   UserMessage: 'UserMessage',
   Activity: 'Activity',
-  Music: 'Music',
-  Album: 'Album'
+  Music: 'Music'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -184,23 +183,15 @@ export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typ
 export const MusicScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  artist: 'artist',
+  album: 'album',
   src: 'src',
   seconds: 'seconds',
-  albumId: 'albumId',
+  cover: 'cover',
   activityId: 'activityId'
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
-
-
-export const AlbumScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  cover: 'cover',
-  description: 'description'
-} as const
-
-export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
 
 
 export const SortOrder = {

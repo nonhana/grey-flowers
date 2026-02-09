@@ -392,8 +392,7 @@ export const ModelName = {
   Message: 'Message',
   UserMessage: 'UserMessage',
   Activity: 'Activity',
-  Music: 'Music',
-  Album: 'Album'
+  Music: 'Music'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "article" | "tag" | "category" | "user" | "comment" | "message" | "userMessage" | "activity" | "music" | "album"
+    modelProps: "article" | "tag" | "category" | "user" | "comment" | "message" | "userMessage" | "activity" | "music"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1079,80 +1078,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Album: {
-      payload: Prisma.$AlbumPayload<ExtArgs>
-      fields: Prisma.AlbumFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.AlbumFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.AlbumFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
-        }
-        findFirst: {
-          args: Prisma.AlbumFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.AlbumFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
-        }
-        findMany: {
-          args: Prisma.AlbumFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
-        }
-        create: {
-          args: Prisma.AlbumCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
-        }
-        createMany: {
-          args: Prisma.AlbumCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.AlbumCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
-        }
-        delete: {
-          args: Prisma.AlbumDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
-        }
-        update: {
-          args: Prisma.AlbumUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
-        }
-        deleteMany: {
-          args: Prisma.AlbumDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.AlbumUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.AlbumUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>[]
-        }
-        upsert: {
-          args: Prisma.AlbumUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlbumPayload>
-        }
-        aggregate: {
-          args: Prisma.AlbumAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateAlbum>
-        }
-        groupBy: {
-          args: Prisma.AlbumGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AlbumGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.AlbumCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AlbumCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -1297,23 +1222,15 @@ export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typ
 export const MusicScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  artist: 'artist',
+  album: 'album',
   src: 'src',
   seconds: 'seconds',
-  albumId: 'albumId',
+  cover: 'cover',
   activityId: 'activityId'
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
-
-
-export const AlbumScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  cover: 'cover',
-  description: 'description'
-} as const
-
-export type AlbumScalarFieldEnum = (typeof AlbumScalarFieldEnum)[keyof typeof AlbumScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1540,7 +1457,6 @@ export type GlobalOmitConfig = {
   userMessage?: Prisma.UserMessageOmit
   activity?: Prisma.ActivityOmit
   music?: Prisma.MusicOmit
-  album?: Prisma.AlbumOmit
 }
 
 /* Types for Logging */
