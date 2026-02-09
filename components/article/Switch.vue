@@ -1,5 +1,10 @@
 <script setup lang="ts">
-const props = defineProps<{ prev?: { title: string, path: string }, next?: { title: string, path: string } }>()
+import type { NeighborItem } from '~/store/modules/article'
+
+const props = defineProps<{
+  prev: NeighborItem
+  next: NeighborItem
+}>()
 const { prev, next } = toRefs(props)
 </script>
 
