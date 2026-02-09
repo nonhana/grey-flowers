@@ -48,7 +48,7 @@ const refinedSrc = computed(() => {
 
 <template>
   <ClientOnly>
-    <div class="m-auto w-full md:w-3/5">
+    <div class="m-auto w-full flex justify-center md:w-3/5">
       <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
     </div>
   </ClientOnly>
