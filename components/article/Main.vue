@@ -45,13 +45,11 @@ const articlesCountKey = computed(() => {
   return `articles-count?type=${props.type}&${queryStr}`
 })
 
-const { data: fetchedTotal } = await useAsyncData(
-  articlesCountKey,
-  () => $fetch('/api/articles/count', {
-    query: whereObj.value,
-  }),
-  { watch: [whereObj] },
-)
+const { data: fetchedTotal } = await useFetch('/api/articles/count', {
+  key: articlesCountKey,
+  query: whereObj,
+  watch: [whereObj],
+})
 const total = computed(() => fetchedTotal.value ? fetchedTotal.value.payload ?? 0 : 0)
 
 function transformPage(val: string) {
@@ -76,13 +74,11 @@ const articlesListKey = computed(() => {
   return `articles-list?type=${props.type}&${queryStr}`
 })
 
-const { data: fetchedArticleData } = await useAsyncData(
-  articlesListKey,
-  () => $fetch('/api/articles/list', {
-    query: fetchArticleQuery.value,
-  }),
-  { watch: [fetchArticleQuery] },
-)
+const { data: fetchedArticleData } = await useFetch('/api/articles/list', {
+  key: articlesListKey,
+  query: fetchArticleQuery,
+  watch: [fetchArticleQuery],
+})
 
 const articleData = computed(() => fetchedArticleData.value ? fetchedArticleData.value.payload ?? [] : [])
 

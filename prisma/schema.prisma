@@ -22,9 +22,9 @@ model Article {
   to          String    @unique
   title       String    @unique
   description String?
-  cover       String?
+  cover       String
   alt         String    @unique
-  ogImage     String?
+  ogImage     String
   published   Boolean   @default(false)
   wordCount   Int       @default(0)
   tags        Tag[]     @relation("ArticleTags")
@@ -45,7 +45,7 @@ model Tag {
 model Category {
   id           Int       @id @default(autoincrement())
   name         String    @unique
-  cover        String?
+  cover        String
   articleCount Int       @default(0)
   articles     Article[]
 }

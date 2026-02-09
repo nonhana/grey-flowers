@@ -23,7 +23,7 @@ const curYear = ref<string | null>(null)
 
 const monthList = computed(() =>
   curYear.value && dateMap.value && dateMap.value[curYear.value]
-    ? [...dateMap.value[curYear.value]].sort((a, b) => Number(b) - Number(a))
+    ? [...(dateMap.value[curYear.value] ?? [])].sort((a, b) => Number(b) - Number(a))
     : [],
 )
 const curMonth = ref<string | null>(null)

@@ -1,4 +1,5 @@
 import { Feed } from 'feed'
+import prisma from '~/lib/prisma'
 
 const titleBlacklist = ['About', 'Friends']
 
@@ -6,11 +7,19 @@ const basePath = 'https://caelum.moe'
 
 export default defineEventHandler(async (event) => {
   setHeader(event, 'content-type', 'text/xml')
-  const result = await queryCollection(event, 'content')
-    .select('title', 'path', 'description', 'publishedAt', 'cover')
-    .order('publishedAt', 'DESC')
-    .all()
-  const articles = result.filter(article => !titleBlacklist.includes(article.title!))
+  const result = await prisma.article.findMany({
+    select: {
+      title: true,
+      to: true,
+      description: true,
+      publishedAt: true,
+      cover: true,
+    },
+    orderBy: {
+      publishedAt: 'desc',
+    },
+  })
+  const articles = result.filter(article => !titleBlacklist.includes(article.title))
   const feed = new Feed({
     title: 'GreyFlowers',
     description: '在失去了意义的世界里，会绽放出什么颜色的花朵呢',
@@ -29,13 +38,13 @@ export default defineEventHandler(async (event) => {
 
   articles.forEach((article) => {
     feed.addItem({
-      title: article.title || '',
-      id: basePath + article.path,
-      link: basePath + article.path,
-      description: article.description,
-      content: article.description,
+      title: article.title,
+      id: basePath + article.to,
+      link: basePath + article.to,
+      description: article.description ?? '',
+      content: article.description ?? '',
       date: new Date(article.publishedAt),
-      image: `${basePath}/_ipx/q_85${article.cover}`,
+      image: article.cover,
     })
   })
 

@@ -240,9 +240,9 @@ export type ArticleGroupByOutputType = {
   to: string
   title: string
   description: string | null
-  cover: string | null
+  cover: string
   alt: string
-  ogImage: string | null
+  ogImage: string
   published: boolean
   wordCount: number
   categoryId: number | null
@@ -279,9 +279,9 @@ export type ArticleWhereInput = {
   to?: Prisma.StringFilter<"Article"> | string
   title?: Prisma.StringFilter<"Article"> | string
   description?: Prisma.StringNullableFilter<"Article"> | string | null
-  cover?: Prisma.StringNullableFilter<"Article"> | string | null
+  cover?: Prisma.StringFilter<"Article"> | string
   alt?: Prisma.StringFilter<"Article"> | string
-  ogImage?: Prisma.StringNullableFilter<"Article"> | string | null
+  ogImage?: Prisma.StringFilter<"Article"> | string
   published?: Prisma.BoolFilter<"Article"> | boolean
   wordCount?: Prisma.IntFilter<"Article"> | number
   categoryId?: Prisma.IntNullableFilter<"Article"> | number | null
@@ -297,9 +297,9 @@ export type ArticleOrderByWithRelationInput = {
   to?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  cover?: Prisma.SortOrderInput | Prisma.SortOrder
+  cover?: Prisma.SortOrder
   alt?: Prisma.SortOrder
-  ogImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
   published?: Prisma.SortOrder
   wordCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -319,8 +319,8 @@ export type ArticleWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ArticleWhereInput[]
   NOT?: Prisma.ArticleWhereInput | Prisma.ArticleWhereInput[]
   description?: Prisma.StringNullableFilter<"Article"> | string | null
-  cover?: Prisma.StringNullableFilter<"Article"> | string | null
-  ogImage?: Prisma.StringNullableFilter<"Article"> | string | null
+  cover?: Prisma.StringFilter<"Article"> | string
+  ogImage?: Prisma.StringFilter<"Article"> | string
   published?: Prisma.BoolFilter<"Article"> | boolean
   wordCount?: Prisma.IntFilter<"Article"> | number
   categoryId?: Prisma.IntNullableFilter<"Article"> | number | null
@@ -336,9 +336,9 @@ export type ArticleOrderByWithAggregationInput = {
   to?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  cover?: Prisma.SortOrderInput | Prisma.SortOrder
+  cover?: Prisma.SortOrder
   alt?: Prisma.SortOrder
-  ogImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
   published?: Prisma.SortOrder
   wordCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -360,9 +360,9 @@ export type ArticleScalarWhereWithAggregatesInput = {
   to?: Prisma.StringWithAggregatesFilter<"Article"> | string
   title?: Prisma.StringWithAggregatesFilter<"Article"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Article"> | string | null
-  cover?: Prisma.StringNullableWithAggregatesFilter<"Article"> | string | null
+  cover?: Prisma.StringWithAggregatesFilter<"Article"> | string
   alt?: Prisma.StringWithAggregatesFilter<"Article"> | string
-  ogImage?: Prisma.StringNullableWithAggregatesFilter<"Article"> | string | null
+  ogImage?: Prisma.StringWithAggregatesFilter<"Article"> | string
   published?: Prisma.BoolWithAggregatesFilter<"Article"> | boolean
   wordCount?: Prisma.IntWithAggregatesFilter<"Article"> | number
   categoryId?: Prisma.IntNullableWithAggregatesFilter<"Article"> | number | null
@@ -375,9 +375,9 @@ export type ArticleCreateInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   content?: string | null
@@ -392,9 +392,9 @@ export type ArticleUncheckedCreateInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   categoryId?: number | null
@@ -408,9 +408,9 @@ export type ArticleUpdateInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -425,9 +425,9 @@ export type ArticleUncheckedUpdateInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -442,9 +442,9 @@ export type ArticleCreateManyInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   categoryId?: number | null
@@ -457,9 +457,9 @@ export type ArticleUpdateManyMutationInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -472,9 +472,9 @@ export type ArticleUncheckedUpdateManyInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -669,9 +669,9 @@ export type ArticleCreateWithoutTagsInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   content?: string | null
@@ -685,9 +685,9 @@ export type ArticleUncheckedCreateWithoutTagsInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   categoryId?: number | null
@@ -725,9 +725,9 @@ export type ArticleScalarWhereInput = {
   to?: Prisma.StringFilter<"Article"> | string
   title?: Prisma.StringFilter<"Article"> | string
   description?: Prisma.StringNullableFilter<"Article"> | string | null
-  cover?: Prisma.StringNullableFilter<"Article"> | string | null
+  cover?: Prisma.StringFilter<"Article"> | string
   alt?: Prisma.StringFilter<"Article"> | string
-  ogImage?: Prisma.StringNullableFilter<"Article"> | string | null
+  ogImage?: Prisma.StringFilter<"Article"> | string
   published?: Prisma.BoolFilter<"Article"> | boolean
   wordCount?: Prisma.IntFilter<"Article"> | number
   categoryId?: Prisma.IntNullableFilter<"Article"> | number | null
@@ -740,9 +740,9 @@ export type ArticleCreateWithoutCategoryInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   content?: string | null
@@ -756,9 +756,9 @@ export type ArticleUncheckedCreateWithoutCategoryInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   content?: string | null
@@ -797,9 +797,9 @@ export type ArticleUpdateWithoutTagsInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -813,9 +813,9 @@ export type ArticleUncheckedUpdateWithoutTagsInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -829,9 +829,9 @@ export type ArticleUncheckedUpdateManyWithoutTagsInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -845,9 +845,9 @@ export type ArticleCreateManyCategoryInput = {
   to: string
   title: string
   description?: string | null
-  cover?: string | null
+  cover: string
   alt: string
-  ogImage?: string | null
+  ogImage: string
   published?: boolean
   wordCount?: number
   content?: string | null
@@ -859,9 +859,9 @@ export type ArticleUpdateWithoutCategoryInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -875,9 +875,9 @@ export type ArticleUncheckedUpdateWithoutCategoryInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -891,9 +891,9 @@ export type ArticleUncheckedUpdateManyWithoutCategoryInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cover?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
   alt?: Prisma.StringFieldUpdateOperationsInput | string
-  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ogImage?: Prisma.StringFieldUpdateOperationsInput | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1025,9 +1025,9 @@ export type $ArticlePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     to: string
     title: string
     description: string | null
-    cover: string | null
+    cover: string
     alt: string
-    ogImage: string | null
+    ogImage: string
     published: boolean
     wordCount: number
     categoryId: number | null
