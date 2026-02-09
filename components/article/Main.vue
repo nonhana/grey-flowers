@@ -16,19 +16,19 @@ function remainTwoDigits(num: string) {
 }
 
 const whereObj = computed(() => {
-  const result: ArticleFilterQuery = {}
+  const filter: ArticleFilterQuery = {}
   switch (props.type) {
     case 'tags':
-      result.tag = route.query.tag as string
+      filter.tag = route.query.tag as string
       break
     case 'category':
-      result.category = antiFlatStr(route.params.category as string)
+      filter.category = antiFlatStr(route.params.category as string)
       break
     case 'archives':
-      result.publishedAtMonth = `${query.value.year}-${remainTwoDigits(String(query.value.month ?? '01'))}`
+      filter.publishedAtMonth = `${query.value.year}-${remainTwoDigits(String(query.value.month ?? '01'))}`
       break
   }
-  return result
+  return filter
 })
 
 const displayCols = computed(() => {
