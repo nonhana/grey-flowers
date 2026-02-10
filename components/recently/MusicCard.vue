@@ -75,6 +75,13 @@ function stepMusic(type: 'prev' | 'next') {
     curMusicIndex.value < props.music.length - 1 && curMusicIndex.value++
 }
 
+// 格式化秒数为 mm:ss 格式
+function formatSeconds(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = Math.floor(totalSeconds % 60)
+  return `${minutes}:${String(seconds).padStart(2, '0')}`
+}
+
 onMounted(() => {
   $audioPlayer.registerMediaSessionHandlers({
     onPlay: () => {
@@ -158,8 +165,8 @@ onMounted(() => {
         @pointerdown="isSeeking = true"
       >
       <div class="w-full flex items-center justify-between text-xs text-text tabular-nums dark:text-hana-white-700">
-        <p>{{ formatTime(currentTime) }}</p>
-        <p>{{ formatTime(curMusic.seconds) }}</p>
+        <p>{{ formatSeconds(currentTime) }}</p>
+        <p>{{ formatSeconds(curMusic.seconds) }}</p>
       </div>
     </div>
   </div>
