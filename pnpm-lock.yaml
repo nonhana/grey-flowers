@@ -12,12 +12,6 @@ catalogs:
     '@iconify-json/lucide':
       specifier: ^1.2.89
       version: 1.2.89
-    '@iconify-json/mingcute':
-      specifier: ^1.2.7
-      version: 1.2.7
-    '@iconify-json/svg-spinners':
-      specifier: ^1.2.4
-      version: 1.2.4
     '@nuxt/content':
       specifier: ^3.11.2
       version: 3.11.2
@@ -54,9 +48,6 @@ catalogs:
     '@types/node':
       specifier: ^25.2.2
       version: 25.2.2
-    '@types/throttle-debounce':
-      specifier: ^5.0.2
-      version: 5.0.2
     '@types/vivus':
       specifier: ^0.4.7
       version: 0.4.7
@@ -81,15 +72,9 @@ catalogs:
     '@vueuse/router':
       specifier: ^14.2.0
       version: 14.2.0
-    baseline-browser-mapping:
-      specifier: ^2.9.19
-      version: 2.9.19
     bcrypt:
       specifier: ^6.0.0
       version: 6.0.0
-    better-sqlite3:
-      specifier: ^12.6.2
-      version: 12.6.2
     clipboard:
       specifier: ^2.0.11
       version: 2.0.11
@@ -135,9 +120,6 @@ catalogs:
     sass-embedded:
       specifier: ^1.97.3
       version: 1.97.3
-    throttle-debounce:
-      specifier: ^5.0.2
-      version: 5.0.2
     typescript:
       specifier: ^5.9.3
       version: 5.9.3
@@ -153,9 +135,6 @@ catalogs:
     vue:
       specifier: ^3.5.28
       version: 3.5.28
-    vue-component-type-helpers:
-      specifier: ^3.2.4
-      version: 3.2.4
     vue-router:
       specifier: ^5.0.2
       version: 5.0.2
@@ -170,9 +149,6 @@ importers:
       '@unocss/reset':
         specifier: 'catalog:'
         version: 66.6.0
-      better-sqlite3:
-        specifier: 'catalog:'
-        version: 12.6.2
       lucide-vue-next:
         specifier: 'catalog:'
         version: 0.563.0(vue@3.5.28(typescript@5.9.3))
@@ -185,9 +161,6 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.28(typescript@5.9.3)
-      vue-component-type-helpers:
-        specifier: 'catalog:'
-        version: 3.2.4
       vue-router:
         specifier: 'catalog:'
         version: 5.0.2(@vue/compiler-sfc@3.5.28)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
@@ -198,12 +171,6 @@ importers:
       '@iconify-json/lucide':
         specifier: 'catalog:'
         version: 1.2.89
-      '@iconify-json/mingcute':
-        specifier: 'catalog:'
-        version: 1.2.7
-      '@iconify-json/svg-spinners':
-        specifier: 'catalog:'
-        version: 1.2.4
       '@nuxt/content':
         specifier: 'catalog:'
         version: 3.11.2(@electric-sql/pglite@0.3.15)(better-sqlite3@12.6.2)(magicast@0.5.1)(mysql2@3.15.3)(valibot@1.2.0(typescript@5.9.3))
@@ -240,9 +207,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 25.2.2
-      '@types/throttle-debounce':
-        specifier: 'catalog:'
-        version: 5.0.2
       '@types/vivus':
         specifier: 'catalog:'
         version: 0.4.7
@@ -264,9 +228,6 @@ importers:
       '@vueuse/router':
         specifier: 'catalog:'
         version: 14.2.0(vue-router@5.0.2(@vue/compiler-sfc@3.5.28)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3)))(vue@3.5.28(typescript@5.9.3))
-      baseline-browser-mapping:
-        specifier: 'catalog:'
-        version: 2.9.19
       bcrypt:
         specifier: 'catalog:'
         version: 6.0.0
@@ -306,9 +267,6 @@ importers:
       sass-embedded:
         specifier: 'catalog:'
         version: 1.97.3
-      throttle-debounce:
-        specifier: 'catalog:'
-        version: 5.0.2
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1046,12 +1004,6 @@ packages:
 
   '@iconify-json/lucide@1.2.89':
     resolution: {integrity: sha512-9rZaJZn8VBls1KZnGaFTnqqZrUkd++XB3vy9WYIMgmHHgLxQMEZXg3V+oJSEeit0kCNr/OfDBmrDwuGl/LZulA==}
-
-  '@iconify-json/mingcute@1.2.7':
-    resolution: {integrity: sha512-bp4z6F53KAQp99aSL7qPCHL7HWUNGMNKIhfo/dx9pwVHiad/WusUbTOFXEZfpA44syJPzSOxa3O6Pwiq7qZz1g==}
-
-  '@iconify-json/svg-spinners@1.2.4':
-    resolution: {integrity: sha512-ayn0pogFPwJA1WFZpDnoq9/hjDxN+keeCMyThaX4d3gSJ3y0mdKUxIA/b1YXWGtY9wVtZmxwcvOIeEieG4+JNg==}
 
   '@iconify/collections@1.0.641':
     resolution: {integrity: sha512-G9LdUvewUdXp5SD4g06rWHpWo7s5/rQcsQxAQ3UQUqdRwkcUuPcGrY0qnZ0wzYLaeB0TVUrgC0MIigyhWiNgtQ==}
@@ -2391,9 +2343,6 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@25.0.10':
-    resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
-
   '@types/node@25.2.2':
     resolution: {integrity: sha512-BkmoP5/FhRYek5izySdkOneRyXYN35I860MFAGupTdebyE66uZaR+bXLHq8k4DirE5DwQi3NuhvRU1jqTVwUrQ==}
 
@@ -2406,9 +2355,6 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-
-  '@types/throttle-debounce@5.0.2':
-    resolution: {integrity: sha512-pDzSNulqooSKvSNcksnV72nk8p7gRqN8As71Sp28nov1IgmPKWbOEIwAWvBME5pPTtaXJAvG3O4oc76HlQ4kqQ==}
 
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
@@ -6486,10 +6432,6 @@ packages:
   text-decoder@1.2.3:
     resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
 
-  throttle-debounce@5.0.2:
-    resolution: {integrity: sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==}
-    engines: {node: '>=12.22'}
-
   tiny-emitter@2.1.0:
     resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
 
@@ -7010,9 +6952,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  vue-component-type-helpers@3.2.4:
-    resolution: {integrity: sha512-05lR16HeZDcDpB23ku5b5f1fBOoHqFnMiKRr2CiEvbG5Ux4Yi0McmQBOET0dR0nxDXosxyVqv67q6CzS3AK8rw==}
 
   vue-devtools-stub@0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}
@@ -7881,14 +7820,6 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-json/lucide@1.2.89':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/mingcute@1.2.7':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/svg-spinners@1.2.4':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -9387,10 +9318,6 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@25.0.10':
-    dependencies:
-      undici-types: 7.16.0
-
   '@types/node@25.2.2':
     dependencies:
       undici-types: 7.16.0
@@ -9404,8 +9331,6 @@ snapshots:
       csstype: 3.2.3
 
   '@types/resolve@1.20.2': {}
-
-  '@types/throttle-debounce@5.0.2': {}
 
   '@types/unist@2.0.11': {}
 
@@ -10378,6 +10303,7 @@ snapshots:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.3
+    optional: true
 
   bindings@1.5.0:
     dependencies:
@@ -10390,6 +10316,7 @@ snapshots:
       buffer: 5.7.1
       inherits: 2.0.4
       readable-stream: 3.6.2
+    optional: true
 
   boolbase@1.0.0: {}
 
@@ -10424,6 +10351,7 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+    optional: true
 
   buffer@6.0.3:
     dependencies:
@@ -10557,7 +10485,8 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
 
-  chownr@1.1.4: {}
+  chownr@1.1.4:
+    optional: true
 
   chownr@3.0.0: {}
 
@@ -10806,7 +10735,8 @@ snapshots:
     dependencies:
       mimic-response: 3.1.0
 
-  deep-extend@0.6.0: {}
+  deep-extend@0.6.0:
+    optional: true
 
   deep-is@0.1.4: {}
 
@@ -10931,6 +10861,7 @@ snapshots:
   end-of-stream@1.4.5:
     dependencies:
       once: 1.4.0
+    optional: true
 
   engine.io-client@6.6.3:
     dependencies:
@@ -11380,7 +11311,8 @@ snapshots:
       strip-final-newline: 4.0.0
       yoctocolors: 2.1.2
 
-  expand-template@2.0.3: {}
+  expand-template@2.0.3:
+    optional: true
 
   exsolve@1.0.8: {}
 
@@ -11479,7 +11411,8 @@ snapshots:
 
   fresh@2.0.0: {}
 
-  fs-constants@1.0.0: {}
+  fs-constants@1.0.0:
+    optional: true
 
   fsevents@2.3.3:
     optional: true
@@ -11549,7 +11482,8 @@ snapshots:
     dependencies:
       git-up: 8.1.1
 
-  github-from-package@0.0.0: {}
+  github-from-package@0.0.0:
+    optional: true
 
   github-slugger@2.0.0: {}
 
@@ -11914,7 +11848,8 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  ini@1.3.8: {}
+  ini@1.3.8:
+    optional: true
 
   ini@4.1.1: {}
 
@@ -12092,7 +12027,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 25.0.10
+      '@types/node': 25.2.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -12727,7 +12662,8 @@ snapshots:
 
   mitt@3.0.1: {}
 
-  mkdirp-classic@0.5.3: {}
+  mkdirp-classic@0.5.3:
+    optional: true
 
   mlly@1.8.0:
     dependencies:
@@ -12766,7 +12702,8 @@ snapshots:
 
   nanotar@0.2.0: {}
 
-  napi-build-utils@2.0.0: {}
+  napi-build-utils@2.0.0:
+    optional: true
 
   natural-compare@1.4.0: {}
 
@@ -12878,7 +12815,8 @@ snapshots:
 
   node-abi@3.85.0:
     dependencies:
-      semver: 7.7.3
+      semver: 7.7.4
+    optional: true
 
   node-addon-api@7.1.1: {}
 
@@ -13732,6 +13670,7 @@ snapshots:
       simple-get: 4.0.1
       tar-fs: 2.1.4
       tunnel-agent: 0.6.0
+    optional: true
 
   prelude-ls@1.2.1: {}
 
@@ -13781,6 +13720,7 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.5
       once: 1.4.0
+    optional: true
 
   punycode.js@2.3.1: {}
 
@@ -13818,6 +13758,7 @@ snapshots:
       ini: 1.3.8
       minimist: 1.2.8
       strip-json-comments: 2.0.1
+    optional: true
 
   react-dom@19.2.4(react@19.2.4):
     dependencies:
@@ -13841,6 +13782,7 @@ snapshots:
       inherits: 2.0.4
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
+    optional: true
 
   readable-stream@4.7.0:
     dependencies:
@@ -14494,7 +14436,8 @@ snapshots:
 
   strip-indent@4.1.1: {}
 
-  strip-json-comments@2.0.1: {}
+  strip-json-comments@2.0.1:
+    optional: true
 
   strip-json-comments@3.1.1: {}
 
@@ -14565,6 +14508,7 @@ snapshots:
       mkdirp-classic: 0.5.3
       pump: 3.0.3
       tar-stream: 2.2.0
+    optional: true
 
   tar-stream@2.2.0:
     dependencies:
@@ -14573,6 +14517,7 @@ snapshots:
       fs-constants: 1.0.0
       inherits: 2.0.4
       readable-stream: 3.6.2
+    optional: true
 
   tar-stream@3.1.7:
     dependencies:
@@ -14612,8 +14557,6 @@ snapshots:
       b4a: 1.7.3
     transitivePeerDependencies:
       - react-native-b4a
-
-  throttle-debounce@5.0.2: {}
 
   tiny-emitter@2.1.0: {}
 
@@ -14675,6 +14618,7 @@ snapshots:
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
+    optional: true
 
   type-check@0.4.0:
     dependencies:
@@ -15097,8 +15041,6 @@ snapshots:
       path-browserify: 1.0.1
     optionalDependencies:
       typescript: 5.9.3
-
-  vue-component-type-helpers@3.2.4: {}
 
   vue-devtools-stub@0.1.0: {}
 

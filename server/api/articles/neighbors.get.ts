@@ -1,3 +1,4 @@
+import type { Neighbors } from '~/store/modules/article'
 import prisma from '~/lib/prisma'
 
 export default formattedEventHandler(async (event) => {
@@ -5,10 +6,11 @@ export default formattedEventHandler(async (event) => {
   const path = query.path as string
 
   if (!path) {
-    throw createError({
+    return {
       statusCode: 400,
       statusMessage: 'Path parameter is required',
-    })
+      success: false,
+    }
   }
 
   // 获取当前文章
@@ -21,7 +23,7 @@ export default formattedEventHandler(async (event) => {
   })
 
   if (!currentArticle) {
-    return { payload: [] }
+    return { payload: [null, null] as Neighbors }
   }
 
   // 获取前一篇文章（发布时间早于当前文章）
@@ -50,12 +52,10 @@ export default formattedEventHandler(async (event) => {
     },
   })
 
-  const payload = [
+  const payload: Neighbors = [
     prevArticle ? { title: prevArticle.title, path: prevArticle.to } : null,
     nextArticle ? { title: nextArticle.title, path: nextArticle.to } : null,
   ]
 
-  return {
-    payload,
-  }
+  return { payload }
 })

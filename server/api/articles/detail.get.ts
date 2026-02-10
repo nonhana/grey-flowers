@@ -27,10 +27,11 @@ export default formattedEventHandler(async (event) => {
   const path = query.path as string
 
   if (!path) {
-    throw createError({
+    return {
       statusCode: 400,
       statusMessage: 'Path parameter is required',
-    })
+      success: false,
+    }
   }
 
   // 从数据库查询文章
@@ -43,10 +44,11 @@ export default formattedEventHandler(async (event) => {
   })
 
   if (!article) {
-    throw createError({
+    return {
       statusCode: 404,
       statusMessage: 'Article not found',
-    })
+      success: false,
+    }
   }
 
   // 使用缓存的 Markdown 解析器（首次解析后缓存，后续请求直接返回）
@@ -77,7 +79,5 @@ export default formattedEventHandler(async (event) => {
     meta: {},
   }
 
-  return {
-    payload,
-  }
+  return { payload }
 })
