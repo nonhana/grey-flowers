@@ -6,7 +6,6 @@ async function selectSingleActivity(id: number) {
     where: { id },
     select: {
       id: true,
-      title: true,
       content: true,
       images: true,
       publishedAt: true,

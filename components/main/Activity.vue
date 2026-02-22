@@ -122,7 +122,6 @@ function truncateContent(content: string | undefined, maxLength: number): string
           <NuxtImg
             v-if="featuredActivity.images?.[0]"
             :src="featuredActivity.images[0]"
-            :alt="featuredActivity.title"
             class="absolute inset-0 size-full transition-transform duration-500 object-cover group-hover:scale-105"
           />
 

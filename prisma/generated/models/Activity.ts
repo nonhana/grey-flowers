@@ -36,7 +36,6 @@ export type ActivitySumAggregateOutputType = {
 
 export type ActivityMinAggregateOutputType = {
   id: number | null
-  title: string | null
   content: string | null
   publishedAt: Date | null
   editedAt: Date | null
@@ -44,7 +43,6 @@ export type ActivityMinAggregateOutputType = {
 
 export type ActivityMaxAggregateOutputType = {
   id: number | null
-  title: string | null
   content: string | null
   publishedAt: Date | null
   editedAt: Date | null
@@ -52,7 +50,6 @@ export type ActivityMaxAggregateOutputType = {
 
 export type ActivityCountAggregateOutputType = {
   id: number
-  title: number
   content: number
   images: number
   publishedAt: number
@@ -71,7 +68,6 @@ export type ActivitySumAggregateInputType = {
 
 export type ActivityMinAggregateInputType = {
   id?: true
-  title?: true
   content?: true
   publishedAt?: true
   editedAt?: true
@@ -79,7 +75,6 @@ export type ActivityMinAggregateInputType = {
 
 export type ActivityMaxAggregateInputType = {
   id?: true
-  title?: true
   content?: true
   publishedAt?: true
   editedAt?: true
@@ -87,7 +82,6 @@ export type ActivityMaxAggregateInputType = {
 
 export type ActivityCountAggregateInputType = {
   id?: true
-  title?: true
   content?: true
   images?: true
   publishedAt?: true
@@ -183,7 +177,6 @@ export type ActivityGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type ActivityGroupByOutputType = {
   id: number
-  title: string
   content: string
   images: string[]
   publishedAt: Date
@@ -215,7 +208,6 @@ export type ActivityWhereInput = {
   OR?: Prisma.ActivityWhereInput[]
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   id?: Prisma.IntFilter<"Activity"> | number
-  title?: Prisma.StringFilter<"Activity"> | string
   content?: Prisma.StringFilter<"Activity"> | string
   images?: Prisma.StringNullableListFilter<"Activity">
   publishedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
@@ -225,7 +217,6 @@ export type ActivityWhereInput = {
 
 export type ActivityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   images?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -238,7 +229,6 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   OR?: Prisma.ActivityWhereInput[]
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
-  title?: Prisma.StringFilter<"Activity"> | string
   content?: Prisma.StringFilter<"Activity"> | string
   images?: Prisma.StringNullableListFilter<"Activity">
   publishedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
@@ -248,7 +238,6 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
 
 export type ActivityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   images?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -265,7 +254,6 @@ export type ActivityScalarWhereWithAggregatesInput = {
   OR?: Prisma.ActivityScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ActivityScalarWhereWithAggregatesInput | Prisma.ActivityScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Activity"> | number
-  title?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   content?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   images?: Prisma.StringNullableListFilter<"Activity">
   publishedAt?: Prisma.DateTimeWithAggregatesFilter<"Activity"> | Date | string
@@ -273,7 +261,6 @@ export type ActivityScalarWhereWithAggregatesInput = {
 }
 
 export type ActivityCreateInput = {
-  title: string
   content?: string
   images?: Prisma.ActivityCreateimagesInput | string[]
   publishedAt?: Date | string
@@ -283,7 +270,6 @@ export type ActivityCreateInput = {
 
 export type ActivityUncheckedCreateInput = {
   id?: number
-  title: string
   content?: string
   images?: Prisma.ActivityCreateimagesInput | string[]
   publishedAt?: Date | string
@@ -292,7 +278,6 @@ export type ActivityUncheckedCreateInput = {
 }
 
 export type ActivityUpdateInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ActivityUpdateimagesInput | string[]
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -302,7 +287,6 @@ export type ActivityUpdateInput = {
 
 export type ActivityUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ActivityUpdateimagesInput | string[]
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -312,7 +296,6 @@ export type ActivityUncheckedUpdateInput = {
 
 export type ActivityCreateManyInput = {
   id?: number
-  title: string
   content?: string
   images?: Prisma.ActivityCreateimagesInput | string[]
   publishedAt?: Date | string
@@ -320,7 +303,6 @@ export type ActivityCreateManyInput = {
 }
 
 export type ActivityUpdateManyMutationInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ActivityUpdateimagesInput | string[]
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -329,7 +311,6 @@ export type ActivityUpdateManyMutationInput = {
 
 export type ActivityUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ActivityUpdateimagesInput | string[]
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -346,7 +327,6 @@ export type StringNullableListFilter<$PrismaModel = never> = {
 
 export type ActivityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   images?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -359,7 +339,6 @@ export type ActivityAvgOrderByAggregateInput = {
 
 export type ActivityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -367,7 +346,6 @@ export type ActivityMaxOrderByAggregateInput = {
 
 export type ActivityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -408,7 +386,6 @@ export type ActivityUpdateOneWithoutMusicNestedInput = {
 }
 
 export type ActivityCreateWithoutMusicInput = {
-  title: string
   content?: string
   images?: Prisma.ActivityCreateimagesInput | string[]
   publishedAt?: Date | string
@@ -417,7 +394,6 @@ export type ActivityCreateWithoutMusicInput = {
 
 export type ActivityUncheckedCreateWithoutMusicInput = {
   id?: number
-  title: string
   content?: string
   images?: Prisma.ActivityCreateimagesInput | string[]
   publishedAt?: Date | string
@@ -441,7 +417,6 @@ export type ActivityUpdateToOneWithWhereWithoutMusicInput = {
 }
 
 export type ActivityUpdateWithoutMusicInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ActivityUpdateimagesInput | string[]
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -450,7 +425,6 @@ export type ActivityUpdateWithoutMusicInput = {
 
 export type ActivityUncheckedUpdateWithoutMusicInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ActivityUpdateimagesInput | string[]
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -490,7 +464,6 @@ export type ActivityCountOutputTypeCountMusicArgs<ExtArgs extends runtime.Types.
 
 export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
   content?: boolean
   images?: boolean
   publishedAt?: boolean
@@ -501,7 +474,6 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 
 export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
   content?: boolean
   images?: boolean
   publishedAt?: boolean
@@ -510,7 +482,6 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 
 export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
   content?: boolean
   images?: boolean
   publishedAt?: boolean
@@ -519,14 +490,13 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 
 export type ActivitySelectScalar = {
   id?: boolean
-  title?: boolean
   content?: boolean
   images?: boolean
   publishedAt?: boolean
   editedAt?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content" | "images" | "publishedAt" | "editedAt", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "images" | "publishedAt" | "editedAt", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   music?: boolean | Prisma.Activity$musicArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityCountOutputTypeDefaultArgs<ExtArgs>
@@ -541,7 +511,6 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    title: string
     content: string
     images: string[]
     publishedAt: Date
@@ -971,7 +940,6 @@ export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime
  */
 export interface ActivityFieldRefs {
   readonly id: Prisma.FieldRef<"Activity", 'Int'>
-  readonly title: Prisma.FieldRef<"Activity", 'String'>
   readonly content: Prisma.FieldRef<"Activity", 'String'>
   readonly images: Prisma.FieldRef<"Activity", 'String[]'>
   readonly publishedAt: Prisma.FieldRef<"Activity", 'DateTime'>
