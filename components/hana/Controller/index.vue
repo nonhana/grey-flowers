@@ -97,6 +97,8 @@ const isArticlePage = computed(() => route.name === 'article-detail')
 
 <template>
   <transition-group name="controller" tag="div" class="fixed bottom-10 right-10 z-50 flex flex-col gap-4">
+    <HanaControllerPlayer v-if="!isIdle" key="player" />
+
     <HanaControllerVolume v-if="!isIdle" key="volume" />
 
     <div v-if="dialogCount === 0 && hasComments" key="comments" class="relative hana-card">

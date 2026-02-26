@@ -35,7 +35,7 @@ function handleInput(e: Event) {
 
 <template>
   <div
-    class="relative w-14 overflow-hidden hana-card transition-all duration-300"
+    class="relative overflow-hidden hana-card transition-all duration-300"
     :style="{ height: controllerHeight }"
     @mouseenter="showVolumePanel = true"
     @mouseleave="showVolumePanel = false"

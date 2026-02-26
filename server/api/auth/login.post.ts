@@ -9,7 +9,7 @@ export default formattedEventHandler(async (event) => {
   const body = await readBody(event)
   const { account, password } = body
 
-  const isEmail = z.string().email().safeParse(account).success
+  const isEmail = z.email().safeParse(account).success
 
   const user = await prisma.user.findUnique({
     where: isEmail ? { email: account } : { username: account },
