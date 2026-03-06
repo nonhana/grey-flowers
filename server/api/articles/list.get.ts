@@ -18,7 +18,7 @@ async function selectArticleList(options: Options) {
     rest.publishedAt = { gte: curMonth, lt: nextMonth }
   }
   const retrievedRes = await prisma.article.findMany({
-    where: rest,
+    where: { ...rest, published: true },
     skip: (page - 1) * pageSize,
     take: pageSize,
     orderBy: { publishedAt: 'desc' },

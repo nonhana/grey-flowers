@@ -15,7 +15,7 @@ export default formattedEventHandler(async (event) => {
 
   // 获取当前文章
   const currentArticle = await prisma.article.findUnique({
-    where: { to: path },
+    where: { to: path, published: true },
     select: {
       publishedAt: true,
       title: true,
@@ -29,6 +29,7 @@ export default formattedEventHandler(async (event) => {
   // 获取前一篇文章（发布时间早于当前文章）
   const prevArticle = await prisma.article.findFirst({
     where: {
+      published: true,
       publishedAt: { lt: currentArticle.publishedAt },
       title: { notIn: ['About', 'Friends'] },
     },
@@ -42,6 +43,7 @@ export default formattedEventHandler(async (event) => {
   // 获取后一篇文章（发布时间晚于当前文章）
   const nextArticle = await prisma.article.findFirst({
     where: {
+      published: true,
       publishedAt: { gt: currentArticle.publishedAt },
       title: { notIn: ['About', 'Friends'] },
     },

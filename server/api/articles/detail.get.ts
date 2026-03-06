@@ -36,7 +36,7 @@ export default formattedEventHandler(async (event) => {
 
   // 从数据库查询文章
   const article = await prisma.article.findUnique({
-    where: { to: path },
+    where: { to: path, published: true },
     include: {
       tags: { select: { name: true } },
       category: { select: { name: true } },

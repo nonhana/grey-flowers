@@ -3,6 +3,7 @@ import prisma from '~/lib/prisma'
 // 获取发布文章的 { 年: [月份] } 映射
 async function getDates(): Promise<Record<string, string[]>> {
   const articles = await prisma.article.findMany({
+    where: { published: true },
     select: { publishedAt: true },
   })
   const dateMap = new Map<string, Set<string>>()

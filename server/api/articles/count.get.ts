@@ -12,7 +12,7 @@ async function selectArticleCount(options: Options) {
     const nextMonth = dayjs(publishedAtMonth).add(1, 'month').toDate()
     rest.publishedAt = { gte: curMonth, lt: nextMonth }
   }
-  return await prisma.article.count({ where: rest })
+  return await prisma.article.count({ where: { ...rest, published: true } })
 }
 
 export default formattedEventHandler(async (event) => {
