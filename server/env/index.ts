@@ -11,7 +11,6 @@ const envSchema = z.object({
   HANA_MAIL_ENABLE: z.enum(['true', 'false']),
   RESEND_API_KEY: z.string(),
   RESEND_FROM: z.string(),
-  WEBHOOK_SECRET: z.string(),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)

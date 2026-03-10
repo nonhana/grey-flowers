@@ -48,7 +48,6 @@ jobs:
           HANA_MAIL_ENABLE: ${{ secrets.HANA_MAIL_ENABLE }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM: ${{ secrets.RESEND_FROM }}
-          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
 
       - name: Prepare artifact directory
         run: |
