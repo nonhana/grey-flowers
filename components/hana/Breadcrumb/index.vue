@@ -14,7 +14,7 @@ onMounted(() => {
   if (breadcrumbRef.value) {
     const items = breadcrumbRef.value.querySelectorAll('#breadcrumb-item')
     if (items.length) {
-      items.at(-1)!.setAttribute('aria-current', 'page')
+      [...items].at(-1)!.setAttribute('aria-current', 'page')
     }
   }
 })
