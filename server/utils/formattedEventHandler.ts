@@ -33,8 +33,8 @@ export function formattedEventHandler<T, S>(
 
       const { statusCode, statusMessage, success, payload, error } = res
 
-      const formattedPayload = payload === undefined || payload === null ? null : payload
-      const formattedError = error === undefined || error === null ? null : error
+      const formattedPayload = payload ?? null
+      const formattedError = error ?? null
 
       return {
         statusCode: statusCode || 200,

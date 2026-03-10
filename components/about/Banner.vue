@@ -5,9 +5,9 @@ const welcomeStr = '你好！欢迎来到这里 👋。'
 const introStr = '我是 non_hana，意为“没有花”，你也可以叫我 Hana 🌷'
 const roleStr = '一个正在努力学习中的 NodeJS Developer'
 
-const welcomeCharArr = Array.from(welcomeStr)
-const introCharArr = Array.from(introStr)
-const roleCharArr = Array.from(roleStr)
+const welcomeCharArr = [...welcomeStr]
+const introCharArr = [...introStr]
+const roleCharArr = [...roleStr]
 
 const welcomeRef = useTemplateRef('welcomeRef')
 const introRef = useTemplateRef('introRef')
@@ -15,7 +15,7 @@ const roleRef = useTemplateRef('roleRef')
 const SNSRef = useTemplateRef('SNSRef')
 
 function animateChildren(children: HTMLCollection): Promise<void> {
-  const childrenArr = Array.from(children) as HTMLElement[]
+  const childrenArr = [...children] as HTMLElement[]
   return new Promise((resolve) => {
     childrenArr.forEach((child, index) => {
       setTimeout(() => {

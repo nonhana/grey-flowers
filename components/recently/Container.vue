@@ -89,7 +89,7 @@ async function ensureCurActivityLoaded() {
   if (!curActivityId.value)
     return
 
-  while (!activities.value.find(item => item.id === curActivityId.value) && hasMore.value) {
+  while (!activities.value.some(item => item.id === curActivityId.value) && hasMore.value) {
     const ok = await fetchActivities()
     if (!ok)
       break

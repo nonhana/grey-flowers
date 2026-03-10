@@ -1,6 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '~/prisma/generated/client'
-import env from '~/server/env/dotenv'
+import env from '~/server/env'
 
 function prismaClientSingleton() {
   const connectionString = `${env.HANA_DATABASE_URL}`

@@ -26,7 +26,7 @@ export function useRoutesArr() {
       .split('/')
       .filter(Boolean)
       .reduce((acc, cur) => {
-        acc.push(`${acc[acc.length - 1] || ''}/${cur}`)
+        acc.push(`${acc.at(-1) || ''}/${cur}`)
         return acc
       }, [] as string[])
 

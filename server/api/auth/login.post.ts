@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
-import env from '~/server/env/dotenv'
+import env from '~/server/env'
 
 export default formattedEventHandler(async (event) => {
   const body = await readBody(event)
@@ -39,9 +39,7 @@ export default formattedEventHandler(async (event) => {
     site: user.site,
   }
 
-  const token = jwt.sign(userInfo, env.HANA_JWT_SECRET!, {
-    expiresIn: '30d',
-  })
+  const token = jwt.sign(userInfo, env.HANA_JWT_SECRET, { expiresIn: '30d' })
 
   return { payload: { token, userInfo } }
 })

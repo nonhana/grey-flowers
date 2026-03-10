@@ -17,7 +17,7 @@ async function getDates(): Promise<Record<string, string[]>> {
   })
   const result: Record<string, string[]> = {}
   dateMap.forEach((monthsSet, year) => {
-    result[year] = Array.from(monthsSet)
+    result[year] = [...monthsSet]
   })
   return result
 }

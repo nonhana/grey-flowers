@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import env from '~/server/env/dotenv'
+import env from '~/server/env'
 
 // 未登录、登录正常用户放行，登录过期用户返回401
 export default formattedEventHandler(async (event) => {
@@ -12,7 +12,7 @@ export default formattedEventHandler(async (event) => {
   }
 
   try {
-    jwt.verify(token, env.HANA_JWT_SECRET!)
+    jwt.verify(token, env.HANA_JWT_SECRET)
     return {
       statusCode: 200,
       success: true,

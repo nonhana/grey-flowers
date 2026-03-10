@@ -7,7 +7,7 @@ const activeStatus = ref(Array.from<boolean>({ length: routesMap.size }).fill(fa
 const rootRoute = computed(() => `/${path.value.split('/')[1]}`)
 watchEffect(() => {
   activeStatus.value = Array.from<boolean>({ length: routesMap.size }).fill(false)
-  activeStatus.value[Array.from(routesMap.keys()).indexOf(rootRoute.value)] = true
+  activeStatus.value[[...routesMap.keys()].indexOf(rootRoute.value)] = true
 })
 
 const drawerVisible = ref(false)

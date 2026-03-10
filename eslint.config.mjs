@@ -9,4 +9,9 @@ export default antfu({
   yaml: true,
   unocss: true,
   ignores: ['content/**/*', 'prisma/**/*', 'node_modules/**/*'],
+  rules: {
+    'e18e/ban-dependencies': ['error', {
+      allowed: ['dotenv'],
+    }],
+  },
 })

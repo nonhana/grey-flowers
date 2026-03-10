@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { seoData } from '~/data/meta'
-import env from '~/server/env/dotenv'
+import env from '~/server/env'
 
 interface MailContext {
   receiverEmail: string
@@ -30,11 +30,11 @@ function escapeHtml(str: string) {
   if (!str)
     return ''
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll('\'', '&#039;')
 }
 
 function renderHtml(ctx: MailContext) {

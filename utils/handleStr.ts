@@ -1,5 +1,7 @@
+const WHITESPACE_REGEX = /\s+/g
+
 export function flatStr(str: string): string {
-  return str.trim().replace(/\s+/g, '-').toLowerCase()
+  return str.trim().replace(WHITESPACE_REGEX, '-').toLowerCase()
 }
 
 export function antiFlatStr(str: string): string {

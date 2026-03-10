@@ -52,7 +52,7 @@ export default formattedEventHandler(async (event) => {
   }
 
   // 使用缓存的 Markdown 解析器（首次解析后缓存，后续请求直接返回）
-  const articleKey = `${article.to.replace(/\//g, ':')}:${article.editedAt.getTime()}`
+  const articleKey = `${article.to.replaceAll('/', ':')}:${article.editedAt.getTime()}`
   const parsed = await cachedParseMarkdown(articleKey, article.content || '')
 
   const payload: ContentCollectionItem = {
