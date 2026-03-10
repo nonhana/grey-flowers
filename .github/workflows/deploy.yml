@@ -5,10 +5,13 @@ on:
     branches:
       - master
   workflow_dispatch:
+  repository_dispatch:
+    types:
+      - article_published
 
 concurrency:
   group: vps-deploy
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
