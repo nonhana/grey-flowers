@@ -41,6 +41,11 @@ jobs:
         env:
           NODE_ENV: ${{ secrets.NODE_ENV }}
           HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+          HANA_JWT_SECRET: ${{ secrets.HANA_JWT_SECRET }}
+          HANA_MAIL_ENABLE: ${{ secrets.HANA_MAIL_ENABLE }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM: ${{ secrets.RESEND_FROM }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
 
       - name: Prepare artifact directory
         run: |
