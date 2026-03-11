@@ -382,7 +382,7 @@ export type ArticleCreateInput = {
   wordCount?: number
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
   tags?: Prisma.TagCreateNestedManyWithoutArticlesInput
   category?: Prisma.CategoryCreateNestedOneWithoutArticlesInput
 }
@@ -400,7 +400,7 @@ export type ArticleUncheckedCreateInput = {
   categoryId?: number | null
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutArticlesInput
 }
 
@@ -450,7 +450,7 @@ export type ArticleCreateManyInput = {
   categoryId?: number | null
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
 }
 
 export type ArticleUpdateManyMutationInput = {
@@ -676,7 +676,7 @@ export type ArticleCreateWithoutTagsInput = {
   wordCount?: number
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
   category?: Prisma.CategoryCreateNestedOneWithoutArticlesInput
 }
 
@@ -693,7 +693,7 @@ export type ArticleUncheckedCreateWithoutTagsInput = {
   categoryId?: number | null
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
 }
 
 export type ArticleCreateOrConnectWithoutTagsInput = {
@@ -747,7 +747,7 @@ export type ArticleCreateWithoutCategoryInput = {
   wordCount?: number
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
   tags?: Prisma.TagCreateNestedManyWithoutArticlesInput
 }
 
@@ -763,7 +763,7 @@ export type ArticleUncheckedCreateWithoutCategoryInput = {
   wordCount?: number
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutArticlesInput
 }
 
@@ -852,7 +852,7 @@ export type ArticleCreateManyCategoryInput = {
   wordCount?: number
   content?: string | null
   publishedAt?: Date | string
-  editedAt?: Date | string
+  editedAt: Date | string
 }
 
 export type ArticleUpdateWithoutCategoryInput = {
