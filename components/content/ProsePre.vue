@@ -24,19 +24,38 @@ const [isCollapsed, toggleCollapsed] = useToggle(collapsible.value)
 
 const copyBtn = useTemplateRef('copyBtnRef')
 const codeblock = useTemplateRef('codeblockRef')
+const figureRef = useTemplateRef('figureRef')
+const figcaptionRef = useTemplateRef('figcaptionRef')
+
+const { y: windowScrollY } = useWindowScroll()
+const { bottom: figureBottom } = useElementBounding(figureRef)
+const { top: figcaptionTop, height: figcaptionHeight } = useElementBounding(figcaptionRef)
+
+const stickyTopPx = computed(() => (headerStatusStore.hidden ? 8 : 56))
+const isStickyActive = computed(() => {
+  void windowScrollY.value
+
+  return figcaptionTop.value <= stickyTopPx.value + 1
+    && figureBottom.value > stickyTopPx.value + figcaptionHeight.value
+})
 
 useCopy(copyBtn, codeblock)
 </script>
 
 <template>
   <figure
+    ref="figureRef"
     class="relative text-clip border-2 border-primary-400 rounded-lg bg-primary-100 text-sm dark:border-hana-black-200 dark:bg-hana-black"
   >
     <figcaption
-      class="sticky z-10 flex items-center justify-between gap-4 px-4 pt-2 text-text transition-all dark:text-hana-white-700"
+      ref="figcaptionRef"
+      class="sticky z-10 flex items-center justify-between gap-4 text-text transition-all dark:text-hana-white-700"
       :class="[headerStatusStore.hidden ? 'top-2' : 'top-14']"
     >
-      <div class="flex items-center gap-2">
+      <div
+        class="flex items-center gap-2 rounded-lg px-4 py-2 transition-colors duration-300"
+        :class="isStickyActive ? 'bg-hana-blue-150 dark:bg-hana-black-800' : 'bg-transparent'"
+      >
         <span v-if="language">{{ language }}</span>
         <Icon v-if="filename" class="text-text hidden md:block dark:text-hana-white-700" name="lucide:arrow-right" />
         <span v-if="filename" class="items-center border-2 border-solid px-1 hidden md:flex">
@@ -44,13 +63,17 @@ useCopy(copyBtn, codeblock)
           {{ filename }}
         </span>
       </div>
-      <button ref="copyBtnRef" class="cursor-pointer">
+      <button
+        ref="copyBtnRef"
+        class="cursor-pointer rounded-lg px-4 py-2 transition-colors duration-300"
+        :class="isStickyActive ? 'bg-hana-blue-150 dark:bg-hana-black-800' : 'bg-transparent'"
+      >
         <span>copy</span>
       </button>
     </figcaption>
     <pre
       ref="codeblockRef"
-      class="overflow-auto px-4 py-2 font-code scrollbar-none"
+      class="overflow-auto px-4 pb-2 font-code scrollbar-none"
       :class="[props.class, { 'animate-none overflow-hidden': isCollapsed }]"
       :style="{ maxHeight: isCollapsed ? collapsibleHeight : 'none' }"
     ><slot /></pre>
