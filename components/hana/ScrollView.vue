@@ -184,7 +184,7 @@ defineExpose({
     ref="containerRef"
     role="group"
     class="relative size-full overflow-hidden"
-    :class="[{ 'md:pr-2.5': isRight, 'md:pb-2.5': isBottom }]"
+    :class="[{ 'md:pr-2': isRight, 'md:pb-2': isBottom }]"
   >
     <div
       :id="contentWrapperId"
@@ -200,7 +200,7 @@ defineExpose({
 
     <!-- 滚动条 -->
     <div
-      class="absolute rounded bg-hana-blue-100 hidden md:block"
+      class="absolute rounded bg-hana-blue-100 hidden md:block dark:bg-hana-black-800"
       :class="[
         scrollbarClass,
         {
@@ -214,7 +214,7 @@ defineExpose({
         v-if="!isNone"
         role="button"
         tabindex="0"
-        class="rounded bg-hana-blue-200"
+        class="rounded bg-hana-blue-200 dark:bg-hana-white-700"
         :style="scrollBarStyle"
         @mousedown.prevent="onThumbMouseDown"
       />
