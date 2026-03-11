@@ -129,8 +129,8 @@ function truncateContent(content: string | undefined, maxLength: number): string
             v-else
             class="absolute inset-0 from-hana-blue-100 via-hana-blue-50 to-white bg-gradient-to-br dark:from-hana-black-800 dark:via-hana-black-700 dark:to-hana-black"
           >
-            <div class="absolute inset-0 opacity-20">
-              <Icon name="lucide:quote" class="absolute left-8 top-8 size-24 text-hana-blue" />
+            <div class="absolute inset-0 opacity-20 dark:opacity-60">
+              <Icon name="lucide:quote" class="absolute left-8 top-8 size-24 text-hana-blue dark:text-hana-blue-300" />
             </div>
           </div>
 
@@ -144,12 +144,12 @@ function truncateContent(content: string | undefined, maxLength: number): string
 
             <p
               v-if="featuredActivity.content"
-              class="mb-4 text-sm text-text leading-relaxed line-clamp-3 drop-shadow"
+              class="mb-4 text-sm text-text leading-relaxed line-clamp-3 drop-shadow dark:text-hana-white-700"
             >
               {{ truncateContent(featuredActivity.content, 120) }}
             </p>
 
-            <div class="flex items-center justify-between text-xs text-text">
+            <div class="flex items-center justify-between text-xs text-text dark:text-hana-white-700">
               <time :datetime="featuredActivity.publishedAt" class="flex items-center gap-1">
                 <Icon name="lucide:clock" size="12" />
                 {{ featuredActivity.publishedAt }}
