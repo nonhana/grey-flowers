@@ -70,9 +70,9 @@ const curType = computed(() => {
           @keydown="handleKeyDown"
           @input="handleInput"
         >
-        <span
+        <div
           v-if="suffixIcon || $slots.suffix || type === 'password'"
-          class="absolute right-3 top-1/2 text-text -translate-y-1/2 dark:text-hana-white-700"
+          class="absolute right-3 top-1/2 flex text-text -translate-y-1/2 dark:text-hana-white-700"
         >
           <slot name="suffix" />
           <Icon v-if="suffixIcon && type !== 'password'" :name="suffixIcon" size="20" />
@@ -83,7 +83,7 @@ const curType = computed(() => {
             class="cursor-pointer"
             @click="toggleShowPassword"
           />
-        </span>
+        </div>
       </div>
     </template>
 
