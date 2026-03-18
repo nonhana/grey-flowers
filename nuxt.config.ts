@@ -64,6 +64,17 @@ export default defineNuxtConfig({
       cssnano: { plugins: [] }, // 禁用压缩 CSS 插件，避免 build 时无法解析某些 CSS 规则
     },
   },
+  vite: {
+    optimizeDeps: {
+      include: [
+        'hana-img-viewer',
+        'dayjs', // CJS
+        'gsap',
+        'vivus', // CJS
+        'lucide-vue-next',
+      ],
+    },
+  },
   modules: [
     '@nuxt/icon',
     '@nuxt/image',
