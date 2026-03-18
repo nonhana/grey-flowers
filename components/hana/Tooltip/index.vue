@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useStore } from '~/store'
+
 const props = withDefaults(defineProps<{
   content?: string
   showArrow?: boolean
@@ -14,6 +16,11 @@ const props = withDefaults(defineProps<{
   trigger: 'hover',
   animation: 'fade',
 })
+
+const { uiInfoStore } = useStore()
+
+// UX：移动端不显示 ToolTip
+const isMobile = uiInfoStore.breakpoints.smaller('md')
 
 const tooltipRef = useTemplateRef('tooltipRef')
 
@@ -113,7 +120,7 @@ const positionClass = computed(() => {
 
     <HanaTooltipAnime :animation="animation" :position="position">
       <div
-        v-show="visible"
+        v-show="visible && !isMobile"
         class="absolute z-50"
         :style="offsetStyle"
         :class="positionClass"

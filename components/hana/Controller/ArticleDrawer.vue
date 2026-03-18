@@ -3,7 +3,7 @@ import type { Toc } from '@nuxt/content'
 import { useStore } from '~/store'
 
 const route = useRoute()
-const { articleStore, dialogStore } = useStore()
+const { articleStore, dialogStore, uiInfoStore } = useStore()
 const { content, neighbors } = toRefs(articleStore)
 
 const isClient = ref(false)
@@ -11,17 +11,12 @@ onMounted(() => {
   isClient.value = true
 })
 
-const isMobile = ref(false)
-if (import.meta.client) {
-  const { width: windowWidth } = useWindowSize()
-  watchEffect(() => {
-    isMobile.value = windowWidth.value < 1280
-  })
-}
-
 const isArticlePage = computed(() => route.name === 'article-detail')
 const visible = computed(() =>
-  isClient.value && dialogStore.dialogCount === 0 && isArticlePage.value && isMobile.value,
+  isClient.value
+  && dialogStore.dialogCount === 0
+  && isArticlePage.value
+  && uiInfoStore.breakpoints.smaller('xl').value,
 )
 
 const drawerVisible = ref(false)

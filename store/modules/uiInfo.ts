@@ -1,4 +1,8 @@
-export const useGlobalScrollStore = defineStore('global-scroll', () => {
+import { breakpointsTailwind } from '@vueuse/core'
+
+export const useUIInfoStore = defineStore('ui-info', () => {
+  const breakpoints = useBreakpoints(breakpointsTailwind)
+
   const scrollTop = ref(0)
   const scrollHeight = ref(0)
   const clientHeight = ref(0)
@@ -16,6 +20,7 @@ export const useGlobalScrollStore = defineStore('global-scroll', () => {
   }
 
   return {
+    breakpoints,
     scrollTop,
     scrollHeight,
     clientHeight,

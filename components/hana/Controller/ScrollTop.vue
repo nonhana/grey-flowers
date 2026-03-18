@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useStore } from '~/store'
 
-const { dialogStore, globalScrollStore } = useStore()
-const { scrollTop, scrollHeight, clientHeight } = toRefs(globalScrollStore)
+const { dialogStore, uiInfoStore } = useStore()
+const { scrollTop, scrollHeight, clientHeight } = toRefs(uiInfoStore)
 
 const canScroll = ref(false)
 

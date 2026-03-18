@@ -3,7 +3,7 @@ import HanaScrollView from '~/components/hana/ScrollView.vue'
 import { useStore } from '~/store'
 
 const route = useRoute()
-const { headerStatusStore, globalScrollStore } = useStore()
+const { headerStatusStore, uiInfoStore } = useStore()
 useRouterOptions()
 
 const isHome = computed(() => route.fullPath === '/')
@@ -14,8 +14,8 @@ const scrollViewRef = useTemplateRef('scrollViewRef')
 
 watchEffect(() => {
   if (scrollViewRef.value) {
-    globalScrollStore.setScrollHeight(scrollViewRef.value.contentHeight)
-    globalScrollStore.setClientHeight(scrollViewRef.value.containerHeight)
+    uiInfoStore.setScrollHeight(scrollViewRef.value.contentHeight)
+    uiInfoStore.setClientHeight(scrollViewRef.value.containerHeight)
   }
 })
 </script>
@@ -28,7 +28,7 @@ watchEffect(() => {
       content-wrapper-id="global-scroll-view-wrapper"
       class="h-dvh"
       content-class="min-h-dvh flex flex-col"
-      @scroll="globalScrollStore.setScrollTop($event)"
+      @scroll="uiInfoStore.setScrollTop($event)"
     >
       <transition name="banner">
         <MainBanner v-if="isHome" />

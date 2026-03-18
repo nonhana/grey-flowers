@@ -1,8 +1,8 @@
-import { useGlobalScrollStore } from './globalScroll'
+import { useUIInfoStore } from './uiInfo'
 
 export const useHeaderStatusStore = defineStore('headerStatus', () => {
   const route = useRoute()
-  const globalScrollStore = useGlobalScrollStore()
+  const uiInfoStore = useUIInfoStore()
 
   const hidden = ref(false)
 
@@ -12,7 +12,7 @@ export const useHeaderStatusStore = defineStore('headerStatus', () => {
 
   // effects
   let lastScrollY = 0
-  watch(() => globalScrollStore.scrollTop, (newTop) => {
+  watch(() => uiInfoStore.scrollTop, (newTop) => {
     if (route.name === 'article-detail') {
       if (newTop > lastScrollY) {
         setHidden(true)
