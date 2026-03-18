@@ -72,6 +72,7 @@ export default defineNuxtConfig({
         'gsap',
         'vivus', // CJS
         'lucide-vue-next',
+        'clipboard',
       ],
     },
   },

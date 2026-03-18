@@ -31,6 +31,7 @@ const currentTime = computed({
 })
 
 watch(curMusic, (newTrack, oldTrack) => {
+  const { $audioPlayer } = useNuxtApp()
   if (globalCurTrack.value?.id === oldTrack?.id) {
     $audioPlayer.loadAndPlay(newTrack)
   }

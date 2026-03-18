@@ -2,20 +2,16 @@
 import { Volume, Volume1, Volume2, VolumeOff } from 'lucide-vue-next'
 
 const volume = ref(0)
-
+const isIdle = ref(true)
 const isMuted = ref(false)
 
 onMounted(() => {
   const { $audioPlayer } = useNuxtApp()
-
-  const unsubscribeVolume = $audioPlayer.subscribe((state) => {
+  onUnmounted($audioPlayer.subscribe((state) => {
     volume.value = state.volume
     isMuted.value = state.isMuted
-  })
-
-  onUnmounted(() => {
-    unsubscribeVolume()
-  })
+    isIdle.value = state.playbackState === 'idle'
+  }))
 })
 
 function toggleMuted() {
@@ -35,6 +31,7 @@ function handleInput(e: Event) {
 
 <template>
   <div
+    v-if="!isIdle"
     class="relative overflow-hidden hana-card transition-all duration-300"
     :style="{ height: controllerHeight }"
     @mouseenter="showVolumePanel = true"

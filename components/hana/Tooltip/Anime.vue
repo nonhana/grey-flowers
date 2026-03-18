@@ -46,7 +46,7 @@ const animateClass = computed<Animation>(() => {
 </script>
 
 <template>
-  <Transition
+  <transition
     name="hana-tooltip"
     :enter-active-class="animateClass.enterActiveClass"
     :enter-from-class="animateClass.enterFromClass"
