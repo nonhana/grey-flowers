@@ -1668,6 +1668,11 @@ export type ArticleFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Articles.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Articles.
+   */
   distinct?: Prisma.ArticleScalarFieldEnum | Prisma.ArticleScalarFieldEnum[]
 }
 

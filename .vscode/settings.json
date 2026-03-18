@@ -48,7 +48,5 @@
     "scss",
     "pcss",
     "postcss"
-  ],
-
-  "css.customData": [".vscode/tailwind.json"]
+  ]
 }
