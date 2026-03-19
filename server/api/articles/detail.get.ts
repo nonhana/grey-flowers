@@ -3,24 +3,17 @@ import type { ContentCollectionItem } from '@nuxt/content'
 import highlighter from '#mdc-highlighter'
 import prisma from '~/lib/prisma'
 
-const cachedParseMarkdown = defineCachedFunction(
-  async (_articleKey: string, content: string) => {
-    return await parseMarkdown(content, {
-      highlight: {
-        highlighter,
-      },
-      toc: {
-        depth: 2,
-        searchDepth: 2,
-      },
-    })
-  },
-  {
-    maxAge: 60 * 60 * 24 * 7, // 固定缓存 7 天
-    name: 'parsedArticles',
-    getKey: (articleKey: string) => articleKey,
-  },
-)
+async function parseArticleMarkdown(content: string) {
+  return await parseMarkdown(content, {
+    highlight: {
+      highlighter,
+    },
+    toc: {
+      depth: 2,
+      searchDepth: 2,
+    },
+  })
+}
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)
@@ -51,9 +44,8 @@ export default formattedEventHandler(async (event) => {
     }
   }
 
-  // 使用缓存的 Markdown 解析器（首次解析后缓存，后续请求直接返回）
-  const articleKey = `${article.to.replaceAll('/', ':')}:${article.editedAt.getTime()}`
-  const parsed = await cachedParseMarkdown(articleKey, article.content || '')
+  const articleContent = article.content || ''
+  const parsed = await parseArticleMarkdown(articleContent)
 
   const payload: ContentCollectionItem = {
     id: article.to,

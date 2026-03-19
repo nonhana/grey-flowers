@@ -16,17 +16,12 @@ definePageMeta({
 })
 
 const route = useRoute()
-const path = route.path
-
-const articleKey = computed(() => `article-${path}`)
 
 // 从数据库获取文章详情
-const { data: articleResponse } = await useAsyncData(
-  articleKey,
-  () => $fetch('/api/articles/detail', {
-    query: { path },
-  }),
-)
+const { data: articleResponse } = await useFetch('/api/articles/detail', {
+  key: () => `article-${route.path}`,
+  query: { path: route.path },
+})
 
 const article = computed(() => articleResponse.value?.payload)
 
@@ -34,15 +29,11 @@ if (article.value) {
   articleStore.setContent(article.value)
 }
 
-const articleSurroundingsKey = computed(() => `article-${path}-surroundings`)
-
 // 从数据库获取前后文章
-const { data: neighborsResponse } = await useAsyncData(
-  articleSurroundingsKey,
-  () => $fetch('/api/articles/neighbors', {
-    query: { path },
-  }),
-)
+const { data: neighborsResponse } = await useFetch('/api/articles/neighbors', {
+  key: () => `article-${route.path}-surroundings`,
+  query: { path: route.path },
+})
 
 const neighbors = computed(() => (neighborsResponse.value?.payload || [null, null]) as [NeighborItem, NeighborItem])
 
@@ -71,7 +62,7 @@ useHead({
   link: [
     {
       rel: 'canonical',
-      href: `${seoData.mySite}/${path}`,
+      href: `${seoData.mySite}/${route.path}`,
     },
   ],
 })
@@ -84,7 +75,7 @@ useSeoMeta({
   ogImage: seoData.mySite + img(articleHeader.value.ogImage, { quality: 85 }),
   ogSiteName: navbarData.homeTitle,
   ogType: 'website',
-  ogUrl: `${seoData.mySite}/${path}`,
+  ogUrl: `${seoData.mySite}/${route.path}`,
   twitterSite: '@non_hanaz',
   twitterCard: 'summary_large_image',
   twitterTitle: articleHeader.value.title,
