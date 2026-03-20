@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import type { ImagePreviewProps } from 'hana-img-viewer'
 import { HanaImgViewer } from 'hana-img-viewer'
 
-const props = defineProps<{
-  src: string
-  alt?: string
-  width?: string | number
-  height?: string | number
-}>()
+type ProseImgProps = Pick<
+  ImagePreviewProps,
+  | 'src'
+  | 'alt'
+  | 'previewSrc'
+  | 'containerClass'
+  | 'containerStyle'
+  | 'thumbnailClass'
+  | 'thumbnailStyle'
+>
+
+const props = defineProps<ProseImgProps>()
 
 function withLeadingSlash(path: string): string {
   return path.charAt(0) === '/' ? path : `/${path}`
@@ -22,12 +29,10 @@ function joinURL(base: string, path: string): string {
   if (!path)
     return base
 
-  // Remove trailing slash from base if path starts with slash
   if (base.charAt(base.length - 1) === '/' && path.charAt(0) === '/') {
     return base + path.slice(1)
   }
 
-  // Add slash between base and path if neither has it
   if (base.charAt(base.length - 1) !== '/' && path.charAt(0) !== '/') {
     return `${base}/${path}`
   }
@@ -48,8 +53,6 @@ const refinedSrc = computed(() => {
 
 <template>
   <ClientOnly>
-    <div class="m-auto w-full flex justify-center">
-      <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
-    </div>
+    <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
   </ClientOnly>
 </template>
