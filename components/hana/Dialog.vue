@@ -158,7 +158,7 @@ defineExpose({
         <div v-if="programmatic">
           <span class="dark:text-hana-white">{{ content }}</span>
         </div>
-        <div v-else class="max-h-[80vh] overflow-y-auto" :style="{ height }">
+        <div v-else class="max-h-[80dvh] overflow-y-auto" :style="{ height }">
           <slot />
         </div>
         <div v-if="programmatic" class="mt-5 flex justify-end gap-4">

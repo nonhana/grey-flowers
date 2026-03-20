@@ -37,8 +37,8 @@ const activityPath = computed(() => `/recently?id=${props.item?.id}`)
             v-for="image in props.item.images"
             :key="image"
             :src="image"
-            class="size-full cursor-pointer overflow-hidden rounded-xl object-cover"
-            loading="lazy"
+            thumbnail-class="mx-auto max-h-[78dvh]"
+            thumbnail-style="width: auto;"
           />
         </div>
         <RecentlyMusicCard v-if="props.item?.music && props.item.music.length > 0" :music="props.item.music" />
