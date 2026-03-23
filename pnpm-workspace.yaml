@@ -34,10 +34,10 @@ catalog:
   clipboard: ^2.0.11
   dayjs: ^1.11.20
   dotenv: ^17.3.1
-  eslint: ^10.0.3
+  eslint: ^10.1.0
   feed: ^5.2.0
   gsap: ^3.14.2
-  hana-img-viewer: ^3.0.0
+  hana-img-viewer: ^3.1.0
   jsonwebtoken: ^9.0.3
   lucide-vue-next: ^0.577.0
   nuxt: ^4.4.2

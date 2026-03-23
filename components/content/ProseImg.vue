@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ImagePreviewProps } from 'hana-img-viewer'
+import type { PropsType } from 'hana-img-viewer'
 import { HanaImgViewer } from 'hana-img-viewer'
 
 type ProseImgProps = Pick<
-  ImagePreviewProps,
+  PropsType,
   | 'src'
   | 'alt'
   | 'previewSrc'
