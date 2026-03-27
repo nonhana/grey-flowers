@@ -40,8 +40,8 @@ function gotoDetail() {
         <HanaButton icon-button icon="lucide:external-link" @click="gotoDetail" />
       </HanaTooltip>
     </header>
-    <main class="my-5 text-black dark:text-hana-white">
-      <p class="my-5 whitespace-pre-wrap leading-6 line-clamp-6">
+    <main class="my-5 text-black dark:text-hana-white space-y-5">
+      <p class="whitespace-pre-wrap leading-6 line-clamp-6">
         {{ item.content }}
       </p>
       <RecentlyPhotoGrid :images="item.images" @click="gotoDetail" />

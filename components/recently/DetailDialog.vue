@@ -28,8 +28,8 @@ const activityPath = computed(() => `/recently?id=${props.item?.id}`)
           </span>
         </div>
       </header>
-      <main class="my-5 text-black dark:text-hana-white">
-        <p class="mb-5 whitespace-pre-wrap leading-6">
+      <main class="my-5 text-black dark:text-hana-white space-y-5">
+        <p class="whitespace-pre-wrap leading-6">
           {{ props.item.content }}
         </p>
         <div v-if="props.item.images && props.item.images.length" class="flex flex-col gap-5">
