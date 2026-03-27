@@ -27,6 +27,7 @@ onMounted(() => {
 })
 
 const featuredActivity = computed(() => activities.value[0])
+const hasFeaturedImage = computed(() => Boolean(featuredActivity.value?.images?.[0]))
 
 const compactActivities = computed(() => activities.value.slice(1))
 
@@ -77,10 +78,10 @@ function getActivityIcon(item: ActivityItem): string {
 /** 获取动态类型标签 */
 function getActivityLabel(item: ActivityItem): string {
   if (item.music && item.music.length > 0)
-    return '音乐分享'
+    return '一些音乐'
   if (item.images && item.images.length > 0)
-    return '图片动态'
-  return '日常碎语'
+    return '一些图片'
+  return '一些吐槽'
 }
 
 /** 截断内容 */
@@ -117,12 +118,20 @@ function truncateContent(content: string | undefined, maxLength: number): string
           class="group relative cursor-pointer overflow-hidden hana-card lg:row-span-2 p-0!"
           @click="handleViewDetail(featuredActivity)"
         >
-          <div class="absolute inset-0 from-black/60 via-black/20 to-transparent bg-gradient-to-t" />
-
           <NuxtImg
             v-if="featuredActivity.images?.[0]"
             :src="featuredActivity.images[0]"
             class="absolute inset-0 size-full transition-transform duration-500 object-cover group-hover:scale-105"
+          />
+
+          <div
+            v-if="hasFeaturedImage"
+            class="pointer-events-none absolute inset-0 z-0 from-white/72 via-white/18 to-transparent bg-gradient-to-t dark:from-hana-black/78 dark:via-hana-black/20"
+          />
+
+          <div
+            v-if="hasFeaturedImage"
+            class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-3/5 from-hana-blue-50/70 via-white/55 to-transparent bg-gradient-to-t dark:from-hana-black dark:via-hana-black/72"
           />
 
           <div
@@ -135,33 +144,40 @@ function truncateContent(content: string | undefined, maxLength: number): string
           </div>
 
           <div class="relative z-10 h-full min-h-64 flex flex-col justify-end p-6 lg:min-h-80">
-            <div class="mb-3 flex items-center gap-2">
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-hana-blue/90 px-3 py-1 text-xs text-white backdrop-blur-sm">
-                <Icon :name="getActivityIcon(featuredActivity)" size="12" />
-                {{ getActivityLabel(featuredActivity) }}
-              </span>
-            </div>
-
-            <p
-              v-if="featuredActivity.content"
-              class="mb-4 text-sm text-text leading-relaxed line-clamp-3 drop-shadow dark:text-hana-white-700"
+            <div
+              :class="hasFeaturedImage ? 'rounded-2xl border border-white/45 bg-white/72 p-4 shadow-md backdrop-blur-md dark:border-white/8 dark:bg-hana-black/72' : ''"
             >
-              {{ truncateContent(featuredActivity.content, 120) }}
-            </p>
+              <div class="mb-3 flex items-center gap-2">
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs backdrop-blur-sm"
+                  :class="hasFeaturedImage ? 'bg-hana-blue-100/88 text-hana-blue shadow-sm dark:bg-hana-black-700/82 dark:text-hana-blue-200' : 'bg-hana-blue/90 text-white'"
+                >
+                  <Icon :name="getActivityIcon(featuredActivity)" size="12" />
+                  {{ getActivityLabel(featuredActivity) }}
+                </span>
+              </div>
 
-            <div class="flex items-center justify-between text-xs text-text dark:text-hana-white-700">
-              <time :datetime="featuredActivity.publishedAt" class="flex items-center gap-1">
-                <Icon name="lucide:clock" size="12" />
-                {{ featuredActivity.publishedAt }}
-              </time>
-              <span class="flex items-center gap-1">
-                <Icon name="lucide:message-circle" size="12" />
-                {{ featuredActivity.commentCount }}
-              </span>
+              <p
+                v-if="featuredActivity.content"
+                class="mb-4 text-sm text-text leading-relaxed line-clamp-3 dark:text-hana-white-700"
+              >
+                {{ truncateContent(featuredActivity.content, 120) }}
+              </p>
+
+              <div class="flex items-center justify-between text-xs text-text dark:text-hana-white-700">
+                <time :datetime="featuredActivity.publishedAt" class="flex items-center gap-1">
+                  <Icon name="lucide:clock" size="12" />
+                  {{ featuredActivity.publishedAt }}
+                </time>
+                <span class="flex items-center gap-1">
+                  <Icon name="lucide:message-circle" size="12" />
+                  {{ featuredActivity.commentCount }}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div class="absolute inset-0 bg-hana-blue/0 transition-colors duration-300 group-hover:bg-hana-blue/10" />
+          <div class="absolute inset-0 bg-hana-blue/0 transition-colors duration-300 group-hover:bg-hana-blue/6 dark:group-hover:bg-hana-blue-300/5" />
         </article>
 
         <article
