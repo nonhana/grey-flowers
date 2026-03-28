@@ -243,7 +243,7 @@ export type CommentGroupByOutputType = {
   _max: CommentMaxAggregateOutputType | null
 }
 
-type GetCommentGroupByPayload<T extends CommentGroupByArgs> = Prisma.PrismaPromise<
+export type GetCommentGroupByPayload<T extends CommentGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CommentGroupByOutputType, T['by']> &
       {

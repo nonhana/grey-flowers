@@ -221,7 +221,7 @@ export type MusicGroupByOutputType = {
   _max: MusicMaxAggregateOutputType | null
 }
 
-type GetMusicGroupByPayload<T extends MusicGroupByArgs> = Prisma.PrismaPromise<
+export type GetMusicGroupByPayload<T extends MusicGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<MusicGroupByOutputType, T['by']> &
       {
