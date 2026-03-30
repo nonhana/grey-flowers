@@ -62,7 +62,7 @@ export const siteMetaData = {
   // Test on: https://developers.facebook.com/tools/debug/ or https://socialsharepreview.com/
   ogDescription: seoData.description,
   ogImage: seoData.image,
-  ogSiteName: seoData.mySite,
+  ogSiteName: seoData.siteName,
   ogType: 'website',
   ogUrl: seoData.mySite,
 

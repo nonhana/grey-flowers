@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     layoutTransition: { name: 'layout', mode: 'out-in' },
   },
   site: {
+    name: seoData.siteName,
     url: seoData.mySite,
     identity: {
       type: 'Person',
