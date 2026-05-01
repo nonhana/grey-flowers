@@ -4,7 +4,7 @@ import { useStore } from '~/store'
 
 withDefaults(defineProps<ArticleHeader>(), {
   title: '暂无标题',
-  description: '暂无简介~',
+  description: '暂无简介',
   cover: '/images/not-found.webp',
   alt: '暂无图片',
   ogImage: '/images/not-found.webp',

@@ -87,7 +87,7 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     return {
       to: article.to,
       title: article.title,
-      description: article.description || '暂无简介~',
+      description: article.description || '暂无简介',
       cover: article.cover || '/images/not-found.webp',
       tags: article.tags,
       publishedAt: article.publishedAt,

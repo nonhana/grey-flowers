@@ -45,7 +45,7 @@ const [prev, next] = neighbors.value
 
 const articleHeader = computed<ArticleHeader>(() => ({
   title: article.value?.title || '暂无标题',
-  description: article.value?.description || '暂无简介~',
+  description: article.value?.description || '暂无简介',
   cover: article.value?.cover || '/images/not-found.webp',
   alt: article.value?.alt || '暂无图片',
   ogImage: article.value?.ogImage || '/images/not-found.webp',
