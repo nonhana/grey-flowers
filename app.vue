@@ -3,7 +3,7 @@ import { siteMetaData } from '~/data/meta'
 
 const route = useRoute()
 
-const initializing = ref(route.name !== 'article-detail')
+const initializing = ref(route.name !== ARTICLE_DETAIL_PAGE)
 
 onMounted(() => initializing.value = false)
 

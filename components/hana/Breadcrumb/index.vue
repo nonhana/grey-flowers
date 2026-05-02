@@ -6,6 +6,9 @@ const props = withDefaults(defineProps<{
   separator: '>',
 })
 
+const route = useRoute()
+const isArticleDetail = computed(() => route.name === ARTICLE_DETAIL_PAGE)
+
 const breadcrumbRef = useTemplateRef('breadcrumbRef')
 
 provide('breadcrumbKey', props)
@@ -21,7 +24,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="breadcrumbRef" class="my-5 flex overflow-auto text-text dark:text-hana-white-700">
+  <div
+    ref="breadcrumbRef"
+    class="mx-auto my-5 flex overflow-auto text-text dark:text-hana-white-700"
+    :class="[isArticleDetail && 'max-w-5xl']"
+  >
     <slot />
   </div>
 </template>

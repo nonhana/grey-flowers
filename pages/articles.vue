@@ -5,7 +5,7 @@ const curRouteArr = useRoutesArr()
 const route = useRoute()
 const { name } = toRefs(route)
 
-const isDetail = computed(() => (name.value as string)!.startsWith('article-detail'))
+const isDetail = computed(() => (name.value as string)!.startsWith(ARTICLE_DETAIL_PAGE))
 
 const showPage = ref(true)
 

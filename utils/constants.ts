@@ -6,3 +6,5 @@ export const hanaInfo: SimpleUserInfo = {
   site: 'https://caelum.moe',
   avatar: '/images/avatar.webp',
 }
+
+export const ARTICLE_DETAIL_PAGE = 'article-detail'

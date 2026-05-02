@@ -40,7 +40,7 @@ watchEffect(() => {
         <MainHeader />
       </header>
       <main class="flex-1">
-        <div class="mx-auto flex-1 p-8 md:max-w-[90%] xl:max-w-[70%]">
+        <div class="mx-auto flex-1 p-8 2xl:max-w-[60%] md:max-w-[90%] xl:max-w-[70%]">
           <slot />
         </div>
       </main>

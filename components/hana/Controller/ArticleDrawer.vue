@@ -11,7 +11,7 @@ onMounted(() => {
   isClient.value = true
 })
 
-const isArticlePage = computed(() => route.name === 'article-detail')
+const isArticlePage = computed(() => route.name === ARTICLE_DETAIL_PAGE)
 const visible = computed(() =>
   isClient.value
   && dialogStore.dialogCount === 0

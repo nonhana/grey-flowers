@@ -12,7 +12,7 @@ const { headerVisible } = toRefs(articleStore)
 const img = useImage()
 
 definePageMeta({
-  name: 'article-detail',
+  name: ARTICLE_DETAIL_PAGE,
 })
 
 const route = useRoute()
