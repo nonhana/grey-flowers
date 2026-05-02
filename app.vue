@@ -14,6 +14,13 @@ useHead({
 })
 
 useSeoMeta(siteMetaData)
+
+const colorMode = useColorMode()
+const indicatorColor = computed(() =>
+  colorMode.value === 'light'
+    ? 'oklch(0.5 0.1102 250.04)'
+    : 'oklch(0.84 0.0632 214.03)',
+)
 </script>
 
 <template>
@@ -21,6 +28,7 @@ useSeoMeta(siteMetaData)
     <HanaLoading v-if="initializing" />
   </transition>
   <div v-show="!initializing" class="bg-hana-blue-200/10 background-grid dark:bg-hana-black-900">
+    <NuxtLoadingIndicator :color="indicatorColor" />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
