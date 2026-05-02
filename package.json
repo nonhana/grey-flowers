@@ -31,7 +31,6 @@
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@iconify-json/lucide": "catalog:",
-    "@nuxt/content": "catalog:",
     "@nuxt/icon": "catalog:",
     "@nuxt/image": "catalog:",
     "@nuxtjs/color-mode": "catalog:",

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { Toc } from '@nuxt/content'
+import type { Toc } from '@nuxtjs/mdc'
+import type { MarkdownNavigationItem } from '~/types/markdown'
 
 const props = defineProps<{
   toc: Toc
-  prev?: { title: string, path: string }
-  next?: { title: string, path: string }
+  prev?: MarkdownNavigationItem | null
+  next?: MarkdownNavigationItem | null
 }>()
 
 const visible = defineModel<boolean>()

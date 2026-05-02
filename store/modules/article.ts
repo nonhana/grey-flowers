@@ -1,7 +1,6 @@
-import type { ContentCollectionItem, ContentNavigationItem } from '@nuxt/content'
+import type { ArticleMarkdownPayload, Neighbors } from '~/types/markdown'
 
-export type NeighborItem = ContentNavigationItem | null
-export type Neighbors = [NeighborItem, NeighborItem]
+export type { NeighborItem, Neighbors } from '~/types/markdown'
 
 export const useArticleStore = defineStore('article', () => {
   const headerVisible = ref(false)
@@ -9,8 +8,8 @@ export const useArticleStore = defineStore('article', () => {
     headerVisible.value = status
   }
 
-  const content = ref<ContentCollectionItem | null>(null)
-  const setContent = (v: ContentCollectionItem) => {
+  const content = ref<ArticleMarkdownPayload | null>(null)
+  const setContent = (v: ArticleMarkdownPayload) => {
     content.value = v
   }
 

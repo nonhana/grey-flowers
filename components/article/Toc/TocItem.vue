@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TocLink } from '@nuxt/content'
+import type { TocLink } from '@nuxtjs/mdc'
 
 const props = defineProps<{
   link: TocLink

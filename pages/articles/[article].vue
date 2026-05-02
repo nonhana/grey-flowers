@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { Toc } from '@nuxt/content'
-import type { NeighborItem } from '~/store/modules/article'
 import type { ArticleHeader } from '~/types/content'
+import type { ArticleMarkdownPayload, Neighbors } from '~/types/markdown'
 import dayjs from 'dayjs'
 import { navbarData, seoData } from '~/data/meta'
 import { useStore } from '~/store'
@@ -23,7 +22,7 @@ const { data: articleResponse } = await useFetch('/api/articles/detail', {
   query: { path: route.path },
 })
 
-const article = computed(() => articleResponse.value?.payload)
+const article = computed(() => (articleResponse.value?.payload as ArticleMarkdownPayload | null) ?? null)
 
 if (article.value) {
   articleStore.setContent(article.value)
@@ -35,7 +34,7 @@ const { data: neighborsResponse } = await useFetch('/api/articles/neighbors', {
   query: { path: route.path },
 })
 
-const neighbors = computed(() => (neighborsResponse.value?.payload || [null, null]) as [NeighborItem, NeighborItem])
+const neighbors = computed<Neighbors>(() => (neighborsResponse.value?.payload as Neighbors | null) ?? [null, null])
 
 if (neighbors.value && neighbors.value.length > 0) {
   articleStore.setNeighbors(neighbors.value)
@@ -90,11 +89,11 @@ useSeoMeta({
       <div class="w-full xl:min-w-0 xl:flex-1">
         <ArticleHeader v-if="article" v-bind="articleHeader" />
         <div class="max-w-none leading-7 dark:text-hana-white">
-          <ContentRenderer v-if="article" :value="article" class="flex flex-col gap-4">
+          <MarkdownRenderer v-if="article" :value="article" class="flex flex-col gap-4">
             <template #empty>
               <p>No content found.</p>
             </template>
-          </ContentRenderer>
+          </MarkdownRenderer>
         </div>
         <div class="mt-5">
           <Comment />
@@ -104,7 +103,7 @@ useSeoMeta({
         <div class="fixed flex flex-col gap-5 transition-all" :class="{ '-mt-20': !headerVisible }">
           <ArticleAuthor />
           <ArticleSwitch :prev="prev" :next="next" />
-          <ArticleToc v-if="article" :toc="article.body.toc as unknown as Toc" />
+          <ArticleToc v-if="article?.toc" :toc="article.toc" />
         </div>
       </div>
     </div>

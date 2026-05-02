@@ -1,7 +1,15 @@
+catalogMode: prefer
+cleanupUnusedCatalogs: true
+
+shellEmulator: true
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - chokidar@4.0.3
+  - undici-types@6.21.0
+  - semver@6.3.1
 catalog:
   '@antfu/eslint-config': ^8.2.0
   '@iconify-json/lucide': ^1.2.105
-  '@nuxt/content': ^3.13.0
   '@nuxt/icon': ^2.2.1
   '@nuxt/image': ^2.0.0
   '@nuxtjs/color-mode': ^4.0.0
@@ -45,9 +53,6 @@ catalog:
   vue: ^3.5.33
   vue-router: ^5.0.6
   zod: ^4.4.1
-catalogMode: prefer
-cleanupUnusedCatalogs: true
-
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@prisma/client'
@@ -58,15 +63,8 @@ onlyBuiltDependencies:
   - prisma
   - sharp
   - vue-demi
-
 peerDependencyRules:
   allowedVersions:
     '@unhead/vue': '2'
     citty: '0.2'
     magicast: '0.5'
-shellEmulator: true
-trustPolicy: no-downgrade
-trustPolicyExclude:
-  - chokidar@4.0.3
-  - undici-types@6.21.0
-  - semver@6.3.1

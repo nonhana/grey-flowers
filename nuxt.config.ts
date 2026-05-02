@@ -24,20 +24,16 @@ export default defineNuxtConfig({
       routes: ['/', '/rss.xml'],
     },
   },
-  content: {
-    build: {
-      markdown: {
-        highlight: {
-          langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http', 'javascript', 'typescript'],
-          theme: {
-            default: 'github-light',
-            dark: 'github-dark',
-          },
-        },
-        toc: {
-          depth: 2,
-        },
+  mdc: {
+    highlight: {
+      langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http', 'javascript', 'typescript'],
+      theme: {
+        default: 'github-light',
+        dark: 'github-dark',
       },
+    },
+    components: {
+      prose: true,
     },
   },
   image: {
@@ -46,6 +42,7 @@ export default defineNuxtConfig({
     quality: 85,
     format: ['webp', 'gif', 'jpeg', 'png', 'avif'],
   },
+  ogImage: { zeroRuntime: true },
   devServer: {
     host: 'localhost',
     port: 2408,
@@ -80,7 +77,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/icon',
     '@nuxt/image',
-    '@nuxt/content',
     '@nuxtjs/mdc',
     '@nuxtjs/seo',
     '@nuxtjs/color-mode',
@@ -91,5 +87,6 @@ export default defineNuxtConfig({
   ],
   devtools: { enabled: true },
   linkChecker: { enabled: false }, // 中文网站无需检查链接
+  sitemap: { zeroRuntime: true },
   compatibilityDate: '2024-10-05',
 })

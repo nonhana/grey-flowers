@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { MarkdownPagePayload } from '~/types/markdown'
 import { linksPageData } from '~/data/meta'
 import friends from '~/json/friends.json'
 import works from '~/json/works.json'
@@ -13,7 +14,13 @@ useHead({
   ],
 })
 
-const { data } = useAsyncData('friends-article', () => queryCollection('content').path('/friends').first())
+const { data: articleResponse } = await useFetch('/api/markdown/friends', {
+  key: 'friends-article',
+})
+
+const article = computed<MarkdownPagePayload | null>(() =>
+  (articleResponse.value?.payload as MarkdownPagePayload | null) ?? null,
+)
 </script>
 
 <template>
@@ -29,7 +36,7 @@ const { data } = useAsyncData('friends-article', () => queryCollection('content'
       </div>
     </HanaInfoCard>
     <HanaInfoCard title="来做朋友吧" icon="lucide:sticker">
-      <ContentRenderer v-if="data" :value="data" class="flex flex-col gap-4 leading-7 dark:text-hana-white" />
+      <MarkdownRenderer v-if="article" :value="article" class="flex flex-col gap-4 leading-7 dark:text-hana-white" />
     </HanaInfoCard>
     <Comment />
   </div>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Toc } from '@nuxt/content'
 import { useStore } from '~/store'
 
 const route = useRoute()
@@ -39,7 +38,13 @@ function toggleDrawer() {
       </HanaTooltip>
     </div>
     <div class="block xl:hidden">
-      <ArticleDrawer v-if="content" v-model="drawerVisible" :toc="content.body.toc as Toc" :prev="neighbors[0]" :next="neighbors[1]" />
+      <ArticleDrawer
+        v-if="content?.toc"
+        v-model="drawerVisible"
+        :toc="content.toc"
+        :prev="neighbors[0]"
+        :next="neighbors[1]"
+      />
     </div>
   </div>
 </template>
