@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DropdownCommand } from '~/types/common'
 import { useStore } from '~/store'
 
 const { userStore } = useStore()
@@ -153,7 +154,7 @@ const userInfoDialogVisible = ref(false)
 const messagesDialogVisible = ref(false)
 const commentsDialogVisible = ref(false)
 
-function handleUserCommand(command: string | number | object) {
+function handleUserCommand(command: DropdownCommand) {
   switch (command) {
     case '登录':
       loginWindowVisible.value = true

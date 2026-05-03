@@ -1,22 +1,24 @@
 <script setup lang="ts">
+import type { DropdownCommand } from '~/types/common'
+
 const props = withDefaults(defineProps<{
   showArrow?: boolean
   position?: 'top' | 'bottom' | 'left' | 'right'
   offset?: 'start' | 'center' | 'end'
-  trigger?: 'hover' | 'click'
+  trigger?: 'hover' | 'click' | 'auto'
   animation?: 'fade' | 'slide'
   clickClose?: boolean
 }>(), {
   showArrow: true,
   position: 'bottom',
   offset: 'center',
-  trigger: 'hover',
+  trigger: 'auto',
   animation: 'slide',
   clickClose: true,
 })
 
 const emits = defineEmits<{
-  command: [command: string | number | object]
+  command: [command: DropdownCommand]
 }>()
 
 // 事件委托触发点击事件
@@ -33,6 +35,7 @@ function handleClick(e: MouseEvent, fn: () => void) {
 <template>
   <div>
     <HanaTooltip
+      type="dropdown"
       :position="position"
       :offset="offset"
       :trigger="trigger"

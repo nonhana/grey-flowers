@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useStore } from '~/store'
-
 const props = withDefaults(defineProps<{
+  type?: 'tooltip' | 'dropdown'
   content?: string
   showArrow?: boolean
   position?: 'top' | 'bottom' | 'left' | 'right'
   offset?: 'start' | 'center' | 'end'
-  trigger?: 'hover' | 'click'
+  trigger?: 'hover' | 'click' | 'auto'
   animation?: 'fade' | 'slide'
 }>(), {
+  type: 'tooltip',
   content: '',
   showArrow: false,
   position: 'bottom',
@@ -17,19 +17,27 @@ const props = withDefaults(defineProps<{
   animation: 'fade',
 })
 
-const { uiInfoStore } = useStore()
+const isMounted = ref(false)
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
 
-// UX：移动端不显示 ToolTip
-const isMobile = uiInfoStore.breakpoints.smaller('md')
+const hideTooltip = computed(() => !canHover.value && props.type !== 'dropdown')
 
 const tooltipRef = useTemplateRef('tooltipRef')
 
 onClickOutside(tooltipRef, close)
 
-const { trigger } = toRefs(props)
 const visible = ref(false)
-const hoverTrigger = ref(trigger.value === 'hover')
-const clickTrigger = ref(trigger.value === 'click')
+const resolvedTrigger = computed(() => {
+  if (props.trigger !== 'auto')
+    return props.trigger
+
+  if (!isMounted.value)
+    return 'click'
+
+  return canHover.value ? 'hover' : 'click'
+})
+const hoverTrigger = computed(() => resolvedTrigger.value === 'hover')
+const clickTrigger = computed(() => resolvedTrigger.value === 'click')
 
 function toggleVisible(value: boolean) {
   visible.value = value
@@ -46,6 +54,7 @@ const triggerWidth = ref(0)
 let observer: IntersectionObserver | null = null
 
 onMounted(() => {
+  isMounted.value = true
   observer = new IntersectionObserver(([entry]) => {
     if (entry && entry.isIntersecting) {
       triggerWidth.value = entry.boundingClientRect.width
@@ -120,7 +129,7 @@ const positionClass = computed(() => {
 
     <HanaTooltipAnime :animation="animation" :position="position">
       <div
-        v-show="visible && !isMobile"
+        v-show="visible && !hideTooltip"
         class="absolute z-50"
         :style="offsetStyle"
         :class="positionClass"

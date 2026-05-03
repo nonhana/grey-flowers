@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { DropdownCommand } from '~/types/common'
+
 const themesMap = [
   {
     text: 'system',
@@ -16,7 +18,7 @@ const themesMap = [
 
 const colorMode = useColorMode()
 
-function handleThemesCommand(command: string | number | object) {
+function handleThemesCommand(command: DropdownCommand) {
   colorMode.preference = command as 'light' | 'dark' | 'system'
 }
 </script>
