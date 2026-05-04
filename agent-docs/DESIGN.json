@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-03T00:00:00+08:00",
+  "title": "Design System: Grey Flowers",
+  "extensions": {
+    "colorMeta": {
+      "garden-mist": {
+        "role": "neutral",
+        "displayName": "Garden Mist",
+        "canonical": "oklch(0.95 0.0059 239.82)",
+        "tonalRamp": [
+          "oklch(0.45 0.0237 260.13)",
+          "oklch(0.51 0.0317 260.26)",
+          "oklch(0.58 0.0386 261.85)",
+          "oklch(0.66 0.0398 259.78)",
+          "oklch(0.73 0.0336 251.22)",
+          "oklch(0.86 0.0181 240.03)",
+          "oklch(0.91 0.011 234.83)",
+          "oklch(0.95 0.0059 239.82)"
+        ]
+      },
+      "grid-lilac": {
+        "role": "neutral",
+        "displayName": "Grid Lilac",
+        "canonical": "oklch(0.73 0.0336 251.22)",
+        "tonalRamp": [
+          "oklch(0.45 0.0237 260.13)",
+          "oklch(0.51 0.0317 260.26)",
+          "oklch(0.58 0.0386 261.85)",
+          "oklch(0.66 0.0398 259.78)",
+          "oklch(0.73 0.0336 251.22)",
+          "oklch(0.79 0.0259 246.28)",
+          "oklch(0.86 0.0181 240.03)",
+          "oklch(0.95 0.0059 239.82)"
+        ]
+      },
+      "petal-blue-soft": {
+        "role": "secondary",
+        "displayName": "Blue Vapor",
+        "canonical": "oklch(0.93 0.0305 212.05)",
+        "tonalRamp": [
+          "oklch(0.19 0.0598 273.58)",
+          "oklch(0.26 0.0796 268.39)",
+          "oklch(0.33 0.0946 263.24)",
+          "oklch(0.41 0.1042 257.32)",
+          "oklch(0.5 0.1102 250.04)",
+          "oklch(0.75 0.0883 226.04)",
+          "oklch(0.84 0.0632 214.03)",
+          "oklch(0.93 0.0305 212.05)"
+        ]
+      },
+      "petal-blue": {
+        "role": "primary",
+        "displayName": "Blue Petal",
+        "canonical": "oklch(0.5 0.1102 250.04)",
+        "tonalRamp": [
+          "oklch(0.19 0.0598 273.58)",
+          "oklch(0.26 0.0796 268.39)",
+          "oklch(0.33 0.0946 263.24)",
+          "oklch(0.41 0.1042 257.32)",
+          "oklch(0.5 0.1102 250.04)",
+          "oklch(0.64 0.1176 239.66)",
+          "oklch(0.75 0.0883 226.04)",
+          "oklch(0.93 0.0358 205.23)"
+        ]
+      },
+      "ink-fog": {
+        "role": "neutral",
+        "displayName": "Ink Fog",
+        "canonical": "oklch(0.16 0.0413 254.41 / 53.33%)",
+        "tonalRamp": [
+          "oklch(0.16 0.0413 254.41 / 53.33%)",
+          "oklch(0.26 0 0)",
+          "oklch(0.42 0 0)",
+          "oklch(0.51 0 0)",
+          "oklch(0.57 0 0)",
+          "oklch(0.74 0 0)",
+          "oklch(0.86 0 0)",
+          "oklch(0.98 0 0)"
+        ]
+      },
+      "night-soil": {
+        "role": "neutral",
+        "displayName": "Night Soil",
+        "canonical": "oklch(0.27 0 0)",
+        "tonalRamp": [
+          "oklch(0.17 0 0)",
+          "oklch(0.27 0 0)",
+          "oklch(0.36 0 0)",
+          "oklch(0.41 0 0)",
+          "oklch(0.46 0 0)",
+          "oklch(0.55 0 0)",
+          "oklch(0.63 0 0)",
+          "oklch(0.78 0 0)"
+        ]
+      },
+      "paper-bloom": {
+        "role": "neutral",
+        "displayName": "Paper Bloom",
+        "canonical": "oklch(0.98 0 0)",
+        "tonalRamp": [
+          "oklch(0.7 0 0)",
+          "oklch(0.74 0 0)",
+          "oklch(0.78 0 0)",
+          "oklch(0.82 0 0)",
+          "oklch(0.86 0 0)",
+          "oklch(0.9 0 0)",
+          "oklch(0.94 0 0)",
+          "oklch(0.98 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Serif",
+        "purpose": "Hero titles, page-defining phrases, and authored spotlight moments."
+      },
+      "headline": {
+        "displayName": "Headline Serif",
+        "purpose": "Article titles, section anchors, and dialog headers with real weight."
+      },
+      "title": {
+        "displayName": "Compact Title Serif",
+        "purpose": "Card titles and compressed summaries."
+      },
+      "body": {
+        "displayName": "Reading Body",
+        "purpose": "Long-form reading with comfortable leading and calm density."
+      },
+      "label": {
+        "displayName": "Interface Mono",
+        "purpose": "Navigation, metadata, code labels, and utility text."
+      }
+    },
+    "shadows": [
+      {
+        "name": "soft-lift",
+        "value": "0 4px 6px -1px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.10)",
+        "purpose": "Default card and header elevation."
+      },
+      {
+        "name": "hover-lift",
+        "value": "0 10px 15px -3px rgb(15 23 42 / 0.10), 0 4px 6px -4px rgb(15 23 42 / 0.10)",
+        "purpose": "Interactive lift for cards and linked blocks."
+      },
+      {
+        "name": "dialog-lift",
+        "value": "0 10px 24px rgb(15 23 42 / 0.18)",
+        "purpose": "Modal separation without glass effects."
+      }
+    ],
+    "motion": [
+      {
+        "name": "page-fade",
+        "value": "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Route and layout transitions."
+      },
+      {
+        "name": "hover-shift",
+        "value": "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Card hover, sticky caption tinting, and gentle feedback."
+      },
+      {
+        "name": "character-reveal",
+        "value": "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Per-character intros on authored brand surfaces."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "2xl",
+        "value": "1536px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Pill Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Compact navigation and utility action for the light theme.",
+      "html": "<button class=\"ds-btn-pill\">Articles</button>",
+      "css": ".ds-btn-pill { display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:8px 10px; border:none; border-radius:999px; background:oklch(0.93 0.0305 212.05); color:oklch(0.5 0.1102 250.04); font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-pill:hover { background:oklch(0.95 0.0059 239.82); color:oklch(0.5 0.1102 250.04); } .ds-btn-pill:active { transform:scale(0.98); } .ds-btn-pill:focus-visible { outline:2px solid oklch(0.75 0.0883 226.04); outline-offset:2px; }"
+    },
+    {
+      "name": "Dark Confirm Button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "description": "Dominant confirm action for dialogs and dark surfaces.",
+      "html": "<button class=\"ds-btn-dark\">Confirm</button>",
+      "css": ".ds-btn-dark { display:inline-flex; align-items:center; justify-content:center; min-width:80px; padding:8px 10px; border:none; border-radius:999px; background:oklch(0.5 0.1102 250.04); color:oklch(0.98 0 0); font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-dark:hover { background:oklch(0.64 0.1176 239.66); } .ds-btn-dark:active { transform:scale(0.98); } .ds-btn-dark:focus-visible { outline:2px solid oklch(0.84 0.0632 214.03); outline-offset:2px; }"
+    },
+    {
+      "name": "Editorial Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Soft utility field for comments, auth, and search-like input.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Email</span><input class=\"ds-input\" placeholder=\"you@example.com\" /></label>",
+      "css": ".ds-field { display:grid; gap:8px; font:400 14px/1.4 \"JetBrains Mono\", monospace; color:oklch(0.16 0.0413 254.41 / 53.33%); } .ds-field-label { color:oklch(0.16 0.0413 254.41 / 53.33%); } .ds-input { width:100%; border:1px solid oklch(0.93 0.0358 205.23); border-radius:8px; background:oklch(0.93 0.0358 205.23); color:oklch(0.16 0.0413 254.41 / 53.33%); padding:8px 12px; font:400 16px/1.75 \"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif; transition:border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-input::placeholder { color:oklch(0.16 0.0413 254.41 / 53.33%); opacity:0.75; } .ds-input:hover { background:oklch(0.95 0.0059 239.82); } .ds-input:focus-visible { outline:none; border-color:oklch(0.64 0.1176 239.66); background:oklch(0.98 0 0); }"
+    },
+    {
+      "name": "Article Card",
+      "kind": "card",
+      "refersTo": "article-card",
+      "description": "Primary linked summary block for article browsing.",
+      "html": "<article class=\"ds-article-card\"><div class=\"ds-article-media\"></div><div class=\"ds-article-body\"><div class=\"ds-article-tags\"><span class=\"ds-article-tag\">TypeScript</span><span class=\"ds-article-tag\">Vue</span></div><h3 class=\"ds-article-title\">A Garden Note About Frontend Systems</h3><p class=\"ds-article-copy\">Quiet summary copy that stays readable and never over-explains.</p><div class=\"ds-article-meta\"><span>2026-05-03</span><span>1280 chars</span></div></div></article>",
+      "css": ".ds-article-card { display:grid; gap:0; overflow:hidden; border-radius:24px; background:oklch(0.98 0 0); color:oklch(0.16 0.0413 254.41 / 53.33%); box-shadow:0 4px 6px -1px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.10); transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1); } .ds-article-card:hover { transform:translateY(-4px); background:oklch(0.93 0.0305 212.05); box-shadow:0 10px 15px -3px rgb(15 23 42 / 0.10), 0 4px 6px -4px rgb(15 23 42 / 0.10); } .ds-article-media { aspect-ratio:3 / 2; background:linear-gradient(135deg, oklch(0.95 0.0059 239.82), oklch(0.93 0.0358 205.23)); } .ds-article-body { display:grid; gap:12px; padding:16px; } .ds-article-tags { display:flex; flex-wrap:wrap; gap:8px; } .ds-article-tag { display:inline-flex; align-items:center; border-radius:999px; background:oklch(0.27 0 0); color:oklch(0.98 0 0); padding:4px 8px; font:400 12px/1.4 \"JetBrains Mono\", monospace; } .ds-article-title { margin:0; font:700 20px/1.3 \"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif; color:oklch(0.16 0.0413 254.41 / 53.33%); } .ds-article-copy { margin:0; font:400 16px/1.75 \"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif; color:oklch(0.16 0.0413 254.41 / 53.33%); } .ds-article-meta { display:flex; gap:12px; flex-wrap:wrap; font:400 14px/1.4 \"JetBrains Mono\", monospace; color:oklch(0.16 0.0413 254.41 / 53.33%); }"
+    },
+    {
+      "name": "Top Navigation Bar",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Lightweight translucent top bar with pill actions and a centered brand anchor.",
+      "html": "<nav class=\"ds-top-nav\"><button class=\"ds-top-nav__ghost\" aria-label=\"Open menu\">Menu</button><div class=\"ds-top-nav__brand\">GreyFlowers</div><div class=\"ds-top-nav__actions\"><button class=\"ds-btn-pill\">Articles</button><button class=\"ds-btn-pill\">About</button></div></nav>",
+      "css": ".ds-top-nav { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; min-height:48px; padding:0 8px; border-radius:999px; background:rgb(255 255 255 / 0.53); color:oklch(0.16 0.0413 254.41 / 53.33%); box-shadow:0 4px 6px -1px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.10); backdrop-filter:blur(12px); } .ds-top-nav__brand { justify-self:center; font:700 18px/1.2 \"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif; color:oklch(0.16 0.0413 254.41 / 53.33%); } .ds-top-nav__actions { display:flex; gap:8px; } .ds-top-nav__ghost { border:none; border-radius:999px; background:transparent; color:oklch(0.16 0.0413 254.41 / 53.33%); padding:8px 10px; font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-top-nav__ghost:hover { background:oklch(0.93 0.0305 212.05); color:oklch(0.5 0.1102 250.04); } .ds-top-nav__ghost:focus-visible { outline:2px solid oklch(0.75 0.0883 226.04); outline-offset:2px; } .ds-btn-pill { display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:8px 10px; border:none; border-radius:999px; background:oklch(0.93 0.0305 212.05); color:oklch(0.5 0.1102 250.04); font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-pill:hover { background:oklch(0.95 0.0059 239.82); } .ds-btn-pill:active { transform:scale(0.98); } .ds-btn-pill:focus-visible { outline:2px solid oklch(0.75 0.0883 226.04); outline-offset:2px; }"
+    },
+    {
+      "name": "Dialog Surface",
+      "kind": "custom",
+      "refersTo": "dialog-surface",
+      "description": "Simple modal panel with serif heading and one clear dominant action.",
+      "html": "<div class=\"ds-overlay\"><section class=\"ds-dialog\" aria-modal=\"true\" role=\"dialog\"><header class=\"ds-dialog__header\"><h3 class=\"ds-dialog__title\">Prompt</h3><button class=\"ds-dialog__close\" aria-label=\"Close\">Close</button></header><p class=\"ds-dialog__copy\">Use dialogs for decisions that cannot stay inline.</p><footer class=\"ds-dialog__footer\"><button class=\"ds-btn-pill\">Cancel</button><button class=\"ds-btn-dark\">Confirm</button></footer></section></div>",
+      "css": ".ds-overlay { display:grid; place-items:center; padding:24px; background:rgb(0 0 0 / 0.5); } .ds-dialog { width:min(520px, 90vw); border-radius:16px; background:oklch(0.98 0 0); color:oklch(0.16 0.0413 254.41 / 53.33%); padding:20px; box-shadow:0 10px 24px rgb(15 23 42 / 0.18); } .ds-dialog__header { display:flex; align-items:center; gap:12px; margin-bottom:20px; } .ds-dialog__title { margin:0; flex:1; font:700 32px/1.2 \"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif; color:oklch(0.16 0.0413 254.41 / 53.33%); } .ds-dialog__copy { margin:0; font:400 16px/1.75 \"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif; } .ds-dialog__footer { display:flex; justify-content:flex-end; gap:12px; margin-top:20px; } .ds-dialog__close { border:none; background:transparent; color:oklch(0.16 0.0413 254.41 / 53.33%); padding:8px 10px; border-radius:999px; font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-dialog__close:hover { background:oklch(0.93 0.0305 212.05); } .ds-dialog__close:focus-visible { outline:2px solid oklch(0.75 0.0883 226.04); outline-offset:2px; } .ds-btn-pill { display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:8px 10px; border:none; border-radius:999px; background:oklch(0.93 0.0305 212.05); color:oklch(0.5 0.1102 250.04); font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-pill:hover { background:oklch(0.95 0.0059 239.82); } .ds-btn-pill:active { transform:scale(0.98); } .ds-btn-pill:focus-visible { outline:2px solid oklch(0.75 0.0883 226.04); outline-offset:2px; } .ds-btn-dark { display:inline-flex; align-items:center; justify-content:center; min-width:80px; padding:8px 10px; border:none; border-radius:999px; background:oklch(0.5 0.1102 250.04); color:oklch(0.98 0 0); font:400 14px/1.4 \"JetBrains Mono\", monospace; cursor:pointer; transition:background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-dark:hover { background:oklch(0.64 0.1176 239.66); } .ds-btn-dark:active { transform:scale(0.98); } .ds-btn-dark:focus-visible { outline:2px solid oklch(0.84 0.0632 214.03); outline-offset:2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Digital Garden",
+    "overview": "Grey Flowers should feel like a personal study garden translated into interface form. The site is not trying to sell urgency. It is trying to hold writing, code, memory, and self-description inside one calm, authored atmosphere. The visual system should make room for browsing and reading, with gentle rhythm, soft contrast shifts, and just enough motion to suggest care.\n\nThis is an editorial brand surface with a technical backbone. Serif text carries the voice because the words matter, while monospaced labels and metadata keep navigation, code, and interface controls precise. Light mode should feel like paper laid over a faint grid. Dark mode should feel like the same garden after sunset, still legible, still calm, never neon.\n\nThis system explicitly rejects Generic AI SaaS landing-page cliches, Neon cyberpunk dev-blog dark mode, Glassmorphism-heavy personal portfolio, and Hard-edged enterprise dashboard chrome. The site should read as quietly cultivated, not optimized for attention extraction.",
+    "keyCharacteristics": [
+      "Reading-first layout with soft editorial pacing.",
+      "Blue used as a signal color, not a constant flood.",
+      "Dark mode as a nocturnal companion, not a separate brand.",
+      "Rounded surfaces that feel gentle, not toy-like.",
+      "Technical details rendered with restraint and clarity."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Blue carries interaction, selection, and emphasis. Do not invent a second accent family for decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shared Weather Rule",
+        "body": "Light mode and dark mode must feel like the same place under different light. Do not turn dark mode into a neon remix.",
+        "section": "colors"
+      },
+      {
+        "name": "The Serif Carries Meaning Rule",
+        "body": "If the content is meant to be read, let serif carry it. Mono is for signals, metadata, and code, not for replacing the reading voice.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lift On Purpose Rule",
+        "body": "Shadows appear when a surface needs separation or response. They are not ambient decoration.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the page atmosphere lightly gridded in light mode and charcoal-toned in dark mode.",
+      "Do reserve Blue Petal for interaction, selected state, and a few deliberate highlights.",
+      "Do use serif for reading surfaces and JetBrains Mono for labels, metadata, and code-adjacent UI.",
+      "Do let cards, drawers, and dialogs feel rounded and calm rather than sharp or glossy.",
+      "Do preserve the same emotional weather across light and dark themes."
+    ],
+    "donts": [
+      "Don't build Generic AI SaaS landing-page cliches into hero sections, cards, or callouts.",
+      "Don't turn dark mode into Neon cyberpunk dev-blog dark mode.",
+      "Don't add Glassmorphism-heavy personal portfolio treatments to dialogs, nav, or cards.",
+      "Don't harden the UI into Hard-edged enterprise dashboard chrome.",
+      "Don't use pure black, pure white, or loud accent stacking when one blue family already carries the system."
+    ]
+  }
+}

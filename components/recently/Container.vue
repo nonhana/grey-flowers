@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ActivityItem } from '~/types/activity'
-
 const route = useRoute()
 const router = useRouter()
 
@@ -10,91 +8,79 @@ const afterClasses = `after:hidden after:md:block after:absolute after:left-[cal
 const detailDialogVisible = defineModel<boolean>()
 const curActivityId = ref<number | null>(null)
 
-watch(() => route.query.id, (newId) => {
-  if (newId !== undefined) {
-    curActivityId.value = Number(newId)
-    detailDialogVisible.value = true
-  }
-  else {
-    detailDialogVisible.value = false
-    curActivityId.value = null
-  }
+const {
+  items: activities,
+  hasMore,
+  loadingInitial,
+  loadingMore,
+  initialError,
+  loadMoreError,
+  fetchNext,
+  retryInitial,
+  retryLoadMore,
+  ensureItemLoaded,
+} = useActivityList({
+  errorMessages: {
+    initialResponse: '加载失败，请稍后重试',
+    initialException: '加载失败，请检查网络连接',
+    loadMoreResponse: '加载失败，请稍后重试',
+    loadMoreException: '加载失败，请检查网络连接',
+  },
 })
+
+const loadMoreTrigger = useTemplateRef('loadMoreTrigger')
+let observer: IntersectionObserver | null = null
+
+const loading = computed(() => loadingInitial.value || loadingMore.value)
+const visibleErrorMessage = computed(() => loadMoreError.value ?? initialError.value)
+const curActivity = computed(() => activities.value.find(item => item.id === curActivityId.value))
+
+// 如果携带当前动态查询参数，需要确保当前动态已经加载
+async function ensureCurActivityLoaded() {
+  if (!curActivityId.value)
+
+    return
+
+  await ensureItemLoaded(curActivityId.value)
+}
+
+async function retryCurrentError() {
+  if (curActivityId.value !== null) {
+    await ensureCurActivityLoaded()
+    return
+  }
+
+  if (activities.value.length === 0) {
+    await retryInitial()
+    return
+  }
+
+  await retryLoadMore()
+}
+
+function parseActivityId(value: unknown) {
+  if (value === undefined)
+    return null
+
+  const parsedId = Number(value)
+  return Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null
+}
+
+watch(() => route.query.id, (newId) => {
+  const nextActivityId = parseActivityId(newId)
+  curActivityId.value = nextActivityId
+  detailDialogVisible.value = nextActivityId !== null
+
+  if (nextActivityId !== null)
+    ensureItemLoaded(nextActivityId)
+})
+
 watch(detailDialogVisible, (newVisible) => {
   if (!newVisible) {
     curActivityId.value = null
     router.replace({ query: {} })
   }
 })
-onMounted(() => {
-  curActivityId.value = Number(route.query.id)
-  detailDialogVisible.value = route.query.id !== undefined
-})
-
-const activities = ref<ActivityItem[]>([])
-
-const page = ref(1)
-const pageSize = 20
-const loading = ref(false)
-const hasMore = ref(true)
-const errorMessage = ref<string | null>(null)
-
-const loadMoreTrigger = useTemplateRef('loadMoreTrigger')
-let observer: IntersectionObserver | null = null
-
-async function fetchActivities() {
-  if (loading.value || !hasMore.value)
-    return false
-
-  loading.value = true
-  errorMessage.value = null
-
-  try {
-    const data = await $fetch('/api/activity/list', {
-      params: {
-        page: page.value,
-        pageSize,
-      },
-    })
-
-    if (data.success) {
-      const list = (data.payload || []) as ActivityItem[]
-      activities.value.push(...list)
-
-      if (list.length < pageSize) {
-        hasMore.value = false
-      }
-      else {
-        page.value += 1
-      }
-
-      return true
-    }
-
-    errorMessage.value = '加载失败，请稍后重试'
-    return false
-  }
-  catch (error) {
-    console.error('[Recently] fetchActivities error:', error)
-    errorMessage.value = '加载失败，请检查网络连接'
-    return false
-  }
-  finally {
-    loading.value = false
-  }
-}
-
-// 如果携带当前动态查询参数，需要确保当前动态已经加载
-async function ensureCurActivityLoaded() {
-  if (!curActivityId.value)
-    return
-
-  while (!activities.value.some(item => item.id === curActivityId.value) && hasMore.value) {
-    const ok = await fetchActivities()
-    if (!ok)
-      break
-  }
-}
 
 function setupObserver() {
   if (observer) {
@@ -110,9 +96,8 @@ function setupObserver() {
 
   observer = new IntersectionObserver((entries) => {
     const entry = entries[0]
-    if (entry && entry.isIntersecting) {
-      void fetchActivities()
-    }
+    if (entry && entry.isIntersecting && hasMore.value && !loading.value && !visibleErrorMessage.value)
+      fetchNext()
   }, {
     root: null,
     rootMargin: '0px 0px 200px 0px',
@@ -124,11 +109,14 @@ function setupObserver() {
 }
 
 onMounted(async () => {
-  curActivityId.value = Number(route.query.id)
-  detailDialogVisible.value = route.query.id !== undefined
+  curActivityId.value = parseActivityId(route.query.id)
+  detailDialogVisible.value = curActivityId.value !== null
 
-  await fetchActivities()
-  await ensureCurActivityLoaded()
+  if (curActivityId.value !== null)
+    await ensureCurActivityLoaded()
+  else
+    await fetchNext()
+
   setupObserver()
 })
 
@@ -136,8 +124,6 @@ onBeforeUnmount(() => {
   if (observer)
     observer.disconnect()
 })
-
-const curActivity = computed(() => activities.value.find(item => item.id === curActivityId.value))
 </script>
 
 <template>
@@ -152,13 +138,21 @@ const curActivity = computed(() => activities.value.find(item => item.id === cur
     </li>
   </ul>
   <div ref="loadMoreTrigger" class="h-8" />
-  <Icon v-if="loading" name="lucide:loader-circle" size="32" class="mx-auto mt-2 block text-text animate-spin" />
-  <Icon v-else-if="!hasMore && activities.length > 0" name="lucide:check-circle" size="32" class="mx-auto mt-2 block text-text" />
-  <p
-    v-if="errorMessage"
-    class="mt-2 text-center text-sm text-error-3"
-  >
-    {{ errorMessage }}
-  </p>
+  <Icon v-if="loading" name="lucide:loader-circle" size="32" class="mx-auto mt-2 block text-text animate-spin dark:text-hana-white-700" />
+  <Icon v-else-if="!hasMore && activities.length > 0" name="lucide:check-circle" size="32" class="mx-auto mt-2 block text-text dark:text-hana-white-700" />
+  <div v-if="visibleErrorMessage" class="mt-2 flex items-center justify-center gap-2">
+    <p class="text-center text-sm text-error-3">
+      {{ visibleErrorMessage }}
+    </p>
+    <button
+      type="button"
+      class="size-8 inline-flex items-center justify-center rounded-full text-error-3 transition-colors hover:bg-error-0/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error-3/40 dark:hover:bg-hana-black-700"
+      :aria-label="visibleErrorMessage"
+      :title="visibleErrorMessage"
+      @click="retryCurrentError"
+    >
+      <Icon name="lucide:refresh-cw" size="16" />
+    </button>
+  </div>
   <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
 </template>

@@ -67,6 +67,7 @@ export default defineNuxtConfig({
       include: [
         'hana-img-viewer',
         'dayjs', // CJS
+        'dayjs/plugin/customParseFormat', // CJS
         'gsap',
         'vivus', // CJS
         'lucide-vue-next',

@@ -1,94 +1,162 @@
 <script setup lang="ts">
 import type { ActivityItem } from '~/types/activity'
 
-const loading = ref(false)
-const activities = ref<ActivityItem[]>([])
+const ACTIVITY_PAGE_SIZE = 20
+const LOAD_MORE_ROOT_MARGIN = '0px 240px 0px 0px'
+const skeletonCards = Array.from({ length: ACTIVITY_PAGE_SIZE }, (_, index) => index)
 
-async function fetchActivities() {
-  loading.value = true
-  try {
-    const data = await $fetch('/api/activity/list', {
-      query: { page: 1, pageSize: 5 },
-    })
-    if (data.success) {
-      activities.value = data.payload as ActivityItem[]
-    }
-  }
-  catch (error) {
-    console.error('[Home] fetchActivities error:', error)
-  }
-  finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  fetchActivities()
+const {
+  items: activities,
+  hasMore,
+  loadingInitial,
+  loadingMore,
+  initialError,
+  loadMoreError,
+  fetchNext,
+  retryInitial,
+  retryLoadMore,
+} = useActivityList({
+  pageSize: ACTIVITY_PAGE_SIZE,
+  errorMessages: {
+    initialResponse: '动态暂时没有加载出来，请稍后重试。',
+    initialException: '动态暂时没有加载出来，请稍后重试。',
+    loadMoreResponse: '动态暂时没有加载出来，请稍后重试。',
+    loadMoreException: '动态暂时没有加载出来，请稍后重试。',
+  },
 })
-
-const featuredActivity = computed(() => activities.value[0])
-const hasFeaturedImage = computed(() => Boolean(featuredActivity.value?.images?.[0]))
-
-const compactActivities = computed(() => activities.value.slice(1))
 
 const containerRef = useTemplateRef('container')
+const railTrackRef = useTemplateRef('railTrack')
+const loadMoreTriggerRef = useTemplateRef('loadMoreTrigger')
+
+const isBootstrapping = ref(true)
 const isVisible = ref(false)
-
-onMounted(() => {
-  if (!containerRef.value)
-    return
-
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry?.isIntersecting) {
-        isVisible.value = true
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.1 },
-  )
-
-  observer.observe(containerRef.value)
-  onBeforeUnmount(() => observer.disconnect())
-})
+let revealObserver: IntersectionObserver | null = null
+let loadMoreObserver: IntersectionObserver | null = null
 
 const router = useRouter()
 
 const detailDialogVisible = ref(false)
 const curActivity = ref<ActivityItem>()
 
-function handleViewDetail(item: ActivityItem) {
-  detailDialogVisible.value = true
-  curActivity.value = item
+const hasActivities = computed(() => activities.value.length > 0)
+
+const {
+  isDragging,
+  consumeSuppressedSelect,
+  handlePointerDown,
+  handlePointerMove,
+  handlePointerUp,
+  handlePointerCancel,
+  handleLostPointerCapture,
+  handleWheel,
+  stopMomentum,
+  cleanup: cleanupRail,
+} = useHorizontalRail()
+
+watch(containerRef, (element) => {
+  if (!element || isVisible.value || typeof window === 'undefined' || !('IntersectionObserver' in window))
+    return
+
+  revealObserver?.disconnect()
+  revealObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (entry?.isIntersecting) {
+        isVisible.value = true
+        revealObserver?.disconnect()
+        revealObserver = null
+      }
+    },
+    { threshold: 0.15 },
+  )
+
+  revealObserver.observe(element)
+}, { flush: 'post' })
+
+watchEffect(() => {
+  if (railTrackRef.value && loadMoreTriggerRef.value)
+    setupLoadMoreObserver()
+}, { flush: 'post' })
+
+onMounted(async () => {
+  try {
+    await fetchActivities()
+  }
+  finally {
+    isBootstrapping.value = false
+  }
+})
+
+onBeforeUnmount(() => {
+  revealObserver?.disconnect()
+  loadMoreObserver?.disconnect()
+  cleanupRail()
+})
+
+async function fetchActivities() {
+  await fetchNext()
+
+  if (!loadMoreError.value) {
+    await nextTick()
+    refreshLoadMoreObserver()
+  }
+}
+
+async function retryHomeInitial() {
+  await retryInitial()
+
+  if (!loadMoreError.value) {
+    await nextTick()
+    refreshLoadMoreObserver()
+  }
+}
+
+async function retryHomeLoadMore() {
+  await retryLoadMore()
+
+  if (!loadMoreError.value) {
+    await nextTick()
+    refreshLoadMoreObserver()
+  }
+}
+
+function setupLoadMoreObserver() {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window))
+    return
+  if (!railTrackRef.value || !loadMoreTriggerRef.value)
+    return
+
+  loadMoreObserver?.disconnect()
+  loadMoreObserver = new IntersectionObserver(([entry]) => {
+    if (entry?.isIntersecting && hasMore.value && !loadingMore.value && !loadMoreError.value)
+      fetchActivities()
+  }, {
+    root: railTrackRef.value,
+    rootMargin: LOAD_MORE_ROOT_MARGIN,
+    threshold: 0,
+  })
+  loadMoreObserver.observe(loadMoreTriggerRef.value)
+}
+
+function refreshLoadMoreObserver() {
+  if (!loadMoreObserver || !loadMoreTriggerRef.value || !hasMore.value)
+    return
+
+  loadMoreObserver.unobserve(loadMoreTriggerRef.value)
+  loadMoreObserver.observe(loadMoreTriggerRef.value)
 }
 
 function gotoRecently() {
   router.push('/recently')
 }
 
-/** 获取动态类型图标 */
-function getActivityIcon(item: ActivityItem): string {
-  if (item.music && item.music.length > 0)
-    return 'lucide:music'
-  if (item.images && item.images.length > 0)
-    return 'lucide:image'
-  return 'lucide:message-circle'
-}
+function handleCardSelect(item: ActivityItem) {
+  if (consumeSuppressedSelect())
+    return
 
-/** 获取动态类型标签 */
-function getActivityLabel(item: ActivityItem): string {
-  if (item.music && item.music.length > 0)
-    return '一些音乐'
-  if (item.images && item.images.length > 0)
-    return '一些图片'
-  return '一些吐槽'
-}
-
-/** 截断内容 */
-function truncateContent(content: string | undefined, maxLength: number): string {
-  if (!content)
-    return ''
-  return content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
+  stopMomentum()
+  curActivity.value = item
+  detailDialogVisible.value = true
 }
 </script>
 
@@ -100,145 +168,191 @@ function truncateContent(content: string | undefined, maxLength: number): string
       </HanaButton>
     </template>
 
-    <Icon v-if="loading" name="lucide:loader-circle" size="32" class="mx-auto mt-2 block text-text animate-spin" />
-
-    <div v-else-if="activities.length === 0" class="py-12 text-center text-text dark:text-hana-white-700">
-      <Icon name="lucide:inbox" size="48" class="mx-auto mb-4 opacity-50" />
-      <p>暂无动态</p>
+    <div v-if="isBootstrapping || loadingInitial" class="activity-rail-shell">
+      <div class="activity-rail-track pointer-events-none select-none" aria-hidden="true">
+        <MainActivitySkeletonCard v-for="i in skeletonCards" :key="i" />
+      </div>
     </div>
 
-    <transition name="activity-list">
-      <div
-        v-if="!loading && activities.length > 0"
-        ref="container"
-        class="grid gap-4 lg:grid-cols-[2fr_1fr_1fr] lg:grid-rows-2"
-      >
-        <article
-          v-if="featuredActivity"
-          class="group relative cursor-pointer overflow-hidden hana-card lg:row-span-2 p-0!"
-          @click="handleViewDetail(featuredActivity)"
-        >
-          <NuxtImg
-            v-if="featuredActivity.images?.[0]"
-            :src="featuredActivity.images[0]"
-            class="absolute inset-0 size-full transition-transform duration-500 object-cover group-hover:scale-105"
-          />
-
-          <div
-            v-if="hasFeaturedImage"
-            class="pointer-events-none absolute inset-0 z-0 from-white/72 via-white/18 to-transparent bg-gradient-to-t dark:from-hana-black/78 dark:via-hana-black/20"
-          />
-
-          <div
-            v-if="hasFeaturedImage"
-            class="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-3/5 from-hana-blue-50/70 via-white/55 to-transparent bg-gradient-to-t dark:from-hana-black dark:via-hana-black/72"
-          />
-
-          <div
-            v-else
-            class="absolute inset-0 from-hana-blue-100 via-hana-blue-50 to-white bg-gradient-to-br dark:from-hana-black-800 dark:via-hana-black-700 dark:to-hana-black"
-          >
-            <div class="absolute inset-0 opacity-20 dark:opacity-60">
-              <Icon name="lucide:quote" class="absolute left-8 top-8 size-24 text-hana-blue dark:text-hana-blue-300" />
-            </div>
+    <div v-else-if="initialError && !hasActivities" class="border border-primary/60 rounded-[24px] bg-white/75 p-5 dark:border-hana-black-200/80 dark:bg-hana-black-800/75">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-start gap-4">
+          <div class="mt-1 size-11 flex shrink-0 items-center justify-center rounded-full bg-error-0 text-error-3 dark:bg-hana-black-700">
+            <Icon name="lucide:cloud-off" size="18" />
           </div>
-
-          <div class="relative z-10 h-full min-h-64 flex flex-col justify-end p-6 lg:min-h-80">
-            <div
-              :class="hasFeaturedImage ? 'rounded-2xl border border-white/45 bg-white/72 p-4 shadow-md backdrop-blur-md dark:border-white/8 dark:bg-hana-black/72' : ''"
-            >
-              <div class="mb-3 flex items-center gap-2">
-                <span
-                  class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs backdrop-blur-sm"
-                  :class="hasFeaturedImage ? 'bg-hana-blue-100/88 text-hana-blue shadow-sm dark:bg-hana-black-700/82 dark:text-hana-blue-200' : 'bg-hana-blue/90 text-white'"
-                >
-                  <Icon :name="getActivityIcon(featuredActivity)" size="12" />
-                  {{ getActivityLabel(featuredActivity) }}
-                </span>
-              </div>
-
-              <p
-                v-if="featuredActivity.content"
-                class="mb-4 text-sm text-text leading-relaxed line-clamp-3 dark:text-hana-white-700"
-              >
-                {{ truncateContent(featuredActivity.content, 120) }}
-              </p>
-
-              <div class="flex items-center justify-between text-xs text-text dark:text-hana-white-700">
-                <time :datetime="featuredActivity.publishedAt" class="flex items-center gap-1">
-                  <Icon name="lucide:clock" size="12" />
-                  {{ featuredActivity.publishedAt }}
-                </time>
-                <span class="flex items-center gap-1">
-                  <Icon name="lucide:message-circle" size="12" />
-                  {{ featuredActivity.commentCount }}
-                </span>
-              </div>
-            </div>
+          <div class="space-y-1">
+            <p class="text-base text-hana-black leading-7 dark:text-hana-white">
+              {{ initialError }}
+            </p>
+            <p class="text-sm text-text leading-6 dark:text-hana-white-700">
+              可以先打开完整动态页，也可以在这里重新获取最近 5 条更新。
+            </p>
           </div>
+        </div>
 
-          <div class="absolute inset-0 bg-hana-blue/0 transition-colors duration-300 group-hover:bg-hana-blue/6 dark:group-hover:bg-hana-blue-300/5" />
-        </article>
-
-        <article
-          v-for="item in compactActivities"
-          :key="item.id"
-          class="group relative flex flex-col cursor-pointer overflow-hidden hana-card transition-all duration-300 p-4! hover:shadow-lg hover:-translate-y-0.5"
-          @click="handleViewDetail(item)"
-        >
-          <div class="absolute size-16 opacity-10 -right-2 -top-2">
-            <Icon :name="getActivityIcon(item)" class="size-full text-hana-blue" />
-          </div>
-
-          <div class="mb-2 flex items-center gap-1.5">
-            <Icon
-              :name="getActivityIcon(item)"
-              size="14"
-              class="text-hana-blue dark:text-hana-blue-300"
-            />
-            <span class="text-xs text-hana-blue dark:text-hana-blue-300">
-              {{ getActivityLabel(item) }}
-            </span>
-          </div>
-
-          <p class="mb-2 flex-1 text-sm text-text leading-tight line-clamp-2 dark:text-hana-white-700">
-            {{ truncateContent(item.content, 120) }}
-          </p>
-
-          <div class="flex items-center justify-between text-xs text-text dark:text-hana-white-700">
-            <time :datetime="item.publishedAt" class="flex items-center gap-1">
-              <Icon name="lucide:clock" size="10" />
-              {{ item.publishedAt.split(' ')[0] }}
-            </time>
-            <span class="flex items-center gap-1">
-              <Icon name="lucide:message-circle" size="10" />
-              {{ item.commentCount }}
-            </span>
-          </div>
-
-          <div
-            v-if="item.images && item.images.length > 0"
-            class="absolute bottom-2 right-2 flex items-center gap-0.5 rounded-md bg-black/50 px-1.5 py-0.5 text-xs text-white"
-          >
-            <Icon name="lucide:image" size="10" />
-            <span>{{ item.images.length }}</span>
-          </div>
-        </article>
+        <div class="flex flex-wrap gap-2">
+          <HanaButton icon="lucide:refresh-cw" shape="square" @click="retryHomeInitial">
+            重新获取
+          </HanaButton>
+          <HanaButton icon="lucide:arrow-right" shape="square" @click="gotoRecently">
+            打开动态页
+          </HanaButton>
+        </div>
       </div>
-    </transition>
+    </div>
+
+    <div v-else-if="!hasActivities" class="border border-primary/55 rounded-[24px] bg-white/75 p-5 dark:border-hana-black-200/80 dark:bg-hana-black-800/75">
+      <div class="flex items-start gap-4">
+        <div class="mt-1 size-11 flex shrink-0 items-center justify-center rounded-full bg-hana-blue-50 text-hana-blue dark:bg-hana-black-700 dark:text-hana-blue-200">
+          <Icon name="lucide:inbox" size="18" />
+        </div>
+        <div class="space-y-1">
+          <p class="text-base text-hana-black leading-7 dark:text-hana-white">
+            这里暂时还没有新的动态。
+          </p>
+          <p class="text-sm text-text leading-6 dark:text-hana-white-700">
+            等下一次随手记录、贴图或分享音乐时，这里会先出现最新的一则。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-else
+      ref="container"
+      class="activity-rail-shell activity-rail-reveal"
+      :class="isVisible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'"
+    >
+      <div
+        ref="railTrack"
+        class="activity-rail-track"
+        :data-dragging="isDragging ? 'true' : 'false'"
+        aria-label="最近动态横向预览"
+        @pointerdown="handlePointerDown"
+        @pointermove="handlePointerMove"
+        @pointerup="handlePointerUp"
+        @pointercancel="handlePointerCancel"
+        @lostpointercapture="handleLostPointerCapture"
+        @wheel="handleWheel"
+        @dragstart.prevent
+      >
+        <MainActivityRailCard
+          v-for="item in activities"
+          :key="item.id"
+          :item="item"
+          @select="handleCardSelect"
+        />
+        <div
+          ref="loadMoreTrigger"
+          class="activity-rail-tail"
+          aria-hidden="true"
+        >
+          <Icon
+            v-if="loadingMore"
+            name="lucide:loader-circle"
+            size="22"
+            class="text-text animate-spin dark:text-hana-white-700"
+          />
+          <button
+            v-else-if="loadMoreError && hasActivities"
+            type="button"
+            class="size-10 inline-flex items-center justify-center rounded-full bg-error-0/70 text-error-3 transition-colors dark:bg-hana-black-700 hover:bg-error-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error-3/40 dark:hover:bg-hana-black-600"
+            :aria-label="loadMoreError"
+            :title="loadMoreError"
+            @click="retryHomeLoadMore"
+          >
+            <Icon name="lucide:refresh-cw" size="18" />
+          </button>
+          <Icon
+            v-else-if="!hasMore && hasActivities"
+            name="lucide:check-circle"
+            size="22"
+            class="text-text dark:text-hana-white-700"
+          />
+        </div>
+      </div>
+    </div>
   </HanaInfoCard>
+
   <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
 </template>
 
 <style scoped>
-.activity-list-enter-active,
-.activity-list-leave-active {
-  transition: all 0.3s ease;
+.activity-rail-shell {
+  width: 100vw;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
 }
 
-.activity-list-enter-from,
-.activity-list-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
+.activity-rail-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-block: 0.125rem 0.5rem;
+  /* 和最近文章 Item 对齐 */
+  padding-inline: 2rem;
+  scroll-padding-inline: 2rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.activity-rail-track::-webkit-scrollbar {
+  display: none;
+}
+
+.activity-rail-track[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.activity-rail-track :where(img, a) {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.activity-rail-tail {
+  flex: 0 0 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+
+.activity-rail-reveal {
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+@media (min-width: 768px) {
+  .activity-rail-track {
+    padding-inline: calc(5vw + 2rem);
+    scroll-padding-inline: calc(5vw + 2rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .activity-rail-track {
+    padding-inline: calc(15vw + 2rem);
+    scroll-padding-inline: calc(15vw + 2rem);
+  }
+}
+
+@media (min-width: 1536px) {
+  .activity-rail-track {
+    padding-inline: calc(20vw + 2rem);
+    scroll-padding-inline: calc(20vw + 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-rail-reveal {
+    transition: none;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .activity-rail-track {
+    scroll-behavior: auto;
+  }
 }
 </style>

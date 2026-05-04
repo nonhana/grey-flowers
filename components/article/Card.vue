@@ -22,11 +22,11 @@ onMounted(() => {
       :to="to"
       :aria-label="title"
       :title="title"
-      class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all active:scale-95 active:bg-hana-blue-200 dark:bg-hana-black-700 hover:bg-hana-blue-150 hover:shadow-lg hover:-translate-y-1 dark:active:bg-hana-black-800 dark:hover:bg-hana-black-800"
+      class="group relative top-0 block w-full overflow-hidden rounded-3xl bg-white transition-all active:scale-97 active:bg-hana-blue-200 dark:bg-hana-black-700 hover:bg-hana-blue-150 hover:shadow-lg hover:-translate-y-0.5 dark:active:bg-hana-black-800 dark:hover:bg-hana-black-800"
       :class="{ 'md:flex md:rounded-lg': type === 'detail', 'md:flex-row-reverse': index % 2 === 0 }"
     >
       <div class="relative aspect-[3/2]" :class="{ 'md:h-36': type === 'detail', 'md:hidden': displayCols > 1 && type === 'detail' }">
-        <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full transition-transform duration-300 object-cover group-hover:scale-105" />
+        <NuxtImg :src="cover" :alt="`${title}_cover`" class="size-full transition-transform duration-300 object-cover group-hover:scale-103" />
       </div>
       <div
         class="relative h-36 w-full flex flex-col justify-between p-4"

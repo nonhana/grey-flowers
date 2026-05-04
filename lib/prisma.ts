@@ -2,19 +2,8 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '~/prisma/generated/client'
 import env from '~/server/env'
 
-function prismaClientSingleton() {
-  const connectionString = `${env.HANA_DATABASE_URL}`
-  const adapter = new PrismaPg({ connectionString })
-  return new PrismaClient({ adapter })
-}
-
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>
-} & typeof global
-
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+const connectionString = `${env.HANA_DATABASE_URL}`
+const adapter = new PrismaPg({ connectionString })
+const prisma = new PrismaClient({ adapter })
 
 export default prisma
-
-if (env.NODE_ENV !== 'production')
-  globalThis.prismaGlobal = prisma
