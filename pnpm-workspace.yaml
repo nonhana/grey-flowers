@@ -10,7 +10,7 @@ trustPolicyExclude:
 catalog:
   '@antfu/eslint-config': ^8.2.0
   '@iconify-json/lucide': ^1.2.105
-  '@nuxt/icon': ^2.2.1
+  '@nuxt/icon': ^2.2.2
   '@nuxt/image': ^2.0.0
   '@nuxtjs/color-mode': ^4.0.0
   '@nuxtjs/mdc': ^0.21.1
@@ -45,14 +45,13 @@ catalog:
   prisma: ^7.8.0
   resend: ^6.12.2
   sass-embedded: ^1.99.0
-  typescript: ^6.0.3
+  typescript: 5.9.3
   unocss: ^66.6.8
   unocss-preset-scrollbar: ^4.0.0
-  vite: ^8.0.10
   vivus: ^0.4.6
-  vue: ^3.5.33
+  vue: ^3.5.34
   vue-router: ^5.0.6
-  zod: ^4.4.1
+  zod: ^4.4.3
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@prisma/client'
