@@ -168,7 +168,7 @@ function handleCardSelect(item: ActivityItem) {
       </HanaButton>
     </template>
 
-    <div v-if="isBootstrapping || loadingInitial" class="activity-rail-shell">
+    <div v-if="isBootstrapping || loadingInitial" class="m-inline-[calc(50%-50vw)] max-w-[100vw] w-[100vw]">
       <div class="activity-rail-track pointer-events-none select-none" aria-hidden="true">
         <MainActivitySkeletonCard v-for="i in skeletonCards" :key="i" />
       </div>
@@ -220,7 +220,7 @@ function handleCardSelect(item: ActivityItem) {
     <div
       v-else
       ref="container"
-      class="activity-rail-shell activity-rail-reveal"
+      class="[transition:opacity_0.45s_ease,transform_0.45s_ease] m-inline-[calc(50%-50vw)] max-w-[100vw] w-[100vw] motion-reduce:[transition:none] motion-reduce:!transform-none motion-reduce:!opacity-100"
       :class="isVisible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'"
     >
       <div
@@ -244,7 +244,7 @@ function handleCardSelect(item: ActivityItem) {
         />
         <div
           ref="loadMoreTrigger"
-          class="activity-rail-tail"
+          class="flex flex-[0_0_3rem] items-center self-stretch justify-center"
           aria-hidden="true"
         >
           <Icon
@@ -276,83 +276,3 @@ function handleCardSelect(item: ActivityItem) {
 
   <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
 </template>
-
-<style scoped>
-.activity-rail-shell {
-  width: 100vw;
-  max-width: 100vw;
-  margin-inline: calc(50% - 50vw);
-}
-
-.activity-rail-track {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  padding-block: 0.125rem 0.5rem;
-  /* 和最近文章 Item 对齐 */
-  padding-inline: 2rem;
-  scroll-padding-inline: 2rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  cursor: grab;
-}
-
-.activity-rail-track::-webkit-scrollbar {
-  display: none;
-}
-
-.activity-rail-track[data-dragging='true'] {
-  cursor: grabbing;
-}
-
-.activity-rail-track :where(img, a) {
-  -webkit-user-drag: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
-.activity-rail-tail {
-  flex: 0 0 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-}
-
-.activity-rail-reveal {
-  transition: opacity 0.45s ease, transform 0.45s ease;
-}
-
-@media (min-width: 768px) {
-  .activity-rail-track {
-    padding-inline: calc(5vw + 2rem);
-    scroll-padding-inline: calc(5vw + 2rem);
-  }
-}
-
-@media (min-width: 1280px) {
-  .activity-rail-track {
-    padding-inline: calc(15vw + 2rem);
-    scroll-padding-inline: calc(15vw + 2rem);
-  }
-}
-
-@media (min-width: 1536px) {
-  .activity-rail-track {
-    padding-inline: calc(20vw + 2rem);
-    scroll-padding-inline: calc(20vw + 2rem);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .activity-rail-reveal {
-    transition: none;
-    transform: none !important;
-    opacity: 1 !important;
-  }
-
-  .activity-rail-track {
-    scroll-behavior: auto;
-  }
-}
-</style>

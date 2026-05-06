@@ -42,10 +42,6 @@ const compactDate = computed(() => dayjs(props.item.publishedAt).format('MM.DD')
 
 const detailAriaLabel = computed(() => `查看${typeLabel.value}动态详情，发布时间 ${absoluteDate.value}`)
 
-function handleSelect() {
-  emit('select', props.item)
-}
-
 function truncateContent(content: string, maxLength: number) {
   return content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
 }
@@ -71,7 +67,7 @@ function getFallbackContent(item: ActivityItem) {
     class="activity-rail-card group w-[min(82vw,22rem)] shrink-0 border border-primary/55 rounded-[24px] p-5 text-left shadow-sm transition-colors transition-shadow transition-transform duration-300 ease-out from-white via-hana-blue-50/70 to-white bg-gradient-to-b lg:w-[22rem] sm:w-[20rem] xl:w-[24rem] dark:border-hana-black-200/80 hover:border-hana-blue/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-hana-blue/45 focus-visible:ring-offset-white dark:from-hana-black-800 dark:via-hana-black-700 dark:to-hana-black hover:-translate-y-0.5 dark:hover:border-hana-blue-300/40 dark:focus-visible:ring-hana-blue-300/45 dark:focus-visible:ring-offset-hana-black-800"
     :aria-label="detailAriaLabel"
     :data-activity-card-id="item.id"
-    @click="handleSelect"
+    @click="emit('select', props.item)"
   >
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 flex items-center gap-3">
@@ -188,13 +184,3 @@ function getFallbackContent(item: ActivityItem) {
     </div>
   </button>
 </template>
-
-<style scoped>
-@media (prefers-reduced-motion: reduce) {
-  .activity-rail-card,
-  .activity-rail-card * {
-    animation-duration: 0ms !important;
-    transition-duration: 0ms !important;
-  }
-}
-</style>
