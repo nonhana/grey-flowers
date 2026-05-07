@@ -1,3 +1,5 @@
+export type ArticleCardVariant = 'featured' | 'compact' | 'row'
+
 export interface ArticleCardProps {
   to: string
   title: string
@@ -7,5 +9,5 @@ export interface ArticleCardProps {
   publishedAt: string
   editedAt: string
   wordCount: number
-  type?: 'common' | 'detail'
+  variant?: ArticleCardVariant
 }

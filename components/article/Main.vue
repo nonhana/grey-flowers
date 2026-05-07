@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ArticleFilterQuery } from '~/server/types/articles'
-import type { ArticleCardProps } from '~/types/article'
+import type { ArticleCardProps, ArticleCardVariant } from '~/types/article'
 
 const props = withDefaults(defineProps<{
   type?: 'common' | 'tags' | 'category' | 'archives'
@@ -31,14 +31,12 @@ const whereObj = computed(() => {
   return filter
 })
 
-const displayCols = computed(() => {
-  switch (props.type) {
-    case 'archives':
-      return 2
-    default:
-      return 1
-  }
-})
+const cardVariant = computed<ArticleCardVariant>(() => props.type === 'archives' ? 'compact' : 'row')
+const listClass = computed(() =>
+  props.type === 'archives'
+    ? 'grid grid-cols-1 gap-6 xl:grid-cols-2'
+    : 'flex flex-col gap-6',
+)
 
 const articlesCountKey = computed(() => {
   const queryStr = new URLSearchParams(whereObj.value as Record<string, any>).toString()
@@ -101,8 +99,13 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 <template>
   <div class="size-full flex flex-col">
     <div class="flex-1">
-      <div class="gap-5" :class="[type === 'archives' ? 'grid grid-cols-1 lg:grid-cols-2' : 'flex flex-col']">
-        <ArticleCard v-for="(card, index) in articleCards" :key="`${card.title}-${index}`" type="detail" v-bind="{ ...card, index, displayCols }" />
+      <div :class="listClass">
+        <ArticleCard
+          v-for="(card, index) in articleCards"
+          :key="`${card.title}-${index}`"
+          v-bind="{ ...card, index }"
+          :variant="cardVariant"
+        />
       </div>
     </div>
     <div class="sticky bottom-5 mx-auto mt-5 w-fit">

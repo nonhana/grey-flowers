@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Bash(rtk read *)",
+      "Bash(lsof -iTCP:3000 -sTCP:LISTEN -n -P)",
+      "Skill(agent-browser)",
+      "Bash(pnpm dev *)",
+      "Bash(rtk du *)",
+      "Bash(rtk lint *)",
+      "Bash(rtk grep *)"
+    ]
+  }
+}

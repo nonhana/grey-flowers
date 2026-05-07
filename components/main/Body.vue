@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
 
-const { data: fetchArticleData } = await useFetch('/api/articles/list', { query: { page: 1, pageSize: 6 } })
+const { data: fetchArticleData } = await useFetch('/api/articles/list', { query: { page: 1, pageSize: 5 } })
 const articleData = computed(() => fetchArticleData.value ? fetchArticleData.value.payload ?? [] : [])
 
 const articleCards = computed<ArticleCardProps[]>(() =>
@@ -18,6 +18,9 @@ const articleCards = computed<ArticleCardProps[]>(() =>
     }
   }),
 )
+
+const featuredArticle = computed(() => articleCards.value[0] ?? null)
+const secondaryArticleCards = computed(() => articleCards.value.slice(1))
 </script>
 
 <template>
@@ -27,8 +30,26 @@ const articleCards = computed<ArticleCardProps[]>(() =>
 
     <!-- 最近文章 -->
     <HanaInfoCard title="最近文章" icon="lucide:newspaper">
-      <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
-        <ArticleCard v-for="(card, index) in articleCards" :key="card.title" v-bind="{ ...card, index }" />
+      <div v-if="featuredArticle" class="grid gap-4 2xl:grid-cols-3 md:grid-cols-2">
+        <ArticleCard
+          :key="`${featuredArticle.title}-featured`"
+          v-bind="{ ...featuredArticle, index: 0 }"
+          variant="featured"
+          class="md:col-span-2"
+        />
+        <ArticleCard
+          v-for="(card, index) in secondaryArticleCards"
+          :key="`${card.title}-compact-${index}`"
+          v-bind="{ ...card, index: index + 1 }"
+          variant="compact"
+        />
+      </div>
+
+      <div
+        v-else
+        class="border border-primary/55 rounded-[24px] bg-white/72 p-5 text-text leading-7 dark:border-hana-black-200/80 dark:bg-hana-black-800/78 dark:text-hana-white-700"
+      >
+        最近还没有公开的文章。
       </div>
     </HanaInfoCard>
   </div>
