@@ -44,13 +44,6 @@ const secondaryArticleCards = computed(() => articleCards.value.slice(1))
           variant="compact"
         />
       </div>
-
-      <div
-        v-else
-        class="border border-primary/55 rounded-[24px] bg-white/72 p-5 text-text leading-7 dark:border-hana-black-200/80 dark:bg-hana-black-800/78 dark:text-hana-white-700"
-      >
-        最近还没有公开的文章。
-      </div>
     </HanaInfoCard>
   </div>
 </template>
