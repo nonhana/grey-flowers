@@ -76,7 +76,7 @@ export default defineConfig({
     'animate-bounce-x': 'animate-[bounce-x_1s_infinite]',
     'activity-rail-track': [
       'flex',
-      'gap-4',
+      'gap-6',
       'overflow-x-auto',
       'pt-[0.125rem]',
       'pb-2',
@@ -213,7 +213,7 @@ export default defineConfig({
 
         :root {
           /* 背景网格颜色 */
-          --background-grid-color: oklch(0.95 0.0059 239.82);
+          --background-grid-color: oklch(0.91 0.011 234.83 / 0.6);
           --background-grid-color-dark: oklch(0.27 0 0);
 
           /* 选中文字颜色 */

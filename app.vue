@@ -20,7 +20,7 @@ useSeoMeta(siteMetaData)
   <transition name="page">
     <HanaLoading v-if="initializing" />
   </transition>
-  <div v-show="!initializing" class="bg-hana-blue-200/10 background-grid dark:bg-hana-black-900">
+  <div v-show="!initializing" class="bg-hana-blue-200/12 background-grid dark:bg-hana-black-900">
     <NuxtLoadingIndicator :color="false" />
     <NuxtLayout>
       <NuxtPage />

@@ -30,7 +30,7 @@ const secondaryArticleCards = computed(() => articleCards.value.slice(1))
 
     <!-- 最近文章 -->
     <HanaInfoCard title="最近文章" icon="lucide:newspaper">
-      <div v-if="featuredArticle" class="grid gap-4 2xl:grid-cols-3 md:grid-cols-2">
+      <div v-if="featuredArticle" class="grid gap-6 2xl:grid-cols-3 md:grid-cols-2">
         <ArticleCard
           :key="`${featuredArticle.title}-featured`"
           v-bind="{ ...featuredArticle, index: 0 }"
