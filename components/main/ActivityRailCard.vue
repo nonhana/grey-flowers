@@ -64,7 +64,7 @@ function getFallbackContent(item: ActivityItem) {
 <template>
   <button
     type="button"
-    class="activity-rail-card group w-[min(82vw,22rem)] shrink-0 border border-primary/55 rounded-[24px] p-5 text-left shadow-sm transition-colors transition-shadow transition-transform duration-300 ease-out from-white via-hana-blue-50/70 to-white bg-gradient-to-b lg:w-[22rem] sm:w-[20rem] xl:w-[24rem] dark:border-hana-black-200/80 hover:border-hana-blue/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-hana-blue/45 focus-visible:ring-offset-white dark:from-hana-black-800 dark:via-hana-black-700 dark:to-hana-black hover:-translate-y-0.5 dark:hover:border-hana-blue-300/40 dark:focus-visible:ring-hana-blue-300/45 dark:focus-visible:ring-offset-hana-black-800"
+    class="group w-[min(82vw,22rem)] shrink-0 border border-primary/55 rounded-3xl p-5 text-left shadow-sm transition-colors transition-shadow transition-transform duration-300 ease-out from-white via-hana-blue-50/70 to-white bg-gradient-to-b lg:w-88 sm:w-80 xl:w-96 dark:border-hana-black-200/80 hover:border-hana-blue/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-hana-blue/45 focus-visible:ring-offset-white dark:from-hana-black-800 dark:via-hana-black-700 dark:to-hana-black hover:-translate-y-0.5 dark:hover:border-hana-blue-300/40 dark:focus-visible:ring-hana-blue-300/45 dark:focus-visible:ring-offset-hana-black-800"
     :aria-label="detailAriaLabel"
     :data-activity-card-id="item.id"
     @click="emit('select', props.item)"
@@ -76,31 +76,31 @@ function getFallbackContent(item: ActivityItem) {
         </span>
 
         <div class="min-w-0">
-          <p class="text-xs text-hana-blue leading-5 dark:text-hana-blue-200">
+          <p class="text-xs/5 text-hana-blue dark:text-hana-blue-200">
             {{ typeLabel }}
           </p>
           <time
             :datetime="item.publishedAt"
             :title="absoluteDate"
-            class="mt-1 block text-xs text-text leading-5 dark:text-hana-white-700"
+            class="mt-1 block text-xs/5 text-text dark:text-hana-white-700"
           >
             {{ formatRelativeTime(item.publishedAt) }}
           </time>
         </div>
       </div>
 
-      <span class="text-xs text-text leading-5 dark:text-hana-white-700">
+      <span class="text-xs/5 text-text dark:text-hana-white-700">
         {{ compactDate }}
       </span>
     </div>
 
-    <p class="mt-4 whitespace-pre-line text-sm text-hana-black leading-7 line-clamp-4 dark:text-hana-white">
+    <p class="mt-4 whitespace-pre-line text-sm/6 text-hana-black line-clamp-4 dark:text-hana-white">
       {{ excerpt }}
     </p>
 
     <div
       v-if="previewImage"
-      class="relative mt-4 overflow-hidden border border-white/70 rounded-[20px] bg-white/75 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
+      class="relative mt-4 overflow-hidden border border-white/70 rounded-5 bg-white/75 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
     >
       <NuxtImg
         :src="previewImage"
@@ -110,7 +110,7 @@ function getFallbackContent(item: ActivityItem) {
 
       <span
         v-if="imageCount > 1"
-        class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[11px] text-white"
+        class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white"
       >
         <Icon name="lucide:images" size="12" />
         {{ imageCount }}
@@ -118,7 +118,7 @@ function getFallbackContent(item: ActivityItem) {
 
       <span
         v-if="musicCount > 0"
-        class="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-1 text-[11px] text-hana-blue backdrop-blur-sm dark:bg-hana-black/78 dark:text-hana-blue-200"
+        class="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-1 text-xs text-hana-blue backdrop-blur-sm dark:bg-hana-black/78 dark:text-hana-blue-200"
       >
         <Icon name="lucide:music-4" size="12" />
         {{ musicCount }} 首歌
@@ -127,34 +127,34 @@ function getFallbackContent(item: ActivityItem) {
 
     <div
       v-else-if="trackPreview"
-      class="mt-4 flex items-center gap-3 border border-primary/50 rounded-[20px] bg-white/72 p-3 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
+      class="mt-4 flex items-center gap-3 border border-primary/50 rounded-5 bg-white/72 p-3 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
     >
       <NuxtImg
         v-if="trackPreview.cover"
         :src="trackPreview.cover"
         :alt="trackPreview.album || trackPreview.title"
-        class="size-16 shrink-0 select-none rounded-[16px] object-cover"
+        class="size-16 shrink-0 select-none rounded-2xl object-cover"
       />
 
       <div
         v-else
-        class="size-16 flex shrink-0 items-center justify-center rounded-[16px] bg-hana-blue-100 text-hana-blue dark:bg-hana-black-600 dark:text-hana-blue-200"
+        class="size-16 flex shrink-0 items-center justify-center rounded-2xl bg-hana-blue-100 text-hana-blue dark:bg-hana-black-600 dark:text-hana-blue-200"
       >
         <Icon name="lucide:music-4" size="20" />
       </div>
 
       <div class="min-w-0 flex-1">
-        <p class="mt-1 text-sm text-hana-black leading-6 line-clamp-2 dark:text-hana-white">
+        <p class="mt-1 text-sm/6 text-hana-black line-clamp-2 dark:text-hana-white">
           {{ trackPreview.title }}
         </p>
-        <p class="mt-1 truncate text-xs text-text leading-5 dark:text-hana-white-700">
+        <p class="mt-1 truncate text-xs/5 text-text dark:text-hana-white-700">
           {{ trackPreview.artist }}
         </p>
       </div>
 
       <span
         v-if="musicCount > 1"
-        class="rounded-full bg-hana-blue-100/80 px-2 py-1 text-[11px] text-hana-blue dark:bg-hana-black-600 dark:text-hana-blue-200"
+        class="rounded-full bg-hana-blue-100/80 px-2 py-1 text-xs text-hana-blue dark:bg-hana-black-600 dark:text-hana-blue-200"
       >
         {{ musicCount }}
       </span>
@@ -162,7 +162,7 @@ function getFallbackContent(item: ActivityItem) {
 
     <div
       v-else
-      class="mt-4 flex items-center gap-2 border border-primary/45 rounded-[20px] border-dashed bg-white/55 px-3 py-3 text-xs text-text dark:border-hana-black-200/80 dark:bg-hana-black-700/55 dark:text-hana-white-700"
+      class="mt-4 flex items-center gap-2 border border-primary/45 rounded-5 border-dashed bg-white/55 px-3 py-3 text-xs text-text dark:border-hana-black-200/80 dark:bg-hana-black-700/55 dark:text-hana-white-700"
     >
       <Icon name="lucide:feather" size="14" />
       Something to remember
