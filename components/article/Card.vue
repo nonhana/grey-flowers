@@ -39,8 +39,8 @@ onMounted(() => {
       :title="title"
       class="group relative block h-full w-full overflow-hidden rounded-lg bg-white text-left text-hana-black shadow-md transition-transform duration-300 ease-out active:scale-[0.99] dark:bg-hana-black dark:text-hana-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-hana-blue/45 focus-visible:ring-offset-primary-100 hover:-translate-y-0.5 dark:focus-visible:ring-hana-blue-300/45 dark:focus-visible:ring-offset-hana-black-900"
     >
-      <div v-if="isFeatured" class="h-full flex flex-col md:min-h-[400px] md:flex-row">
-        <div class="order-1 h-[14rem] w-full shrink-0 overflow-hidden border-b border-primary/35 md:order-2 md:h-auto md:w-[28rem] md:border-b-0 md:border-l dark:border-hana-black-200/55">
+      <div v-if="isFeatured" class="h-full flex flex-col md:min-h-100 md:flex-row">
+        <div class="order-1 h-56 w-full shrink-0 overflow-hidden border-b border-primary/35 md:order-2 md:h-auto md:w-112 md:border-b-0 md:border-l dark:border-hana-black-200/55">
           <NuxtImg
             :src="cover"
             :alt="coverAlt"
@@ -49,7 +49,7 @@ onMounted(() => {
         </div>
 
         <div class="order-2 min-w-0 flex flex-1 flex-col gap-4 p-5 md:order-1 md:gap-5 md:p-7">
-          <div class="min-h-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-text-3 font-medium tracking-[0.18em] font-code uppercase dark:text-hana-white-700/85">
+          <div class="min-h-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-2.5 text-text-3 font-medium tracking-[0.18em] font-code uppercase dark:text-hana-white-700/85">
             <template v-for="(tag, i) in visibleTags" :key="tag">
               <span>{{ tag }}</span>
               <span v-if="i < visibleTags.length - 1 || hiddenTagCount" class="opacity-50">·</span>
@@ -57,7 +57,7 @@ onMounted(() => {
             <span v-if="hiddenTagCount">{{ hiddenTagLabel }}</span>
           </div>
 
-          <h2 class="text-[1.7rem] font-bold leading-[1.18] font-noto line-clamp-2 md:text-[1.95rem] dark:text-hana-white">
+          <h2 class="text-[1.7rem] font-bold leading-[1.18] line-clamp-2 md:text-[1.95rem] dark:text-hana-white">
             {{ title }}
           </h2>
 
@@ -103,11 +103,11 @@ onMounted(() => {
             <span v-if="hiddenTagCount">{{ hiddenTagLabel }}</span>
           </div>
 
-          <h2 class="text-[1.4rem] font-bold leading-[1.22] font-noto line-clamp-2 dark:text-hana-white">
+          <h2 class="text-xl font-bold line-clamp-2 dark:text-hana-white">
             {{ title }}
           </h2>
 
-          <p class="text-[0.92rem] text-text leading-6 line-clamp-2 dark:text-hana-white-700">
+          <p class="text-sm text-text line-clamp-2 dark:text-hana-white-700">
             {{ normalizedDescription }}
           </p>
 
@@ -140,7 +140,7 @@ onMounted(() => {
           />
         </div>
 
-        <div class="order-2 min-w-0 flex flex-1 flex-col gap-3.5 p-5 md:order-1 md:p-6">
+        <div class="order-2 min-w-0 flex flex-1 flex-col gap-2 p-5 md:order-1 md:p-6">
           <div class="min-h-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-text-3 font-medium tracking-[0.18em] font-code uppercase dark:text-hana-white-700/85">
             <template v-for="(tag, i) in visibleTags" :key="tag">
               <span>{{ tag }}</span>
@@ -149,7 +149,7 @@ onMounted(() => {
             <span v-if="hiddenTagCount">{{ hiddenTagLabel }}</span>
           </div>
 
-          <h2 class="text-[1.4rem] font-bold leading-[1.22] font-noto line-clamp-2 md:text-[1.5rem] dark:text-hana-white">
+          <h2 class="text-[1.4rem] font-bold line-clamp-2 md:text-xl dark:text-hana-white">
             {{ title }}
           </h2>
 
