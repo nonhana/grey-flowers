@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Volume, Volume1, Volume2, VolumeOff } from 'lucide-vue-next'
+import { Volume, Volume1, Volume2, VolumeOff } from '@lucide/vue'
 
 const volume = ref(0)
 const isIdle = ref(true)

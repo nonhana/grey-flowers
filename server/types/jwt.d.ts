@@ -4,5 +4,4 @@ export interface JwtPayload {
   username: string
   avatar: string
   site: string | null
-  [key: string]: string | number | null
 }

@@ -56,7 +56,7 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
   },
-  css: ['@unocss/reset/tailwind.css'],
+  css: ['@unocss/reset/tailwind.css', 'hana-img-viewer/style.css'],
   postcss: {
     plugins: {
       cssnano: { plugins: [] }, // 禁用压缩 CSS 插件，避免 build 时无法解析某些 CSS 规则
@@ -70,7 +70,7 @@ export default defineNuxtConfig({
         'dayjs/plugin/customParseFormat', // CJS
         'gsap',
         'vivus', // CJS
-        'lucide-vue-next',
+        '@lucide/vue',
       ],
     },
   },

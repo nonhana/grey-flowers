@@ -31,13 +31,13 @@ export default formattedEventHandler(async (event) => {
     }
   }
 
-  const userInfo: JwtPayload = {
+  const userInfo = {
     id: user.id,
     email: user.email,
     username: user.username,
     avatar: user.avatar,
     site: user.site,
-  }
+  } satisfies JwtPayload
 
   const joseSecret = new TextEncoder().encode(env.HANA_JWT_SECRET)
 

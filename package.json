@@ -21,10 +21,10 @@
     "cleanup": "nuxt cleanup"
   },
   "dependencies": {
+    "@lucide/vue": "catalog:",
     "@takumi-rs/core": "catalog:",
     "@unocss/reset": "catalog:",
     "jose": "catalog:",
-    "lucide-vue-next": "catalog:",
     "nuxt": "catalog:",
     "resend": "catalog:",
     "vue": "catalog:",

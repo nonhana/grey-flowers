@@ -11,6 +11,7 @@ trustPolicyExclude:
 catalog:
   '@antfu/eslint-config': ^9.0.0
   '@iconify-json/lucide': ^1.2.108
+  '@lucide/vue': ^1.16.0
   '@nuxt/icon': ^2.2.2
   '@nuxt/image': ^2.0.0
   '@nuxtjs/color-mode': ^4.0.0
@@ -37,9 +38,8 @@ catalog:
   eslint: ^10.4.0
   feed: ^5.2.1
   gsap: ^3.15.0
-  hana-img-viewer: ^3.1.0
+  hana-img-viewer: ^4.0.0
   jose: ^6.2.3
-  lucide-vue-next: ^1.0.0
   nuxt: ^4.4.5
   pinia: ^3.0.4
   pinia-plugin-persistedstate: ^4.7.1

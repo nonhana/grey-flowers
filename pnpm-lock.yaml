@@ -12,6 +12,9 @@ catalogs:
     '@iconify-json/lucide':
       specifier: ^1.2.108
       version: 1.2.108
+    '@lucide/vue':
+      specifier: ^1.16.0
+      version: 1.16.0
     '@nuxt/icon':
       specifier: ^2.2.2
       version: 2.2.2
@@ -91,14 +94,11 @@ catalogs:
       specifier: ^3.15.0
       version: 3.15.0
     hana-img-viewer:
-      specifier: ^3.1.0
-      version: 3.1.0
+      specifier: ^4.0.0
+      version: 4.0.0
     jose:
       specifier: ^6.2.3
       version: 6.2.3
-    lucide-vue-next:
-      specifier: ^1.0.0
-      version: 1.0.0
     nuxt:
       specifier: ^4.4.5
       version: 4.4.5
@@ -143,6 +143,9 @@ importers:
 
   .:
     dependencies:
+      '@lucide/vue':
+        specifier: 'catalog:'
+        version: 1.16.0(vue@3.5.34(typescript@5.9.3))
       '@takumi-rs/core':
         specifier: 'catalog:'
         version: 1.1.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -152,9 +155,6 @@ importers:
       jose:
         specifier: 'catalog:'
         version: 6.2.3
-      lucide-vue-next:
-        specifier: 'catalog:'
-        version: 1.0.0(vue@3.5.34(typescript@5.9.3))
       nuxt:
         specifier: 'catalog:'
         version: 4.4.5(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.27.1(@babel/core@7.29.0))(@electric-sql/pglite@0.4.1)(@parcel/watcher@2.5.6)(@types/node@25.8.0)(@vue/compiler-sfc@3.5.34)(cac@6.7.14)(db0@0.3.4(@electric-sql/pglite@0.4.1)(mysql2@3.15.3))(eslint@10.4.0(jiti@2.6.1))(ioredis@5.10.1)(lightningcss@1.32.0)(magicast@0.5.2)(mysql2@3.15.3)(optionator@0.9.4)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(rolldown@1.0.0-rc.17)(rollup-plugin-visualizer@7.0.1(rolldown@1.0.0-rc.17)(rollup@4.60.2))(rollup@4.60.2)(sass-embedded@1.99.0)(sass@1.99.0)(terser@5.44.1)(typescript@5.9.3)(vite@8.0.10(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(terser@5.44.1)(yaml@2.9.0))(yaml@2.9.0)
@@ -248,7 +248,7 @@ importers:
         version: 3.15.0
       hana-img-viewer:
         specifier: 'catalog:'
-        version: 3.1.0
+        version: 4.0.0(@vueuse/core@14.3.0(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))
       pinia:
         specifier: 'catalog:'
         version: 3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3))
@@ -1226,6 +1226,11 @@ packages:
 
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
+
+  '@lucide/vue@1.16.0':
+    resolution: {integrity: sha512-kiHx0fe49DMjQuvNaEOu9Jou6u9FwdqQ8xbZIKlD47sXrOI8g59kIeeQL42NBLI4AvO+UJsbaPX0hEK/4rHSBQ==}
+    peerDependencies:
+      vue: '>=3.0.1'
 
   '@mapbox/node-pre-gyp@2.0.3':
     resolution: {integrity: sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg==}
@@ -5282,8 +5287,11 @@ packages:
   h3@1.15.4:
     resolution: {integrity: sha512-z5cFQWDffyOe4vQ9xIqNfCZdV4p//vy6fBnr8Q1AWnVZ0teurKMG66rLj++TKwKPUP3u7iMUvrvKaEUiQw2QWQ==}
 
-  hana-img-viewer@3.1.0:
-    resolution: {integrity: sha512-w1sfl4ySmhhZmxlf1QNjQmlOMDx9DgNRapJZ4z9qp6A0oj+mxLj6ywfd3uAB9FTt84Qfy0EdhegHef4fYH6iEw==}
+  hana-img-viewer@4.0.0:
+    resolution: {integrity: sha512-oUkiwhNdAmz93J49Dwbwp8BAH7LjzckgrgJEvyiDjcJI0mClHWformeauklnzhBhc7W5m0iA+EySaLsADpCL5A==}
+    peerDependencies:
+      '@vueuse/core': ^14.0.0
+      vue: ^3.5.0
 
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -5804,12 +5812,6 @@ packages:
   lru.min@1.1.3:
     resolution: {integrity: sha512-Lkk/vx6ak3rYkRR0Nhu4lFUT2VDnQSxBe8Hbl7f36358p6ow8Bnvr8lrLt98H8J1aGxfhbX4Fs5tYg2+FTwr5Q==}
     engines: {bun: '>=1.0.0', deno: '>=1.30.0', node: '>=8.0.0'}
-
-  lucide-vue-next@1.0.0:
-    resolution: {integrity: sha512-V6SPvx1IHTj/UY+FrIYWV5faISsPSb8BnWSFDxAtezWKvWc9ZZ40PDrdu1/Qb5vg4lHWr1hs1BAMGVGm6V1Xdg==}
-    deprecated: Package deprecated. Please use @lucide/vue instead.
-    peerDependencies:
-      vue: '>=3.0.1'
 
   magic-regexp@0.10.0:
     resolution: {integrity: sha512-Uly1Bu4lO1hwHUW0CQeSWuRtzCMNO00CmXtS8N6fyvB3B979GOEEeAkiTUDsmbYLAbvpUS/Kt5c4ibosAzVyVg==}
@@ -9180,6 +9182,10 @@ snapshots:
       - supports-color
 
   '@kwsites/promise-deferred@1.1.1': {}
+
+  '@lucide/vue@1.16.0(vue@3.5.34(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.34(typescript@5.9.3)
 
   '@mapbox/node-pre-gyp@2.0.3':
     dependencies:
@@ -13635,7 +13641,10 @@ snapshots:
       ufo: 1.6.3
       uncrypto: 0.1.3
 
-  hana-img-viewer@3.1.0: {}
+  hana-img-viewer@4.0.0(@vueuse/core@14.3.0(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)):
+    dependencies:
+      '@vueuse/core': 14.3.0(vue@3.5.34(typescript@5.9.3))
+      vue: 3.5.34(typescript@5.9.3)
 
   has-flag@4.0.0: {}
 
@@ -14223,10 +14232,6 @@ snapshots:
       yallist: 3.1.1
 
   lru.min@1.1.3: {}
-
-  lucide-vue-next@1.0.0(vue@3.5.34(typescript@5.9.3)):
-    dependencies:
-      vue: 3.5.34(typescript@5.9.3)
 
   magic-regexp@0.10.0:
     dependencies:

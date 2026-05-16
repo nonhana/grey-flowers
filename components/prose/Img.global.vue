@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { PropsType } from 'hana-img-viewer'
+import type { HanaImgViewerProps } from 'hana-img-viewer'
 import { HanaImgViewer } from 'hana-img-viewer'
 
 type ProseImgProps = Pick<
-  PropsType,
+  HanaImgViewerProps,
   | 'src'
   | 'alt'
   | 'previewSrc'
@@ -52,7 +52,5 @@ const refinedSrc = computed(() => {
 </script>
 
 <template>
-  <ClientOnly>
-    <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
-  </ClientOnly>
+  <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
 </template>
