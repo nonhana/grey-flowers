@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import { jwtVerify } from 'jose'
 import env from '~/server/env'
 
 // 未登录、登录正常用户放行，登录过期用户返回401
@@ -12,7 +12,8 @@ export default formattedEventHandler(async (event) => {
   }
 
   try {
-    jwt.verify(token, env.HANA_JWT_SECRET)
+    const joseSecret = new TextEncoder().encode(env.HANA_JWT_SECRET)
+    await jwtVerify(token, joseSecret)
     return {
       statusCode: 200,
       success: true,

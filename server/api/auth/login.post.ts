@@ -1,6 +1,6 @@
 import type { JwtPayload } from '~/server/types/jwt'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import { SignJWT } from 'jose'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import env from '~/server/env'
@@ -39,7 +39,12 @@ export default formattedEventHandler(async (event) => {
     site: user.site,
   }
 
-  const token = jwt.sign(userInfo, env.HANA_JWT_SECRET, { expiresIn: '30d' })
+  const joseSecret = new TextEncoder().encode(env.HANA_JWT_SECRET)
+
+  const token = await new SignJWT(userInfo)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('30d')
+    .sign(joseSecret)
 
   return { payload: { token, userInfo } }
 })

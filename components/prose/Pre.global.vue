@@ -22,8 +22,6 @@ const collapsibleHeight = computed(() => `${codeBlockVisibleRows}rem`)
 const collapsible = computed(() => rows.value > codeBlockVisibleRows)
 const [isCollapsed, toggleCollapsed] = useToggle(collapsible.value)
 
-const copyBtn = useTemplateRef('copyBtnRef')
-const codeblock = useTemplateRef('codeblockRef')
 const figureRef = useTemplateRef('figureRef')
 const figcaptionRef = useTemplateRef('figcaptionRef')
 
@@ -39,7 +37,14 @@ const isStickyActive = computed(() => {
     && figureBottom.value > stickyTopPx.value + figcaptionHeight.value
 })
 
-useCopy(copyBtn, codeblock)
+const { callHanaMessage } = useMessage()
+const debouncedCallHanaMessage = useDebounceFn(callHanaMessage, 50)
+
+function copyCode() {
+  navigator.clipboard.writeText(props.code)
+    .then(() => debouncedCallHanaMessage({ type: 'success', message: '复制成功' }))
+    .catch(() => debouncedCallHanaMessage({ type: 'error', message: '复制失败' }))
+}
 </script>
 
 <template>
@@ -64,15 +69,14 @@ useCopy(copyBtn, codeblock)
         </span>
       </div>
       <button
-        ref="copyBtnRef"
         class="cursor-pointer rounded-lg px-4 py-2 transition-colors duration-300"
         :class="isStickyActive ? 'bg-hana-blue-150 dark:bg-hana-black-800' : 'bg-transparent'"
+        @click="copyCode"
       >
         <span>copy</span>
       </button>
     </figcaption>
     <pre
-      ref="codeblockRef"
       class="overflow-auto px-4 pb-2 font-code scrollbar-none"
       :class="[props.class, { 'animate-none overflow-hidden': isCollapsed }]"
       :style="{ maxHeight: isCollapsed ? collapsibleHeight : 'none' }"

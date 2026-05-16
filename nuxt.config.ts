@@ -71,7 +71,6 @@ export default defineNuxtConfig({
         'gsap',
         'vivus', // CJS
         'lucide-vue-next',
-        'clipboard',
       ],
     },
   },
@@ -86,7 +85,12 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@unocss/nuxt',
   ],
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+    timeline: {
+      enabled: true,
+    },
+  },
   linkChecker: { enabled: false }, // 中文网站无需检查链接
   sitemap: { zeroRuntime: true },
   compatibilityDate: '2024-10-05',

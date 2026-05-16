@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken'
+import { jwtVerify } from 'jose'
 import env from '~/server/env'
 
-export default eventHandler((event) => {
+export default eventHandler(async (event) => {
   if (!blackList.includes(event.path)) {
     return
   }
@@ -16,7 +16,8 @@ export default eventHandler((event) => {
   }
 
   try {
-    const decoded = jwt.verify(token, env.HANA_JWT_SECRET)
+    const joseSecret = new TextEncoder().encode(env.HANA_JWT_SECRET)
+    const { payload: decoded } = await jwtVerify(token, joseSecret)
     event.context.jwtPayload = decoded
   }
   catch {

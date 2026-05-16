@@ -2,7 +2,7 @@
   "name": "hana-blog",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -21,7 +21,9 @@
     "cleanup": "nuxt cleanup"
   },
   "dependencies": {
+    "@takumi-rs/core": "catalog:",
     "@unocss/reset": "catalog:",
+    "jose": "catalog:",
     "lucide-vue-next": "catalog:",
     "nuxt": "catalog:",
     "resend": "catalog:",
@@ -50,14 +52,12 @@
     "@vueuse/nuxt": "catalog:",
     "@vueuse/router": "catalog:",
     "bcrypt": "catalog:",
-    "clipboard": "catalog:",
     "dayjs": "catalog:",
     "dotenv": "catalog:",
     "eslint": "catalog:",
     "feed": "catalog:",
     "gsap": "catalog:",
     "hana-img-viewer": "catalog:",
-    "jsonwebtoken": "catalog:",
     "pinia": "catalog:",
     "pinia-plugin-persistedstate": "catalog:",
     "prisma": "catalog:",

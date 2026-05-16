@@ -1,11 +1,11 @@
 {
   "prettier": {
-    "allowed": false,
+    "allowed": false
   },
   "format_on_save": "on",
   "code_actions_on_format": {
     "source.fixAll.eslint": true,
-    "source.organizeImports": false,
+    "source.organizeImports": false
   },
   "lsp": {
     "eslint": {
@@ -14,55 +14,55 @@
           {
             "rule": "style/*",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "format/*",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*-indent",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*-spacing",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*-spaces",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*-order",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*-dangle",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*-newline",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*quotes",
             "severity": "off",
-            "fixable": true,
+            "fixable": true
           },
           {
             "rule": "*semi",
             "severity": "off",
-            "fixable": true,
-          },
-        ],
-      },
-    },
-  },
+            "fixable": true
+          }
+        ]
+      }
+    }
+  }
 }
