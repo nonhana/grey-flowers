@@ -24,7 +24,6 @@ model Article {
   description String?
   cover       String
   alt         String    @unique
-  ogImage     String
   published   Boolean   @default(false)
   wordCount   Int       @default(0)
   tags        Tag[]     @relation("ArticleTags")

@@ -1124,7 +1124,6 @@ export const ArticleScalarFieldEnum = {
   description: 'description',
   cover: 'cover',
   alt: 'alt',
-  ogImage: 'ogImage',
   published: 'published',
   wordCount: 'wordCount',
   categoryId: 'categoryId',
