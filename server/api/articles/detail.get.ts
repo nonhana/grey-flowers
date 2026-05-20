@@ -1,5 +1,6 @@
 import type { ArticleMarkdownPayload } from '~/types/markdown'
 import prisma from '~/lib/prisma'
+import { resolveArticleImagePolicy } from '~/utils/article-generated-image'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)
@@ -16,7 +17,17 @@ export default formattedEventHandler(async (event) => {
   // 从数据库查询文章
   const article = await prisma.article.findUnique({
     where: { to: path, published: true },
-    include: {
+    select: {
+      to: true,
+      title: true,
+      description: true,
+      cover: true,
+      alt: true,
+      content: true,
+      publishedAt: true,
+      editedAt: true,
+      published: true,
+      wordCount: true,
       tags: { select: { name: true } },
       category: { select: { name: true } },
     },
@@ -34,6 +45,12 @@ export default formattedEventHandler(async (event) => {
   const parsed = await parseAppMarkdown(articleContent)
 
   const payload: ArticleMarkdownPayload = {
+    ...resolveArticleImagePolicy({
+      to: article.to,
+      title: article.title,
+      cover: article.cover,
+      publishedAt: article.publishedAt.toISOString(),
+    }),
     id: article.to,
     path: article.to,
     stem: article.to,
@@ -41,7 +58,6 @@ export default formattedEventHandler(async (event) => {
     description: article.description || '',
     cover: article.cover,
     alt: article.alt,
-    ogImage: article.ogImage,
     tags: article.tags.map(tag => tag.name),
     category: article.category?.name || '未分类',
     publishedAt: article.publishedAt.toISOString(),

@@ -2,12 +2,12 @@
 import type { ArticleHeader } from '~/types/content'
 import { useStore } from '~/store'
 
-withDefaults(defineProps<ArticleHeader>(), {
+const props = withDefaults(defineProps<ArticleHeader>(), {
   title: '暂无标题',
   description: '暂无简介',
-  cover: '/images/not-found.webp',
+  image: '/images/not-found.webp',
+  imageSource: 'cover',
   alt: '暂无图片',
-  ogImage: '/images/not-found.webp',
   tags: () => [],
   category: '未分类',
   publishedAt: '',
@@ -38,12 +38,21 @@ onMounted(() => {
 onUnmounted(() => {
   headObserver?.disconnect()
 })
+
+const isGeneratedImage = computed(() => props.imageSource === 'generated')
+const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.title} Nuxt OgImage` : props.alt)
 </script>
 
 <template>
   <header ref="articleHeadRef" class="mb-10 flex flex-col gap-5">
     <div class="overflow-hidden rounded-lg">
-      <NuxtImg :src="cover" :alt="alt" class="size-full transition-transform object-cover hover:scale-110" />
+      <img
+        v-if="isGeneratedImage"
+        :src="image"
+        :alt="imageAlt"
+        class="size-full transition-transform object-cover hover:scale-110"
+      >
+      <NuxtImg v-else :src="image" :alt="imageAlt" class="size-full transition-transform object-cover hover:scale-110" />
     </div>
     <h1 class="text-3xl font-bold dark:text-hana-white">
       {{ title }}

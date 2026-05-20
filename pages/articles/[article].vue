@@ -2,19 +2,19 @@
 import type { ArticleHeader } from '~/types/content'
 import type { ArticleMarkdownPayload, Neighbors } from '~/types/markdown'
 import dayjs from 'dayjs'
-import { navbarData, seoData } from '~/data/meta'
+import { seoData } from '~/data/meta'
 import { useStore } from '~/store'
+import { getArticleOgImageDefinition } from '~/utils/article-og-image'
 
 const { articleStore } = useStore()
 const { headerVisible } = toRefs(articleStore)
-
-const img = useImage()
 
 definePageMeta({
   name: ARTICLE_DETAIL_PAGE,
 })
 
 const route = useRoute()
+const requestUrl = useRequestURL()
 
 // 从数据库获取文章详情
 const { data: articleResponse } = await useFetch('/api/articles/detail', {
@@ -42,12 +42,26 @@ if (neighbors.value && neighbors.value.length > 0) {
 
 const [prev, next] = neighbors.value
 
+const articleOgImageDefinition = computed(() => article.value
+  ? getArticleOgImageDefinition({
+      to: article.value.path,
+      title: article.value.title,
+      publishedAt: article.value.publishedAt,
+    })
+  : null)
+const articleUrl = computed(() => new URL(route.path, `${seoData.mySite}/`).toString())
+const articleSeoImage = computed(() => {
+  const image = article.value?.displayImage || seoData.image
+
+  return new URL(image, requestUrl.origin).toString()
+})
+
 const articleHeader = computed<ArticleHeader>(() => ({
   title: article.value?.title || '暂无标题',
   description: article.value?.description || '暂无简介',
-  cover: article.value?.cover || '/images/not-found.webp',
+  image: article.value?.displayImage || '/images/not-found.webp',
+  imageSource: article.value?.displayImageSource || 'generated',
   alt: article.value?.alt || '暂无图片',
-  ogImage: article.value?.ogImage || '/images/not-found.webp',
   tags: article.value?.tags || [],
   category: article.value?.category || '未分类',
   publishedAt: dayjs(article.value?.publishedAt).format('YYYY-MM-DD'),
@@ -56,30 +70,34 @@ const articleHeader = computed<ArticleHeader>(() => ({
   wordCount: article.value?.wordCount || 0,
 }))
 
+if (articleOgImageDefinition.value) {
+  defineOgImage(articleOgImageDefinition.value.component, articleOgImageDefinition.value.props)
+}
+
 useHead({
-  title: articleHeader.value.title,
+  title: () => articleHeader.value.title,
   link: [
     {
       rel: 'canonical',
-      href: `${seoData.mySite}/${route.path}`,
+      href: () => articleUrl.value,
     },
   ],
 })
 
 useSeoMeta({
-  title: articleHeader.value.title,
-  description: articleHeader.value.description,
-  ogTitle: articleHeader.value.title,
-  ogDescription: articleHeader.value.description,
-  ogImage: seoData.mySite + img(articleHeader.value.ogImage, { quality: 85 }),
-  ogSiteName: navbarData.homeTitle,
+  title: () => articleHeader.value.title,
+  description: () => articleHeader.value.description,
+  ogTitle: () => articleHeader.value.title,
+  ogDescription: () => articleHeader.value.description,
+  ogImage: () => articleSeoImage.value,
+  ogSiteName: seoData.siteName,
   ogType: 'website',
-  ogUrl: `${seoData.mySite}/${route.path}`,
-  twitterSite: '@non_hanaz',
+  ogUrl: () => articleUrl.value,
+  twitterSite: seoData.twitterHandle,
   twitterCard: 'summary_large_image',
-  twitterTitle: articleHeader.value.title,
-  twitterDescription: articleHeader.value.description,
-  twitterImage: articleHeader.value.ogImage,
+  twitterTitle: () => articleHeader.value.title,
+  twitterDescription: () => articleHeader.value.description,
+  twitterImage: () => articleSeoImage.value,
 })
 </script>
 

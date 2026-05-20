@@ -19,7 +19,8 @@ const visibleTags = computed(() => props.tags.slice(0, maxVisibleTags.value))
 const hiddenTagCount = computed(() => Math.max(0, props.tags.length - visibleTags.value.length))
 const hiddenTagLabel = computed(() => `+${hiddenTagCount.value}`)
 const normalizedDescription = computed(() => props.description.trim() || '暂无简介')
-const coverAlt = computed(() => `${props.title} 封面`)
+const isGeneratedImage = computed(() => props.imageSource === 'generated')
+const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.title} Nuxt OgImage` : `${props.title} Cover`)
 const transitionStyle = computed<StyleValue>(() => ({
   transition: `opacity 0.35s ease-out ${props.index * 0.08}s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) ${props.index * 0.08}s`,
   opacity: opacity.value,
@@ -41,9 +42,16 @@ onMounted(() => {
     >
       <div v-if="isFeatured" class="h-full flex flex-col md:min-h-100 md:flex-row">
         <div class="order-1 h-56 w-full shrink-0 overflow-hidden border-b border-primary/35 md:order-2 md:h-auto md:w-112 md:border-b-0 md:border-l dark:border-hana-black-200/55">
+          <img
+            v-if="isGeneratedImage"
+            :src="image"
+            :alt="imageAlt"
+            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+          >
           <NuxtImg
-            :src="cover"
-            :alt="coverAlt"
+            v-else
+            :src="image"
+            :alt="imageAlt"
             class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
           />
         </div>
@@ -87,9 +95,16 @@ onMounted(() => {
 
       <div v-else-if="isCompact" class="h-full flex flex-col">
         <div class="h-60 w-full overflow-hidden border-b border-primary/35 dark:border-hana-black-200/55">
+          <img
+            v-if="isGeneratedImage"
+            :src="image"
+            :alt="imageAlt"
+            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+          >
           <NuxtImg
-            :src="cover"
-            :alt="coverAlt"
+            v-else
+            :src="image"
+            :alt="imageAlt"
             class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
           />
         </div>
@@ -133,9 +148,16 @@ onMounted(() => {
 
       <div v-else class="h-full flex flex-col md:min-h-50 md:flex-row">
         <div class="order-1 h-48 w-full shrink-0 overflow-hidden border-b border-primary/35 md:order-2 md:h-auto md:max-w-80 md:w-2/5 md:border-b-0 md:border-l dark:border-hana-black-200/55">
+          <img
+            v-if="isGeneratedImage"
+            :src="image"
+            :alt="imageAlt"
+            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+          >
           <NuxtImg
-            :src="cover"
-            :alt="coverAlt"
+            v-else
+            :src="image"
+            :alt="imageAlt"
             class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
           />
         </div>

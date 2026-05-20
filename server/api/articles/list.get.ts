@@ -2,6 +2,7 @@ import type { ArticleWhereInput } from '~/prisma/generated/models'
 import type { ArticleListQuery } from '~/server/types/articles'
 import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
+import { resolveArticleImagePolicy } from '~/utils/article-generated-image'
 
 type Options = ArticleWhereInput
   & {
@@ -22,10 +23,26 @@ async function selectArticleList(options: Options) {
     skip: (page - 1) * pageSize,
     take: pageSize,
     orderBy: { publishedAt: 'desc' },
-    include: { tags: { select: { name: true } } },
+    select: {
+      id: true,
+      to: true,
+      title: true,
+      description: true,
+      cover: true,
+      publishedAt: true,
+      editedAt: true,
+      wordCount: true,
+      tags: { select: { name: true } },
+    },
   })
   const result = retrievedRes.map(article => ({
     ...article,
+    ...resolveArticleImagePolicy({
+      to: article.to,
+      title: article.title,
+      cover: article.cover,
+      publishedAt: article.publishedAt.toISOString(),
+    }),
     tags: article.tags.map(tag => tag.name),
     publishedAt: dayjs(article.publishedAt).format('YYYY-MM-DD'),
     editedAt: dayjs(article.editedAt).format('YYYY-MM-DD'),

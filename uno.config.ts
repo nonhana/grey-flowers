@@ -4,7 +4,6 @@ import {
   presetIcons,
   presetMini,
   presetTypography,
-  presetWebFonts,
   presetWind3,
   transformerDirectives,
   transformerVariantGroup,
@@ -18,17 +17,6 @@ export default defineConfig({
     presetWind3(),
     presetIcons(),
     presetTypography(),
-    presetWebFonts({
-      provider: 'google',
-      fonts: {
-        noto: [
-          'Noto Serif:400,700',
-          'Noto Serif SC:400,700',
-          'Noto Serif JP:400,700',
-        ],
-        code: ['JetBrains Mono'],
-      },
-    }),
 
     /* Community Presets */
     presetRemToPx(),
@@ -105,6 +93,10 @@ export default defineConfig({
     'hana-article-title': 'flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-["#"] hover:text-hana-blue dark:hover:text-hana-blue-200',
   },
   theme: {
+    fontFamily: {
+      code: '"JetBrains Mono", monospace',
+      noto: '"Noto Serif", "Noto Serif SC", "Noto Serif JP", serif',
+    },
     colors: {
       primary: {
         DEFAULT: 'oklch(0.73 0.0336 251.22)',

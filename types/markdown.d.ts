@@ -1,4 +1,5 @@
 import type { MDCParserResult, MDCRoot, Toc } from '@nuxtjs/mdc'
+import type { ArticleImageSource } from '~/types/article'
 
 export interface MarkdownRenderPayload {
   body: MDCRoot
@@ -13,15 +14,17 @@ export interface ArticleMarkdownPayload extends MarkdownRenderPayload {
   stem: string
   title: string
   description: string
-  cover: string
+  cover: string | null
   alt: string
-  ogImage: string
   tags: string[]
   category: string
   publishedAt: string
   editedAt: string
   published: boolean
   wordCount: number
+  generatedImage: string
+  displayImage: string
+  displayImageSource: ArticleImageSource
 }
 
 export interface MarkdownPagePayload extends MarkdownRenderPayload {

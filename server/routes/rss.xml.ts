@@ -1,5 +1,6 @@
 import { Feed } from 'feed'
 import prisma from '~/lib/prisma'
+import { resolveArticleImagePolicy, toAbsoluteArticleImageUrl } from '~/utils/article-generated-image'
 
 const titleBlacklist = ['About', 'Friends']
 
@@ -14,6 +15,8 @@ export default defineEventHandler(async (event) => {
       description: true,
       publishedAt: true,
       cover: true,
+      category: { select: { name: true } },
+      tags: { select: { name: true } },
     },
     orderBy: {
       publishedAt: 'desc',
@@ -37,6 +40,13 @@ export default defineEventHandler(async (event) => {
   })
 
   articles.forEach((article) => {
+    const { displayImage } = resolveArticleImagePolicy({
+      to: article.to,
+      title: article.title,
+      cover: article.cover,
+      publishedAt: article.publishedAt.toISOString(),
+    })
+
     feed.addItem({
       title: article.title,
       id: basePath + article.to,
@@ -44,7 +54,7 @@ export default defineEventHandler(async (event) => {
       description: article.description ?? '',
       content: article.description ?? '',
       date: new Date(article.publishedAt),
-      image: article.cover,
+      image: toAbsoluteArticleImageUrl(displayImage, basePath),
     })
   })
 

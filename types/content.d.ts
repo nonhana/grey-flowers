@@ -1,9 +1,11 @@
+import type { ArticleImageSource } from '~/types/article'
+
 export interface ArticleHeader {
   title: string
   description: string
-  cover: string
+  image: string
+  imageSource: ArticleImageSource
   alt: string
-  ogImage: string
   tags: string[]
   category: string
   publishedAt: string

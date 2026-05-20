@@ -75,6 +75,7 @@ export default defineNuxtConfig({
     },
   },
   modules: [
+    '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxt/image',
     '@nuxtjs/mdc',
@@ -85,6 +86,26 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@unocss/nuxt',
   ],
+  fonts: {
+    provider: 'google',
+    defaults: {
+      styles: ['normal'],
+    },
+    families: [
+      {
+        name: 'Noto Serif SC',
+        provider: 'google',
+        global: true,
+        weights: [400, 700],
+      },
+      {
+        name: 'JetBrains Mono',
+        provider: 'google',
+        global: true,
+        weights: [400],
+      },
+    ],
+  },
   devtools: {
     enabled: true,
     timeline: {
