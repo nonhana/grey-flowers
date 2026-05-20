@@ -46,7 +46,7 @@ onMounted(() => {
             v-if="isGeneratedImage"
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+            class="size-full transition-transform duration-700 ease-out object-cover object-left group-hover:scale-105"
           >
           <NuxtImg
             v-else
@@ -99,7 +99,7 @@ onMounted(() => {
             v-if="isGeneratedImage"
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+            class="size-full transition-transform duration-700 ease-out object-cover object-left group-hover:scale-105"
           >
           <NuxtImg
             v-else
@@ -152,7 +152,7 @@ onMounted(() => {
             v-if="isGeneratedImage"
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+            class="size-full transition-transform duration-700 ease-out object-cover object-left group-hover:scale-105"
           >
           <NuxtImg
             v-else
