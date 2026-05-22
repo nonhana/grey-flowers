@@ -30,6 +30,17 @@ const content = ref('')
 const publishing = ref(false)
 const buttonText = computed(() => publishing.value ? '发布中...' : '发表评论')
 
+const supportedSyntax = [
+  '**粗体**',
+  '*斜体*',
+  '~~删除线~~',
+  '`代码`',
+  '[链接](url)',
+  '> 引用',
+  '- 列表',
+  '```代码块```',
+]
+
 async function handlePublish() {
   if (!content.value) {
     callHanaMessage({
@@ -110,8 +121,19 @@ async function publishComment(objData: IPostComment) {
         <span class="text-sm text-text dark:text-hana-white-700">@{{ userInfo!.email }}</span>
       </div>
     </div>
-    <div class="mb-5 flex flex-col gap-4">
+    <div class="mb-5 flex flex-col gap-2">
       <HanaInput v-model="content" type="textarea" :placeholder="inputPlaceholder" resize="none" :rows="8" />
+      <div class="flex flex-col gap-1.5 px-1 text-xs text-text dark:text-hana-white-700">
+        <div class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+          <span class="shrink-0">MD 支持：</span>
+          <code
+            v-for="syntax in supportedSyntax"
+            :key="syntax"
+            class="rounded bg-primary-100 px-1.5 py-0.5 font-code dark:bg-hana-black-600"
+          >{{ syntax }}</code>
+        </div>
+        <div>不支持标题、表格、图片、HTML · 最多 2048 字</div>
+      </div>
     </div>
     <div class="flex flex-col gap-4">
       <HanaButton class="w-full" dark-mode :disabled="publishing" @click="handlePublish">

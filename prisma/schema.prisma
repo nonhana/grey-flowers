@@ -82,6 +82,7 @@ model Comment {
   replies          Comment[]     @relation("ReplyToComment")
   publishedAt      DateTime      @default(now())
   editedAt         DateTime      @updatedAt
+  contentMarkdown  Json?
   userMessage      UserMessage[]
 }
 

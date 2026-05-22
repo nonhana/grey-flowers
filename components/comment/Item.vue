@@ -89,41 +89,48 @@ const blockquoteContent = computed(() =>
 </script>
 
 <template>
-  <ClientOnly>
-    <div class="relative w-full flex gap-4 border-b border-primary py-4 border-spacing-x-3.5 dark:border-hana-black-200 last:border-none">
-      <div class="hidden md:block">
-        <HanaAvatar :size="10" :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
-      </div>
-      <div class="w-full flex flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150 dark:bg-hana-black-800': isActive }">
-        <div class="h-5 flex items-center gap-2">
-          <HanaUsername :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
-          <Icon v-if="comment.replyToUser" class="dark:text-hana-white" size="20" name="lucide:chevron-right" />
-          <HanaUsername
-            v-if="comment.replyToUser"
-            :avatar="comment.author.avatar"
-            :site="comment.author.site"
-            :username="comment.replyToUser.username"
-            class="font-normal"
-          />
-          <div
-            v-if="comment.replyToComment && !recordMode"
-            @mouseenter="handleActivate(comment.replyToComment.id)"
-            @mouseleave="handleActivate(undefined)"
-          >
-            <HanaButton icon="lucide:map-pin" icon-button />
-          </div>
+  <div class="relative w-full flex gap-4 border-b border-primary py-4 border-spacing-x-3.5 dark:border-hana-black-200 last:border-none">
+    <div class="shrink-0 hidden md:block">
+      <HanaAvatar :size="10" :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
+    </div>
+    <div class="min-w-0 flex flex-1 flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150 dark:bg-hana-black-800': isActive }">
+      <div class="h-5 flex items-center gap-2">
+        <HanaUsername :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
+        <Icon v-if="comment.replyToUser" class="dark:text-hana-white" size="20" name="lucide:chevron-right" />
+        <HanaUsername
+          v-if="comment.replyToUser"
+          :avatar="comment.author.avatar"
+          :site="comment.author.site"
+          :username="comment.replyToUser.username"
+          class="font-normal"
+        />
+        <div
+          v-if="comment.replyToComment && !recordMode"
+          @mouseenter="handleActivate(comment.replyToComment.id)"
+          @mouseleave="handleActivate(undefined)"
+        >
+          <HanaButton icon="lucide:map-pin" icon-button />
         </div>
-        <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
-          {{ blockquoteContent }}
-        </ProseBlockquote>
-        <p class="whitespace-pre-wrap break-words text-black leading-6 dark:text-hana-white">
-          {{ comment.content }}
-        </p>
-        <div class="h-6 flex items-center gap-2" :class="{ 'overflow-x-auto scrollbar-none': recordMode }">
-          <span class="text-nowrap text-sm dark:text-hana-white">{{ comment.publishedAt }}</span>
-          <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap text-sm text-text font-code transition-colors dark:text-hana-white-700 hover:text-hana-blue dark:hover:text-hana-blue-200">
-            {{ comment.path }}
-          </NuxtLink>
+      </div>
+      <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
+        {{ blockquoteContent }}
+      </ProseBlockquote>
+      <MarkdownRenderer
+        :value="comment.contentMarkdown"
+        class="comment-md break-words text-black dark:text-hana-white"
+      >
+        <template #empty>
+          <p class="m-0 whitespace-pre-wrap break-words leading-normal">
+            {{ comment.content }}
+          </p>
+        </template>
+      </MarkdownRenderer>
+      <div class="h-6 flex items-center gap-2" :class="{ 'overflow-x-auto scrollbar-none': recordMode }">
+        <span class="text-nowrap text-sm dark:text-hana-white">{{ comment.publishedAt }}</span>
+        <NuxtLink v-if="recordMode" :to="comment.path" class="text-nowrap text-sm text-text font-code transition-colors dark:text-hana-white-700 hover:text-hana-blue dark:hover:text-hana-blue-200">
+          {{ comment.path }}
+        </NuxtLink>
+        <ClientOnly>
           <HanaTooltip v-if="loggedIn && !recordMode" content="点击回复" animation="slide">
             <HanaButton
               icon="lucide:reply"
@@ -138,24 +145,24 @@ const blockquoteContent = computed(() =>
               @click="confirmDelete"
             />
           </HanaTooltip>
-        </div>
-        <div
-          v-if="isParentCommentItem(comment) && comment.children?.length"
-          class="rounded-lg bg-primary-100 px-4 dark:bg-hana-black-600"
-        >
-          <CommentItem
-            v-for="child in comment.children"
-            :key="child.id"
-            :comment="child"
-            :active-comment-id="activeCommentId"
-            :record-mode="recordMode"
-            is-child
-            @reply="emits('reply', $event)"
-            @delete="emits('delete', $event)"
-            @activate="emits('activate', $event)"
-          />
-        </div>
+        </ClientOnly>
+      </div>
+      <div
+        v-if="isParentCommentItem(comment) && comment.children?.length"
+        class="rounded-lg bg-primary-100 px-4 dark:bg-hana-black-600"
+      >
+        <CommentItem
+          v-for="child in comment.children"
+          :key="child.id"
+          :comment="child"
+          :active-comment-id="activeCommentId"
+          :record-mode="recordMode"
+          is-child
+          @reply="emits('reply', $event)"
+          @delete="emits('delete', $event)"
+          @activate="emits('activate', $event)"
+        />
       </div>
     </div>
-  </ClientOnly>
+  </div>
 </template>

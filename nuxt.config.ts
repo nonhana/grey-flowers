@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   },
   mdc: {
     highlight: {
-      langs: ['bat', 'c', 'cpp', 'css', 'diff', 'html', 'ini', 'java', 'js', 'json', 'log', 'makefile', 'matlab', 'md', 'mdc', 'powershell', 'python', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vb', 'vue', 'xml', 'yaml', 'jsx', 'scss', 'prisma', 'nginx', 'dockerfile', 'http', 'javascript', 'typescript'],
+      langs: ['c', 'cpp', 'css', 'diff', 'dockerfile', 'html', 'http', 'ini', 'java', 'js', 'json', 'jsx', 'log', 'makefile', 'md', 'nginx', 'prisma', 'scss', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vue', 'xml', 'yaml'],
       theme: {
         default: 'github-light',
         dark: 'github-dark',

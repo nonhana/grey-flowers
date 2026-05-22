@@ -1,6 +1,4 @@
-import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
-import { commentSelectObj } from '~/server/utils/prismaShortcut'
 
 async function getUserMessages(userId: number) {
   const messages = await prisma.userMessage.findMany({
@@ -11,12 +9,7 @@ async function getUserMessages(userId: number) {
     take: 10,
     orderBy: { comment: { publishedAt: 'desc' } },
   })
-  const result = messages.map(message => ({
-    ...message.comment,
-    publishedAt: dayjs(message.comment.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
-    editedAt: dayjs(message.comment.editedAt).format('YYYY-MM-DD HH:mm:ss'),
-  }))
-  return result
+  return messages.map(message => serializeChildComment(message.comment))
 }
 
 export default formattedEventHandler(async (event) => {

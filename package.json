@@ -27,6 +27,7 @@
     "@unocss/reset": "catalog:",
     "jose": "catalog:",
     "nuxt": "catalog:",
+    "rehype-sanitize": "catalog:",
     "resend": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

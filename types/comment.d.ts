@@ -1,15 +1,17 @@
+import type { MarkdownRenderPayload } from './markdown'
 import type { SimpleUserInfo } from './user'
 
 export interface CommentItem {
   id: number
   path: string
   content: string
+  contentMarkdown: MarkdownRenderPayload | null
   level: 'PARENT' | 'CHILD'
   author: SimpleUserInfo
   parent: {
     id: number
     content: string
-    author: SimpleUserInfo
+    authorId: number
   } | null
   replyToUser: {
     id: number

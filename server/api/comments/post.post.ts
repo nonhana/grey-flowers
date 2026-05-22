@@ -1,8 +1,7 @@
-import dayjs from 'dayjs'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
+import { Prisma } from '~/prisma/generated/client'
 import { useZodVerify } from '~/server/composables/useZodVerify'
-import { commentSelectObj } from '~/server/utils/prismaShortcut'
 
 const verifySchema = z.object({
   path: z.string(),
@@ -25,32 +24,40 @@ export default formattedEventHandler(async (event) => {
     }
   }
 
-  const {
-    path,
-    content,
-    parentId,
-    replyToUserId,
-    replyToCommentId,
-  } = result
+  const { path, content, parentId, replyToUserId, replyToCommentId } = result
 
-  const newItem = await prisma.comment.create({
-    data: {
-      path,
-      content,
-      level: parentId ? 'CHILD' : 'PARENT',
-      parentId,
-      authorId: id,
-      replyToUserId,
-      replyToCommentId,
-    },
-    select: commentSelectObj,
-  })
+  let contentMarkdown: Prisma.InputJsonValue | typeof Prisma.JsonNull = Prisma.JsonNull
 
-  const formattedItem = {
-    ...newItem!,
-    publishedAt: dayjs(newItem!.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
-    editedAt: dayjs(newItem!.editedAt).format('YYYY-MM-DD HH:mm:ss'),
+  const parsedRes = await parseCommentMarkdown(content)
+
+  if (parsedRes.success) {
+    contentMarkdown = parsedRes.payload as unknown as Prisma.InputJsonValue
+
+    const newItem = await prisma.comment.create({
+      data: {
+        path,
+        content,
+        contentMarkdown,
+        level: parentId ? 'CHILD' : 'PARENT',
+        parentId,
+        authorId: id,
+        replyToUserId,
+        replyToCommentId,
+      },
+      select: commentSelectObj,
+    })
+
+    const formattedItem = serializeChildComment(newItem!)
+
+    return { payload: formattedItem }
   }
+  else {
+    const { statusCode, statusMessage } = parsedRes
 
-  return { payload: formattedItem }
+    return {
+      success: false,
+      statusCode,
+      statusMessage,
+    }
+  }
 })

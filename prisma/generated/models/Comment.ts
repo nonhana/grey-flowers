@@ -79,6 +79,7 @@ export type CommentCountAggregateOutputType = {
   replyToCommentId: number
   publishedAt: number
   editedAt: number
+  contentMarkdown: number
   _all: number
 }
 
@@ -136,6 +137,7 @@ export type CommentCountAggregateInputType = {
   replyToCommentId?: true
   publishedAt?: true
   editedAt?: true
+  contentMarkdown?: true
   _all?: true
 }
 
@@ -236,6 +238,7 @@ export type CommentGroupByOutputType = {
   replyToCommentId: number | null
   publishedAt: Date
   editedAt: Date
+  contentMarkdown: runtime.JsonValue | null
   _count: CommentCountAggregateOutputType | null
   _avg: CommentAvgAggregateOutputType | null
   _sum: CommentSumAggregateOutputType | null
@@ -272,6 +275,7 @@ export type CommentWhereInput = {
   replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
+  contentMarkdown?: Prisma.JsonNullableFilter<"Comment">
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   parent?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
   children?: Prisma.CommentListRelationFilter
@@ -292,6 +296,7 @@ export type CommentOrderByWithRelationInput = {
   replyToCommentId?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   parent?: Prisma.CommentOrderByWithRelationInput
   children?: Prisma.CommentOrderByRelationAggregateInput
@@ -315,6 +320,7 @@ export type CommentWhereUniqueInput = Prisma.AtLeast<{
   replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
+  contentMarkdown?: Prisma.JsonNullableFilter<"Comment">
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   parent?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
   children?: Prisma.CommentListRelationFilter
@@ -335,6 +341,7 @@ export type CommentOrderByWithAggregationInput = {
   replyToCommentId?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CommentCountOrderByAggregateInput
   _avg?: Prisma.CommentAvgOrderByAggregateInput
   _max?: Prisma.CommentMaxOrderByAggregateInput
@@ -356,6 +363,7 @@ export type CommentScalarWhereWithAggregatesInput = {
   replyToCommentId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
+  contentMarkdown?: Prisma.JsonNullableWithAggregatesFilter<"Comment">
 }
 
 export type CommentCreateInput = {
@@ -364,6 +372,7 @@ export type CommentCreateInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
@@ -384,6 +393,7 @@ export type CommentUncheckedCreateInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -395,6 +405,7 @@ export type CommentUpdateInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
@@ -415,6 +426,7 @@ export type CommentUncheckedUpdateInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -431,6 +443,7 @@ export type CommentCreateManyInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateManyMutationInput = {
@@ -439,6 +452,7 @@ export type CommentUpdateManyMutationInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUncheckedUpdateManyInput = {
@@ -452,6 +466,7 @@ export type CommentUncheckedUpdateManyInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentListRelationFilter = {
@@ -480,6 +495,7 @@ export type CommentCountOrderByAggregateInput = {
   replyToCommentId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrder
 }
 
 export type CommentAvgOrderByAggregateInput = {
@@ -753,6 +769,7 @@ export type CommentCreateWithoutAuthorInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
   replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
@@ -771,6 +788,7 @@ export type CommentUncheckedCreateWithoutAuthorInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -792,6 +810,7 @@ export type CommentCreateWithoutReplyToUserInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
@@ -810,6 +829,7 @@ export type CommentUncheckedCreateWithoutReplyToUserInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -855,6 +875,7 @@ export type CommentScalarWhereInput = {
   replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
+  contentMarkdown?: Prisma.JsonNullableFilter<"Comment">
 }
 
 export type CommentUpsertWithWhereUniqueWithoutReplyToUserInput = {
@@ -879,6 +900,7 @@ export type CommentCreateWithoutChildrenInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
@@ -898,6 +920,7 @@ export type CommentUncheckedCreateWithoutChildrenInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
 }
@@ -913,6 +936,7 @@ export type CommentCreateWithoutParentInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
   replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
@@ -931,6 +955,7 @@ export type CommentUncheckedCreateWithoutParentInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -952,6 +977,7 @@ export type CommentCreateWithoutRepliesInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
@@ -971,6 +997,7 @@ export type CommentUncheckedCreateWithoutRepliesInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
 }
@@ -986,6 +1013,7 @@ export type CommentCreateWithoutReplyToCommentInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
@@ -1004,6 +1032,7 @@ export type CommentUncheckedCreateWithoutReplyToCommentInput = {
   replyToUserId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -1036,6 +1065,7 @@ export type CommentUpdateWithoutChildrenInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
@@ -1055,6 +1085,7 @@ export type CommentUncheckedUpdateWithoutChildrenInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
 }
@@ -1092,6 +1123,7 @@ export type CommentUpdateWithoutRepliesInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
@@ -1111,6 +1143,7 @@ export type CommentUncheckedUpdateWithoutRepliesInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
 }
@@ -1137,6 +1170,7 @@ export type CommentCreateWithoutUserMessageInput = {
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
@@ -1156,6 +1190,7 @@ export type CommentUncheckedCreateWithoutUserMessageInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
 }
@@ -1182,6 +1217,7 @@ export type CommentUpdateWithoutUserMessageInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
@@ -1201,6 +1237,7 @@ export type CommentUncheckedUpdateWithoutUserMessageInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
 }
@@ -1215,6 +1252,7 @@ export type CommentCreateManyAuthorInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentCreateManyReplyToUserInput = {
@@ -1227,6 +1265,7 @@ export type CommentCreateManyReplyToUserInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutAuthorInput = {
@@ -1235,6 +1274,7 @@ export type CommentUpdateWithoutAuthorInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
   replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
@@ -1253,6 +1293,7 @@ export type CommentUncheckedUpdateWithoutAuthorInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -1268,6 +1309,7 @@ export type CommentUncheckedUpdateManyWithoutAuthorInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutReplyToUserInput = {
@@ -1276,6 +1318,7 @@ export type CommentUpdateWithoutReplyToUserInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
@@ -1294,6 +1337,7 @@ export type CommentUncheckedUpdateWithoutReplyToUserInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -1309,6 +1353,7 @@ export type CommentUncheckedUpdateManyWithoutReplyToUserInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentCreateManyParentInput = {
@@ -1321,6 +1366,7 @@ export type CommentCreateManyParentInput = {
   replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentCreateManyReplyToCommentInput = {
@@ -1333,6 +1379,7 @@ export type CommentCreateManyReplyToCommentInput = {
   replyToUserId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutParentInput = {
@@ -1341,6 +1388,7 @@ export type CommentUpdateWithoutParentInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
   replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
@@ -1359,6 +1407,7 @@ export type CommentUncheckedUpdateWithoutParentInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -1374,6 +1423,7 @@ export type CommentUncheckedUpdateManyWithoutParentInput = {
   replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutReplyToCommentInput = {
@@ -1382,6 +1432,7 @@ export type CommentUpdateWithoutReplyToCommentInput = {
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
@@ -1400,6 +1451,7 @@ export type CommentUncheckedUpdateWithoutReplyToCommentInput = {
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -1415,6 +1467,7 @@ export type CommentUncheckedUpdateManyWithoutReplyToCommentInput = {
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -1477,6 +1530,7 @@ export type CommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  contentMarkdown?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
   children?: boolean | Prisma.Comment$childrenArgs<ExtArgs>
@@ -1498,6 +1552,7 @@ export type CommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  contentMarkdown?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
   replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
@@ -1515,6 +1570,7 @@ export type CommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  contentMarkdown?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
   replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
@@ -1532,9 +1588,10 @@ export type CommentSelectScalar = {
   replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  contentMarkdown?: boolean
 }
 
-export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "content" | "level" | "authorId" | "parentId" | "replyToUserId" | "replyToCommentId" | "publishedAt" | "editedAt", ExtArgs["result"]["comment"]>
+export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "content" | "level" | "authorId" | "parentId" | "replyToUserId" | "replyToCommentId" | "publishedAt" | "editedAt" | "contentMarkdown", ExtArgs["result"]["comment"]>
 export type CommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
@@ -1580,6 +1637,7 @@ export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     replyToCommentId: number | null
     publishedAt: Date
     editedAt: Date
+    contentMarkdown: runtime.JsonValue | null
   }, ExtArgs["result"]["comment"]>
   composites: {}
 }
@@ -2020,6 +2078,7 @@ export interface CommentFieldRefs {
   readonly replyToCommentId: Prisma.FieldRef<"Comment", 'Int'>
   readonly publishedAt: Prisma.FieldRef<"Comment", 'DateTime'>
   readonly editedAt: Prisma.FieldRef<"Comment", 'DateTime'>
+  readonly contentMarkdown: Prisma.FieldRef<"Comment", 'Json'>
 }
     
 
