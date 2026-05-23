@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ArticleHeader } from '~/types/content'
 import type { ArticleMarkdownPayload, Neighbors } from '~/types/markdown'
-import dayjs from 'dayjs'
 import { seoData } from '~/data/meta'
 import { useStore } from '~/store'
 import { getArticleOgImageDefinition } from '~/utils/article-og-image'
@@ -64,8 +63,8 @@ const articleHeader = computed<ArticleHeader>(() => ({
   alt: article.value?.alt || '暂无图片',
   tags: article.value?.tags || [],
   category: article.value?.category || '未分类',
-  publishedAt: dayjs(article.value?.publishedAt).format('YYYY-MM-DD'),
-  editedAt: dayjs(article.value?.editedAt).format('YYYY-MM-DD'),
+  publishedAt: formatDateYmd(article.value?.publishedAt),
+  editedAt: formatDateYmd(article.value?.editedAt),
   published: article.value?.published || false,
   wordCount: article.value?.wordCount || 0,
 }))

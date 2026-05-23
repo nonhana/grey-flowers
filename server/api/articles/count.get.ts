@@ -1,16 +1,15 @@
 import type { ArticleWhereInput } from '~/prisma/generated/models'
 import type { ArticleFilterQuery } from '~/server/types/articles'
-import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
+import { getPublishedAtMonthRange } from '~/utils/date'
 
 type Options = ArticleWhereInput & { publishedAtMonth?: string }
 
 async function selectArticleCount(options: Options) {
   const { publishedAtMonth, ...rest } = options
   if (publishedAtMonth) {
-    const curMonth = dayjs(publishedAtMonth).toDate()
-    const nextMonth = dayjs(publishedAtMonth).add(1, 'month').toDate()
-    rest.publishedAt = { gte: curMonth, lt: nextMonth }
+    const { start, end } = getPublishedAtMonthRange(publishedAtMonth)
+    rest.publishedAt = { gte: start, lt: end }
   }
   return await prisma.article.count({ where: { ...rest, published: true } })
 }

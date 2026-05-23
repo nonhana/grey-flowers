@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
-
 const appConfig = useAppConfig()
-const siteLaunchDate = dayjs(appConfig.siteLaunchDate)
 
 const runDays = ref(0)
 
 onMounted(() => {
-  const today = dayjs()
-  runDays.value = today.diff(siteLaunchDate, 'day')
+  runDays.value = getDaysSince(appConfig.siteLaunchDate)
 })
 </script>
 

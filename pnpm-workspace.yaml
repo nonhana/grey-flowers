@@ -43,7 +43,6 @@ catalog:
   '@vueuse/nuxt': ^14.3.0
   '@vueuse/router': ^14.3.0
   bcrypt: ^6.0.0
-  dayjs: ^1.11.20
   dotenv: ^17.4.2
   eslint: ^10.4.0
   feed: ^5.2.1

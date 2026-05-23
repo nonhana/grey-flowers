@@ -2,7 +2,7 @@ import type { childCommentArgs, parentCommentArgs } from './prismaShortcut'
 import type { Prisma } from '~/prisma/generated/client'
 import type { CommentItem, ParentCommentItem } from '~/types/comment'
 import type { MarkdownRenderPayload } from '~/types/markdown'
-import dayjs from 'dayjs'
+import { formatDateTimeYmdHms } from '~/utils/date'
 
 type RawChildComment = Prisma.CommentGetPayload<typeof childCommentArgs>
 type RawParentComment = Prisma.CommentGetPayload<typeof parentCommentArgs>
@@ -18,8 +18,8 @@ export function serializeChildComment(comment: RawChildComment): CommentItem {
     parent: comment.parent,
     replyToUser: comment.replyToUser,
     replyToComment: comment.replyToComment,
-    publishedAt: dayjs(comment.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
-    editedAt: dayjs(comment.editedAt).format('YYYY-MM-DD HH:mm:ss'),
+    publishedAt: formatDateTimeYmdHms(comment.publishedAt),
+    editedAt: formatDateTimeYmdHms(comment.editedAt),
   }
 }
 

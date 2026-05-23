@@ -1,5 +1,5 @@
-import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
+import { formatDateTimeYmdHms } from '~/utils/date'
 
 interface Options {
   page: number
@@ -40,8 +40,8 @@ async function selectActivityList(options: Options) {
       ...activity,
       music: activity.music,
       commentCount: await getActivityCommentCount(activity.id),
-      publishedAt: dayjs(activity.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
-      editedAt: dayjs(activity.editedAt).format('YYYY-MM-DD HH:mm:ss'),
+      publishedAt: formatDateTimeYmdHms(activity.publishedAt),
+      editedAt: formatDateTimeYmdHms(activity.editedAt),
     })),
   )
 

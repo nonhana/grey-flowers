@@ -1,5 +1,5 @@
-import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
+import { formatDateTimeYmdHms } from '~/utils/date'
 
 async function selectSingleMessage(id: number) {
   const message = await prisma.message.findUnique({
@@ -42,8 +42,8 @@ export default formattedEventHandler(async (event) => {
   }
   const result = {
     ...message,
-    publishedAt: dayjs(message.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
-    editedAt: dayjs(message.editedAt).format('YYYY-MM-DD HH:mm:ss'),
+    publishedAt: formatDateTimeYmdHms(message.publishedAt),
+    editedAt: formatDateTimeYmdHms(message.editedAt),
   }
   return { payload: result }
 })

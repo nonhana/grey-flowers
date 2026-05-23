@@ -1,5 +1,5 @@
-import dayjs from 'dayjs'
 import prisma from '~/lib/prisma'
+import { formatDateTimeYmdHms } from '~/utils/date'
 
 async function selectSingleActivity(id: number) {
   const activity = await prisma.activity.findUnique({
@@ -30,8 +30,8 @@ export default formattedEventHandler(async (event) => {
   const result = {
     ...activity,
     commentCount: 0,
-    publishedAt: dayjs(activity.publishedAt).format('YYYY-MM-DD HH:mm:ss'),
-    editedAt: dayjs(activity.editedAt).format('YYYY-MM-DD HH:mm:ss'),
+    publishedAt: formatDateTimeYmdHms(activity.publishedAt),
+    editedAt: formatDateTimeYmdHms(activity.editedAt),
   }
 
   return { payload: result }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { ActivityItem } from '~/types/activity'
-import dayjs from 'dayjs'
 
 const props = defineProps<{
   item: ActivityItem
@@ -37,8 +36,8 @@ const excerpt = computed(() => {
   return truncateContent(content, 120)
 })
 
-const absoluteDate = computed(() => dayjs(props.item.publishedAt).format('YYYY.MM.DD HH:mm'))
-const compactDate = computed(() => dayjs(props.item.publishedAt).format('MM.DD'))
+const absoluteDate = computed(() => formatDateDotYmdHm(props.item.publishedAt))
+const compactDate = computed(() => formatMonthDay(props.item.publishedAt))
 
 const detailAriaLabel = computed(() => `查看${typeLabel.value}动态详情，发布时间 ${absoluteDate.value}`)
 
