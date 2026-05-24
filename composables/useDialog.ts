@@ -6,6 +6,7 @@ interface BaseDialogOptions {
   title?: string
   width?: string
   height?: string
+  smoothHeight?: boolean
   overlayOpacity?: number
   hideHeader?: boolean
 }

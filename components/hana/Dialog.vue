@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
 import type { DialogOptions } from '~/composables/useDialog'
+import { useElementSize, usePreferredReducedMotion } from '@vueuse/core'
 import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
@@ -9,6 +10,7 @@ const props = withDefaults(defineProps<DialogOptions>(), {
   hideHeader: false,
   width: '400px',
   height: 'auto',
+  smoothHeight: true,
   programmatic: false,
   closable: true,
 })
@@ -30,6 +32,54 @@ const isClient = ref(false)
 
 const BASE_Z_INDEX = 40
 const dialogZIndex = ref(BASE_Z_INDEX)
+const reducedMotion = usePreferredReducedMotion()
+
+const contentRef = useTemplateRef('content')
+const { height: contentHeight } = useElementSize(contentRef, { width: 0, height: 0 })
+
+const shouldSmoothHeight = computed(() =>
+  !props.programmatic
+  && props.height === 'auto'
+  && props.smoothHeight
+  && reducedMotion.value !== 'reduce',
+)
+
+const viewportHeight = ref('auto')
+let heightFrameId: number | null = null
+
+function cancelHeightFrame() {
+  if (heightFrameId !== null) {
+    cancelAnimationFrame(heightFrameId)
+    heightFrameId = null
+  }
+}
+
+function setViewportHeight(nextHeight: string) {
+  if (viewportHeight.value === nextHeight)
+    return
+
+  cancelHeightFrame()
+  heightFrameId = requestAnimationFrame(() => {
+    viewportHeight.value = nextHeight
+    heightFrameId = null
+  })
+}
+
+function syncViewportHeight() {
+  if (!dialogVisible.value) {
+    viewportHeight.value = 'auto'
+    return
+  }
+
+  if (!shouldSmoothHeight.value) {
+    viewportHeight.value = props.height
+    return
+  }
+
+  const measuredHeight = contentRef.value?.scrollHeight ?? contentHeight.value
+  const nextHeight = `${Math.ceil(measuredHeight)}px`
+  setViewportHeight(nextHeight)
+}
 
 onMounted(() => {
   isClient.value = true
@@ -37,6 +87,9 @@ onMounted(() => {
     requestAnimationFrame(() => {
       programmaticVisible.value = true
     })
+  }
+  else {
+    syncViewportHeight()
   }
 })
 
@@ -80,12 +133,15 @@ watch(dialogVisible, (newV) => {
     // 使用 nextTick 确保 DOM 更新后再触发动画
     nextTick(() => {
       overlayOpacity.value = computedOverlayOpacity.value
+      syncViewportHeight()
     })
   }
   else {
     overlayOpacity.value = 0
     dialogZIndex.value = BASE_Z_INDEX
     decreaseDialogCount()
+    cancelHeightFrame()
+    viewportHeight.value = props.height
   }
 })
 
@@ -112,10 +168,15 @@ watch(dialogVisible, (isVisible) => {
   }
 }, { immediate: true })
 
+watch([contentHeight, shouldSmoothHeight, () => props.height], () => {
+  syncViewportHeight()
+}, { flush: 'post' })
+
 onBeforeUnmount(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('keydown', handleKeydown)
   }
+  cancelHeightFrame()
 })
 
 defineExpose({
@@ -158,8 +219,15 @@ defineExpose({
         <div v-if="programmatic">
           <span class="dark:text-hana-white">{{ content }}</span>
         </div>
-        <div v-else class="max-h-[80dvh] overflow-y-auto" :style="{ height }">
-          <slot />
+        <div
+          v-else
+          class="max-h-[80dvh] overflow-y-auto"
+          :class="{ 'transition-[height] duration-200 ease-out': shouldSmoothHeight }"
+          :style="{ height: shouldSmoothHeight ? viewportHeight : height }"
+        >
+          <div ref="content">
+            <slot />
+          </div>
         </div>
         <div v-if="programmatic" class="mt-5 flex justify-end gap-4">
           <HanaButton
