@@ -11,19 +11,22 @@ export async function getActivityCommentCounts(activityIds: number[]) {
   if (activityIds.length === 0)
     return counts
 
-  const paths = activityIds.map(id => `/recently?id=${id}`)
+  const paths = activityIds.map(activityId => `/recently?id=${activityId}`)
   const rows = await prisma.comment.groupBy({
     by: ['path'],
     where: { path: { in: paths } },
     _count: { _all: true },
   })
 
-  const pathToId = new Map(paths.map((path, i) => [path, activityIds[i]]))
   for (const row of rows) {
-    const id = pathToId.get(row.path)
-    if (id !== undefined)
+    const match = row.path.match(/id=(?<activityId>\d+)/)
+    const { activityId } = match?.groups || {}
+    if (activityId) {
+      const id = Number.parseInt(activityId, 10)
       counts.set(id, row._count._all)
+    }
   }
+
   return counts
 }
 
