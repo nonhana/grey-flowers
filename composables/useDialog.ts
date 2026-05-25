@@ -9,6 +9,7 @@ interface BaseDialogOptions {
   smoothHeight?: boolean
   overlayOpacity?: number
   hideHeader?: boolean
+  hideScrollbar?: boolean
 }
 
 // 声明式调用 Dialog 的选项

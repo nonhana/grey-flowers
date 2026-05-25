@@ -1,5 +1,19 @@
 import type { Prisma } from '~/prisma/generated/client'
 
+const activityMusicSelect = {
+  id: true,
+  title: true,
+  artist: true,
+  album: true,
+  src: true,
+  seconds: true,
+  cover: true,
+} satisfies Prisma.MusicSelect
+
+export const activityWithMusicArgs = {
+  include: { music: { select: activityMusicSelect } },
+} satisfies Prisma.ActivityDefaultArgs
+
 export const commentSelectObj = {
   id: true,
   path: true,

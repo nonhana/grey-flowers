@@ -1,24 +1,23 @@
 import prisma from '~/lib/prisma'
-import { formatDateTimeYmdHms } from '~/utils/date'
 
 async function selectSingleActivity(id: number) {
-  const activity = await prisma.activity.findUnique({
+  return await prisma.activity.findUnique({
     where: { id },
-    select: {
-      id: true,
-      content: true,
-      images: true,
-      publishedAt: true,
-      editedAt: true,
-    },
+    ...activityWithMusicArgs,
   })
-
-  return activity
 }
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event) as { id: string }
-  const id = Number.parseInt(query.id)
+  const id = Number.parseInt(query.id, 10)
+  if (Number.isNaN(id) || id < 1) {
+    return {
+      statusCode: 400,
+      statusMessage: 'Invalid activity id',
+      success: false,
+    }
+  }
+
   const activity = await selectSingleActivity(id)
   if (!activity) {
     return {
@@ -27,12 +26,6 @@ export default formattedEventHandler(async (event) => {
       success: false,
     }
   }
-  const result = {
-    ...activity,
-    commentCount: 0,
-    publishedAt: formatDateTimeYmdHms(activity.publishedAt),
-    editedAt: formatDateTimeYmdHms(activity.editedAt),
-  }
 
-  return { payload: result }
+  return { payload: serializeActivity(activity, 0) }
 })

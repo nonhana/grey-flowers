@@ -1,12 +1,6 @@
 <script setup lang="ts">
-const route = useRoute()
-const router = useRouter()
-
 const beforeClasses = `before:hidden before:md:block before:absolute before:inset-y-0 before:-left-8 before:h-full before:w-0.5 before:bg-hana-blue before:content-[''] dark:before:bg-hana-blue-200`
 const afterClasses = `after:hidden after:md:block after:absolute after:left-[calc(-2rem-5px)] after:top-1/2 after:size-3 after:rounded-full after:bg-hana-blue after:content-[''] dark:after:bg-hana-blue-200`
-
-const detailDialogVisible = defineModel<boolean>()
-const curActivityId = ref<number | null>(null)
 
 const {
   items: activities,
@@ -28,59 +22,33 @@ const {
   },
 })
 
+const {
+  dialogVisible,
+  detailStatus,
+  resolvedActivity,
+  detailErrorMessage,
+  curActivityId,
+  activateFromCurrentRoute,
+  retryDetail,
+} = useRecentlyDetailRoute({ activities, ensureItemLoaded })
+
 const loadMoreTrigger = useTemplateRef('loadMoreTrigger')
 let observer: IntersectionObserver | null = null
 
 const loading = computed(() => loadingInitial.value || loadingMore.value)
 const visibleErrorMessage = computed(() => loadMoreError.value ?? initialError.value)
-const curActivity = computed(() => activities.value.find(item => item.id === curActivityId.value))
-
-// 如果携带当前动态查询参数，需要确保当前动态已经加载
-async function ensureCurActivityLoaded() {
-  if (!curActivityId.value)
-
-    return
-
-  await ensureItemLoaded(curActivityId.value)
-}
 
 async function retryCurrentError() {
   if (curActivityId.value !== null) {
-    await ensureCurActivityLoaded()
+    await retryDetail()
     return
   }
-
   if (activities.value.length === 0) {
     await retryInitial()
     return
   }
-
   await retryLoadMore()
 }
-
-function parseActivityId(value: unknown) {
-  if (value === undefined)
-    return null
-
-  const parsedId = Number(value)
-  return Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null
-}
-
-watch(() => route.query.id, (newId) => {
-  const nextActivityId = parseActivityId(newId)
-  curActivityId.value = nextActivityId
-  detailDialogVisible.value = nextActivityId !== null
-
-  if (nextActivityId !== null)
-    ensureItemLoaded(nextActivityId)
-})
-
-watch(detailDialogVisible, (newVisible) => {
-  if (!newVisible) {
-    curActivityId.value = null
-    router.replace({ query: {} })
-  }
-})
 
 function setupObserver() {
   if (observer) {
@@ -88,10 +56,7 @@ function setupObserver() {
     observer = null
   }
 
-  if (typeof window === 'undefined')
-    return
-
-  if (!('IntersectionObserver' in window))
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window))
     return
 
   observer = new IntersectionObserver((entries) => {
@@ -109,12 +74,8 @@ function setupObserver() {
 }
 
 onMounted(async () => {
-  curActivityId.value = parseActivityId(route.query.id)
-  detailDialogVisible.value = curActivityId.value !== null
-
-  if (curActivityId.value !== null)
-    await ensureCurActivityLoaded()
-  else
+  const activated = await activateFromCurrentRoute()
+  if (!activated)
     await fetchNext()
 
   setupObserver()
@@ -154,5 +115,10 @@ onBeforeUnmount(() => {
       <Icon name="lucide:refresh-cw" size="16" />
     </button>
   </div>
-  <RecentlyDetailDialog v-model="detailDialogVisible" :item="curActivity" />
+  <RecentlyDetailDialog
+    v-model="dialogVisible"
+    :status="detailStatus"
+    :item="resolvedActivity"
+    :error-message="detailErrorMessage"
+  />
 </template>

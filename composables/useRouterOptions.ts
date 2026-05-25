@@ -58,6 +58,10 @@ export function useRouterOptions() {
     }
 
     nextTick(() => {
+      if (blackList.includes(to.path)) {
+        return
+      }
+
       if (to.hash) {
         scrollToElement(to.hash)
         return
@@ -65,10 +69,6 @@ export function useRouterOptions() {
 
       if (to.path === from?.path && to.fullPath === from?.fullPath) {
         scrollTo(0)
-        return
-      }
-
-      if (blackList.includes(to.path)) {
         return
       }
 

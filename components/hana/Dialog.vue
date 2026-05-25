@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<DialogOptions>(), {
   smoothHeight: true,
   programmatic: false,
   closable: true,
+  hideScrollbar: true,
 })
 
 const emits = defineEmits<{
@@ -222,7 +223,10 @@ defineExpose({
         <div
           v-else
           class="max-h-[80dvh] overflow-y-auto"
-          :class="{ 'transition-[height] duration-200 ease-out': shouldSmoothHeight }"
+          :class="[{
+            'transition-[height] duration-200 ease-out': shouldSmoothHeight,
+            'scrollbar-none': hideScrollbar,
+          }]"
           :style="{ height: shouldSmoothHeight ? viewportHeight : height }"
         >
           <div ref="content">

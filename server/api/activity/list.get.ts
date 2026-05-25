@@ -1,16 +1,8 @@
 import prisma from '~/lib/prisma'
-import { formatDateTimeYmdHms } from '~/utils/date'
 
 interface Options {
   page: number
   pageSize: number
-}
-
-async function getActivityCommentCount(activityId: number) {
-  const path = `/recently?id=${activityId}`
-  return await prisma.comment.count({
-    where: { path },
-  })
 }
 
 async function selectActivityList(options: Options) {
@@ -20,32 +12,10 @@ async function selectActivityList(options: Options) {
     skip: (page - 1) * pageSize,
     take: pageSize,
     orderBy: { publishedAt: 'desc' },
-    include: {
-      music: {
-        select: {
-          id: true,
-          title: true,
-          artist: true,
-          album: true,
-          src: true,
-          seconds: true,
-          cover: true,
-        },
-      },
-    },
+    ...activityWithMusicArgs,
   })
 
-  const result = await Promise.all(
-    retrievedRes.map(async activity => ({
-      ...activity,
-      music: activity.music,
-      commentCount: await getActivityCommentCount(activity.id),
-      publishedAt: formatDateTimeYmdHms(activity.publishedAt),
-      editedAt: formatDateTimeYmdHms(activity.editedAt),
-    })),
-  )
-
-  return result
+  return await serializeActivitiesWithCounts(retrievedRes)
 }
 
 export default formattedEventHandler(async (event) => {

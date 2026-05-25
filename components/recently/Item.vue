@@ -24,7 +24,11 @@ function gotoDetail() {
 </script>
 
 <template>
-  <div class="hana-card p-5!" :style="{ transition: transitionStyle, opacity, transform: `translateY(${top})` }">
+  <div
+    class="hana-card p-5!"
+    :data-recently-activity-id="item.id"
+    :style="{ transition: transitionStyle, opacity, transform: `translateY(${top})` }"
+  >
     <header class="flex justify-between">
       <div class="flex items-center gap-2">
         <HanaAvatar :size="10" :avatar="hanaInfo.avatar" :username="hanaInfo.username" :site="hanaInfo.site" :show-info="false" />
