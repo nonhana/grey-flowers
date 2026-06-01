@@ -171,6 +171,7 @@ export type UserMessageScalarFieldEnum = (typeof UserMessageScalarFieldEnum)[key
 export const ActivityScalarFieldEnum = {
   id: 'id',
   content: 'content',
+  contentMarkdown: 'contentMarkdown',
   images: 'images',
   publishedAt: 'publishedAt',
   editedAt: 'editedAt'

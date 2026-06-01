@@ -1,6 +1,7 @@
 import type { Prisma } from '~/prisma/generated/client'
 import type { activityWithMusicArgs } from '~/server/utils/prismaShortcut'
 import type { ActivityItem } from '~/types/activity'
+import type { MarkdownRenderPayload } from '~/types/markdown'
 import prisma from '~/lib/prisma'
 import { formatDateTimeYmdHms } from '~/utils/date'
 
@@ -33,6 +34,7 @@ export async function getActivityCommentCounts(activityIds: number[]) {
 export function serializeActivity(activity: ActivityWithMusic, commentCount: number): ActivityItem {
   return {
     ...activity,
+    contentMarkdown: activity.contentMarkdown as (MarkdownRenderPayload | null),
     commentCount,
     publishedAt: formatDateTimeYmdHms(activity.publishedAt),
     editedAt: formatDateTimeYmdHms(activity.editedAt),

@@ -31,7 +31,7 @@ const blockquoteContent = computed(() =>
       </ProseBlockquote>
       <MarkdownRenderer
         :value="message.contentMarkdown"
-        class="comment-md break-words text-black dark:text-hana-white"
+        class="custom-markdown break-words text-black dark:text-hana-white"
       >
         <template #empty>
           <p class="m-0 whitespace-pre-wrap break-words leading-normal">

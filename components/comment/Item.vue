@@ -115,12 +115,9 @@ const blockquoteContent = computed(() =>
       <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
         {{ blockquoteContent }}
       </ProseBlockquote>
-      <MarkdownRenderer
-        :value="comment.contentMarkdown"
-        class="comment-md break-words text-black dark:text-hana-white"
-      >
+      <MarkdownRenderer :value="comment.contentMarkdown" class="custom-markdown">
         <template #empty>
-          <p class="m-0 whitespace-pre-wrap break-words leading-normal">
+          <p class="whitespace-pre-wrap break-words">
             {{ comment.content }}
           </p>
         </template>

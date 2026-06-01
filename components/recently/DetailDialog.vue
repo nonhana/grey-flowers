@@ -49,9 +49,13 @@ const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}`
         </div>
       </header>
       <main class="my-5 text-black dark:text-hana-white space-y-5">
-        <p class="whitespace-pre-wrap leading-6">
-          {{ item.content }}
-        </p>
+        <MarkdownRenderer :value="item.contentMarkdown" class="custom-markdown">
+          <template #empty>
+            <p class="whitespace-pre-wrap break-words">
+              {{ item.content }}
+            </p>
+          </template>
+        </MarkdownRenderer>
         <div v-if="item.images && item.images.length" class="flex flex-col gap-5">
           <HanaImgViewer
             v-for="image in item.images"

@@ -91,7 +91,7 @@ export default defineConfig({
     'hana-button--disabled': 'cursor-not-allowed opacity-50',
     'hana-card': 'rounded-lg bg-white p-2 text-text shadow-md dark:bg-hana-black dark:text-hana-white-700',
     'hana-article-title': 'flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-["#"] hover:text-hana-blue dark:hover:text-hana-blue-200',
-    'comment-md': [
+    'custom-markdown': [
       '[&_p]:m-0',
       '[&_p]:whitespace-pre-wrap',
       '[&_p]:break-words',

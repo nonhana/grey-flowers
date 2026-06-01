@@ -1,3 +1,5 @@
+import type { MarkdownRenderPayload } from './markdown'
+
 export interface Track {
   id: number
   title: string
@@ -11,6 +13,7 @@ export interface Track {
 export interface ActivityItem {
   id: number
   content?: string
+  contentMarkdown?: MarkdownRenderPayload | null
   images?: string[]
   music?: Track[]
   commentCount: number

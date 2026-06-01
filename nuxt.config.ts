@@ -29,6 +29,7 @@ export default defineNuxtConfig({
       langs: ['c', 'cpp', 'css', 'diff', 'dockerfile', 'html', 'http', 'ini', 'java', 'js', 'json', 'jsx', 'log', 'makefile', 'md', 'nginx', 'prisma', 'scss', 'sh', 'ssh-config', 'toml', 'ts', 'tsx', 'vue', 'xml', 'yaml'],
       theme: {
         default: 'github-light',
+        light: 'github-light',
         dark: 'github-dark',
       },
     },
@@ -42,7 +43,12 @@ export default defineNuxtConfig({
     quality: 85,
     format: ['webp', 'gif', 'jpeg', 'png', 'avif'],
   },
-  ogImage: { zeroRuntime: true },
+  ogImage: {
+    zeroRuntime: true,
+    security: {
+      renderTimeout: 60000,
+    },
+  },
   devServer: {
     host: 'localhost',
     port: 2408,

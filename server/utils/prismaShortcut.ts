@@ -11,7 +11,15 @@ const activityMusicSelect = {
 } satisfies Prisma.MusicSelect
 
 export const activityWithMusicArgs = {
-  include: { music: { select: activityMusicSelect } },
+  select: {
+    id: true,
+    content: true,
+    contentMarkdown: true,
+    images: true,
+    publishedAt: true,
+    editedAt: true,
+    music: { select: activityMusicSelect },
+  },
 } satisfies Prisma.ActivityDefaultArgs
 
 export const commentSelectObj = {
