@@ -14,7 +14,7 @@ They usually arrive to read long-form writing, skim recent activity, inspect cod
 
 Grey Flowers is a personal publishing garden. It documents technical learning, software practice, self-exploration, and everyday traces in one place.
 
-Success is not measured by aggressive conversion behavior. Success means the site feels memorable, readable, and trustworthy, the writing remains the center of gravity, and visitors can move between articles, thoughts, recent activity, and personal context without losing the sense of a single authored world.
+Success is not measured by aggressive conversion behavior. Success means the site feels memorable, readable, and trustworthy, the writing remains the center of gravity, and visitors can move between articles, recent activity, and personal context without losing the sense of a single authored world.
 
 ## Brand Personality
 

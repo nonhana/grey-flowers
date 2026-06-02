@@ -27,14 +27,9 @@ export const aboutPageData = {
   description: 'Hi, I\'m non_hana, a senior and a Node.js developer eager to learn. I\'m skilled in TypeScript, Vue, and React, and always working hard to improve.',
 }
 
-export const thoughtsPageData = {
-  title: 'Thoughts',
-  description: 'I have a lot of thoughts in my mind. I hope you can find something interesting here.',
-}
-
 export const recentlyPageData = {
   title: 'Recently',
-  description: 'Here are some of my recent activities, including articles, thoughts, and other things.',
+  description: 'Here are some of my recent activities, including articles and other things.',
 }
 
 export const linksPageData = {

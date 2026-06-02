@@ -56,7 +56,6 @@ export const ModelName = {
   Category: 'Category',
   User: 'User',
   Comment: 'Comment',
-  Message: 'Message',
   UserMessage: 'UserMessage',
   Activity: 'Activity',
   Music: 'Music'
@@ -145,18 +144,6 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
-
-
-export const MessageScalarFieldEnum = {
-  id: 'id',
-  content: 'content',
-  parentId: 'parentId',
-  authorId: 'authorId',
-  publishedAt: 'publishedAt',
-  editedAt: 'editedAt'
-} as const
-
-export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const UserMessageScalarFieldEnum = {

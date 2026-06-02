@@ -67,11 +67,6 @@ export type User = Prisma.UserModel
  */
 export type Comment = Prisma.CommentModel
 /**
- * Model Message
- * 
- */
-export type Message = Prisma.MessageModel
-/**
  * Model UserMessage
  * 
  */

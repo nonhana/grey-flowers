@@ -250,7 +250,6 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   comments?: Prisma.CommentListRelationFilter
   replies?: Prisma.CommentListRelationFilter
-  messages?: Prisma.MessageListRelationFilter
   userMessage?: Prisma.UserMessageListRelationFilter
 }
 
@@ -266,7 +265,6 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   comments?: Prisma.CommentOrderByRelationAggregateInput
   replies?: Prisma.CommentOrderByRelationAggregateInput
-  messages?: Prisma.MessageOrderByRelationAggregateInput
   userMessage?: Prisma.UserMessageOrderByRelationAggregateInput
 }
 
@@ -285,7 +283,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   comments?: Prisma.CommentListRelationFilter
   replies?: Prisma.CommentListRelationFilter
-  messages?: Prisma.MessageListRelationFilter
   userMessage?: Prisma.UserMessageListRelationFilter
 }, "id" | "email" | "username">
 
@@ -332,7 +329,6 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
 }
 
@@ -348,7 +344,6 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
 }
 
@@ -363,7 +358,6 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
 }
 
@@ -379,7 +373,6 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
 }
 
@@ -506,20 +499,6 @@ export type UserUpdateOneWithoutRepliesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRepliesInput, Prisma.UserUpdateWithoutRepliesInput>, Prisma.UserUncheckedUpdateWithoutRepliesInput>
 }
 
-export type UserCreateNestedOneWithoutMessagesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesInput
-  upsert?: Prisma.UserUpsertWithoutMessagesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
-}
-
 export type UserCreateNestedOneWithoutUserMessageInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUserMessageInput, Prisma.UserUncheckedCreateWithoutUserMessageInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMessageInput
@@ -544,7 +523,6 @@ export type UserCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
 }
 
@@ -559,7 +537,6 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
 }
 
@@ -578,7 +555,6 @@ export type UserCreateWithoutRepliesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
 }
 
@@ -593,7 +569,6 @@ export type UserUncheckedCreateWithoutRepliesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
 }
 
@@ -623,7 +598,6 @@ export type UserUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
 }
 
@@ -638,7 +612,6 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
 }
 
@@ -663,7 +636,6 @@ export type UserUpdateWithoutRepliesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
 }
 
@@ -678,81 +650,6 @@ export type UserUncheckedUpdateWithoutRepliesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
-  userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
-}
-
-export type UserCreateWithoutMessagesInput = {
-  email: string
-  username: string
-  password: string
-  site?: string | null
-  avatar: string
-  role?: $Enums.UserRole
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
-  replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
-  userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
-}
-
-export type UserUncheckedCreateWithoutMessagesInput = {
-  id?: number
-  email: string
-  username: string
-  password: string
-  site?: string | null
-  avatar: string
-  role?: $Enums.UserRole
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
-  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
-  userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
-}
-
-export type UserCreateOrConnectWithoutMessagesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
-}
-
-export type UserUpsertWithoutMessagesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutMessagesInput, Prisma.UserUncheckedUpdateWithoutMessagesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutMessagesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutMessagesInput, Prisma.UserUncheckedUpdateWithoutMessagesInput>
-}
-
-export type UserUpdateWithoutMessagesInput = {
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  site?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
-  replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
-  userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
-}
-
-export type UserUncheckedUpdateWithoutMessagesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  site?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
-  replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
 }
 
@@ -767,7 +664,6 @@ export type UserCreateWithoutUserMessageInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutUserMessageInput = {
@@ -782,7 +678,6 @@ export type UserUncheckedCreateWithoutUserMessageInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutUserMessageInput = {
@@ -812,7 +707,6 @@ export type UserUpdateWithoutUserMessageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMessageInput = {
@@ -827,7 +721,6 @@ export type UserUncheckedUpdateWithoutUserMessageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 
@@ -838,14 +731,12 @@ export type UserUncheckedUpdateWithoutUserMessageInput = {
 export type UserCountOutputType = {
   comments: number
   replies: number
-  messages: number
   userMessage: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   replies?: boolean | UserCountOutputTypeCountRepliesArgs
-  messages?: boolean | UserCountOutputTypeCountMessagesArgs
   userMessage?: boolean | UserCountOutputTypeCountUserMessageArgs
 }
 
@@ -876,13 +767,6 @@ export type UserCountOutputTypeCountRepliesArgs<ExtArgs extends runtime.Types.Ex
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MessageWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountUserMessageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserMessageWhereInput
 }
@@ -900,7 +784,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
-  messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   userMessage?: boolean | Prisma.User$userMessageArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -945,7 +828,6 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
-  messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   userMessage?: boolean | Prisma.User$userMessageArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -957,7 +839,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     comments: Prisma.$CommentPayload<ExtArgs>[]
     replies: Prisma.$CommentPayload<ExtArgs>[]
-    messages: Prisma.$MessagePayload<ExtArgs>[]
     userMessage: Prisma.$UserMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1366,7 +1247,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   replies<T extends Prisma.User$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userMessage<T extends Prisma.User$userMessageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMessageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1844,30 +1724,6 @@ export type User$repliesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
-}
-
-/**
- * User.messages
- */
-export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Message
-   */
-  select?: Prisma.MessageSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Message
-   */
-  omit?: Prisma.MessageOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MessageInclude<ExtArgs> | null
-  where?: Prisma.MessageWhereInput
-  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
-  cursor?: Prisma.MessageWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
 }
 
 /**

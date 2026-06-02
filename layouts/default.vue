@@ -7,7 +7,6 @@ const { headerStatusStore, uiInfoStore } = useStore()
 useRouterOptions()
 
 const isHome = computed(() => route.fullPath === '/')
-const isThoughts = computed(() => route.fullPath === '/thoughts')
 const headerTop = computed(() => headerStatusStore.hidden ? '-100px' : '0px')
 
 const scrollViewRef = useTemplateRef('scrollViewRef')
@@ -44,7 +43,7 @@ watchEffect(() => {
           <slot />
         </div>
       </main>
-      <footer v-if="!isThoughts" class="bg-primary-100 dark:bg-hana-black-800">
+      <footer class="bg-primary-100 dark:bg-hana-black-800">
         <MainFooter />
       </footer>
     </HanaScrollView>
