@@ -11,12 +11,12 @@ onMounted(() => {
 })
 
 const isArticlePage = computed(() => route.name === ARTICLE_DETAIL_PAGE)
-const visible = computed(() =>
+const baseVisible = computed(() =>
   isClient.value
-  && dialogStore.dialogCount === 0
   && isArticlePage.value
   && uiInfoStore.breakpoints.smaller('xl').value,
 )
+const buttonVisible = computed(() => baseVisible.value && dialogStore.dialogCount === 0)
 
 const drawerVisible = ref(false)
 
@@ -26,8 +26,8 @@ function toggleDrawer() {
 </script>
 
 <template>
-  <div v-if="visible">
-    <div class="relative hana-card">
+  <div v-if="baseVisible">
+    <div v-if="buttonVisible" class="relative hana-card">
       <HanaTooltip content="打开文章目录" position="left" animation="slide">
         <div
           class="size-10 hana-button items-center justify-center"

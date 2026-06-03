@@ -2,7 +2,6 @@
 import type { TransitionProps } from 'vue'
 import type { DialogOptions } from '~/composables/useDialog'
 import { useElementSize, usePreferredReducedMotion } from '@vueuse/core'
-import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
   title: '',
@@ -14,6 +13,7 @@ const props = withDefaults(defineProps<DialogOptions>(), {
   programmatic: false,
   closable: true,
   hideScrollbar: true,
+  navigationMode: 'history',
 })
 
 const emits = defineEmits<{
@@ -23,20 +23,27 @@ const emits = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
 }>()
 
-const { dialogStore } = useStore()
-const { increaseDialogCount, decreaseDialogCount, getDialogCount } = dialogStore
-
 const programmaticVisible = ref(false)
-const dialogVisible = computed(() => props.programmatic ? programmaticVisible.value : props.modelValue)
+const dialogVisible = computed(() => props.programmatic ? programmaticVisible.value : !!props.modelValue)
+const navigationMode = computed(() => props.navigationMode)
 
 const isClient = ref(false)
 
 const BASE_Z_INDEX = 40
-const dialogZIndex = ref(BASE_Z_INDEX)
 const reducedMotion = usePreferredReducedMotion()
 
+const dialogRef = useTemplateRef('dialog')
 const contentRef = useTemplateRef('content')
 const { height: contentHeight } = useElementSize(contentRef, { width: 0, height: 0 })
+const { overlayId, overlayIndex, isTopOverlay } = useOverlayNavigation({
+  visible: dialogVisible,
+  navigationMode,
+  close: handleClose,
+})
+const { trapFocus } = useFocusTrap(dialogRef, dialogVisible)
+
+const dialogTitleId = `${overlayId}-title`
+const dialogZIndex = computed(() => BASE_Z_INDEX + overlayIndex.value)
 
 const shouldSmoothHeight = computed(() =>
   !props.programmatic
@@ -129,8 +136,6 @@ const computedOverlayOpacity = computed(() => {
 
 watch(dialogVisible, (newV) => {
   if (newV) {
-    dialogZIndex.value = BASE_Z_INDEX + getDialogCount()
-    increaseDialogCount()
     // 使用 nextTick 确保 DOM 更新后再触发动画
     nextTick(() => {
       overlayOpacity.value = computedOverlayOpacity.value
@@ -139,20 +144,18 @@ watch(dialogVisible, (newV) => {
   }
   else {
     overlayOpacity.value = 0
-    dialogZIndex.value = BASE_Z_INDEX
-    decreaseDialogCount()
     cancelHeightFrame()
     viewportHeight.value = props.height
   }
 })
 
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Escape')
+  if (!dialogVisible.value || !isTopOverlay.value)
     return
-  if (!dialogVisible.value)
-    return
-  const topZ = BASE_Z_INDEX + (getDialogCount() - 1)
-  if (dialogZIndex.value === topZ) {
+
+  trapFocus(event)
+
+  if (event.key === 'Escape') {
     handleClose()
   }
 }
@@ -199,10 +202,12 @@ defineExpose({
     <transition v-bind="transitionClasses" @after-leave="handleAfterLeave">
       <div
         v-if="dialogVisible"
-        id="hana-dialog"
+        :id="overlayId"
+        ref="dialog"
         role="dialog"
-        :aria-labelledby="title ? 'dialog-title' : undefined"
+        :aria-labelledby="title ? dialogTitleId : undefined"
         aria-modal="true"
+        tabindex="-1"
         class="fixed left-1/2 top-1/2 max-w-[90%] rounded-2xl bg-white p-5 shadow -translate-x-1/2 -translate-y-1/2 dark:bg-hana-black"
         :style="{ width, zIndex: dialogZIndex }"
       >
@@ -212,7 +217,7 @@ defineExpose({
             :close="handleClose"
           >
             <div v-if="!hideHeader" class="flex items-center">
-              <span v-if="title" id="dialog-title" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
+              <span v-if="title" :id="dialogTitleId" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
               <HanaButton v-if="!programmatic" icon="lucide:x" class="relative ml-auto -right-2 -top-2" icon-button @click="handleClose" />
             </div>
           </slot>

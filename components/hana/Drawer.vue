@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
+import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
 
 const props = withDefaults(defineProps<{
   title?: string
@@ -9,19 +10,34 @@ const props = withDefaults(defineProps<{
   overlayOpacity?: number
   showInfo?: boolean
   width?: string
+  navigationMode?: OverlayNavigationMode
 }>(), {
   hideHeader: false,
   direction: 'right',
   overlayOpacity: 0.5,
   showInfo: false,
   width: '320px',
+  navigationMode: 'history',
 })
 
 const drawerRef = useTemplateRef('drawerRef')
 
-onClickOutside(drawerRef, handleClose)
+const visible = defineModel<boolean>({ default: false })
+const navigationMode = computed(() => props.navigationMode)
+const { overlayIndex, isTopOverlay } = useOverlayNavigation({
+  visible,
+  navigationMode,
+  close: handleClose,
+})
+const { trapFocus } = useFocusTrap(drawerRef, visible)
+const drawerZIndex = computed(() => 40 + overlayIndex.value)
+const overlayZIndex = computed(() => drawerZIndex.value)
+const panelZIndex = computed(() => drawerZIndex.value + 1)
 
-const visible = defineModel<boolean>()
+onClickOutside(drawerRef, () => {
+  if (visible.value && isTopOverlay.value)
+    handleClose()
+})
 
 function handleClose() {
   visible.value = false
@@ -37,6 +53,11 @@ const transitionClasses = computed<TransitionProps>(() => ({
 }))
 
 function handleKeydown(event: KeyboardEvent) {
+  if (!visible.value || !isTopOverlay.value)
+    return
+
+  trapFocus(event)
+
   if (event.key === 'Escape') {
     handleClose()
   }
@@ -54,18 +75,19 @@ onBeforeUnmount(() => {
 <template>
   <teleport to="body">
     <div
-      class="fixed inset-0 z-40 bg-black transition-opacity duration-300"
+      class="fixed inset-0 bg-black transition-opacity duration-300"
       :class="{ 'pointer-events-none': !visible }"
-      :style="{ opacity: visible ? props.overlayOpacity : 0 }"
+      :style="{ opacity: visible ? props.overlayOpacity : 0, zIndex: overlayZIndex }"
       @click="handleClose"
     />
     <transition v-bind="transitionClasses">
       <aside
         v-if="visible"
         ref="drawerRef"
-        class="fixed top-0 z-50 w-4/5 flex flex-col bg-white px-5 h-dvh dark:bg-hana-black"
+        tabindex="-1"
+        class="fixed top-0 w-4/5 flex flex-col bg-white px-5 h-dvh dark:bg-hana-black"
         :class="[direction === 'right' ? 'right-0' : 'left-0']"
-        :style="{ maxWidth: width }"
+        :style="{ maxWidth: width, zIndex: panelZIndex }"
       >
         <slot name="header">
           <div v-if="!hideHeader" class="h-12 flex items-center gap-2">

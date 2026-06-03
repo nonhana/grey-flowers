@@ -117,6 +117,7 @@ onBeforeUnmount(() => {
   </div>
   <RecentlyDetailDialog
     v-model="dialogVisible"
+    navigation-mode="route"
     :status="detailStatus"
     :item="resolvedActivity"
     :error-message="detailErrorMessage"

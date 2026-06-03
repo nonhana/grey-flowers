@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
 import type { ActivityItem } from '~/types/activity'
 import { HanaImgViewer } from 'hana-img-viewer'
 
@@ -6,9 +7,11 @@ const props = withDefaults(defineProps<{
   status?: ActivityDetailStatus
   item?: ActivityItem
   errorMessage?: string | null
+  navigationMode?: OverlayNavigationMode
 }>(), {
   status: 'ready',
   errorMessage: null,
+  navigationMode: 'history',
 })
 
 const visible = defineModel<boolean>()
@@ -17,7 +20,7 @@ const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}`
 </script>
 
 <template>
-  <HanaDialog v-model="visible" title="动态详情" width="800px">
+  <HanaDialog v-model="visible" :navigation-mode="navigationMode" title="动态详情" width="800px">
     <div v-if="status === 'loading'" class="flex flex-col items-center gap-3 py-8 text-text dark:text-hana-white-700">
       <Icon name="lucide:loader-circle" size="28" class="animate-spin" />
       <p>
