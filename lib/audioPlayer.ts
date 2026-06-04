@@ -40,14 +40,26 @@ export class AudioPlayer {
 
     // 初始化状态
     this.audio.volume = this.state.volume
+    this.audio.muted = this.state.isMuted
 
     this.attachEvents()
-    this.updateMediaSessionPauseStatus(true)
+    this.clearMediaSession()
   }
 
   /** 重置播放器状态 */
   public reset(): void {
-    this.updateState(this.getInitialState())
+    this.audio.pause()
+    this.audio.currentTime = 0
+    this.audio.removeAttribute('src')
+    this.audio.load()
+
+    this.clearMediaSession()
+    this.updateState(this.getIdleState())
+  }
+
+  /** 停止播放并清空当前曲目 */
+  public stop(): void {
+    this.reset()
   }
 
   /** 订阅播放器状态变化 */
@@ -137,6 +149,19 @@ export class AudioPlayer {
     return { ...this.state }
   }
 
+  private clearMediaSession() {
+    if (!('mediaSession' in navigator))
+      return
+
+    try {
+      navigator.mediaSession.metadata = null
+      navigator.mediaSession.playbackState = 'none'
+    }
+    catch (error) {
+      console.warn('Failed to clear Media Session:', error)
+    }
+  }
+
   // 更新 Media Session 元数据
   public updateMediaSessionMetadata(track: Track) {
     if (!('mediaSession' in navigator))
@@ -210,13 +235,20 @@ export class AudioPlayer {
   /** 获取初始状态 */
   private getInitialState(): PlayerState {
     return {
+      ...this.getIdleState(),
+      volume: 0.2,
+      isMuted: false,
+    }
+  }
+
+  /** 获取空闲态的播放状态 */
+  private getIdleState(): Omit<PlayerState, 'volume' | 'isMuted'> {
+    return {
       currentTrack: null,
       playbackState: 'idle',
       isPlaying: false,
       currentTime: 0,
       duration: 0,
-      volume: 0.2,
-      isMuted: false,
     }
   }
 
@@ -259,10 +291,7 @@ export class AudioPlayer {
     this.updateMediaSessionPauseStatus(true)
   }
 
-  private handleEnded = () => {
-    this.updateState({ isPlaying: false, playbackState: 'idle' })
-    this.updateMediaSessionPauseStatus(true) // 播放结束，设为暂停状态
-  }
+  private handleEnded = () => this.stop()
 
   private handleTimeUpdate = () => this.updateState({ currentTime: this.audio.currentTime })
   private handleDurationChange = () => this.updateState({ duration: this.audio.duration || 0 })

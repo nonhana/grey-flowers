@@ -90,7 +90,7 @@ function handleInput(event: Event) {
             {{ volumeLabel }}
           </p>
           <input
-            class="volume-slider-vertical volume-slider-base h-22 w-2.5 cursor-ns-resize"
+            class="volume-slider-vertical h-22 volume-slider-base w-2.5 cursor-ns-resize"
             type="range"
             min="0"
             max="1"
@@ -131,7 +131,7 @@ function handleInput(event: Event) {
           <span class="text-[11px] text-text-1 font-medium tracking-[0.08em] dark:text-hana-white-700/85">音量</span>
           <span class="justify-self-end text-xs text-text font-medium tabular-nums dark:text-hana-white-700">{{ volumeLabel }}</span>
           <input
-            class="volume-slider-horizontal volume-slider-base col-span-2 h-2.5 w-full cursor-ew-resize"
+            class="col-span-2 h-2.5 volume-slider-base w-full cursor-ew-resize volume-slider-horizontal"
             type="range"
             min="0"
             max="1"

@@ -24,6 +24,7 @@ onUnmounted($audioPlayer.subscribe((state) => {
 const isCurTrackActive = computed(() => globalCurTrack.value?.id === curMusic.value.id)
 
 const isPlaying = computed(() => isCurTrackActive.value && globalIsPlaying.value)
+const canStop = computed(() => isCurTrackActive.value)
 
 const currentTime = computed({
   get: () => isCurTrackActive.value ? globalCurTime.value : 0,
@@ -67,6 +68,13 @@ function togglePlayPause() {
   else {
     $audioPlayer.togglePlayPause()
   }
+}
+
+function stopPlayback() {
+  if (!canStop.value)
+    return
+
+  $audioPlayer.stop()
 }
 
 function stepMusic(type: 'prev' | 'next') {
@@ -139,6 +147,13 @@ onMounted(() => {
           icon="lucide:play"
           aria-label="播放"
           @click="togglePlayPause"
+        />
+        <hana-button
+          v-if="canStop"
+          icon-button
+          icon="lucide:square"
+          aria-label="停止播放"
+          @click="stopPlayback"
         />
         <hana-button
           :disabled="music.length === 1"
