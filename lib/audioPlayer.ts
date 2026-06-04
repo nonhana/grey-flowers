@@ -121,10 +121,15 @@ export class AudioPlayer {
     this.updateState({ volume: clampedVolume })
   }
 
+  /** 设置静音状态 */
+  public setMuted(muted: boolean): void {
+    this.audio.muted = muted
+    this.updateState({ isMuted: muted })
+  }
+
   /** 切换静音状态 */
   public toggleMuted(): void {
-    this.audio.muted = !this.audio.muted
-    this.updateState({ isMuted: this.audio.muted })
+    this.setMuted(!this.audio.muted)
   }
 
   /** 获取当前播放器状态的快照 */

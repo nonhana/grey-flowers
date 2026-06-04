@@ -49,6 +49,21 @@ function close() {
   toggleVisible(false)
 }
 
+function handleFocusIn() {
+  if (hoverTrigger.value) {
+    open()
+  }
+}
+
+function handleFocusOut(event: FocusEvent) {
+  const nextTarget = event.relatedTarget as Node | null
+  if (nextTarget && tooltipRef.value?.contains(nextTarget)) {
+    return
+  }
+
+  close()
+}
+
 const triggerRef = useTemplateRef('triggerRef')
 const triggerWidth = ref(0)
 let observer: IntersectionObserver | null = null
@@ -117,14 +132,20 @@ const positionClass = computed(() => {
 </script>
 
 <template>
-  <div ref="tooltipRef" class="relative">
+  <div
+    ref="tooltipRef"
+    class="relative"
+    @focusin="handleFocusIn"
+    @focusout="handleFocusOut"
+    @keydown.esc.stop.prevent="close()"
+  >
     <div
       ref="triggerRef"
       @[clickTrigger?`click`:null]="toggleVisible(!visible)"
       @[hoverTrigger?`mouseenter`:null]="open()"
       @[hoverTrigger?`mouseleave`:null]="close()"
     >
-      <slot v-if="$slots.default" />
+      <slot v-if="$slots.default" :visible="visible" />
     </div>
 
     <HanaTooltipAnime :animation="animation" :position="position">
@@ -140,7 +161,7 @@ const positionClass = computed(() => {
           class="relative max-w-60 min-w-max hana-card text-center"
           :class="[content ? 'px-4! py-2!' : 'p-1!']"
         >
-          <slot name="content" :close="close">
+          <slot name="content" :close="close" :visible="visible">
             <span class="text-text dark:text-hana-white-700">{{ content }}</span>
           </slot>
           <HanaTooltipArrow v-if="showArrow" :position="position" />

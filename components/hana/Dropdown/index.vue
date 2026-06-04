@@ -42,10 +42,12 @@ function handleClick(e: MouseEvent, fn: () => void) {
       :animation="animation"
       :show-arrow="showArrow"
     >
-      <slot v-if="$slots.default" />
-      <template #content="{ close }">
+      <template #default="{ visible }">
+        <slot v-if="$slots.default" :visible="visible" />
+      </template>
+      <template #content="{ close, visible }">
         <div @click="($event) => handleClick($event, close)">
-          <slot name="dropdown" :click="close" />
+          <slot name="dropdown" :click="close" :close="close" :visible="visible" />
         </div>
       </template>
     </HanaTooltip>
