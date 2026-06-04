@@ -1,20 +1,17 @@
 <script lang="ts" setup>
 import { useStore } from '~/store'
 
-const { dialogStore, uiInfoStore } = useStore()
+const { uiInfoStore } = useStore()
 const { scrollTop, scrollHeight, clientHeight } = toRefs(uiInfoStore)
 
-const canScroll = ref(false)
-
-watchEffect(() => {
-  canScroll.value = scrollHeight.value > clientHeight.value
-})
-
-const visible = computed(() => dialogStore.dialogCount === 0 && canScroll.value)
-
 const curScrollPercent = computed(() => {
+  const totalScrollableHeight = scrollHeight.value - clientHeight.value
+  if (totalScrollableHeight <= 0) {
+    return 0
+  }
+
   const percent = Math.ceil((
-    scrollTop.value / (scrollHeight.value - clientHeight.value)
+    scrollTop.value / totalScrollableHeight
   ) * 100)
   return Math.min(percent, 100)
 })
@@ -36,7 +33,7 @@ function scrollToTop() {
 </script>
 
 <template>
-  <div v-if="visible" class="relative hana-card">
+  <div class="relative hana-card">
     <HanaTooltip content="返回顶部" position="left" animation="slide">
       <div
         class="size-10 hana-button items-center justify-center font-bold"

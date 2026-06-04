@@ -1,18 +1,10 @@
 <script lang="ts" setup>
 import { Volume, Volume1, Volume2, VolumeOff } from '@lucide/vue'
 
-const volume = ref(0)
-const isIdle = ref(true)
-const isMuted = ref(false)
-
-onMounted(() => {
-  const { $audioPlayer } = useNuxtApp()
-  onUnmounted($audioPlayer.subscribe((state) => {
-    volume.value = state.volume
-    isMuted.value = state.isMuted
-    isIdle.value = state.playbackState === 'idle'
-  }))
-})
+const props = defineProps<{
+  volume: number
+  isMuted: boolean
+}>()
 
 function toggleMuted() {
   const { $audioPlayer } = useNuxtApp()
@@ -31,15 +23,14 @@ function handleInput(e: Event) {
 
 <template>
   <div
-    v-if="!isIdle"
-    class="relative overflow-hidden hana-card transition-all duration-300"
+    class="relative w-14 overflow-hidden hana-card transition-all duration-300"
     :style="{ height: controllerHeight }"
     @mouseenter="showVolumePanel = true"
     @mouseleave="showVolumePanel = false"
   >
     <div class="absolute bottom-2 flex flex-col items-center gap-4">
       <p class="text-xs text-text dark:text-hana-white-700">
-        {{ Math.round(volume * 100) }}%
+        {{ Math.round(props.volume * 100) }}%
       </p>
       <input
         id="volume-progress"
@@ -48,23 +39,23 @@ function handleInput(e: Event) {
         min="0"
         max="1"
         step="0.01"
-        :value="volume"
-        :disabled="isMuted"
+        :value="props.volume"
+        :disabled="props.isMuted"
         :aria-valuemin="0"
         :aria-valuemax="1"
-        :aria-valuenow="volume"
+        :aria-valuenow="props.volume"
         aria-label="音量"
-        :style="`--progress: ${volume}`"
+        :style="`--progress: ${props.volume}`"
         @input="handleInput"
       >
       <div
         class="mt-auto size-10 hana-button items-end items-center justify-center font-bold"
         @click="toggleMuted"
       >
-        <div v-if="!isMuted">
-          <Volume v-if="volume === 0" :size="20" />
-          <Volume1 v-else-if="volume > 0 && volume <= 0.5" :size="20" />
-          <Volume2 v-else-if="volume > 0.5 && volume <= 1" :size="20" />
+        <div v-if="!props.isMuted">
+          <Volume v-if="props.volume === 0" :size="20" />
+          <Volume1 v-else-if="props.volume > 0 && props.volume <= 0.5" :size="20" />
+          <Volume2 v-else-if="props.volume > 0.5 && props.volume <= 1" :size="20" />
         </div>
         <div v-else>
           <VolumeOff :size="20" />
