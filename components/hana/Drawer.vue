@@ -70,6 +70,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
+
+defineExpose({
+  closeDrawer: handleClose,
+})
 </script>
 
 <template>
@@ -110,11 +114,11 @@ onBeforeUnmount(() => {
           <hr class="mt-5 border-text dark:border-hana-white-700">
         </div>
         <div class="mt-5 flex-1 overflow-auto">
-          <slot :close="handleClose" />
+          <slot />
         </div>
         <div v-if="$slots.footer" class="my-5">
           <hr class="mb-5 border-text dark:border-hana-white-700">
-          <slot name="footer" :close="handleClose" />
+          <slot name="footer" />
         </div>
       </aside>
     </transition>
