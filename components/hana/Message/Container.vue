@@ -37,7 +37,7 @@ defineExpose({
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .message-container-move,
 .message-container-enter-active,
 .message-container-leave-active {

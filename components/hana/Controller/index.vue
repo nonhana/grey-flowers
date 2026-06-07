@@ -119,7 +119,7 @@ watch(() => route.path, () => {
   </transition-group>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .controller-move {
   transition: transform 0.3s ease;
 }

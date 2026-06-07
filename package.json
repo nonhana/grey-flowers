@@ -2,7 +2,7 @@
   "name": "hana-blog",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.5.2",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -63,7 +63,6 @@
     "pinia": "catalog:",
     "pinia-plugin-persistedstate": "catalog:",
     "prisma": "catalog:",
-    "sass-embedded": "catalog:",
     "typescript": "catalog:",
     "unocss": "catalog:",
     "unocss-preset-scrollbar": "catalog:",

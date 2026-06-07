@@ -33,7 +33,7 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
   </span>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 #breadcrumb-item {
   &:last-child {
     #separator {
