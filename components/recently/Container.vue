@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { CheckCircle, LoaderCircle, RefreshCw } from '@lucide/vue'
+
 const beforeClasses = `before:hidden before:md:block before:absolute before:inset-y-0 before:-left-8 before:h-full before:w-0.5 before:bg-hana-blue before:content-[''] dark:before:bg-hana-blue-200`
 const afterClasses = `after:hidden after:md:block after:absolute after:left-[calc(-2rem-5px)] after:top-1/2 after:size-3 after:rounded-full after:bg-hana-blue after:content-[''] dark:after:bg-hana-blue-200`
 
@@ -99,8 +101,8 @@ onBeforeUnmount(() => {
     </li>
   </ul>
   <div ref="loadMoreTrigger" class="h-8" />
-  <Icon v-if="loading" name="lucide:loader-circle" size="32" class="mx-auto mt-2 block text-text animate-spin dark:text-hana-white-700" />
-  <Icon v-else-if="!hasMore && activities.length > 0" name="lucide:check-circle" size="32" class="mx-auto mt-2 block text-text dark:text-hana-white-700" />
+  <LoaderCircle v-if="loading" :size="32" class="mx-auto mt-2 block text-text animate-spin dark:text-hana-white-700" />
+  <CheckCircle v-else-if="!hasMore && activities.length > 0" :size="32" class="mx-auto mt-2 block text-text dark:text-hana-white-700" />
   <div v-if="visibleErrorMessage" class="mt-2 flex items-center justify-center gap-2">
     <p class="text-center text-sm text-error-3">
       {{ visibleErrorMessage }}
@@ -112,7 +114,7 @@ onBeforeUnmount(() => {
       :title="visibleErrorMessage"
       @click="retryCurrentError"
     >
-      <Icon name="lucide:refresh-cw" size="16" />
+      <RefreshCw :size="16" />
     </button>
   </div>
   <RecentlyDetailDialog

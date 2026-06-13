@@ -19,10 +19,8 @@ trustPolicyExclude:
 
 catalog:
   '@antfu/eslint-config': ^9.0.0
-  '@iconify-json/lucide': ^1.2.111
   '@lucide/vue': ^1.17.0
   '@nuxt/fonts': ^0.14.0
-  '@nuxt/icon': ^2.2.3
   '@nuxt/image': ^2.0.0
   '@nuxtjs/color-mode': ^4.0.0
   '@nuxtjs/mdc': ^0.22.0

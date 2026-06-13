@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
+
 const props = defineProps<{
   to?: string
 }>()
@@ -12,7 +14,10 @@ const component = computed(() => {
   return 'div'
 })
 
-const breadcrumbContext = inject('breadcrumbKey', undefined) as any
+const breadcrumbContext = inject<{
+  separator?: string
+  separatorIcon?: LucideIcon
+} | undefined>('breadcrumbKey', undefined)
 </script>
 
 <template>
@@ -28,7 +33,7 @@ const breadcrumbContext = inject('breadcrumbKey', undefined) as any
     >
       <slot />
     </component>
-    <Icon v-if="breadcrumbContext?.separatorIcon" id="separator" :name="breadcrumbContext?.separatorIcon" />
+    <component :is="breadcrumbContext?.separatorIcon" v-if="breadcrumbContext?.separatorIcon" id="separator" />
     <span v-else id="separator" class="mx-2 font-bold">{{ breadcrumbContext?.separator }}</span>
   </span>
 </template>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Track } from '~/types/activity'
+import { Pause, Play, SkipBack, SkipForward, Square } from '@lucide/vue'
 
 const props = defineProps<{
   music: Track[] // 一个音乐卡片包含多个歌曲
@@ -130,35 +131,35 @@ onMounted(() => {
         <hana-button
           :disabled="music.length === 1"
           icon-button
-          icon="lucide:skip-back"
+          :icon="SkipBack"
           aria-label="上一首"
           @click="stepMusic('prev')"
         />
         <hana-button
           v-show="isPlaying"
           icon-button
-          icon="lucide:pause"
+          :icon="Pause"
           aria-label="暂停"
           @click="togglePlayPause"
         />
         <hana-button
           v-show="!isPlaying"
           icon-button
-          icon="lucide:play"
+          :icon="Play"
           aria-label="播放"
           @click="togglePlayPause"
         />
         <hana-button
           v-if="canStop"
           icon-button
-          icon="lucide:square"
+          :icon="Square"
           aria-label="停止播放"
           @click="stopPlayback"
         />
         <hana-button
           :disabled="music.length === 1"
           icon-button
-          icon="lucide:skip-forward"
+          :icon="SkipForward"
           aria-label="下一首"
           @click="stepMusic('next')"
         />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ArticleHeader } from '~/types/content'
+import { Calendar, FileText, RefreshCw } from '@lucide/vue'
 import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<ArticleHeader>(), {
@@ -65,15 +66,15 @@ const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.tit
     </div>
     <div class="flex flex-wrap items-center gap-4 text-text dark:text-hana-white-700">
       <span class="flex items-center gap-2">
-        <Icon name="lucide:calendar" />
+        <Calendar />
         <time :datetime="publishedAt">{{ publishedAt }}</time>
       </span>
       <span class="flex items-center gap-2">
-        <Icon name="lucide:refresh-cw" />
+        <RefreshCw />
         <time :datetime="editedAt">{{ editedAt }}</time>
       </span>
       <span class="flex items-center gap-2">
-        <Icon name="lucide:file-text" />
+        <FileText />
         {{ wordCount }}字
       </span>
     </div>

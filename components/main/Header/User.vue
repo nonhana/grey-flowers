@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
 import type { DropdownCommand } from '~/types/common'
+import { Globe, KeyRound, LogIn, LogOut, Mail, MessageSquareMore, User, UserPlus, UserRound } from '@lucide/vue'
 import { useStore } from '~/store'
 
 const { userStore } = useStore()
@@ -27,40 +29,45 @@ onMounted(checkUserStatus)
 
 const isMe = computed(() => userInfo.value?.id === hanaInfo.id)
 
-const notLoggedInMap = [{
+interface UserMenuItem {
+  text: string
+  icon: LucideIcon
+}
+
+const notLoggedInMap: UserMenuItem[] = [{
   text: '登录',
-  icon: 'lucide:log-in',
+  icon: LogIn,
 }, {
   text: '注册',
-  icon: 'lucide:user-plus',
+  icon: UserPlus,
 }]
 
-const loggedInMap = [{
+const loggedInMap: UserMenuItem[] = [{
   text: '个人资料',
-  icon: 'lucide:user',
+  icon: User,
 }, {
   text: '消息',
-  icon: 'lucide:mail',
+  icon: Mail,
 }, {
   text: '评论',
-  icon: 'lucide:message-square-more',
+  icon: MessageSquareMore,
 }, {
   text: '退出登录',
-  icon: 'lucide:log-out',
+  icon: LogOut,
 }]
 
-const hanaMap = [{
+const hanaMap: UserMenuItem[] = [{
   text: '个人资料',
-  icon: 'lucide:user',
+  icon: User,
 }, {
   text: '消息',
-  icon: 'lucide:mail',
+  icon: Mail,
 }, {
   text: '评论',
-  icon: 'lucide:message-square-more',
+  icon: MessageSquareMore,
 }, {
   text: '退出登录',
-  icon: 'lucide:log-out',
+  icon: LogOut,
 }]
 
 function toggleLoginRegisterWindow() {
@@ -196,7 +203,8 @@ function handleUserCommand(command: DropdownCommand) {
     <HanaDropdown animation="slide" offset="end" :show-arrow="false" @command="handleUserCommand">
       <HanaButton
         icon-button
-        icon="lucide:user-round"
+        :icon="UserRound"
+        aria-label="打开用户菜单"
         class="ml-auto"
       />
       <template #dropdown>
@@ -233,8 +241,8 @@ function handleUserCommand(command: DropdownCommand) {
   <HanaDialog v-model="loginWindowVisible" title="欢迎来到...花园。">
     <form @submit.prevent="(e) => handleSubmit('login', e)">
       <div class="flex flex-col gap-4">
-        <HanaInput name="account" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名 / 邮箱" />
-        <HanaInput name="password" prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="密码" />
+        <HanaInput name="account" :prefix-icon="UserRound" shape="rounded" placeholder="用户名 / 邮箱" />
+        <HanaInput name="password" :prefix-icon="KeyRound" shape="rounded" type="password" placeholder="密码" />
       </div>
       <div class="mt-8 flex flex-col gap-4">
         <HanaButton class="w-full" dark-mode type="submit" :disabled="logging">
@@ -249,10 +257,10 @@ function handleUserCommand(command: DropdownCommand) {
   <HanaDialog v-model="registerWindowVisible" title="这里有你想找的花吗？">
     <form @submit.prevent="(e) => handleSubmit('register', e)">
       <div class="flex flex-col gap-4">
-        <HanaInput name="username" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名" />
-        <HanaInput name="email" prefix-icon="lucide:mail" shape="rounded" placeholder="邮箱" />
-        <HanaInput name="site" prefix-icon="lucide:globe" shape="rounded" placeholder="站点（无可不填）" />
-        <HanaInput name="password" prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="密码" />
+        <HanaInput name="username" :prefix-icon="UserRound" shape="rounded" placeholder="用户名" />
+        <HanaInput name="email" :prefix-icon="Mail" shape="rounded" placeholder="邮箱" />
+        <HanaInput name="site" :prefix-icon="Globe" shape="rounded" placeholder="站点（无可不填）" />
+        <HanaInput name="password" :prefix-icon="KeyRound" shape="rounded" type="password" placeholder="密码" />
       </div>
       <div class="mt-8 flex flex-col gap-4">
         <HanaButton class="w-full" dark-mode type="submit">

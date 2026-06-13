@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
 import type { ActivityItem } from '~/types/activity'
+import { Clock, LoaderCircle } from '@lucide/vue'
 import { HanaImgViewer } from 'hana-img-viewer'
 
 const props = withDefaults(defineProps<{
@@ -22,7 +23,7 @@ const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}`
 <template>
   <HanaDialog v-model="visible" :navigation-mode="navigationMode" title="动态详情" width="800px">
     <div v-if="status === 'loading'" class="flex flex-col items-center gap-3 py-8 text-text dark:text-hana-white-700">
-      <Icon name="lucide:loader-circle" size="28" class="animate-spin" />
+      <LoaderCircle :size="28" class="animate-spin" />
       <p>
         正在加载动态详情...
       </p>
@@ -46,7 +47,7 @@ const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}`
         <div class="flex flex-col gap-1">
           <span class="text-black font-bold dark:text-hana-white">{{ hanaInfo.username }}</span>
           <span class="flex items-center text-sm text-text dark:text-hana-white-700 space-x-1">
-            <Icon name="lucide:clock" size="14" />
+            <Clock :size="14" />
             <time :datetime="item.publishedAt">{{ item.publishedAt }}</time>
           </span>
         </div>

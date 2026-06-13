@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Activity } from '@lucide/vue'
 import { recentlyPageData } from '~/data/meta'
 
 useHead({
@@ -13,7 +14,7 @@ useHead({
 </script>
 
 <template>
-  <HanaInfoCard title="最近动态" icon="lucide:activity">
+  <HanaInfoCard title="最近动态" :icon="Activity">
     <RecentlyContainer />
   </HanaInfoCard>
 </template>

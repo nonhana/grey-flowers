@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ChevronRight } from '@lucide/vue'
+
 const appConfig = useAppConfig()
 
 const runDays = ref(0)
@@ -13,7 +15,7 @@ onMounted(() => {
     <div class="w-full flex flex-col gap-4 md:flex-row md:items-center">
       <div class="flex items-center gap-2">
         <span class="text-text font-code dark:text-hana-white-700">导航</span>
-        <Icon name="lucide:chevron-right" class="text-text dark:text-hana-white-700" />
+        <ChevronRight class="text-text dark:text-hana-white-700" />
         <ProseA href="/about" target="_self">
           关于
         </ProseA>
@@ -29,7 +31,7 @@ onMounted(() => {
       </div>
       <div class="flex items-center gap-2">
         <span class="text-text font-code dark:text-hana-white-700">联系我</span>
-        <Icon name="lucide:chevron-right" class="text-text dark:text-hana-white-700" />
+        <ChevronRight class="text-text dark:text-hana-white-700" />
         <ProseA href="https://github.com/nonhana">
           GitHub
         </ProseA>

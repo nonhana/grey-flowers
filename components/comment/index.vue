@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
+import { Send } from '@lucide/vue'
 import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<{
@@ -150,10 +151,11 @@ watch(() => hash, (newV) => {
           <span class="text-xl text-hana-blue-200">{{ totalCount }}</span>
         </div>
         <HanaButton
-          icon="lucide:send"
+          :icon="Send"
           dark-mode
           shape="square"
           icon-button
+          aria-label="发表评论"
           class="group size-10 transition-all hover:w-32"
           @click="checkBeforeToggleVisible"
         >

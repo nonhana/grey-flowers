@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
 import type { DialogOptions } from '~/composables/useDialog'
+import { X } from '@lucide/vue'
 import { useElementSize, usePreferredReducedMotion } from '@vueuse/core'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
@@ -218,7 +219,7 @@ defineExpose({
           >
             <div v-if="!hideHeader" class="flex items-center">
               <span v-if="title" :id="dialogTitleId" class="flex-1 text-2xl font-bold dark:text-hana-white">{{ title }}</span>
-              <HanaButton v-if="!programmatic" icon="lucide:x" class="relative ml-auto -right-2 -top-2" icon-button @click="handleClose" />
+              <HanaButton v-if="!programmatic" :icon="X" aria-label="关闭对话框" class="relative ml-auto -right-2 -top-2" icon-button @click="handleClose" />
             </div>
           </slot>
         </div>

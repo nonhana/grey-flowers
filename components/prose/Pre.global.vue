@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ArrowRight, ChevronsDown, ChevronsUp, FileTerminal } from '@lucide/vue'
 import { useStore } from '~/store'
 
 const props = withDefaults(defineProps<{
@@ -62,9 +63,9 @@ function copyCode() {
         :class="isStickyActive ? 'bg-hana-blue-150 dark:bg-hana-black-800' : 'bg-transparent'"
       >
         <span v-if="language">{{ language }}</span>
-        <Icon v-if="filename" class="text-text hidden md:block dark:text-hana-white-700" name="lucide:arrow-right" />
+        <ArrowRight v-if="filename" class="text-text hidden md:block dark:text-hana-white-700" />
         <span v-if="filename" class="items-center border-2 border-solid px-1 hidden md:flex">
-          <Icon class="text-text dark:text-hana-white-700" name="lucide:file-terminal" />
+          <FileTerminal class="text-text dark:text-hana-white-700" />
           {{ filename }}
         </span>
       </div>
@@ -87,8 +88,8 @@ function copyCode() {
       :class="{ 'bg-none': !isCollapsed }"
       @click="toggleCollapsed()"
     >
-      <Icon v-show="isCollapsed" class="animate-bounce" size="20" name="lucide:chevrons-down" />
-      <Icon v-show="!isCollapsed" class="animate-bounce" size="20" name="lucide:chevrons-up" />
+      <ChevronsDown v-show="isCollapsed" class="animate-bounce" :size="20" />
+      <ChevronsUp v-show="!isCollapsed" class="animate-bounce" :size="20" />
     </button>
   </figure>
 </template>

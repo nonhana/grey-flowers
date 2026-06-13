@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
+import { Eye, EyeOff } from '@lucide/vue'
+
 const props = withDefaults(defineProps<{
   name?: string
   type?: 'text' | 'textarea' | 'password' | 'number'
@@ -6,8 +9,8 @@ const props = withDefaults(defineProps<{
   resize?: 'none' | 'vertical' | 'horizontal' | 'both'
   rows?: number
   shape?: 'rounded' | 'sharp'
-  prefixIcon?: string
-  suffixIcon?: string
+  prefixIcon?: LucideIcon
+  suffixIcon?: LucideIcon
 }>(), {
   type: 'text',
   placeholder: '',
@@ -54,7 +57,7 @@ const curType = computed(() => {
           class="absolute left-3 top-1/2 text-text -translate-y-1/2 dark:text-hana-white-700"
         >
           <slot name="prefix" />
-          <Icon v-if="prefixIcon" :name="prefixIcon" size="20" />
+          <component :is="prefixIcon" v-if="prefixIcon" :size="20" />
         </span>
         <input
           v-model="value"
@@ -75,11 +78,11 @@ const curType = computed(() => {
           class="absolute right-3 top-1/2 flex text-text -translate-y-1/2 dark:text-hana-white-700"
         >
           <slot name="suffix" />
-          <Icon v-if="suffixIcon && type !== 'password'" :name="suffixIcon" size="20" />
-          <Icon
+          <component :is="suffixIcon" v-if="suffixIcon && type !== 'password'" :size="20" />
+          <component
+            :is="showPassword ? Eye : EyeOff"
             v-else-if="type === 'password'"
-            :name="showPassword ? 'lucide:eye' : 'lucide:eye-off'"
-            size="20"
+            :size="20"
             class="cursor-pointer"
             @click="toggleShowPassword"
           />

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
+
 const props = withDefaults(defineProps<{
   separator?: string
-  separatorIcon?: string
+  separatorIcon?: LucideIcon
 }>(), {
   separator: '>',
 })

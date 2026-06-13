@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
+
 const props = withDefaults(
   defineProps<{
     type?: string
     iconButton?: boolean
-    icon?: string
+    icon?: LucideIcon
     to?: string
     ariaLabel?: string
     active?: boolean
@@ -50,7 +52,7 @@ function handleClick(e: Event) {
     :is="component"
     :to="to"
     :type="type"
-    :aria-label="ariaLabel || (props.iconButton && props.icon) ? props.icon : undefined"
+    :aria-label="ariaLabel || undefined"
     :title="ariaLabel || undefined"
     class="relative flex shrink-0 select-none items-center justify-center gap-1 line-height-5 transition-all"
     :class="[
@@ -66,7 +68,7 @@ function handleClick(e: Event) {
     ]"
     @click="handleClick"
   >
-    <Icon v-if="props.icon" :name="props.icon" size="20" />
+    <component :is="props.icon" v-if="props.icon" :size="20" />
     <slot v-if="showSlot" />
     <span v-if="!props.icon && !showSlot && ariaLabel" class="sr-only">{{ ariaLabel }}</span>
   </component>

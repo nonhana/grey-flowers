@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { AlignJustify } from '@lucide/vue'
+
 const { routesMap } = useRoutesMap()
 
 const route = useRoute()
@@ -22,7 +24,8 @@ function toggleDrawerVisible() {
       <HanaButton
         class="block md:hidden"
         icon-button
-        icon="lucide:align-justify"
+        :icon="AlignJustify"
+        aria-label="打开导航菜单"
         @click="toggleDrawerVisible"
       />
 

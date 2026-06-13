@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ChevronLeft, ChevronRight } from '@lucide/vue'
+
 const props = withDefaults(defineProps<{
   total: number
   pageSize?: number
@@ -39,7 +41,8 @@ const sideButtonCount = (maxButtonCount - 3) / 2
     <HanaButton
       class="hidden md:flex"
       icon-button
-      icon="lucide:chevron-left"
+      :icon="ChevronLeft"
+      aria-label="上一页"
       :disabled="currentPage === 1"
       @click="stepPage('prev')"
     />
@@ -53,7 +56,8 @@ const sideButtonCount = (maxButtonCount - 3) / 2
     <HanaButton
       class="hidden md:flex"
       icon-button
-      icon="lucide:chevron-right"
+      :icon="ChevronRight"
+      aria-label="下一页"
       :disabled="currentPage === totalPages"
       @click="stepPage('next')"
     />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ActivityItem } from '~/types/activity'
+import { Activity, ArrowRight, CheckCircle, CloudOff, Inbox, LoaderCircle, RefreshCw } from '@lucide/vue'
 
 const ACTIVITY_PAGE_SIZE = 20
 const LOAD_MORE_ROOT_MARGIN = '0px 240px 0px 0px'
@@ -161,9 +162,9 @@ function handleCardSelect(item: ActivityItem) {
 </script>
 
 <template>
-  <HanaInfoCard title="最近动态" icon="lucide:activity">
+  <HanaInfoCard title="最近动态" :icon="Activity">
     <template #action>
-      <HanaButton icon="lucide:arrow-right" @click="gotoRecently">
+      <HanaButton :icon="ArrowRight" @click="gotoRecently">
         查看全部动态
       </HanaButton>
     </template>
@@ -178,7 +179,7 @@ function handleCardSelect(item: ActivityItem) {
       <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex items-start gap-4">
           <div class="mt-1 size-11 flex shrink-0 items-center justify-center rounded-full bg-error-0 text-error-3 dark:bg-hana-black-700">
-            <Icon name="lucide:cloud-off" size="18" />
+            <CloudOff :size="18" />
           </div>
           <div class="space-y-1">
             <p class="text-base text-hana-black leading-7 dark:text-hana-white">
@@ -191,10 +192,10 @@ function handleCardSelect(item: ActivityItem) {
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <HanaButton icon="lucide:refresh-cw" shape="square" @click="retryHomeInitial">
+          <HanaButton :icon="RefreshCw" shape="square" @click="retryHomeInitial">
             重新获取
           </HanaButton>
-          <HanaButton icon="lucide:arrow-right" shape="square" @click="gotoRecently">
+          <HanaButton :icon="ArrowRight" shape="square" @click="gotoRecently">
             打开动态页
           </HanaButton>
         </div>
@@ -204,7 +205,7 @@ function handleCardSelect(item: ActivityItem) {
     <div v-else-if="!hasActivities" class="border border-primary/55 rounded-[24px] bg-white/75 p-5 dark:border-hana-black-200/80 dark:bg-hana-black-800/75">
       <div class="flex items-start gap-4">
         <div class="mt-1 size-11 flex shrink-0 items-center justify-center rounded-full bg-hana-blue-50 text-hana-blue dark:bg-hana-black-700 dark:text-hana-blue-200">
-          <Icon name="lucide:inbox" size="18" />
+          <Inbox :size="18" />
         </div>
         <div class="space-y-1">
           <p class="text-base text-hana-black leading-7 dark:text-hana-white">
@@ -247,10 +248,9 @@ function handleCardSelect(item: ActivityItem) {
           class="flex flex-[0_0_3rem] items-center self-stretch justify-center"
           aria-hidden="true"
         >
-          <Icon
+          <LoaderCircle
             v-if="loadingMore"
-            name="lucide:loader-circle"
-            size="22"
+            :size="22"
             class="text-text animate-spin dark:text-hana-white-700"
           />
           <button
@@ -261,12 +261,11 @@ function handleCardSelect(item: ActivityItem) {
             :title="loadMoreError"
             @click="retryHomeLoadMore"
           >
-            <Icon name="lucide:refresh-cw" size="18" />
+            <RefreshCw :size="18" />
           </button>
-          <Icon
+          <CheckCircle
             v-else-if="!hasMore && hasActivities"
-            name="lucide:check-circle"
-            size="22"
+            :size="22"
             class="text-text dark:text-hana-white-700"
           />
         </div>

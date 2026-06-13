@@ -1,22 +1,28 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
 import type { DropdownCommand } from '~/types/common'
+import { Laptop, Moon, Sun } from '@lucide/vue'
 
-const themesMap = [
+const themesMap: Array<{
+  text: 'system' | 'light' | 'dark'
+  icon: LucideIcon
+}> = [
   {
     text: 'system',
-    icon: 'lucide:laptop',
+    icon: Laptop,
   },
   {
     text: 'light',
-    icon: 'lucide:sun',
+    icon: Sun,
   },
   {
     text: 'dark',
-    icon: 'lucide:moon',
+    icon: Moon,
   },
 ]
 
 const colorMode = useColorMode()
+const currentThemeIcon = computed(() => themesMap.find(item => item.text === colorMode.preference)?.icon)
 
 function handleThemesCommand(command: DropdownCommand) {
   colorMode.preference = command as 'light' | 'dark' | 'system'
@@ -28,7 +34,8 @@ function handleThemesCommand(command: DropdownCommand) {
     <HanaDropdown animation="slide" :show-arrow="false" @command="handleThemesCommand">
       <HanaButton
         icon-button
-        :icon="themesMap.find((item) => item.text === colorMode.preference)?.icon"
+        :icon="currentThemeIcon"
+        aria-label="切换主题"
         class="ml-auto"
       />
       <template #dropdown>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { LoaderCircle } from '@lucide/vue'
+
 const props = defineProps<{
   site: string
   image: string
@@ -77,9 +79,8 @@ onBeforeUnmount(() => {
         key="loading"
         class="size-full flex items-center justify-center rounded-lg bg-hana-blue-50 dark:bg-hana-black-600"
       >
-        <Icon
-          name="lucide:loader-circle"
-          size="24"
+        <LoaderCircle
+          :size="24"
           class="block text-text animate-spin dark:text-hana-white-700"
         />
       </div>

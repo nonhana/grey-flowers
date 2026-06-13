@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
+import { ArrowRight } from '@lucide/vue'
+
 defineProps<{
   menus: Map<string, {
     title: string
-    icon: string
+    icon: LucideIcon
     to: string
   }>
 }>()
@@ -22,11 +25,10 @@ const { path } = toRefs(route)
       :class="{ 'hana-button--active': path === to }"
     >
       <div class="flex items-center gap-2">
-        <Icon :name="value.icon" />
+        <component :is="value.icon" />
         <span>{{ value.title }}</span>
       </div>
-      <Icon
-        name="lucide:arrow-right"
+      <ArrowRight
         class="opacity-0 transition-all animate-bounce-x group-hover:opacity-100 hidden! lg:block!"
         :class="[path === to ? 'animate-none opacity-100' : '']"
       />

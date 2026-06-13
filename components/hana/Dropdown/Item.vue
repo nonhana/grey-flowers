@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
+
 const props = withDefaults(defineProps<{
-  icon?: string
+  icon?: LucideIcon
   to?: string
   command?: string
   center?: boolean
@@ -23,7 +25,7 @@ const component = computed(() => {
     :class="[center ? 'justify-center' : 'justify-start']"
     v-bind="command ? { 'data-command': command } : {}"
   >
-    <Icon v-if="icon" :name="icon" size="20" />
+    <component :is="icon" v-if="icon" :size="20" />
     <slot />
   </component>
 </template>

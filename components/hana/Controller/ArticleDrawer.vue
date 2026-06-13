@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Menu } from '@lucide/vue'
 import { useStore } from '~/store'
 
 const { articleStore } = useStore()
@@ -18,7 +19,7 @@ function toggleDrawer() {
         class="size-10 hana-button items-center justify-center"
         @click="toggleDrawer"
       >
-        <Icon class="absolute" name="lucide:menu" size="20" />
+        <Menu class="absolute" :size="20" />
       </div>
     </HanaTooltip>
   </div>

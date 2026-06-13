@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
 import type { TransitionProps } from 'vue'
 import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
+import { X } from '@lucide/vue'
 
 const props = withDefaults(defineProps<{
   title?: string
-  icon?: string
+  icon?: LucideIcon
   hideHeader?: boolean
   direction?: 'left' | 'right'
   overlayOpacity?: number
@@ -95,9 +97,9 @@ defineExpose({
       >
         <slot name="header">
           <div v-if="!hideHeader" class="h-12 flex items-center gap-2">
-            <Icon v-if="icon" :name="icon" size="20" class="text-hana-blue dark:text-hana-blue-200" />
+            <component :is="icon" v-if="icon" :size="20" class="text-hana-blue dark:text-hana-blue-200" />
             <span v-if="title" class="flex-1 text-xl text-hana-blue dark:text-hana-blue-200">{{ title }}</span>
-            <HanaButton icon="lucide:x" class="ml-auto" icon-button @click="handleClose" />
+            <HanaButton :icon="X" aria-label="关闭抽屉" class="ml-auto" icon-button @click="handleClose" />
           </div>
           <hr class="border-text dark:border-hana-white-700">
         </slot>

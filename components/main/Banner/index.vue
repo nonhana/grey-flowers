@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { CircleArrowDown } from '@lucide/vue'
+
 const colorMode = useColorMode()
 const isDark = ref(false)
 
@@ -28,7 +30,7 @@ function scrollToHead() {
       </div>
     </div>
     <div class="absolute bottom-0 left-0 h-40 w-full flex cursor-pointer items-center justify-center opacity-0 duration-300 from-[#00000000] to-[#00000066] bg-gradient-to-b hover:opacity-100" @click="scrollToHead">
-      <Icon name="lucide:circle-arrow-down" class="text-gray-200 animate-bounce" size="64" />
+      <CircleArrowDown class="text-gray-200 animate-bounce" :size="64" />
     </div>
   </div>
 </template>

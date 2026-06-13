@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ArticleCardProps } from '~/types/article'
+import { Newspaper } from '@lucide/vue'
 
 const { data: fetchArticleData } = await useFetch('/api/articles/list', { query: { page: 1, pageSize: 5 } })
 const articleData = computed(() => fetchArticleData.value ? fetchArticleData.value.payload ?? [] : [])
@@ -30,7 +31,7 @@ const secondaryArticleCards = computed(() => articleCards.value.slice(1))
     <MainActivity />
 
     <!-- 最近文章 -->
-    <HanaInfoCard title="最近文章" icon="lucide:newspaper">
+    <HanaInfoCard title="最近文章" :icon="Newspaper">
       <div v-if="featuredArticle" class="grid gap-6 2xl:grid-cols-3 md:grid-cols-2">
         <ArticleCard
           :key="`${featuredArticle.title}-featured`"

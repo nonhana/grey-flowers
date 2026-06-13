@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { LucideIcon } from '@lucide/vue'
 import type { ActivityItem } from '~/types/activity'
+import { Feather, Image, Images, MessageCircle, Music4 } from '@lucide/vue'
 
 const props = defineProps<{
   item: ActivityItem
@@ -22,12 +24,12 @@ const typeLabel = computed(() => {
   return '随记'
 })
 
-const typeIcon = computed(() => {
+const typeIcon = computed<LucideIcon>(() => {
   if (imageCount.value > 0)
-    return 'lucide:image'
+    return Image
   if (musicCount.value > 0)
-    return 'lucide:music-4'
-  return 'lucide:message-circle'
+    return Music4
+  return MessageCircle
 })
 
 const excerpt = computed(() => {
@@ -71,7 +73,7 @@ function getFallbackContent(item: ActivityItem) {
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0 flex items-center gap-3">
         <span class="size-9 flex shrink-0 items-center justify-center rounded-full bg-hana-blue-100/80 text-hana-blue dark:bg-hana-black-600 dark:text-hana-blue-200">
-          <Icon :name="typeIcon" size="16" />
+          <component :is="typeIcon" :size="16" />
         </span>
 
         <div class="min-w-0">
@@ -111,7 +113,7 @@ function getFallbackContent(item: ActivityItem) {
         v-if="imageCount > 1"
         class="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs text-white"
       >
-        <Icon name="lucide:images" size="12" />
+        <Images :size="12" />
         {{ imageCount }}
       </span>
 
@@ -119,7 +121,7 @@ function getFallbackContent(item: ActivityItem) {
         v-if="musicCount > 0"
         class="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-1 text-xs text-hana-blue backdrop-blur-sm dark:bg-hana-black/78 dark:text-hana-blue-200"
       >
-        <Icon name="lucide:music-4" size="12" />
+        <Music4 :size="12" />
         {{ musicCount }} 首歌
       </span>
     </div>
@@ -139,7 +141,7 @@ function getFallbackContent(item: ActivityItem) {
         v-else
         class="size-16 flex shrink-0 items-center justify-center rounded-2xl bg-hana-blue-100 text-hana-blue dark:bg-hana-black-600 dark:text-hana-blue-200"
       >
-        <Icon name="lucide:music-4" size="20" />
+        <Music4 :size="20" />
       </div>
 
       <div class="min-w-0 flex-1">
@@ -163,21 +165,21 @@ function getFallbackContent(item: ActivityItem) {
       v-else
       class="mt-4 flex items-center gap-2 border border-primary/45 rounded-5 border-dashed bg-white/55 px-3 py-3 text-xs text-text dark:border-hana-black-200/80 dark:bg-hana-black-700/55 dark:text-hana-white-700"
     >
-      <Icon name="lucide:feather" size="14" />
+      <Feather :size="14" />
       Something to remember
     </div>
 
     <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-text dark:text-hana-white-700">
       <span class="inline-flex items-center gap-1">
-        <Icon name="lucide:message-circle" size="12" />
+        <MessageCircle :size="12" />
         {{ item.commentCount }} 评论
       </span>
       <span v-if="imageCount > 0" class="inline-flex items-center gap-1">
-        <Icon name="lucide:image" size="12" />
+        <Image :size="12" />
         {{ imageCount }} 张图
       </span>
       <span v-if="musicCount > 0" class="inline-flex items-center gap-1">
-        <Icon name="lucide:music-4" size="12" />
+        <Music4 :size="12" />
         {{ musicCount }} 首歌
       </span>
     </div>

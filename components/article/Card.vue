@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { StyleValue } from 'vue'
 import type { ArticleCardProps } from '~/types/article'
+import { ArrowRight, Calendar, FileText } from '@lucide/vue'
 
 const props = withDefaults(
   defineProps<ArticleCardProps & { index: number }>(),
@@ -76,17 +77,16 @@ onMounted(() => {
           <div class="mt-auto flex items-end justify-between border-t border-primary/35 pt-4 dark:border-hana-black-200/55">
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text font-code dark:text-hana-white-700">
               <span class="inline-flex items-center gap-1.5">
-                <Icon name="lucide:calendar" size="12" />
+                <Calendar :size="12" />
                 <time :datetime="publishedAt">{{ publishedAt }}</time>
               </span>
               <span class="inline-flex items-center gap-1.5">
-                <Icon name="lucide:file-text" size="12" />
+                <FileText :size="12" />
                 <span>{{ wordCount }}字</span>
               </span>
             </div>
-            <Icon
-              name="lucide:arrow-right"
-              size="18"
+            <ArrowRight
+              :size="18"
               class="text-text-3 transition-transform duration-300 ease-out group-hover:translate-x-1 dark:text-hana-white-700"
             />
           </div>
@@ -129,17 +129,16 @@ onMounted(() => {
           <div class="mt-auto flex items-end justify-between border-t border-primary/35 pt-3 dark:border-hana-black-200/55">
             <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text font-code dark:text-hana-white-700">
               <span class="inline-flex items-center gap-1.5">
-                <Icon name="lucide:calendar" size="12" />
+                <Calendar :size="12" />
                 <time :datetime="publishedAt">{{ publishedAt }}</time>
               </span>
               <span class="inline-flex items-center gap-1.5">
-                <Icon name="lucide:file-text" size="12" />
+                <FileText :size="12" />
                 <span>{{ wordCount }}字</span>
               </span>
             </div>
-            <Icon
-              name="lucide:arrow-right"
-              size="16"
+            <ArrowRight
+              :size="16"
               class="text-text-3 transition-transform duration-300 ease-out group-hover:translate-x-1 dark:text-hana-white-700"
             />
           </div>
@@ -182,17 +181,16 @@ onMounted(() => {
           <div class="mt-auto flex items-end justify-between border-t border-primary/35 pt-3 dark:border-hana-black-200/55">
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-text tracking-[0.03em] font-code dark:text-hana-white-700">
               <span class="inline-flex items-center gap-1.5">
-                <Icon name="lucide:calendar" size="12" />
+                <Calendar :size="12" />
                 <time :datetime="publishedAt">{{ publishedAt }}</time>
               </span>
               <span class="inline-flex items-center gap-1.5">
-                <Icon name="lucide:file-text" size="12" />
+                <FileText :size="12" />
                 <span>{{ wordCount }}字</span>
               </span>
             </div>
-            <Icon
-              name="lucide:arrow-right"
-              size="16"
+            <ArrowRight
+              :size="16"
               class="text-text-3 transition-transform duration-300 ease-out group-hover:translate-x-1 dark:text-hana-white-700"
             />
           </div>

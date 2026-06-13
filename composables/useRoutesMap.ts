@@ -1,23 +1,26 @@
+import type { LucideIcon } from '@lucide/vue'
+import { Archive, Clock, FileText, Folder, House, Info, Link, NotebookPen, Tag } from '@lucide/vue'
+
 type Route = Map<string, {
   title: string
-  icon: string
+  icon: LucideIcon
   to: string
 }>
 
 export function useRoutesMap() {
   const routesMap: Route = new Map([
-    ['/', { title: '主页', icon: 'lucide:house', to: '/' }],
-    ['/articles', { title: '文章', icon: 'lucide:notebook-pen', to: '/articles' }],
-    ['/recently', { title: '动态', icon: 'lucide:clock', to: '/recently' }],
-    ['/about', { title: '关于', icon: 'lucide:info', to: '/about' }],
-    ['/links', { title: '一些链接', icon: 'lucide:link', to: '/links' }],
+    ['/', { title: '主页', icon: House, to: '/' }],
+    ['/articles', { title: '文章', icon: NotebookPen, to: '/articles' }],
+    ['/recently', { title: '动态', icon: Clock, to: '/recently' }],
+    ['/about', { title: '关于', icon: Info, to: '/about' }],
+    ['/links', { title: '一些链接', icon: Link, to: '/links' }],
   ])
 
   const articlesMap: Route = new Map([
-    ['/articles', { title: '文章', icon: 'lucide:file-text', to: '/articles' }],
-    ['/articles/tags', { title: '标签', icon: 'lucide:tag', to: '/articles/tags' }],
-    ['/articles/categories', { title: '目录', icon: 'lucide:folder', to: '/articles/categories' }],
-    ['/articles/archives', { title: '归档', icon: 'lucide:archive', to: '/articles/archives' }],
+    ['/articles', { title: '文章', icon: FileText, to: '/articles' }],
+    ['/articles/tags', { title: '标签', icon: Tag, to: '/articles/tags' }],
+    ['/articles/categories', { title: '目录', icon: Folder, to: '/articles/categories' }],
+    ['/articles/archives', { title: '归档', icon: Archive, to: '/articles/archives' }],
   ])
 
   return { routesMap, articlesMap }

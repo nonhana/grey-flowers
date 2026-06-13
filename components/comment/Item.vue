@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '~/types/comment'
+import { ChevronRight, MapPin, Reply, X } from '@lucide/vue'
 import { useStore } from '~/store'
 
 type Comment = CommentItem | ParentCommentItem
@@ -96,7 +97,7 @@ const blockquoteContent = computed(() =>
     <div class="min-w-0 flex flex-1 flex-col gap-4 transition-all" :class="{ 'bg-hana-blue-150 dark:bg-hana-black-800': isActive }">
       <div class="h-5 flex items-center gap-2">
         <HanaUsername :avatar="comment.author.avatar" :site="comment.author.site" :username="comment.author.username" />
-        <Icon v-if="comment.replyToUser" class="dark:text-hana-white" size="20" name="lucide:chevron-right" />
+        <ChevronRight v-if="comment.replyToUser" class="dark:text-hana-white" :size="20" />
         <HanaUsername
           v-if="comment.replyToUser"
           :avatar="comment.author.avatar"
@@ -109,7 +110,7 @@ const blockquoteContent = computed(() =>
           @mouseenter="handleActivate(comment.replyToComment.id)"
           @mouseleave="handleActivate(undefined)"
         >
-          <HanaButton icon="lucide:map-pin" icon-button />
+          <HanaButton :icon="MapPin" aria-label="定位到回复目标" icon-button />
         </div>
       </div>
       <ProseBlockquote v-if="!isChild && recordMode && (isReplyToParentComment || isReplyToChildComment)">
@@ -130,14 +131,16 @@ const blockquoteContent = computed(() =>
         <ClientOnly>
           <HanaTooltip v-if="loggedIn && !recordMode" content="点击回复" animation="slide">
             <HanaButton
-              icon="lucide:reply"
+              :icon="Reply"
+              aria-label="回复评论"
               icon-button
               @click="handleReply"
             />
           </HanaTooltip>
           <HanaTooltip v-if="isMe && !recordMode" content="删除评论" animation="slide">
             <HanaButton
-              icon="lucide:x"
+              :icon="X"
+              aria-label="删除评论"
               icon-button
               @click="confirmDelete"
             />

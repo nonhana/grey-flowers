@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NeighborItem } from '~/store/modules/article'
+import { ArrowLeft, ArrowRight } from '@lucide/vue'
 
 const props = defineProps<{
   prev: NeighborItem
@@ -17,7 +18,7 @@ const { prev, next } = toRefs(props)
         class="w-full hana-button justify-center gap-10"
       >
         <span>上一篇</span>
-        <Icon name="lucide:arrow-left" class="animate-bounce-x" />
+        <ArrowLeft class="animate-bounce-x" />
       </NuxtLink>
     </HanaTooltip>
     <HanaTooltip v-if="next" position="left" :content="next.title" animation="slide">
@@ -27,7 +28,7 @@ const { prev, next } = toRefs(props)
         class="w-full hana-button justify-center gap-10"
       >
         <span>下一篇</span>
-        <Icon name="lucide:arrow-right" class="animate-bounce-x" />
+        <ArrowRight class="animate-bounce-x" />
       </NuxtLink>
     </HanaTooltip>
   </div>

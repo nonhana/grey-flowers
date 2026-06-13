@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ActivityItem } from '~/types/activity'
+import { AtSign, Clock, ExternalLink, MessageCircle } from '@lucide/vue'
 
 const props = defineProps<{
   item: ActivityItem
@@ -35,13 +36,13 @@ function gotoDetail() {
         <div class="flex flex-col gap-1">
           <span class="text-black font-bold dark:text-hana-white">{{ hanaInfo.username }}</span>
           <span class="flex items-center text-sm text-text dark:text-hana-white-700 space-x-1">
-            <Icon name="lucide:clock" size="14" />
+            <Clock :size="14" />
             <time :datetime="item.publishedAt">{{ item.publishedAt }}</time>
           </span>
         </div>
       </div>
       <HanaTooltip content="查看原文" animation="slide">
-        <HanaButton icon-button icon="lucide:external-link" @click="gotoDetail" />
+        <HanaButton icon-button :icon="ExternalLink" aria-label="查看原文" @click="gotoDetail" />
       </HanaTooltip>
     </header>
     <main class="my-5 text-black dark:text-hana-white space-y-5">
@@ -53,11 +54,11 @@ function gotoDetail() {
     </main>
     <footer class="flex items-center justify-between border-t border-primary pt-5 text-text dark:text-hana-white-700">
       <span class="flex items-center space-x-1">
-        <Icon name="lucide:at-sign" size="14" />
+        <AtSign :size="14" />
         <span>{{ item.id }}</span>
       </span>
       <HanaTooltip content="点击评论" animation="slide">
-        <HanaButton icon="lucide:message-circle" @click="gotoDetail">
+        <HanaButton :icon="MessageCircle" @click="gotoDetail">
           {{ item.commentCount }}
         </HanaButton>
       </HanaTooltip>

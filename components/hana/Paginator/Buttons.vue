@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Ellipsis } from '@lucide/vue'
+
 const props = defineProps<{
   currentPage: number
   totalPages: number
@@ -50,7 +52,7 @@ const pages = computed(() => {
     >
       <span class="size-5">1</span>
     </HanaButton>
-    <HanaButton v-if="start > 2" icon="lucide:ellipsis" icon-button />
+    <HanaButton v-if="start > 2" :icon="Ellipsis" aria-label="更多页码" icon-button />
     <HanaButton
       v-for="page in pages"
       :key="page"
@@ -60,7 +62,7 @@ const pages = computed(() => {
     >
       <span class="size-5">{{ page }}</span>
     </HanaButton>
-    <HanaButton v-if="end < totalPages - 1" icon="lucide:ellipsis" icon-button />
+    <HanaButton v-if="end < totalPages - 1" :icon="Ellipsis" aria-label="更多页码" icon-button />
     <HanaButton
       v-if="end !== totalPages && totalPages > 1"
       :active="currentPage === totalPages"

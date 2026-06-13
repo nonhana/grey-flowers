@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Globe, KeyRound, Mail, UserRound } from '@lucide/vue'
 import { useStore } from '~/store'
 
 const { userStore } = useStore()
@@ -87,10 +88,10 @@ async function handleSubmit() {
   <HanaDialog v-model="visible" title="修改信息">
     <form @submit.prevent="handleSubmit">
       <div class="flex flex-col gap-4">
-        <HanaInput v-model="userInfoForm.username" name="username" prefix-icon="lucide:user-round" shape="rounded" placeholder="用户名" />
-        <HanaInput v-model="userInfoForm.email" name="email" prefix-icon="lucide:mail" shape="rounded" placeholder="邮箱" />
-        <HanaInput v-model="userInfoForm.site" name="site" prefix-icon="lucide:globe" shape="rounded" placeholder="站点（无可不填）" />
-        <HanaInput v-model="userInfoForm.password" name="password" prefix-icon="lucide:key-round" shape="rounded" type="password" placeholder="新密码" />
+        <HanaInput v-model="userInfoForm.username" name="username" :prefix-icon="UserRound" shape="rounded" placeholder="用户名" />
+        <HanaInput v-model="userInfoForm.email" name="email" :prefix-icon="Mail" shape="rounded" placeholder="邮箱" />
+        <HanaInput v-model="userInfoForm.site" name="site" :prefix-icon="Globe" shape="rounded" placeholder="站点（无可不填）" />
+        <HanaInput v-model="userInfoForm.password" name="password" :prefix-icon="KeyRound" shape="rounded" type="password" placeholder="新密码" />
       </div>
       <div class="mt-8 flex gap-4">
         <HanaButton class="flex-1" @click="visible = false">

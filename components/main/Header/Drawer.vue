@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Route } from '@lucide/vue'
+
 defineProps<{
   activeStatus: boolean[]
 }>()
@@ -14,7 +16,7 @@ watch(() => route.path, () => drawerRef.value?.closeDrawer())
 </script>
 
 <template>
-  <HanaDrawer ref="drawerRef" v-model="visible" direction="left" title="路由导航" icon="lucide:route" width="240px">
+  <HanaDrawer ref="drawerRef" v-model="visible" direction="left" title="路由导航" :icon="Route" width="240px">
     <div class="mx-auto flex flex-col overflow-auto text-text">
       <div class="my-5 flex flex-col gap-2">
         <HanaButton
