@@ -40,6 +40,14 @@
     "color": "#00BFFF"
   },
   {
+    "site": "hana-music-api",
+    "owner": "non_hana",
+    "url": "https://hana-music-api.netlify.app/",
+    "desc": "由 Bun + Hono 驱动的现代网易云音乐第三方 API",
+    "image": "https://static-r2.caelum.moe/hana-music-api-logo.svg",
+    "color": "#2563eb"
+  },
+  {
     "site": "Campanula Music",
     "owner": "non_hana",
     "url": "https://campanula.caelum.moe",
