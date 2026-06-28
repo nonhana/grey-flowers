@@ -22,7 +22,7 @@ function scrollToHead() {
   <div class="relative h-[732px] w-full">
     <transition name="page">
       <NuxtImg v-if="isDark" class="absolute inset-0 size-full object-cover" src="/images/banner.webp" alt="banner" />
-      <NuxtImg v-else class="absolute inset-0 size-full object-cover" src="/images/ende_nea.webp" alt="ende_nea" />
+      <NuxtImg v-else class="absolute inset-0 size-full object-cover" src="/images/evening.webp" alt="evening" />
     </transition>
     <div class="absolute left-0 top-0 grid size-full">
       <div class="flex items-center justify-center">

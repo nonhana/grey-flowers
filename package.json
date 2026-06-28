@@ -2,7 +2,7 @@
   "name": "hana-blog",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@11.5.2",
+  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "TMPDIR=/tmp nuxt dev",
