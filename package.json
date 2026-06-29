@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.9.0",
   "scripts": {
     "build": "nuxt build",
-    "dev": "TMPDIR=/tmp nuxt dev",
+    "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "prepare": "nuxt prepare",
@@ -14,7 +14,6 @@
     "analyze": "nuxt analyze",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "new": "node ./scripts/newArticle.js",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",

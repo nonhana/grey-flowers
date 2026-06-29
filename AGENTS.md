@@ -5,11 +5,10 @@ The writing is the center of gravity; the interface supports reading, not compet
 
 ## Commands
 
-- Dev: `pnpm dev` (TMPDIR=/tmp for memory-constrained environments)
+- Dev: `pnpm dev`
 - Build: `pnpm build`
 - Type check: `pnpm typecheck`
 - Lint: `pnpm lint` (@antfu/eslint-config)
-- New article: `pnpm new`
 - DB: `pnpm prisma:generate` (after schema changes), `pnpm prisma:push` (no migrations)
 - Full verify: `pnpm typecheck && pnpm lint && pnpm build`
 
@@ -21,7 +20,7 @@ The writing is the center of gravity; the interface supports reading, not compet
 - **DB**: Prisma + PostgreSQL
 - **Auth**: JWT (jose library)
 - **Email**: Resend
-- **Package**: pnpm@11.5.2 (corepack, pnpm-workspace.yaml)
+- **Package**: pnpm (corepack, pnpm-workspace.yaml)
 - **Plugins**: @nuxt/image, @nuxtjs/seo, nuxt-og-image, @nuxtjs/color-mode
 
 ## Project Structure

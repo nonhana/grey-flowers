@@ -18,11 +18,18 @@ const props = withDefaults(defineProps<{
 const visible = defineModel<boolean>()
 
 const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}` : '')
+
+const { isContentReady, shouldShowLoading, markMarkdownReady } = useDetailContentReady({
+  status: computed(() => props.status),
+  hasItem: computed(() => !!props.item),
+  requiresMarkdown: computed(() => !!props.item?.contentMarkdown?.body),
+  itemKey: computed(() => props.item?.id),
+})
 </script>
 
 <template>
   <HanaDialog v-model="visible" :navigation-mode="navigationMode" title="动态详情" width="800px">
-    <div v-if="status === 'loading'" class="flex flex-col items-center gap-3 py-8 text-text dark:text-hana-white-700">
+    <div v-if="shouldShowLoading" class="flex flex-col items-center gap-3 py-8 text-text dark:text-hana-white-700">
       <LoaderCircle :size="28" class="animate-spin" />
       <p>
         正在加载动态详情...
@@ -41,7 +48,7 @@ const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}`
       </p>
     </div>
 
-    <div v-else-if="status === 'ready' && item">
+    <div v-if="status === 'ready' && item" v-show="isContentReady">
       <header class="flex items-center gap-2">
         <HanaAvatar :size="10" :avatar="hanaInfo.avatar" :username="hanaInfo.username" :site="hanaInfo.site" :show-info="false" />
         <div class="flex flex-col gap-1">
@@ -53,7 +60,7 @@ const activityPath = computed(() => props.item ? `/recently?id=${props.item.id}`
         </div>
       </header>
       <main class="my-5 text-black dark:text-hana-white space-y-5">
-        <MarkdownRenderer :value="item.contentMarkdown" class="custom-markdown">
+        <MarkdownRenderer :value="item.contentMarkdown" class="custom-markdown" @ready="markMarkdownReady">
           <template #empty>
             <p class="whitespace-pre-wrap break-words">
               {{ item.content }}
