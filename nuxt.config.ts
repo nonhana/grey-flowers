@@ -38,10 +38,22 @@ export default defineNuxtConfig({
     },
   },
   image: {
-    domains: ['blog-r2.caelum.moe'],
+    domains: [
+      'blog-r2.caelum.moe',
+      'picgo-r2.caelum.moe',
+      'static-r2.caelum.moe',
+      'weavatar.com',
+    ],
     dir: 'public',
-    quality: 85,
-    format: ['webp', 'gif', 'jpeg', 'png', 'avif'],
+    quality: 78,
+    format: ['avif', 'webp'],
+    presets: {
+      articleBodyPreview: {
+        modifiers: {
+          width: 1280,
+        },
+      },
+    },
   },
   ogImage: {
     zeroRuntime: true,

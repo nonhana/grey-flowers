@@ -14,6 +14,7 @@ type ProseImgProps = Pick<
 >
 
 const props = defineProps<ProseImgProps>()
+const img = useImage()
 
 function withLeadingSlash(path: string): string {
   return path.charAt(0) === '/' ? path : `/${path}`
@@ -40,17 +41,49 @@ function joinURL(base: string, path: string): string {
   return base + path
 }
 
-const refinedSrc = computed(() => {
-  if (props.src?.startsWith('/') && !props.src.startsWith('//')) {
+function refineSource(src?: string) {
+  if (src?.startsWith('/') && !src.startsWith('//')) {
     const _base = withLeadingSlash(withTrailingSlash(useRuntimeConfig().app.baseURL))
-    if (_base !== '/' && !props.src.startsWith(_base)) {
-      return joinURL(_base, props.src)
+    if (_base !== '/' && !src.startsWith(_base)) {
+      return joinURL(_base, src)
     }
   }
-  return props.src
+  return src
+}
+
+function shouldOptimizeThumbnail(src: string) {
+  const pathname = src.startsWith('http://') || src.startsWith('https://')
+    ? new URL(src).pathname
+    : src
+
+  return !pathname.endsWith('.gif') && !pathname.endsWith('.svg')
+}
+
+const refinedSrc = computed(() => refineSource(props.src) || '')
+const refinedPreviewSrc = computed(() => refineSource(props.previewSrc))
+const thumbnailSrc = computed(() => {
+  if (refinedPreviewSrc.value)
+    return refinedSrc.value
+
+  if (!shouldOptimizeThumbnail(refinedSrc.value))
+    return refinedSrc.value
+
+  return img(refinedSrc.value, {}, { preset: 'articleBodyPreview' })
+})
+const viewerPreviewSrc = computed(() => {
+  if (refinedPreviewSrc.value)
+    return refinedPreviewSrc.value
+
+  return shouldOptimizeThumbnail(refinedSrc.value) ? refinedSrc.value : undefined
 })
 </script>
 
 <template>
-  <HanaImgViewer v-bind="{ ...props, src: refinedSrc }" />
+  <HanaImgViewer
+    v-bind="{
+      ...props,
+      src: thumbnailSrc,
+      previewSrc: viewerPreviewSrc,
+    }"
+  />
 </template>

@@ -20,7 +20,14 @@ function handleClick() {
 
 <template>
   <div class="shrink-0 cursor-pointer overflow-hidden rounded-full" @click="handleClick">
-    <NuxtImg :src="avatar" :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }" />
+    <NuxtImg
+      :src="avatar"
+      :alt="`${username} avatar`"
+      :width="size * 4"
+      :height="size * 4"
+      :style="{ width: `${size / 4}rem`, height: `${size / 4}rem` }"
+      class="object-cover"
+    />
   </div>
   <UserInfoViewer v-model="visible" v-bind="{ avatar, username, site }" />
 </template>

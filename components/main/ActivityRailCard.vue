@@ -103,11 +103,16 @@ function getFallbackContent(item: ActivityItem) {
       v-if="previewImage"
       class="relative mt-4 overflow-hidden border border-white/70 rounded-5 bg-white/75 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
     >
-      <NuxtImg
-        :src="previewImage"
-        alt="最近动态配图预览"
-        class="aspect-[5/3] w-full select-none transition-transform duration-500 ease-out object-cover group-hover:scale-103"
-      />
+      <div class="aspect-[5/3] w-full">
+        <HanaLazyImg
+          :src="previewImage"
+          alt="最近动态配图预览"
+          width="100%"
+          height="100%"
+          surface-class=""
+          img-class="block size-full select-none transition-transform duration-500 ease-out object-cover group-hover:scale-103"
+        />
+      </div>
 
       <span
         v-if="imageCount > 1"
@@ -130,12 +135,19 @@ function getFallbackContent(item: ActivityItem) {
       v-else-if="trackPreview"
       class="mt-4 flex items-center gap-3 border border-primary/50 rounded-5 bg-white/72 p-3 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
     >
-      <NuxtImg
+      <div
         v-if="trackPreview.cover"
-        :src="trackPreview.cover"
-        :alt="trackPreview.album || trackPreview.title"
-        class="size-16 shrink-0 select-none rounded-2xl object-cover"
-      />
+        class="size-16 shrink-0 overflow-hidden rounded-2xl"
+      >
+        <HanaLazyImg
+          :src="trackPreview.cover"
+          :alt="trackPreview.album || trackPreview.title"
+          width="100%"
+          height="100%"
+          surface-class=""
+          img-class="block size-full select-none rounded-2xl object-cover"
+        />
+      </div>
 
       <div
         v-else

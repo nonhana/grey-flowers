@@ -113,11 +113,16 @@ onMounted(() => {
 
 <template>
   <div class="w-full flex flex-col gap-3 overflow-hidden border border-hana-blue-200 rounded-lg bg-hana-blue-200/10 p-4 sm:flex-row sm:items-center dark:bg-hana-black">
-    <nuxt-img
-      :src="curMusic.cover"
-      :alt="curMusic.album"
-      class="aspect-video w-full rounded-lg object-cover sm:aspect-square sm:size-42"
-    />
+    <div class="aspect-video w-full rounded-lg sm:aspect-square sm:size-42">
+      <HanaLazyImg
+        :src="curMusic.cover"
+        :alt="curMusic.album || curMusic.title"
+        width="100%"
+        height="100%"
+        surface-class="rounded-lg"
+        img-class="block size-full rounded-lg object-cover"
+      />
+    </div>
     <div class="min-w-0 flex flex-1 flex-col gap-3">
       <div class="min-w-0 flex flex-col gap-1">
         <h3 class="truncate text-base font-bold leading-snug md:text-lg dark:text-hana-white">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { StyleValue } from 'vue'
+import type { ImgHTMLAttributes, StyleValue } from 'vue'
 import type { ArticleCardProps } from '~/types/article'
 import { ArrowRight, Calendar, FileText } from '@lucide/vue'
 
@@ -22,6 +22,13 @@ const hiddenTagLabel = computed(() => `+${hiddenTagCount.value}`)
 const normalizedDescription = computed(() => props.description.trim() || '暂无简介')
 const isGeneratedImage = computed(() => props.imageSource === 'generated')
 const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.title} Nuxt OgImage` : `${props.title} Cover`)
+const cardImageAttrs = computed<ImgHTMLAttributes>(() => ({
+  class: [
+    'block size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105',
+    isGeneratedImage.value ? 'object-left' : '',
+  ].filter(Boolean).join(' '),
+  loading: 'lazy',
+}))
 const transitionStyle = computed<StyleValue>(() => ({
   transition: `opacity 0.35s ease-out ${props.index * 0.08}s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) ${props.index * 0.08}s`,
   opacity: opacity.value,
@@ -47,13 +54,16 @@ onMounted(() => {
             v-if="isGeneratedImage"
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover object-left group-hover:scale-105"
+            loading="lazy"
+            :class="cardImageAttrs.class"
           >
-          <NuxtImg
+          <NuxtPicture
             v-else
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+            sizes="100vw md:448px"
+            class="block size-full"
+            :img-attrs="cardImageAttrs"
           />
         </div>
 
@@ -99,13 +109,16 @@ onMounted(() => {
             v-if="isGeneratedImage"
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover object-left group-hover:scale-105"
+            loading="lazy"
+            :class="cardImageAttrs.class"
           >
-          <NuxtImg
+          <NuxtPicture
             v-else
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+            sizes="100vw md:50vw 2xl:33vw"
+            class="block size-full"
+            :img-attrs="cardImageAttrs"
           />
         </div>
 
@@ -151,13 +164,16 @@ onMounted(() => {
             v-if="isGeneratedImage"
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover object-left group-hover:scale-105"
+            loading="lazy"
+            :class="cardImageAttrs.class"
           >
-          <NuxtImg
+          <NuxtPicture
             v-else
             :src="image"
             :alt="imageAlt"
-            class="size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105"
+            sizes="100vw md:40vw xl:320px"
+            class="block size-full"
+            :img-attrs="cardImageAttrs"
           />
         </div>
 

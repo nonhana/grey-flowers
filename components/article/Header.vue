@@ -40,7 +40,6 @@ onUnmounted(() => {
   headObserver?.disconnect()
 })
 
-const isGeneratedImage = computed(() => props.imageSource === 'generated')
 const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.title} Nuxt OgImage` : props.alt)
 </script>
 
@@ -48,12 +47,28 @@ const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.tit
   <header ref="articleHeadRef" class="mb-10 flex flex-col gap-5">
     <div class="overflow-hidden rounded-lg">
       <img
-        v-if="isGeneratedImage"
+        v-if="props.imageSource === 'generated'"
         :src="image"
         :alt="imageAlt"
-        class="size-full transition-transform object-cover hover:scale-110"
+        loading="eager"
+        fetchpriority="high"
+        class="block size-full transition-transform object-cover hover:scale-110"
       >
-      <NuxtImg v-else :src="image" :alt="imageAlt" class="size-full transition-transform object-cover hover:scale-110" />
+      <NuxtPicture
+        v-else
+        :src="image"
+        :alt="imageAlt"
+        sizes="100vw xl:960px"
+        class="block size-full"
+        :img-attrs="{
+          class: [
+            'block size-full transition-transform object-cover hover:scale-110',
+            { 'object-left': imageSource === 'generated' },
+          ],
+          loading: 'eager',
+          fetchpriority: 'high',
+        }"
+      />
     </div>
     <h1 class="text-3xl font-bold dark:text-hana-white">
       {{ title }}

@@ -11,7 +11,7 @@ const visible = defineModel<boolean>()
 <template>
   <HanaDialog v-model="visible" width="300px">
     <div class="relative mb-5 flex flex-col items-center gap-4">
-      <NuxtImg :src="avatar" class="size-20 rounded-full" />
+      <NuxtImg :src="avatar" :alt="`${username} avatar`" width="80" height="80" class="size-20 rounded-full object-cover" />
       <span class="text-xl font-bold dark:text-hana-white">{{ username }}</span>
       <NuxtLink
         v-if="site"
