@@ -49,7 +49,7 @@ onMounted(() => {
       class="group relative block size-full overflow-hidden rounded-lg bg-white text-left text-hana-black shadow-md transition-transform duration-300 ease-out active:scale-[0.99] dark:bg-hana-black dark:text-hana-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-hana-blue/45 focus-visible:ring-offset-primary-100 hover:-translate-y-0.5 dark:focus-visible:ring-hana-blue-300/45 dark:focus-visible:ring-offset-hana-black-900"
     >
       <div v-if="isFeatured" class="h-full flex flex-col md:min-h-100 md:flex-row">
-        <div class="order-1 h-56 w-full shrink-0 overflow-hidden border-b border-primary/35 md:order-2 md:h-auto md:w-112 md:border-b-0 md:border-l dark:border-hana-black-200/55">
+        <div class="order-1 h-56 w-full shrink-0 overflow-hidden border-b border-primary/35 md:order-2 md:h-auto md:w-67 md:border-b-0 md:border-l dark:border-hana-black-200/55">
           <img
             v-if="isGeneratedImage"
             :src="image"
@@ -61,7 +61,7 @@ onMounted(() => {
             v-else
             :src="image"
             :alt="imageAlt"
-            sizes="100vw md:448px"
+            sizes="100vw md:268px"
             class="block size-full"
             :img-attrs="cardImageAttrs"
           />
