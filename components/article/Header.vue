@@ -52,7 +52,7 @@ const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.tit
         :alt="imageAlt"
         loading="eager"
         fetchpriority="high"
-        class="block size-full transition-transform object-cover hover:scale-110"
+        class="block aspect-[2/1] size-full transition-transform object-cover hover:scale-110"
       >
       <NuxtPicture
         v-else
@@ -62,7 +62,7 @@ const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.tit
         class="block size-full"
         :img-attrs="{
           class: [
-            'block size-full transition-transform object-cover hover:scale-110',
+            'block size-full transition-transform object-cover hover:scale-110 aspect-[2/1]',
             { 'object-left': imageSource === 'generated' },
           ],
           loading: 'eager',
