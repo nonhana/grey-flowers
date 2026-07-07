@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Toc } from '@nuxtjs/mdc'
 import type { MarkdownNavigationItem } from '~/types/markdown'
-import { ArrowLeft, ArrowRight, FileText, LoaderCircle, TableOfContents } from '@lucide/vue'
+import { ArrowLeft, ArrowRight, FileText, TableOfContents } from '@lucide/vue'
 
 const props = defineProps<{
   toc: Toc
@@ -17,7 +17,7 @@ const links = computed(() => props.toc.links || [])
 
 const route = useRoute()
 
-const activatedId = ref<string | null>(null)
+const activatedId = ref('')
 
 onMounted(() => {
   activatedId.value = route.hash.slice(1)
@@ -38,16 +38,12 @@ const { prev, next } = toRefs(props)
 
 <template>
   <HanaDrawer ref="drawerRef" v-model="visible" show-info title="文章目录" :icon="TableOfContents">
-    <div v-if="links.length > 0 && activatedId !== null" class="mx-auto w-4/5 flex flex-col gap-1 overflow-auto text-text dark:text-hana-white-700">
+    <div v-if="links.length > 0" class="mx-auto w-4/5 flex flex-col gap-1 overflow-auto text-text dark:text-hana-white-700">
       <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
     </div>
-    <div v-else-if="links.length === 0" class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
+    <div v-else class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
       <FileText :size="32" />
       <span>暂无目录</span>
-    </div>
-    <div v-else class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
-      <LoaderCircle :size="32" class="animate-spin" />
-      <span>加载中...</span>
     </div>
     <template #footer>
       <NuxtLink

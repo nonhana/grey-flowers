@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Toc, TocLink } from '@nuxtjs/mdc'
-import { FileText, List, LoaderCircle } from '@lucide/vue'
+import { FileText, List } from '@lucide/vue'
 
 const props = defineProps<{ toc: Toc }>()
 
@@ -22,7 +22,7 @@ const linkIds = computed(() => {
 const route = useRoute()
 const { hash } = toRefs(route)
 
-const activatedId = ref<string | null>(null)
+const activatedId = ref('')
 const activatedIdLock = ref(false)
 
 const debouncedScrollIntoView = useDebounceFn((id: string) => {
@@ -31,7 +31,7 @@ const debouncedScrollIntoView = useDebounceFn((id: string) => {
 }, 100)
 
 watch(activatedId, (newV) => {
-  if (newV === null)
+  if (!newV)
     return
   debouncedScrollIntoView(newV)
 })
@@ -83,16 +83,12 @@ watch(hash, (newHash, _, onCleanup) => {
       <span>文章目录</span>
     </div>
     <hr class="my-2 border-text dark:border-hana-white-700">
-    <div v-if="links.length > 0 && activatedId !== null" class="max-h-60 flex flex-col gap-1 overflow-auto">
+    <div v-if="links.length > 0" class="max-h-60 flex flex-col gap-1 overflow-auto">
       <ArticleTocItem v-for="link in links" :key="link.id" :link="link" :activated-id="activatedId" />
     </div>
-    <div v-else-if="links.length === 0" class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
+    <div v-else class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
       <FileText :size="32" />
       <span>暂无目录</span>
-    </div>
-    <div v-else class="flex flex-col items-center gap-2 py-4 text-text dark:text-hana-white-700">
-      <LoaderCircle :size="32" class="animate-spin" />
-      <span>加载中...</span>
     </div>
   </div>
 </template>
