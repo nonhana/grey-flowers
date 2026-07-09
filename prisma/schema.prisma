@@ -1,22 +1,14 @@
 generator client {
-  provider = "prisma-client"
-  output   = "./generated"
+  provider        = "prisma-client"
+  output          = "./generated"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-enum CommentLevel {
-  PARENT
-  CHILD
-}
-
-enum UserRole {
-  USER
-  ADMIN
-}
-
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model Article {
   id          Int       @id @default(autoincrement())
   to          String    @unique
@@ -24,14 +16,16 @@ model Article {
   description String?
   cover       String
   alt         String    @unique
-  published   Boolean   @default(false)
-  wordCount   Int       @default(0)
-  tags        Tag[]     @relation("ArticleTags")
-  category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
-  content     String?   @default("") @db.Text
   publishedAt DateTime  @default(now())
   editedAt    DateTime
+  published   Boolean   @default(false)
+  wordCount   Int       @default(0)
+  categoryId  Int?
+  content     String?   @default("")
+  category    Category? @relation(fields: [categoryId], references: [id])
+  tags        Tag[]     @relation("ArticleTags")
+
+  @@index([title(ops: raw("gin_trgm_ops"))], map: "Article_search_title_trgm_idx", type: Gin, where: raw("(published = true)"))
 }
 
 model Tag {
@@ -52,12 +46,12 @@ model Category {
 model User {
   id          Int           @id @default(autoincrement())
   email       String        @unique
-  username    String        @unique
-  password    String
   site        String?
   avatar      String
-  role        UserRole      @default(USER)
+  password    String
+  username    String        @unique
   createdAt   DateTime      @default(now())
+  role        UserRole      @default(USER)
   updatedAt   DateTime      @updatedAt
   comments    Comment[]
   replies     Comment[]     @relation("ReplyToUser")
@@ -66,51 +60,61 @@ model User {
 
 model Comment {
   id               Int           @id @default(autoincrement())
-  path             String
   content          String
   level            CommentLevel  @default(PARENT)
-  author           User          @relation(fields: [authorId], references: [id])
-  authorId         Int
-  parent           Comment?      @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
   parentId         Int?
-  children         Comment[]     @relation("ParentChild")
-  replyToUser      User?         @relation("ReplyToUser", fields: [replyToUserId], references: [id])
+  authorId         Int
   replyToUserId    Int?
-  replyToComment   Comment?      @relation("ReplyToComment", fields: [replyToCommentId], references: [id])
-  replyToCommentId Int?
-  replies          Comment[]     @relation("ReplyToComment")
   publishedAt      DateTime      @default(now())
   editedAt         DateTime      @updatedAt
+  replyToCommentId Int?
+  path             String
   contentMarkdown  Json?
+  author           User          @relation(fields: [authorId], references: [id])
+  parent           Comment?      @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  children         Comment[]     @relation("ParentChild")
+  replyToComment   Comment?      @relation("ReplyToComment", fields: [replyToCommentId], references: [id])
+  replies          Comment[]     @relation("ReplyToComment")
+  replyToUser      User?         @relation("ReplyToUser", fields: [replyToUserId], references: [id])
   userMessage      UserMessage[]
 }
 
 model UserMessage {
   id         Int     @id @default(autoincrement())
-  receiver   User    @relation(fields: [receiverId], references: [id])
   receiverId Int
-  comment    Comment @relation(fields: [commentId], references: [id])
   commentId  Int
+  comment    Comment @relation(fields: [commentId], references: [id])
+  receiver   User    @relation(fields: [receiverId], references: [id])
 }
 
 model Activity {
   id              Int      @id @default(autoincrement())
   content         String   @default("")
-  contentMarkdown Json?
   images          String[] @default([])
-  music           Music[]
   publishedAt     DateTime @default(now())
   editedAt        DateTime @updatedAt
+  contentMarkdown Json?
+  music           Music[]
 }
 
 model Music {
   id         Int       @id @default(autoincrement())
   title      String
-  artist     String
-  album      String
   src        String
   seconds    Int
-  cover      String
   activityId Int?
+  album      String
+  artist     String
+  cover      String
   activity   Activity? @relation(fields: [activityId], references: [id])
+}
+
+enum CommentLevel {
+  PARENT
+  CHILD
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }

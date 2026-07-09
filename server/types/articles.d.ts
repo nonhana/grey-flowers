@@ -11,3 +11,8 @@ export interface ArticleFilterQuery {
   category?: string
   publishedAtMonth?: string
 }
+
+export interface ArticleSearchQuery {
+  q?: string
+  limit?: string
+}

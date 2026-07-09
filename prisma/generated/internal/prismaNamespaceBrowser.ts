@@ -84,12 +84,12 @@ export const ArticleScalarFieldEnum = {
   description: 'description',
   cover: 'cover',
   alt: 'alt',
+  publishedAt: 'publishedAt',
+  editedAt: 'editedAt',
   published: 'published',
   wordCount: 'wordCount',
   categoryId: 'categoryId',
-  content: 'content',
-  publishedAt: 'publishedAt',
-  editedAt: 'editedAt'
+  content: 'content'
 } as const
 
 export type ArticleScalarFieldEnum = (typeof ArticleScalarFieldEnum)[keyof typeof ArticleScalarFieldEnum]
@@ -117,12 +117,12 @@ export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typ
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  username: 'username',
-  password: 'password',
   site: 'site',
   avatar: 'avatar',
-  role: 'role',
+  password: 'password',
+  username: 'username',
   createdAt: 'createdAt',
+  role: 'role',
   updatedAt: 'updatedAt'
 } as const
 
@@ -131,15 +131,15 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const CommentScalarFieldEnum = {
   id: 'id',
-  path: 'path',
   content: 'content',
   level: 'level',
-  authorId: 'authorId',
   parentId: 'parentId',
+  authorId: 'authorId',
   replyToUserId: 'replyToUserId',
-  replyToCommentId: 'replyToCommentId',
   publishedAt: 'publishedAt',
   editedAt: 'editedAt',
+  replyToCommentId: 'replyToCommentId',
+  path: 'path',
   contentMarkdown: 'contentMarkdown'
 } as const
 
@@ -158,10 +158,10 @@ export type UserMessageScalarFieldEnum = (typeof UserMessageScalarFieldEnum)[key
 export const ActivityScalarFieldEnum = {
   id: 'id',
   content: 'content',
-  contentMarkdown: 'contentMarkdown',
   images: 'images',
   publishedAt: 'publishedAt',
-  editedAt: 'editedAt'
+  editedAt: 'editedAt',
+  contentMarkdown: 'contentMarkdown'
 } as const
 
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
@@ -170,12 +170,12 @@ export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typ
 export const MusicScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  artist: 'artist',
-  album: 'album',
   src: 'src',
   seconds: 'seconds',
-  cover: 'cover',
-  activityId: 'activityId'
+  activityId: 'activityId',
+  album: 'album',
+  artist: 'artist',
+  cover: 'cover'
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]

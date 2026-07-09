@@ -19,7 +19,7 @@ export * as $Enums from './enums'
 export * from './enums';
 /**
  * Model Article
- * 
+ * This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
  */
 export type Article = Prisma.ArticleModel
 /**

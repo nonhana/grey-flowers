@@ -1,5 +1,5 @@
 import type { JwtPayload } from '~/server/types/jwt'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { SignJWT } from 'jose'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'

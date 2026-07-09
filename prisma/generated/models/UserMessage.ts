@@ -208,16 +208,16 @@ export type UserMessageWhereInput = {
   id?: Prisma.IntFilter<"UserMessage"> | number
   receiverId?: Prisma.IntFilter<"UserMessage"> | number
   commentId?: Prisma.IntFilter<"UserMessage"> | number
-  receiver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comment?: Prisma.XOR<Prisma.CommentScalarRelationFilter, Prisma.CommentWhereInput>
+  receiver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type UserMessageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   receiverId?: Prisma.SortOrder
   commentId?: Prisma.SortOrder
-  receiver?: Prisma.UserOrderByWithRelationInput
   comment?: Prisma.CommentOrderByWithRelationInput
+  receiver?: Prisma.UserOrderByWithRelationInput
 }
 
 export type UserMessageWhereUniqueInput = Prisma.AtLeast<{
@@ -227,8 +227,8 @@ export type UserMessageWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserMessageWhereInput | Prisma.UserMessageWhereInput[]
   receiverId?: Prisma.IntFilter<"UserMessage"> | number
   commentId?: Prisma.IntFilter<"UserMessage"> | number
-  receiver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comment?: Prisma.XOR<Prisma.CommentScalarRelationFilter, Prisma.CommentWhereInput>
+  receiver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type UserMessageOrderByWithAggregationInput = {
@@ -252,8 +252,8 @@ export type UserMessageScalarWhereWithAggregatesInput = {
 }
 
 export type UserMessageCreateInput = {
-  receiver: Prisma.UserCreateNestedOneWithoutUserMessageInput
   comment: Prisma.CommentCreateNestedOneWithoutUserMessageInput
+  receiver: Prisma.UserCreateNestedOneWithoutUserMessageInput
 }
 
 export type UserMessageUncheckedCreateInput = {
@@ -263,8 +263,8 @@ export type UserMessageUncheckedCreateInput = {
 }
 
 export type UserMessageUpdateInput = {
-  receiver?: Prisma.UserUpdateOneRequiredWithoutUserMessageNestedInput
   comment?: Prisma.CommentUpdateOneRequiredWithoutUserMessageNestedInput
+  receiver?: Prisma.UserUpdateOneRequiredWithoutUserMessageNestedInput
 }
 
 export type UserMessageUncheckedUpdateInput = {
@@ -536,24 +536,24 @@ export type UserMessageSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   receiverId?: boolean
   commentId?: boolean
-  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
+  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userMessage"]>
 
 export type UserMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   receiverId?: boolean
   commentId?: boolean
-  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
+  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userMessage"]>
 
 export type UserMessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   receiverId?: boolean
   commentId?: boolean
-  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
+  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userMessage"]>
 
 export type UserMessageSelectScalar = {
@@ -564,23 +564,23 @@ export type UserMessageSelectScalar = {
 
 export type UserMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "receiverId" | "commentId", ExtArgs["result"]["userMessage"]>
 export type UserMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
+  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type UserMessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
+  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type UserMessageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>
+  receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $UserMessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "UserMessage"
   objects: {
-    receiver: Prisma.$UserPayload<ExtArgs>
     comment: Prisma.$CommentPayload<ExtArgs>
+    receiver: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -980,8 +980,8 @@ readonly fields: UserMessageFieldRefs;
  */
 export interface Prisma__UserMessageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  receiver<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   comment<T extends Prisma.CommentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CommentDefaultArgs<ExtArgs>>): Prisma.Prisma__CommentClient<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  receiver<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

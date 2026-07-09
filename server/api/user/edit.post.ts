@@ -1,5 +1,5 @@
 import type { UserUpdateInput } from '~/prisma/generated/models'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import prisma from '~/lib/prisma'
 import { useZodVerify } from '~/server/composables/useZodVerify'

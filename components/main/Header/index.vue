@@ -47,6 +47,7 @@ function toggleDrawerVisible() {
       </div>
 
       <div class="flex gap-4">
+        <MainHeaderSearch />
         <MainHeaderThemes />
         <MainHeaderUser />
       </div>

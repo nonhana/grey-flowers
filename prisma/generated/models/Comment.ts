@@ -28,57 +28,57 @@ export type AggregateComment = {
 
 export type CommentAvgAggregateOutputType = {
   id: number | null
-  authorId: number | null
   parentId: number | null
+  authorId: number | null
   replyToUserId: number | null
   replyToCommentId: number | null
 }
 
 export type CommentSumAggregateOutputType = {
   id: number | null
-  authorId: number | null
   parentId: number | null
+  authorId: number | null
   replyToUserId: number | null
   replyToCommentId: number | null
 }
 
 export type CommentMinAggregateOutputType = {
   id: number | null
-  path: string | null
   content: string | null
   level: $Enums.CommentLevel | null
-  authorId: number | null
   parentId: number | null
+  authorId: number | null
   replyToUserId: number | null
-  replyToCommentId: number | null
   publishedAt: Date | null
   editedAt: Date | null
+  replyToCommentId: number | null
+  path: string | null
 }
 
 export type CommentMaxAggregateOutputType = {
   id: number | null
-  path: string | null
   content: string | null
   level: $Enums.CommentLevel | null
-  authorId: number | null
   parentId: number | null
+  authorId: number | null
   replyToUserId: number | null
-  replyToCommentId: number | null
   publishedAt: Date | null
   editedAt: Date | null
+  replyToCommentId: number | null
+  path: string | null
 }
 
 export type CommentCountAggregateOutputType = {
   id: number
-  path: number
   content: number
   level: number
-  authorId: number
   parentId: number
+  authorId: number
   replyToUserId: number
-  replyToCommentId: number
   publishedAt: number
   editedAt: number
+  replyToCommentId: number
+  path: number
   contentMarkdown: number
   _all: number
 }
@@ -86,57 +86,57 @@ export type CommentCountAggregateOutputType = {
 
 export type CommentAvgAggregateInputType = {
   id?: true
-  authorId?: true
   parentId?: true
+  authorId?: true
   replyToUserId?: true
   replyToCommentId?: true
 }
 
 export type CommentSumAggregateInputType = {
   id?: true
-  authorId?: true
   parentId?: true
+  authorId?: true
   replyToUserId?: true
   replyToCommentId?: true
 }
 
 export type CommentMinAggregateInputType = {
   id?: true
-  path?: true
   content?: true
   level?: true
-  authorId?: true
   parentId?: true
+  authorId?: true
   replyToUserId?: true
-  replyToCommentId?: true
   publishedAt?: true
   editedAt?: true
+  replyToCommentId?: true
+  path?: true
 }
 
 export type CommentMaxAggregateInputType = {
   id?: true
-  path?: true
   content?: true
   level?: true
-  authorId?: true
   parentId?: true
+  authorId?: true
   replyToUserId?: true
-  replyToCommentId?: true
   publishedAt?: true
   editedAt?: true
+  replyToCommentId?: true
+  path?: true
 }
 
 export type CommentCountAggregateInputType = {
   id?: true
-  path?: true
   content?: true
   level?: true
-  authorId?: true
   parentId?: true
+  authorId?: true
   replyToUserId?: true
-  replyToCommentId?: true
   publishedAt?: true
   editedAt?: true
+  replyToCommentId?: true
+  path?: true
   contentMarkdown?: true
   _all?: true
 }
@@ -229,15 +229,15 @@ export type CommentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type CommentGroupByOutputType = {
   id: number
-  path: string
   content: string
   level: $Enums.CommentLevel
-  authorId: number
   parentId: number | null
+  authorId: number
   replyToUserId: number | null
-  replyToCommentId: number | null
   publishedAt: Date
   editedAt: Date
+  replyToCommentId: number | null
+  path: string
   contentMarkdown: runtime.JsonValue | null
   _count: CommentCountAggregateOutputType | null
   _avg: CommentAvgAggregateOutputType | null
@@ -266,43 +266,43 @@ export type CommentWhereInput = {
   OR?: Prisma.CommentWhereInput[]
   NOT?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   id?: Prisma.IntFilter<"Comment"> | number
-  path?: Prisma.StringFilter<"Comment"> | string
   content?: Prisma.StringFilter<"Comment"> | string
   level?: Prisma.EnumCommentLevelFilter<"Comment"> | $Enums.CommentLevel
-  authorId?: Prisma.IntFilter<"Comment"> | number
   parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  authorId?: Prisma.IntFilter<"Comment"> | number
   replyToUserId?: Prisma.IntNullableFilter<"Comment"> | number | null
-  replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
+  replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  path?: Prisma.StringFilter<"Comment"> | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Comment">
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   parent?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
   children?: Prisma.CommentListRelationFilter
-  replyToUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   replyToComment?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
   replies?: Prisma.CommentListRelationFilter
+  replyToUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   userMessage?: Prisma.UserMessageListRelationFilter
 }
 
 export type CommentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   level?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrderInput | Prisma.SortOrder
-  replyToCommentId?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  replyToCommentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  path?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   parent?: Prisma.CommentOrderByWithRelationInput
   children?: Prisma.CommentOrderByRelationAggregateInput
-  replyToUser?: Prisma.UserOrderByWithRelationInput
   replyToComment?: Prisma.CommentOrderByWithRelationInput
   replies?: Prisma.CommentOrderByRelationAggregateInput
+  replyToUser?: Prisma.UserOrderByWithRelationInput
   userMessage?: Prisma.UserMessageOrderByRelationAggregateInput
 }
 
@@ -311,36 +311,36 @@ export type CommentWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
   OR?: Prisma.CommentWhereInput[]
   NOT?: Prisma.CommentWhereInput | Prisma.CommentWhereInput[]
-  path?: Prisma.StringFilter<"Comment"> | string
   content?: Prisma.StringFilter<"Comment"> | string
   level?: Prisma.EnumCommentLevelFilter<"Comment"> | $Enums.CommentLevel
-  authorId?: Prisma.IntFilter<"Comment"> | number
   parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  authorId?: Prisma.IntFilter<"Comment"> | number
   replyToUserId?: Prisma.IntNullableFilter<"Comment"> | number | null
-  replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
+  replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  path?: Prisma.StringFilter<"Comment"> | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Comment">
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   parent?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
   children?: Prisma.CommentListRelationFilter
-  replyToUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   replyToComment?: Prisma.XOR<Prisma.CommentNullableScalarRelationFilter, Prisma.CommentWhereInput> | null
   replies?: Prisma.CommentListRelationFilter
+  replyToUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   userMessage?: Prisma.UserMessageListRelationFilter
 }, "id">
 
 export type CommentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   level?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrderInput | Prisma.SortOrder
-  replyToCommentId?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  replyToCommentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  path?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CommentCountOrderByAggregateInput
   _avg?: Prisma.CommentAvgOrderByAggregateInput
@@ -354,45 +354,45 @@ export type CommentScalarWhereWithAggregatesInput = {
   OR?: Prisma.CommentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CommentScalarWhereWithAggregatesInput | Prisma.CommentScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Comment"> | number
-  path?: Prisma.StringWithAggregatesFilter<"Comment"> | string
   content?: Prisma.StringWithAggregatesFilter<"Comment"> | string
   level?: Prisma.EnumCommentLevelWithAggregatesFilter<"Comment"> | $Enums.CommentLevel
-  authorId?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   parentId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
+  authorId?: Prisma.IntWithAggregatesFilter<"Comment"> | number
   replyToUserId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
-  replyToCommentId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeWithAggregatesFilter<"Comment"> | Date | string
+  replyToCommentId?: Prisma.IntNullableWithAggregatesFilter<"Comment"> | number | null
+  path?: Prisma.StringWithAggregatesFilter<"Comment"> | string
   contentMarkdown?: Prisma.JsonNullableWithAggregatesFilter<"Comment">
 }
 
 export type CommentCreateInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replyToComment?: Prisma.CommentCreateNestedOneWithoutRepliesInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToCommentInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
@@ -400,32 +400,32 @@ export type CommentUncheckedCreateInput = {
 }
 
 export type CommentUpdateInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replyToComment?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToCommentNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
@@ -434,38 +434,38 @@ export type CommentUncheckedUpdateInput = {
 
 export type CommentCreateManyInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateManyMutationInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -486,56 +486,56 @@ export type CommentNullableScalarRelationFilter = {
 
 export type CommentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   level?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrder
-  replyToCommentId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  replyToCommentId?: Prisma.SortOrder
+  path?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrder
 }
 
 export type CommentAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrder
   replyToCommentId?: Prisma.SortOrder
 }
 
 export type CommentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   level?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrder
-  replyToCommentId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  replyToCommentId?: Prisma.SortOrder
+  path?: Prisma.SortOrder
 }
 
 export type CommentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   content?: Prisma.SortOrder
   level?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrder
-  replyToCommentId?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
+  replyToCommentId?: Prisma.SortOrder
+  path?: Prisma.SortOrder
 }
 
 export type CommentSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  authorId?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
+  authorId?: Prisma.SortOrder
   replyToUserId?: Prisma.SortOrder
   replyToCommentId?: Prisma.SortOrder
 }
@@ -764,30 +764,30 @@ export type CommentUpdateOneRequiredWithoutUserMessageNestedInput = {
 }
 
 export type CommentCreateWithoutAuthorInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replyToComment?: Prisma.CommentCreateNestedOneWithoutRepliesInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToCommentInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutAuthorInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
   parentId?: number | null
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
@@ -805,11 +805,11 @@ export type CommentCreateManyAuthorInputEnvelope = {
 }
 
 export type CommentCreateWithoutReplyToUserInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
@@ -821,14 +821,14 @@ export type CommentCreateWithoutReplyToUserInput = {
 
 export type CommentUncheckedCreateWithoutReplyToUserInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
-  replyToCommentId?: number | null
+  authorId: number
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
@@ -866,15 +866,15 @@ export type CommentScalarWhereInput = {
   OR?: Prisma.CommentScalarWhereInput[]
   NOT?: Prisma.CommentScalarWhereInput | Prisma.CommentScalarWhereInput[]
   id?: Prisma.IntFilter<"Comment"> | number
-  path?: Prisma.StringFilter<"Comment"> | string
   content?: Prisma.StringFilter<"Comment"> | string
   level?: Prisma.EnumCommentLevelFilter<"Comment"> | $Enums.CommentLevel
-  authorId?: Prisma.IntFilter<"Comment"> | number
   parentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  authorId?: Prisma.IntFilter<"Comment"> | number
   replyToUserId?: Prisma.IntNullableFilter<"Comment"> | number | null
-  replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Comment"> | Date | string
+  replyToCommentId?: Prisma.IntNullableFilter<"Comment"> | number | null
+  path?: Prisma.StringFilter<"Comment"> | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Comment">
 }
 
@@ -895,31 +895,31 @@ export type CommentUpdateManyWithWhereWithoutReplyToUserInput = {
 }
 
 export type CommentCreateWithoutChildrenInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replyToComment?: Prisma.CommentCreateNestedOneWithoutRepliesInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToCommentInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutChildrenInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -931,30 +931,30 @@ export type CommentCreateOrConnectWithoutChildrenInput = {
 }
 
 export type CommentCreateWithoutParentInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replyToComment?: Prisma.CommentCreateNestedOneWithoutRepliesInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToCommentInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutParentInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
   authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
@@ -972,31 +972,31 @@ export type CommentCreateManyParentInputEnvelope = {
 }
 
 export type CommentCreateWithoutRepliesInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replyToComment?: Prisma.CommentCreateNestedOneWithoutRepliesInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutRepliesInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutCommentInput
@@ -1008,30 +1008,30 @@ export type CommentCreateOrConnectWithoutRepliesInput = {
 }
 
 export type CommentCreateWithoutReplyToCommentInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToCommentInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutCommentInput
 }
 
 export type CommentUncheckedCreateWithoutReplyToCommentInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
@@ -1060,31 +1060,31 @@ export type CommentUpdateToOneWithWhereWithoutChildrenInput = {
 }
 
 export type CommentUpdateWithoutChildrenInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replyToComment?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToCommentNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutChildrenInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -1118,31 +1118,31 @@ export type CommentUpdateToOneWithWhereWithoutRepliesInput = {
 }
 
 export type CommentUpdateWithoutRepliesInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replyToComment?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutRepliesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutCommentNestedInput
@@ -1165,31 +1165,31 @@ export type CommentUpdateManyWithWhereWithoutReplyToCommentInput = {
 }
 
 export type CommentCreateWithoutUserMessageInput = {
-  path: string
   content: string
   level?: $Enums.CommentLevel
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author: Prisma.UserCreateNestedOneWithoutCommentsInput
   parent?: Prisma.CommentCreateNestedOneWithoutChildrenInput
   children?: Prisma.CommentCreateNestedManyWithoutParentInput
-  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
   replyToComment?: Prisma.CommentCreateNestedOneWithoutRepliesInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToCommentInput
+  replyToUser?: Prisma.UserCreateNestedOneWithoutRepliesInput
 }
 
 export type CommentUncheckedCreateWithoutUserMessageInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedCreateNestedManyWithoutParentInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToCommentInput
@@ -1212,31 +1212,31 @@ export type CommentUpdateToOneWithWhereWithoutUserMessageInput = {
 }
 
 export type CommentUpdateWithoutUserMessageInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replyToComment?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToCommentNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutUserMessageInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
@@ -1244,55 +1244,55 @@ export type CommentUncheckedUpdateWithoutUserMessageInput = {
 
 export type CommentCreateManyAuthorInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
   parentId?: number | null
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentCreateManyReplyToUserInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
-  replyToCommentId?: number | null
+  authorId: number
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutAuthorInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replyToComment?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToCommentNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
@@ -1301,23 +1301,23 @@ export type CommentUncheckedUpdateWithoutAuthorInput = {
 
 export type CommentUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutReplyToUserInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
@@ -1329,14 +1329,14 @@ export type CommentUpdateWithoutReplyToUserInput = {
 
 export type CommentUncheckedUpdateWithoutReplyToUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
@@ -1345,68 +1345,68 @@ export type CommentUncheckedUpdateWithoutReplyToUserInput = {
 
 export type CommentUncheckedUpdateManyWithoutReplyToUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentCreateManyParentInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
   authorId: number
   replyToUserId?: number | null
-  replyToCommentId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  replyToCommentId?: number | null
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentCreateManyReplyToCommentInput = {
   id?: number
-  path: string
   content: string
   level?: $Enums.CommentLevel
-  authorId: number
   parentId?: number | null
+  authorId: number
   replyToUserId?: number | null
   publishedAt?: Date | string
   editedAt?: Date | string
+  path: string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutParentInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replyToComment?: Prisma.CommentUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToCommentNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutParentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
@@ -1415,42 +1415,42 @@ export type CommentUncheckedUpdateWithoutParentInput = {
 
 export type CommentUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  replyToCommentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CommentUpdateWithoutReplyToCommentInput = {
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   author?: Prisma.UserUpdateOneRequiredWithoutCommentsNestedInput
   parent?: Prisma.CommentUpdateOneWithoutChildrenNestedInput
   children?: Prisma.CommentUpdateManyWithoutParentNestedInput
-  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToCommentNestedInput
+  replyToUser?: Prisma.UserUpdateOneWithoutRepliesNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutCommentNestedInput
 }
 
 export type CommentUncheckedUpdateWithoutReplyToCommentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   children?: Prisma.CommentUncheckedUpdateManyWithoutParentNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToCommentNestedInput
@@ -1459,14 +1459,14 @@ export type CommentUncheckedUpdateWithoutReplyToCommentInput = {
 
 export type CommentUncheckedUpdateManyWithoutReplyToCommentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   level?: Prisma.EnumCommentLevelFieldUpdateOperationsInput | $Enums.CommentLevel
-  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   parentId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  authorId?: Prisma.IntFieldUpdateOperationsInput | number
   replyToUserId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -1521,98 +1521,98 @@ export type CommentCountOutputTypeCountUserMessageArgs<ExtArgs extends runtime.T
 
 export type CommentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  path?: boolean
   content?: boolean
   level?: boolean
-  authorId?: boolean
   parentId?: boolean
+  authorId?: boolean
   replyToUserId?: boolean
-  replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  replyToCommentId?: boolean
+  path?: boolean
   contentMarkdown?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
   children?: boolean | Prisma.Comment$childrenArgs<ExtArgs>
-  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   replyToComment?: boolean | Prisma.Comment$replyToCommentArgs<ExtArgs>
   replies?: boolean | Prisma.Comment$repliesArgs<ExtArgs>
+  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   userMessage?: boolean | Prisma.Comment$userMessageArgs<ExtArgs>
   _count?: boolean | Prisma.CommentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["comment"]>
 
 export type CommentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  path?: boolean
   content?: boolean
   level?: boolean
-  authorId?: boolean
   parentId?: boolean
+  authorId?: boolean
   replyToUserId?: boolean
-  replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  replyToCommentId?: boolean
+  path?: boolean
   contentMarkdown?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
-  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   replyToComment?: boolean | Prisma.Comment$replyToCommentArgs<ExtArgs>
+  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
 }, ExtArgs["result"]["comment"]>
 
 export type CommentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  path?: boolean
   content?: boolean
   level?: boolean
-  authorId?: boolean
   parentId?: boolean
+  authorId?: boolean
   replyToUserId?: boolean
-  replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  replyToCommentId?: boolean
+  path?: boolean
   contentMarkdown?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
-  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   replyToComment?: boolean | Prisma.Comment$replyToCommentArgs<ExtArgs>
+  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
 }, ExtArgs["result"]["comment"]>
 
 export type CommentSelectScalar = {
   id?: boolean
-  path?: boolean
   content?: boolean
   level?: boolean
-  authorId?: boolean
   parentId?: boolean
+  authorId?: boolean
   replyToUserId?: boolean
-  replyToCommentId?: boolean
   publishedAt?: boolean
   editedAt?: boolean
+  replyToCommentId?: boolean
+  path?: boolean
   contentMarkdown?: boolean
 }
 
-export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "content" | "level" | "authorId" | "parentId" | "replyToUserId" | "replyToCommentId" | "publishedAt" | "editedAt" | "contentMarkdown", ExtArgs["result"]["comment"]>
+export type CommentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "level" | "parentId" | "authorId" | "replyToUserId" | "publishedAt" | "editedAt" | "replyToCommentId" | "path" | "contentMarkdown", ExtArgs["result"]["comment"]>
 export type CommentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
   children?: boolean | Prisma.Comment$childrenArgs<ExtArgs>
-  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   replyToComment?: boolean | Prisma.Comment$replyToCommentArgs<ExtArgs>
   replies?: boolean | Prisma.Comment$repliesArgs<ExtArgs>
+  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   userMessage?: boolean | Prisma.Comment$userMessageArgs<ExtArgs>
   _count?: boolean | Prisma.CommentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CommentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
-  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   replyToComment?: boolean | Prisma.Comment$replyToCommentArgs<ExtArgs>
+  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
 }
 export type CommentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Comment$parentArgs<ExtArgs>
-  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
   replyToComment?: boolean | Prisma.Comment$replyToCommentArgs<ExtArgs>
+  replyToUser?: boolean | Prisma.Comment$replyToUserArgs<ExtArgs>
 }
 
 export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1621,22 +1621,22 @@ export type $CommentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     author: Prisma.$UserPayload<ExtArgs>
     parent: Prisma.$CommentPayload<ExtArgs> | null
     children: Prisma.$CommentPayload<ExtArgs>[]
-    replyToUser: Prisma.$UserPayload<ExtArgs> | null
     replyToComment: Prisma.$CommentPayload<ExtArgs> | null
     replies: Prisma.$CommentPayload<ExtArgs>[]
+    replyToUser: Prisma.$UserPayload<ExtArgs> | null
     userMessage: Prisma.$UserMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    path: string
     content: string
     level: $Enums.CommentLevel
-    authorId: number
     parentId: number | null
+    authorId: number
     replyToUserId: number | null
-    replyToCommentId: number | null
     publishedAt: Date
     editedAt: Date
+    replyToCommentId: number | null
+    path: string
     contentMarkdown: runtime.JsonValue | null
   }, ExtArgs["result"]["comment"]>
   composites: {}
@@ -2035,9 +2035,9 @@ export interface Prisma__CommentClient<T, Null = never, ExtArgs extends runtime.
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   parent<T extends Prisma.Comment$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$parentArgs<ExtArgs>>): Prisma.Prisma__CommentClient<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   children<T extends Prisma.Comment$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  replyToUser<T extends Prisma.Comment$replyToUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$replyToUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   replyToComment<T extends Prisma.Comment$replyToCommentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$replyToCommentArgs<ExtArgs>>): Prisma.Prisma__CommentClient<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   replies<T extends Prisma.Comment$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  replyToUser<T extends Prisma.Comment$replyToUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$replyToUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   userMessage<T extends Prisma.Comment$userMessageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Comment$userMessageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2069,15 +2069,15 @@ export interface Prisma__CommentClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface CommentFieldRefs {
   readonly id: Prisma.FieldRef<"Comment", 'Int'>
-  readonly path: Prisma.FieldRef<"Comment", 'String'>
   readonly content: Prisma.FieldRef<"Comment", 'String'>
   readonly level: Prisma.FieldRef<"Comment", 'CommentLevel'>
-  readonly authorId: Prisma.FieldRef<"Comment", 'Int'>
   readonly parentId: Prisma.FieldRef<"Comment", 'Int'>
+  readonly authorId: Prisma.FieldRef<"Comment", 'Int'>
   readonly replyToUserId: Prisma.FieldRef<"Comment", 'Int'>
-  readonly replyToCommentId: Prisma.FieldRef<"Comment", 'Int'>
   readonly publishedAt: Prisma.FieldRef<"Comment", 'DateTime'>
   readonly editedAt: Prisma.FieldRef<"Comment", 'DateTime'>
+  readonly replyToCommentId: Prisma.FieldRef<"Comment", 'Int'>
+  readonly path: Prisma.FieldRef<"Comment", 'String'>
   readonly contentMarkdown: Prisma.FieldRef<"Comment", 'Json'>
 }
     
@@ -2523,25 +2523,6 @@ export type Comment$childrenArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Comment.replyToUser
- */
-export type Comment$replyToUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
-}
-
-/**
  * Comment.replyToComment
  */
 export type Comment$replyToCommentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2582,6 +2563,25 @@ export type Comment$repliesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Comment.replyToUser
+ */
+export type Comment$replyToUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

@@ -39,9 +39,6 @@ catalogs:
     '@takumi-rs/core':
       specifier: ^1.8.7
       version: 1.8.7
-    '@types/bcrypt':
-      specifier: ^6.0.0
-      version: 6.0.0
     '@types/jsonwebtoken':
       specifier: ^9.0.10
       version: 9.0.10
@@ -72,9 +69,9 @@ catalogs:
     '@vueuse/router':
       specifier: ^14.3.0
       version: 14.3.0
-    bcrypt:
-      specifier: ^6.0.0
-      version: 6.0.0
+    bcryptjs:
+      specifier: ^3.0.2
+      version: 3.0.3
     dotenv:
       specifier: ^17.4.2
       version: 17.4.2
@@ -195,9 +192,6 @@ importers:
       '@prisma/client':
         specifier: 'catalog:'
         version: 7.8.0(prisma@7.8.0(@types/react@19.2.9)(magicast@0.5.3)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3))(typescript@6.0.3)
-      '@types/bcrypt':
-        specifier: 'catalog:'
-        version: 6.0.0
       '@types/jsonwebtoken':
         specifier: 'catalog:'
         version: 9.0.10
@@ -225,9 +219,9 @@ importers:
       '@vueuse/router':
         specifier: 'catalog:'
         version: 14.3.0(vue-router@5.1.0(@vue/compiler-sfc@3.5.39)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.39(typescript@6.0.3)))(vite@8.0.10(@types/node@26.0.1)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.44.1)(tsx@4.22.3)(yaml@2.9.0))(vue@3.5.39(typescript@6.0.3)))(vue@3.5.39(typescript@6.0.3))
-      bcrypt:
+      bcryptjs:
         specifier: 'catalog:'
-        version: 6.0.0
+        version: 3.0.3
       dotenv:
         specifier: 'catalog:'
         version: 17.4.2
@@ -3593,9 +3587,6 @@ packages:
   '@tybys/wasm-util@0.10.3':
     resolution: {integrity: sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg==}
 
-  '@types/bcrypt@6.0.0':
-    resolution: {integrity: sha512-/oJGukuH3D2+D+3H4JWLaAsJ/ji86dhRidzZ/Od7H/i8g+aCmvkeCc6Ni/f9uxGLSQVCRZkX2/lqEFG2BvWtlQ==}
-
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -4439,9 +4430,9 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  bcrypt@6.0.0:
-    resolution: {integrity: sha512-cU8v/EGSrnH+HnxV2z0J7/blxH8gq7Xh2JFT6Aroax7UohdmiJJlxApMxtKfuI7z68NvvVcmR78k2LbT6efhRg==}
-    engines: {node: '>= 18'}
+  bcryptjs@3.0.3:
+    resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
+    hasBin: true
 
   better-result@2.7.0:
     resolution: {integrity: sha512-7zrmXjAK8u8Z6SOe4R65XObOR5X+Y2I/VVku3t5cPOGQ8/WsBcfFmfnIPiEl5EBMDOzPHRwbiPbMtQBKYdw7RA==}
@@ -6408,10 +6399,6 @@ packages:
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
-
-  node-addon-api@8.5.0:
-    resolution: {integrity: sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==}
-    engines: {node: ^18 || ^20 || >= 21}
 
   node-emoji@2.2.0:
     resolution: {integrity: sha512-Z3lTE9pLaJF47NyMhd4ww1yFTAP8YhYI8SleJiHzM46Fgpm5cnNzSl9XfzFNqbaz+VlJrIj3fXQ4DeN1Rjm6cw==}
@@ -12010,10 +11997,6 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@types/bcrypt@6.0.0':
-    dependencies:
-      '@types/node': 26.0.1
-
   '@types/chai@5.2.3':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -13198,10 +13181,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.25: {}
 
-  bcrypt@6.0.0:
-    dependencies:
-      node-addon-api: 8.5.0
-      node-gyp-build: 4.8.4
+  bcryptjs@3.0.3: {}
 
   better-result@2.7.0:
     dependencies:
@@ -15649,8 +15629,6 @@ snapshots:
       - webpack
 
   node-addon-api@7.1.1: {}
-
-  node-addon-api@8.5.0: {}
 
   node-emoji@2.2.0:
     dependencies:
