@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
-import { seoData } from '~/data/meta'
-import env from '~/server/env'
+import env from '#server/env'
+import { seoData } from '#shared/data/meta'
 
 interface MailContext {
   receiverEmail: string

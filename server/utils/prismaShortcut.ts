@@ -1,4 +1,4 @@
-import type { Prisma } from '~/prisma/generated/client'
+import type { Prisma } from '~~/prisma/generated/client'
 
 const activityMusicSelect = {
   id: true,

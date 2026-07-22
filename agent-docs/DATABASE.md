@@ -2,7 +2,7 @@
 
 ## Prisma client
 
-`prisma/schema.prisma` defines the PostgreSQL schema. Prisma generates its client into `prisma/generated/`, and application code imports that client and its model types through `~/prisma/generated/...`. `~/lib/prisma` creates the single client with `PrismaPg` and `HANA_DATABASE_URL`.
+`prisma/schema.prisma` defines the PostgreSQL schema. Prisma generates its client into `prisma/generated/`, and server code imports that client and its model types through `~~/prisma/generated/...`. `#server/utils/prisma` creates the single client with `PrismaPg` and `HANA_DATABASE_URL`.
 
 Never edit `prisma/generated/` directly. After a schema change, regenerate it with:
 

@@ -1,5 +1,5 @@
-import type { Neighbors } from '~/store/modules/article'
-import prisma from '~/lib/prisma'
+import type { Neighbors } from '#shared/types/markdown'
+import prisma from '#server/utils/prisma'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)

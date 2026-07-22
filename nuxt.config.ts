@@ -1,4 +1,4 @@
-import { seoData } from './data/meta'
+import { seoData } from './shared/data/meta'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -44,7 +44,6 @@ export default defineNuxtConfig({
       'static-r2.caelum.moe',
       'weavatar.com',
     ],
-    dir: 'public',
     quality: 78,
     format: ['avif', 'webp'],
     presets: {

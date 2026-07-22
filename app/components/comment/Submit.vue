@@ -1,0 +1,144 @@
+<script setup lang="ts">
+import type { CommentItem, IPostComment, IReplyComment } from '#shared/types/comment'
+import { useStore } from '~/stores'
+
+const props = defineProps<{
+  isRecently: boolean
+  replyTo: IReplyComment | null
+}>()
+
+const emits = defineEmits<{
+  (e: 'published', value: CommentItem): void
+}>()
+
+const route = useRoute()
+const { fullPath, path } = route
+
+const { userStore } = useStore()
+const { callHanaMessage } = useMessage()
+
+const { userInfo } = toRefs(userStore)
+
+const visible = defineModel<boolean>()
+
+const { replyTo } = toRefs(props)
+const dialogTitle = computed(() => replyTo.value ? `回复 ${replyTo.value.username} ：` : '评论')
+const inputPlaceholder = computed(() => replyTo.value ? '想和 ta 讨论什么呢？' : '你有什么想说的呢？')
+
+const content = ref('')
+
+const publishing = ref(false)
+const buttonText = computed(() => publishing.value ? '发布中...' : '发表评论')
+
+const supportedSyntax = [
+  '**粗体**',
+  '*斜体*',
+  '~~删除线~~',
+  '`代码`',
+  '[链接](url)',
+  '> 引用',
+  '- 列表',
+  '```代码块```',
+]
+
+async function handlePublish() {
+  if (!content.value) {
+    callHanaMessage({
+      message: '请填写评论内容。',
+      type: 'error',
+    })
+    return
+  }
+  const objData: IPostComment = {
+    path: props.isRecently ? fullPath : path,
+    content: content.value,
+  }
+  if (replyTo.value) {
+    objData.parentId = replyTo.value.parentId
+    if (replyTo.value.targetCommentLevel === 'CHILD') {
+      objData.replyToUserId = replyTo.value.userId
+      objData.replyToCommentId = replyTo.value.commentId
+    }
+  }
+  publishing.value = true
+  await publishComment(objData)
+  publishing.value = false
+}
+
+async function publishComment(objData: IPostComment) {
+  const data = await $fetch('/api/comments/post', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    method: 'POST',
+    body: JSON.stringify(objData),
+  })
+  if (data.success) {
+    const receiverId = data.payload!.parent
+      ? data.payload!.replyToUser
+        ? data.payload!.replyToUser.id
+        : data.payload!.parent.authorId
+      : hanaInfo.id
+    if (userInfo.value!.id !== receiverId) {
+      await $fetch('/api/user/send-message', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          receiverId,
+          commentId: data.payload!.id,
+        }),
+      })
+    }
+    emits('published', data.payload! as CommentItem)
+    content.value = ''
+    visible.value = false
+    callHanaMessage({
+      type: 'success',
+      message: '发布成功',
+    })
+  }
+  else {
+    const errorList = data.error?.map(item => item.message).join(', ')
+    callHanaMessage({
+      type: 'error',
+      message: errorList || data.statusMessage || '发布失败',
+    })
+  }
+}
+</script>
+
+<template>
+  <HanaDialog v-model="visible" :title="dialogTitle" width="700px">
+    <ProseBlockquote v-if="replyTo" class="mb-5">
+      <span class="line-clamp-2">{{ replyTo.content }}</span>
+    </ProseBlockquote>
+    <div class="mb-5 flex items-center gap-2">
+      <HanaAvatar :size="10" :avatar="userInfo!.avatar" :username="userInfo!.username" :site="userInfo!.site" :show-info="false" />
+      <div class="flex flex-col gap-1">
+        <span class="text-black font-bold dark:text-hana-white">{{ userInfo!.username }}</span>
+        <span class="text-sm text-text dark:text-hana-white-700">@{{ userInfo!.email }}</span>
+      </div>
+    </div>
+    <div class="mb-5 flex flex-col gap-2">
+      <HanaInput v-model="content" type="textarea" :placeholder="inputPlaceholder" resize="none" :rows="8" />
+      <div class="flex flex-col gap-1.5 px-1 text-xs text-text dark:text-hana-white-700">
+        <div class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+          <span class="shrink-0">MD 支持：</span>
+          <code
+            v-for="syntax in supportedSyntax"
+            :key="syntax"
+            class="rounded bg-primary-100 px-1.5 py-0.5 font-code dark:bg-hana-black-600"
+          >{{ syntax }}</code>
+        </div>
+        <div>不支持标题、表格、图片、HTML · 最多 2048 字</div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-4">
+      <HanaButton class="w-full" dark-mode :disabled="publishing" @click="handlePublish">
+        {{ buttonText }}
+      </HanaButton>
+    </div>
+  </HanaDialog>
+</template>

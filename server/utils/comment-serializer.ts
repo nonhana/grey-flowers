@@ -1,8 +1,8 @@
+import type { Prisma } from '~~/prisma/generated/client'
+import type { CommentItem, ParentCommentItem } from '#shared/types/comment'
+import type { MarkdownRenderPayload } from '#shared/types/markdown'
 import type { childCommentArgs, parentCommentArgs } from './prismaShortcut'
-import type { Prisma } from '~/prisma/generated/client'
-import type { CommentItem, ParentCommentItem } from '~/types/comment'
-import type { MarkdownRenderPayload } from '~/types/markdown'
-import { formatDateTimeYmdHms } from '~/utils/date'
+import { formatDateTimeYmdHms } from '#shared/utils/date'
 
 type RawChildComment = Prisma.CommentGetPayload<typeof childCommentArgs>
 type RawParentComment = Prisma.CommentGetPayload<typeof parentCommentArgs>

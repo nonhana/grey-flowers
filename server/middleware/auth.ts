@@ -1,5 +1,5 @@
 import { jwtVerify } from 'jose'
-import env from '~/server/env'
+import env from '#server/env'
 
 export default eventHandler(async (event) => {
   if (!blackList.includes(event.path)) {

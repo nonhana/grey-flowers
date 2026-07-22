@@ -1,5 +1,5 @@
 import type { MDCParserResult } from '@nuxtjs/mdc'
-import type { MarkdownPagePayload, MarkdownRenderPayload, StaticMarkdownPageSlug } from '~/types/markdown'
+import type { MarkdownPagePayload, MarkdownRenderPayload, StaticMarkdownPageSlug } from '#shared/types/markdown'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import process from 'node:process'

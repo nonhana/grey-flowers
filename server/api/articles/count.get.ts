@@ -1,7 +1,7 @@
-import type { ArticleWhereInput } from '~/prisma/generated/models'
-import type { ArticleFilterQuery } from '~/server/types/articles'
-import prisma from '~/lib/prisma'
-import { getPublishedAtMonthRange } from '~/utils/date'
+import type { ArticleWhereInput } from '~~/prisma/generated/models'
+import type { ArticleFilterQuery } from '#shared/types/articles'
+import prisma from '#server/utils/prisma'
+import { getPublishedAtMonthRange } from '#shared/utils/date'
 
 type Options = ArticleWhereInput & { publishedAtMonth?: string }
 

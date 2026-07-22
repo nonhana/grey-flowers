@@ -1,9 +1,9 @@
-import type { Prisma } from '~/prisma/generated/client'
-import type { activityWithMusicArgs } from '~/server/utils/prismaShortcut'
-import type { ActivityItem } from '~/types/activity'
-import type { MarkdownRenderPayload } from '~/types/markdown'
-import prisma from '~/lib/prisma'
-import { formatDateTimeYmdHms } from '~/utils/date'
+import type { Prisma } from '~~/prisma/generated/client'
+import type { activityWithMusicArgs } from '#server/utils/prismaShortcut'
+import type { ActivityItem } from '#shared/types/activity'
+import type { MarkdownRenderPayload } from '#shared/types/markdown'
+import prisma from '#server/utils/prisma'
+import { formatDateTimeYmdHms } from '#shared/utils/date'
 
 type ActivityWithMusic = Prisma.ActivityGetPayload<typeof activityWithMusicArgs>
 

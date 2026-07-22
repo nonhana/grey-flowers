@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import prisma from '~/lib/prisma'
-import { Prisma } from '~/prisma/generated/client'
-import { useZodVerify } from '~/server/composables/useZodVerify'
+import { Prisma } from '~~/prisma/generated/client'
+import { useZodVerify } from '#server/composables/useZodVerify'
+import prisma from '#server/utils/prisma'
 
 const verifySchema = z.object({
   path: z.string(),

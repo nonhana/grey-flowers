@@ -1,4 +1,4 @@
-import prisma from '~/lib/prisma'
+import prisma from '#server/utils/prisma'
 
 async function getUserMessages(userId: number) {
   const messages = await prisma.userMessage.findMany({

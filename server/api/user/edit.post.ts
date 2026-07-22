@@ -1,8 +1,8 @@
-import type { UserUpdateInput } from '~/prisma/generated/models'
+import type { UserUpdateInput } from '~~/prisma/generated/models'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
-import prisma from '~/lib/prisma'
-import { useZodVerify } from '~/server/composables/useZodVerify'
+import { useZodVerify } from '#server/composables/useZodVerify'
+import prisma from '#server/utils/prisma'
 
 const verifySchema = z.object({
   id: z.string().transform(Number),

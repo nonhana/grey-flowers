@@ -1,9 +1,9 @@
-import type { JwtPayload } from '~/server/types/jwt'
+import type { JwtPayload } from '#shared/types/jwt'
 import bcrypt from 'bcryptjs'
 import { SignJWT } from 'jose'
 import { z } from 'zod'
-import prisma from '~/lib/prisma'
-import env from '~/server/env'
+import env from '#server/env'
+import prisma from '#server/utils/prisma'
 
 export default formattedEventHandler(async (event) => {
   const body = await readBody(event)

@@ -1,5 +1,5 @@
-import type { CommentListQuery } from '~/server/types/comments'
-import prisma from '~/lib/prisma'
+import type { CommentListQuery } from '#shared/types/comments'
+import prisma from '#server/utils/prisma'
 
 async function getComments(path: string, page: number, pageSize: number) {
   const comments = await prisma.comment.findMany({

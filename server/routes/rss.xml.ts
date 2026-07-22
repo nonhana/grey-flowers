@@ -1,6 +1,6 @@
 import { Feed } from 'feed'
-import prisma from '~/lib/prisma'
-import { resolveArticleImagePolicy, toAbsoluteArticleImageUrl } from '~/utils/article-generated-image'
+import { resolveArticleImagePolicy, toAbsoluteArticleImageUrl } from '#server/utils/article-generated-image'
+import prisma from '#server/utils/prisma'
 
 const titleBlacklist = ['About', 'Friends']
 

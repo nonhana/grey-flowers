@@ -1,5 +1,5 @@
 import { jwtVerify } from 'jose'
-import env from '~/server/env'
+import env from '#server/env'
 
 // 未登录、登录正常用户放行，登录过期用户返回401
 export default formattedEventHandler(async (event) => {

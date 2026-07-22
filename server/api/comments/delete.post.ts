@@ -1,4 +1,4 @@
-import prisma from '~/lib/prisma'
+import prisma from '#server/utils/prisma'
 
 export default formattedEventHandler(async (event) => {
   const id = event.context.jwtPayload.id

@@ -1,4 +1,4 @@
-import prisma from '~/lib/prisma'
+import prisma from '#server/utils/prisma'
 
 async function getCategories() {
   const categories = await prisma.category.findMany()

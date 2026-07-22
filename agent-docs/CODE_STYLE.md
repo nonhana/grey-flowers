@@ -10,8 +10,8 @@ These rules supplement the Antfu ESLint configuration and `.editorconfig`.
 
 ## Vue and UnoCSS
 
-- Use the `~` alias for project imports; rely on Nuxt auto-imports and component auto-registration where the surrounding code does.
-- Keep components in their existing feature group. `components/hana/` holds reusable UI primitives, while `components/prose/*.global.vue` supplies global MDC element renderers.
+- Use `~` for `app/` imports, `#shared` for runtime-neutral shared code, `#server` for server-only code, and `~~` for root-level resources. Rely on Nuxt auto-imports and component auto-registration where the surrounding code does.
+- Keep components in their existing feature group. `app/components/hana/` holds reusable UI primitives, while `app/components/prose/*.global.vue` supplies global MDC element renderers.
 - For new UI, start with `DESIGN.md`, `DESIGN.json`, and existing UnoCSS `hana-*` shortcuts. Do not introduce scattered color tokens or a light-only treatment; every component must work in light and dark mode.
 - Preserve the reading-first product direction: typography, navigation, and article content take priority over decorative motion or controls.
 

@@ -1,7 +1,7 @@
-import type { ArticleSearchQuery } from '~/server/types/articles'
-import type { ArticleSearchItem } from '~/types/article'
-import prisma from '~/lib/prisma'
-import { formatDateYmd } from '~/utils/date'
+import type { ArticleSearchItem } from '#shared/types/article'
+import type { ArticleSearchQuery } from '#shared/types/articles'
+import prisma from '#server/utils/prisma'
+import { formatDateYmd } from '#shared/utils/date'
 
 const DEFAULT_SEARCH_LIMIT = 8
 const MAX_SEARCH_LIMIT = 10

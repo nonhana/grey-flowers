@@ -1,4 +1,4 @@
-import prisma from '~/lib/prisma'
+import prisma from '#server/utils/prisma'
 
 async function getUserComments(userId: number) {
   const comments = await prisma.comment.findMany({

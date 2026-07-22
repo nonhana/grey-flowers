@@ -1,4 +1,4 @@
-import type { MarkdownRenderPayload } from '~/types/markdown'
+import type { MarkdownRenderPayload } from '#shared/types/markdown'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 
 const MAX_LENGTH = 2048

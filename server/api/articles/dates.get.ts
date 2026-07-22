@@ -1,4 +1,4 @@
-import prisma from '~/lib/prisma'
+import prisma from '#server/utils/prisma'
 
 // 获取发布文章的 { 年: [月份] } 映射
 async function getDates(): Promise<Record<string, string[]>> {

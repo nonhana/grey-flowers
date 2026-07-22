@@ -1,6 +1,6 @@
-import type { ArticleMarkdownPayload } from '~/types/markdown'
-import prisma from '~/lib/prisma'
-import { resolveArticleImagePolicy } from '~/utils/article-generated-image'
+import type { ArticleMarkdownPayload } from '#shared/types/markdown'
+import { resolveArticleImagePolicy } from '#server/utils/article-generated-image'
+import prisma from '#server/utils/prisma'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)

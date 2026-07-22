@@ -9,7 +9,7 @@ Long-form articles are database records: `Article.content` is parsed by `server/
 - `public/markdown/about.md` is served by `/api/markdown/about`.
 - `public/markdown/friends.md` is served by `/api/markdown/friends`.
 
-The allowed static slugs are an explicit `about`/`friends` whitelist in `server/utils/markdown.ts` and the `StaticMarkdownPageSlug` type in `types/markdown.d.ts`. Adding another static page requires updating both places as well as its route or consumer.
+The allowed static slugs are an explicit `about`/`friends` whitelist in `server/utils/markdown.ts` and the `StaticMarkdownPageSlug` type in `shared/types/markdown.d.ts`. Adding another static page requires updating both places as well as its route or consumer.
 
 ## Rendering path
 

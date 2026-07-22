@@ -1,6 +1,6 @@
-import { seoData } from '~/data/meta'
-import prisma from '~/lib/prisma'
-import { sendCommentReplyMail } from '~/server/utils/mailer'
+import { sendCommentReplyMail } from '#server/utils/mailer'
+import prisma from '#server/utils/prisma'
+import { seoData } from '#shared/data/meta'
 
 export default formattedEventHandler(async (event) => {
   const body = await readBody(event) as { receiverId: number, commentId: number }
