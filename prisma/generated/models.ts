@@ -8,12 +8,12 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Article'
-export type * from './models/Tag'
-export type * from './models/Category'
-export type * from './models/User'
-export type * from './models/Comment'
-export type * from './models/UserMessage'
-export type * from './models/Activity'
-export type * from './models/Music'
-export type * from './commonInputTypes'
+export type * from './models/Article.ts'
+export type * from './models/Tag.ts'
+export type * from './models/Category.ts'
+export type * from './models/User.ts'
+export type * from './models/Comment.ts'
+export type * from './models/UserMessage.ts'
+export type * from './models/Activity.ts'
+export type * from './models/Music.ts'
+export type * from './commonInputTypes.ts'

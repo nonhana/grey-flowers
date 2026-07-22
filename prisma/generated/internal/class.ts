@@ -12,15 +12,15 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace"
+import type * as Prisma from "./prismaNamespace.ts"
 
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [
     "partialIndexes"
   ],
-  "clientVersion": "7.8.0",
-  "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
+  "clientVersion": "7.9.0",
+  "engineVersion": "e922089b7d7502aff4249d5da3420f6fa55fc6ad",
   "activeProvider": "postgresql",
   "inlineSchema": "generator client {\n  provider        = \"prisma-client\"\n  output          = \"./generated\"\n  previewFeatures = [\"partialIndexes\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\n/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.\nmodel Article {\n  id          Int       @id @default(autoincrement())\n  to          String    @unique\n  title       String    @unique\n  description String?\n  cover       String\n  alt         String    @unique\n  publishedAt DateTime  @default(now())\n  editedAt    DateTime\n  published   Boolean   @default(false)\n  wordCount   Int       @default(0)\n  categoryId  Int?\n  content     String?   @default(\"\")\n  category    Category? @relation(fields: [categoryId], references: [id])\n  tags        Tag[]     @relation(\"ArticleTags\")\n\n  @@index([title(ops: raw(\"gin_trgm_ops\"))], map: \"Article_search_title_trgm_idx\", type: Gin, where: raw(\"(published = true)\"))\n}\n\nmodel Tag {\n  id           Int       @id @default(autoincrement())\n  name         String    @unique\n  articleCount Int       @default(0)\n  articles     Article[] @relation(\"ArticleTags\")\n}\n\nmodel Category {\n  id           Int       @id @default(autoincrement())\n  name         String    @unique\n  cover        String\n  articleCount Int       @default(0)\n  articles     Article[]\n}\n\nmodel User {\n  id          Int           @id @default(autoincrement())\n  email       String        @unique\n  site        String?\n  avatar      String\n  password    String\n  username    String        @unique\n  createdAt   DateTime      @default(now())\n  role        UserRole      @default(USER)\n  updatedAt   DateTime      @updatedAt\n  comments    Comment[]\n  replies     Comment[]     @relation(\"ReplyToUser\")\n  userMessage UserMessage[]\n}\n\nmodel Comment {\n  id               Int           @id @default(autoincrement())\n  content          String\n  level            CommentLevel  @default(PARENT)\n  parentId         Int?\n  authorId         Int\n  replyToUserId    Int?\n  publishedAt      DateTime      @default(now())\n  editedAt         DateTime      @updatedAt\n  replyToCommentId Int?\n  path             String\n  contentMarkdown  Json?\n  author           User          @relation(fields: [authorId], references: [id])\n  parent           Comment?      @relation(\"ParentChild\", fields: [parentId], references: [id], onDelete: Cascade)\n  children         Comment[]     @relation(\"ParentChild\")\n  replyToComment   Comment?      @relation(\"ReplyToComment\", fields: [replyToCommentId], references: [id])\n  replies          Comment[]     @relation(\"ReplyToComment\")\n  replyToUser      User?         @relation(\"ReplyToUser\", fields: [replyToUserId], references: [id])\n  userMessage      UserMessage[]\n}\n\nmodel UserMessage {\n  id         Int     @id @default(autoincrement())\n  receiverId Int\n  commentId  Int\n  comment    Comment @relation(fields: [commentId], references: [id])\n  receiver   User    @relation(fields: [receiverId], references: [id])\n}\n\nmodel Activity {\n  id              Int      @id @default(autoincrement())\n  content         String   @default(\"\")\n  images          String[] @default([])\n  publishedAt     DateTime @default(now())\n  editedAt        DateTime @updatedAt\n  contentMarkdown Json?\n  music           Music[]\n}\n\nmodel Music {\n  id         Int       @id @default(autoincrement())\n  title      String\n  src        String\n  seconds    Int\n  activityId Int?\n  album      String\n  artist     String\n  cover      String\n  activity   Activity? @relation(fields: [activityId], references: [id])\n}\n\nenum CommentLevel {\n  PARENT\n  CHILD\n}\n\nenum UserRole {\n  USER\n  ADMIN\n}\n",
   "runtimeDataModel": {
@@ -84,7 +84,7 @@ export interface PrismaClientConstructor {
     LogOpts extends LogOptions<Options> = LogOptions<Options>,
     OmitOpts extends Prisma.PrismaClientOptions['omit'] = Options extends { omit: infer U } ? U : Prisma.PrismaClientOptions['omit'],
     ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs
-  >(options: Prisma.Subset<Options, Prisma.PrismaClientOptions> ): PrismaClient<LogOpts, OmitOpts, ExtArgs>
+  >(options: Prisma.PrismaClientConstructorArgs<Options>): PrismaClient<LogOpts, OmitOpts, ExtArgs>
 }
 
 /**
@@ -105,7 +105,7 @@ export interface PrismaClientConstructor {
 
 export interface PrismaClient<
   in LogOpts extends Prisma.LogLevel = never,
-  in out OmitOpts extends Prisma.PrismaClientOptions['omit'] = undefined,
+  in out OmitOpts extends Prisma.PrismaClientOptions['omit'] = Prisma.PrismaClientOptions['omit'],
   in out ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
