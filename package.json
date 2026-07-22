@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
+    "@golar/vue": "catalog:",
     "@nuxt/image": "catalog:",
     "@nuxtjs/color-mode": "catalog:",
     "@nuxtjs/mdc": "catalog:",
@@ -58,6 +59,7 @@
     "dotenv": "catalog:",
     "eslint": "catalog:",
     "feed": "catalog:",
+    "golar": "catalog:",
     "gsap": "catalog:",
     "hana-img-viewer": "catalog:",
     "nuxt-og-image": "catalog:",
@@ -68,7 +70,6 @@
     "unocss": "catalog:",
     "unocss-preset-scrollbar": "catalog:",
     "vivus": "catalog:",
-    "vue-tsc": "catalog:",
     "zod": "catalog:"
   }
 }

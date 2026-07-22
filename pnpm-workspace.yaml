@@ -18,6 +18,7 @@ trustPolicyExclude:
 
 catalog:
   '@antfu/eslint-config': ^9.1.0
+  '@golar/vue': ^0.1.10
   '@lucide/vue': ^1.25.0
   '@nuxt/fonts': ^0.14.0
   '@nuxt/image': ^2.0.0
@@ -42,6 +43,7 @@ catalog:
   dotenv: ^17.4.2
   eslint: ^10.7.0
   feed: ^6.0.0
+  golar: ^0.1.10
   gsap: ^3.15.0
   hana-img-viewer: ^4.0.0
   jose: ^6.2.3
@@ -58,7 +60,6 @@ catalog:
   vivus: ^0.4.6
   vue: ^3.5.40
   vue-router: ^5.2.0
-  vue-tsc: ^3.3.7
   zod: ^4.4.3
 onlyBuiltDependencies:
   - '@parcel/watcher'
