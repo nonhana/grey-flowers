@@ -56,7 +56,6 @@
     "@vueuse/nuxt": "catalog:",
     "@vueuse/router": "catalog:",
     "bcryptjs": "catalog:",
-    "dotenv": "catalog:",
     "eslint": "catalog:",
     "feed": "catalog:",
     "golar": "catalog:",

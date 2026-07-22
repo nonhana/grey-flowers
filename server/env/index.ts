@@ -1,8 +1,9 @@
+import { existsSync } from 'node:fs'
 import process from 'node:process'
-import { config } from 'dotenv'
 import z from 'zod'
 
-config()
+if (existsSync('.env'))
+  process.loadEnvFile()
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']),

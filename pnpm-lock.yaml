@@ -75,9 +75,6 @@ catalogs:
     bcryptjs:
       specifier: ^3.0.3
       version: 3.0.3
-    dotenv:
-      specifier: ^17.4.2
-      version: 17.4.2
     eslint:
       specifier: ^10.7.0
       version: 10.7.0
@@ -231,9 +228,6 @@ importers:
       bcryptjs:
         specifier: 'catalog:'
         version: 3.0.3
-      dotenv:
-        specifier: 'catalog:'
-        version: 17.4.2
       eslint:
         specifier: 'catalog:'
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)

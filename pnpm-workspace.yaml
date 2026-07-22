@@ -40,7 +40,6 @@ catalog:
   '@vueuse/nuxt': ^14.3.0
   '@vueuse/router': ^14.3.0
   bcryptjs: ^3.0.3
-  dotenv: ^17.4.2
   eslint: ^10.7.0
   feed: ^6.0.0
   golar: ^0.1.10
