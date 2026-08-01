@@ -99,7 +99,7 @@ catalogs:
     '@prisma/adapter-pg': ^7.9.1
     '@prisma/client': ^7.9.1
     '@types/pg': ^8.20.0
-    pg: ^8.17.2
+    pg: ^8.22.0
     prisma: ^7.9.1
 onlyBuiltDependencies:
   - '@parcel/watcher'
