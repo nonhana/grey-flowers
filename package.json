@@ -2,22 +2,31 @@
   "name": "hana-blog",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.18.0",
-  "engines": {
-    "node": ">=24.18.0 <25.0.0"
-  },
   "scripts": {
     "build": "pnpm -r --workspace-concurrency=1 run build",
+    "build:main": "pnpm -F @grey-flowers/main run build",
     "dev": "pnpm -F @grey-flowers/main run dev",
     "dev:admin": "pnpm -F @grey-flowers/admin run dev",
     "dev:api": "pnpm -F @grey-flowers/api run dev",
     "dev:main": "pnpm -F @grey-flowers/main run dev",
-    "build:main": "pnpm -F @grey-flowers/main run build",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "lint": "pnpm -r --workspace-concurrency=1 run lint",
+    "lint:fix": "pnpm -r --workspace-concurrency=1 run lint:fix",
     "prisma:generate": "pnpm -F @grey-flowers/db run prisma:generate",
     "prisma:migrate:deploy": "pnpm -F @grey-flowers/db run prisma:migrate:deploy",
     "prisma:push": "pnpm -F @grey-flowers/db run prisma:push",
     "prisma:studio": "pnpm -F @grey-flowers/db run prisma:studio",
     "typecheck": "pnpm -r --workspace-concurrency=1 run typecheck"
-  }
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=24.18.0 <25.0.0"
+  },
+  "packageManager": "pnpm@11.18.0"
 }

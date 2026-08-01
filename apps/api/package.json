@@ -1,25 +1,23 @@
 {
   "name": "@grey-flowers/api",
   "private": true,
+  "files": [
+    "dist"
+  ],
   "type": "module",
-  "engines": {
-    "node": ">=24.18.0 <25.0.0"
-  },
   "exports": {
     ".": {
       "types": "./src/app.ts",
       "default": "./dist/app.mjs"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "tsdown",
     "dev": "node --env-file-if-exists=../../.env --import tsx --watch src/main.ts",
-    "format": "oxfmt --write src tsdown.config.ts",
-    "format:check": "oxfmt --check src tsdown.config.ts",
-    "lint": "oxlint --config ../../oxlint.config.ts src tsdown.config.ts",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "start": "node dist/main.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -33,11 +31,7 @@
     "zod": "catalog:api"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "oxfmt": "catalog:",
-    "oxlint": "catalog:",
     "tsdown": "catalog:api",
-    "tsx": "catalog:api",
-    "typescript": "catalog:"
+    "tsx": "catalog:api"
   }
 }

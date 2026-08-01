@@ -8,7 +8,12 @@ export default {
   ],
   overrides: [
     {
-      files: ['apps/admin/**/*.{ts,tsx}', 'apps/api/**/*.ts', 'packages/contracts/**/*.ts', 'packages/db/src/**/*.ts'],
+      files: [
+        'apps/admin/**/*.{ts,tsx}',
+        'apps/api/**/*.ts',
+        'packages/contracts/**/*.ts',
+        'packages/db/src/**/*.ts',
+      ],
     },
   ],
-}
+};

@@ -1,12 +1,13 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { App } from "./app/app.js";
-import "./styles/index.css";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 
-const container = document.querySelector("#root");
+import { App } from './app/app.js';
+import './styles/index.css';
+
+const container = document.querySelector('#root');
 
 if (!container) {
-  throw new Error("Admin root container is missing.");
+  throw new Error('Admin root container is missing.');
 }
 
 createRoot(container).render(

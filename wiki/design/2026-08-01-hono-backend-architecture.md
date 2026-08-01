@@ -55,12 +55,12 @@ flowchart LR
   App --> ApiType["AppType\n仅类型导出"]
 ```
 
-| 位置 | 职责 | 不应承担 |
-| --- | --- | --- |
-| `env.ts` | 在启动时读取并验证 API 所需环境变量 | 在请求处理或业务模块中散落读取 `process.env` |
-| `bootstrap/dependencies.ts` | 创建 Prisma client 和已批准的外部 Adapter，并组装 `AppDependencies` | 路由定义、业务规则或 Node 监听 |
-| `app.ts` | `createApp(deps)`、安装全局 HTTP 能力、挂载模块、导出 Hono 类型 | 打开端口、创建隐式全局依赖 |
-| `main.ts` | 使用 `@hono/node-server` 启动 Node 进程并处理进程生命周期 | 路由、查询或业务编排 |
+| 位置                        | 职责                                                                | 不应承担                                     |
+| --------------------------- | ------------------------------------------------------------------- | -------------------------------------------- |
+| `env.ts`                    | 在启动时读取并验证 API 所需环境变量                                 | 在请求处理或业务模块中散落读取 `process.env` |
+| `bootstrap/dependencies.ts` | 创建 Prisma client 和已批准的外部 Adapter，并组装 `AppDependencies` | 路由定义、业务规则或 Node 监听               |
+| `app.ts`                    | `createApp(deps)`、安装全局 HTTP 能力、挂载模块、导出 Hono 类型     | 打开端口、创建隐式全局依赖                   |
+| `main.ts`                   | 使用 `@hono/node-server` 启动 Node 进程并处理进程生命周期           | 路由、查询或业务编排                         |
 
 依赖必须从组合根显式传入 `createApp(deps)`。模块不创建自己的 Prisma client，也不依赖隐藏的进程单例；这让应用实例的配置、验证和替换位置保持局部可见。
 
@@ -109,14 +109,14 @@ Hono 路由使用 `@hono/zod-validator` 在 HTTP 边界解析不可信输入。�
 
 Hono 的 HTTP 层只负责 transport 适配和横切能力；业务模块负责业务结果。职责如下：
 
-| 责任 | 所在位置 |
-| --- | --- |
-| 解析 HTTP、安装路由、请求上下文、输入验证 | `http/` 与模块路由适配层 |
-| 认证、授权和 Principal 写入请求上下文 | `http/middleware/` 与身份相关模块 |
-| 已知错误到 HTTP 错误合同的映射 | `http/errors.ts` |
-| 查询策略、事务、状态迁移、关系一致性 | 对应业务模块 |
-| Prisma 查询 projection 与 DTO 映射 | 对应业务模块的私有实现 |
-| R2 等外部 I/O | `adapters/`，由业务模块调用 |
+| 责任                                      | 所在位置                          |
+| ----------------------------------------- | --------------------------------- |
+| 解析 HTTP、安装路由、请求上下文、输入验证 | `http/` 与模块路由适配层          |
+| 认证、授权和 Principal 写入请求上下文     | `http/middleware/` 与身份相关模块 |
+| 已知错误到 HTTP 错误合同的映射            | `http/errors.ts`                  |
+| 查询策略、事务、状态迁移、关系一致性      | 对应业务模块                      |
+| Prisma 查询 projection 与 DTO 映射        | 对应业务模块的私有实现            |
+| R2 等外部 I/O                             | `adapters/`，由业务模块调用       |
 
 路由函数保持薄：验证输入、调用模块、返回已经映射的 DTO。它们不得承载 Prisma 查询、跨资源事务、权限例外或内容转换。反之，业务模块不得读取原始 HTTP Event，也不得依赖浏览器/UI 状态。
 

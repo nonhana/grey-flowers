@@ -6,8 +6,8 @@ Every `server/api/` endpoint is wrapped with `formattedEventHandler`:
 
 ```ts
 export default formattedEventHandler(async (event) => {
-  return { payload: data }
-})
+  return { payload: data };
+});
 ```
 
 The JSON envelope always has `statusCode`, `statusMessage`, `success`, `payload`, and `error`. Omitted success fields default to a successful `200` response; missing payload and error values become `null`. Return `{ success: false, statusCode, statusMessage, error? }` for an expected failure, and let the wrapper format unexpected thrown errors.

@@ -29,12 +29,12 @@ Admin 是 Grey Flowers 唯一的运营与数据管理可视化工作台。它应
 
 “以 Prisma 领域模型设计页面”与“以 Hono API 作为接口 SSOT”适用于不同层次，不能互相替代。
 
-| 范围 | 唯一事实来源 | Admin 的使用方式 |
-| --- | --- | --- |
-| 持久化数据与领域结构 | PostgreSQL 与 `packages/db` 的 Prisma schema | 用作领域清单和 feature 规划依据；不导入 Prisma type，也不按字段直接构造请求 |
-| 跨进程传输语义 | `packages/contracts` 的 Zod DTO 与错误码 | 作为请求、响应和可处理失败的唯一合同；不在前端定义镜像 DTO |
-| 可调用业务操作 | `apps/api` 的 Hono 路由与 `AppType` | 通过 HTTP 调用；以 type-only `AppType` 创建 `hc` 客户端，不把 API 运行时代码带入浏览器 |
-| 界面瞬时状态 | 当前 Admin feature | 保存草稿文本、选中项、面板状态和展示推导；不得成为业务数据的第二真相 |
+| 范围                 | 唯一事实来源                                 | Admin 的使用方式                                                                       |
+| -------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 持久化数据与领域结构 | PostgreSQL 与 `packages/db` 的 Prisma schema | 用作领域清单和 feature 规划依据；不导入 Prisma type，也不按字段直接构造请求            |
+| 跨进程传输语义       | `packages/contracts` 的 Zod DTO 与错误码     | 作为请求、响应和可处理失败的唯一合同；不在前端定义镜像 DTO                             |
+| 可调用业务操作       | `apps/api` 的 Hono 路由与 `AppType`          | 通过 HTTP 调用；以 type-only `AppType` 创建 `hc` 客户端，不把 API 运行时代码带入浏览器 |
+| 界面瞬时状态         | 当前 Admin feature                           | 保存草稿文本、选中项、面板状态和展示推导；不得成为业务数据的第二真相                   |
 
 因此，Prisma model 是 Admin 的**领域导航与代码归属线索**，而不是浏览器合同；Hono `AppType` 是 endpoint 的类型化投影，而不是第二种传输协议；`packages/contracts` 才是稳定 DTO 和错误码的唯一共享位置。
 
@@ -91,16 +91,16 @@ apps/admin/
 
 页面按运营任务划分，Prisma model 作为主要领域轴，而非一对一强制约束。
 
-| Feature | 主要页面或工作流 | 与模型的关系 |
-| --- | --- | --- |
-| `dashboard` | 运营概览、常用入口、待处理状态 | 跨领域投影，不对应单一 model |
-| `articles` | 列表、文章工作台、发布、版本历史 | 以 `Article` 为主；编辑时组合分类、标签和 Asset 选择 |
-| `taxonomy` | 标签管理、分类管理、文章编辑时的选择 | `Tag` 与 `Category` 分别管理，共享已证实的分类法读取能力 |
-| `activities` | 动态列表与编辑 | 以 `Activity` 为主，可关联音乐和图片 |
-| `music` | 音乐库、上传与编辑 | 以 `Music` 为主，可关联动态和 Asset |
-| `comments` | 评论队列、上下文、回复与处置 | 以 `Comment` 树为主，关联作者不等于管理 User |
-| `users` | 用户资料与运营管理 | 以 `User` 为主 |
-| `assets` | Asset 库、上传、选择与引用状态 | 以未来 `Asset` 领域为主，同时被其他编辑工作流嵌入 |
+| Feature      | 主要页面或工作流                     | 与模型的关系                                             |
+| ------------ | ------------------------------------ | -------------------------------------------------------- |
+| `dashboard`  | 运营概览、常用入口、待处理状态       | 跨领域投影，不对应单一 model                             |
+| `articles`   | 列表、文章工作台、发布、版本历史     | 以 `Article` 为主；编辑时组合分类、标签和 Asset 选择     |
+| `taxonomy`   | 标签管理、分类管理、文章编辑时的选择 | `Tag` 与 `Category` 分别管理，共享已证实的分类法读取能力 |
+| `activities` | 动态列表与编辑                       | 以 `Activity` 为主，可关联音乐和图片                     |
+| `music`      | 音乐库、上传与编辑                   | 以 `Music` 为主，可关联动态和 Asset                      |
+| `comments`   | 评论队列、上下文、回复与处置         | 以 `Comment` 树为主，关联作者不等于管理 User             |
+| `users`      | 用户资料与运营管理                   | 以 `User` 为主                                           |
+| `assets`     | Asset 库、上传、选择与引用状态       | 以未来 `Asset` 领域为主，同时被其他编辑工作流嵌入        |
 
 `UserMessage` 暂不拥有一级运营页面。只有 API 以后定义出独立的消息处理用例，才将其提升为 feature；不能因为存在 Prisma model 就制造没有日常任务的页面。
 
@@ -120,13 +120,13 @@ Admin 不在初始版本引入全局状态库。状态按归属放置：
 
 ## 与其他项目的协作
 
-| 对象 | Admin 可以做什么 | 明确不能做什么 |
-| --- | --- | --- |
-| `apps/api` | 用 HTTP/Hono RPC 读取状态、提交意图、按错误码反馈结果 | 复制发布、权限、事务、内容解析或引用一致性规则 |
-| `packages/contracts` | 导入 DTO、Zod schema、错误码和必要类型 | 放入 Prisma type、Hono/Node 运行时代码或 UI 状态 |
-| `apps/main` | 打开由 API 支持的预览路由，复用其最终 MDC 渲染 | 导入 Nuxt 组件、嵌入第二套渲染器或直接读取数据库 |
-| `packages/db` | 无运行时或构建时依赖 | 导入 Prisma、generated client 或通过数据库读取/写入业务数据 |
-| 对象存储 | 经 API 提交上传意图和读取 Asset 状态 | 取得 R2 凭证、指定任意 object key 或绕过 Asset 用例 |
+| 对象                 | Admin 可以做什么                                      | 明确不能做什么                                              |
+| -------------------- | ----------------------------------------------------- | ----------------------------------------------------------- |
+| `apps/api`           | 用 HTTP/Hono RPC 读取状态、提交意图、按错误码反馈结果 | 复制发布、权限、事务、内容解析或引用一致性规则              |
+| `packages/contracts` | 导入 DTO、Zod schema、错误码和必要类型                | 放入 Prisma type、Hono/Node 运行时代码或 UI 状态            |
+| `apps/main`          | 打开由 API 支持的预览路由，复用其最终 MDC 渲染        | 导入 Nuxt 组件、嵌入第二套渲染器或直接读取数据库            |
+| `packages/db`        | 无运行时或构建时依赖                                  | 导入 Prisma、generated client 或通过数据库读取/写入业务数据 |
+| 对象存储             | 经 API 提交上传意图和读取 Asset 状态                  | 取得 R2 凭证、指定任意 object key 或绕过 Asset 用例         |
 
 认证、会话、CORS、CSRF、上传直传协议和部署拓扑尚未选择。它们必须在首次依赖它们的 API 用例之前专项设计，不能由 Admin 页面临时决定。
 
