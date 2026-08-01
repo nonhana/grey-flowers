@@ -17,7 +17,7 @@
     "prisma:migrate:deploy": "pnpm -F @grey-flowers/db run prisma:migrate:deploy",
     "prisma:push": "pnpm -F @grey-flowers/db run prisma:push",
     "prisma:studio": "pnpm -F @grey-flowers/db run prisma:studio",
-    "typecheck": "pnpm -r --workspace-concurrency=1 run typecheck"
+    "typecheck": "tsc -p tsconfig.json --noEmit && pnpm -r --workspace-concurrency=1 run typecheck"
   },
   "devDependencies": {
     "@types/node": "catalog:",
