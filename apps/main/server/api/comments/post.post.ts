@@ -1,5 +1,5 @@
+import { Prisma } from '@grey-flowers/db'
 import { z } from 'zod'
-import { Prisma } from '~~/prisma/generated/client'
 import { useZodVerify } from '#server/composables/useZodVerify'
 import prisma from '#server/utils/prisma'
 

@@ -31,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4.4.0
         with:
-          node-version: 24.12.0
+          node-version: 24.18.0
           cache: pnpm
 
       - name: Install dependencies
@@ -52,8 +52,8 @@ jobs:
       - name: Prepare artifact directory
         run: |
           mkdir -p .deploy
-          cp -r .output .deploy/.output
-          cp ecosystem.config.cjs .deploy/
+          cp -r apps/main/.output .deploy/.output
+          cp apps/main/ecosystem.config.cjs .deploy/
 
       - name: Upload build artifacts to VPS
         uses: appleboy/scp-action@v1.0.0

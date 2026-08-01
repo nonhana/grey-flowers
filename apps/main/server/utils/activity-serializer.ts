@@ -1,4 +1,4 @@
-import type { Prisma } from '~~/prisma/generated/client'
+import type { Prisma } from '@grey-flowers/db'
 import type { activityWithMusicArgs } from '#server/utils/prismaShortcut'
 import type { ActivityItem } from '#shared/types/activity'
 import type { MarkdownRenderPayload } from '#shared/types/markdown'

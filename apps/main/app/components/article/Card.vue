@@ -3,6 +3,8 @@ import type { ImgHTMLAttributes, StyleValue } from 'vue'
 import type { ArticleCardProps } from '#shared/types/article'
 import { ArrowRight, Calendar, FileText } from '@lucide/vue'
 
+type PictureImgAttrs = ImgHTMLAttributes & Record<`data-${string}`, string>
+
 const props = withDefaults(
   defineProps<ArticleCardProps & { index: number }>(),
   { variant: 'compact' },
@@ -22,7 +24,7 @@ const hiddenTagLabel = computed(() => `+${hiddenTagCount.value}`)
 const normalizedDescription = computed(() => props.description.trim() || '暂无简介')
 const isGeneratedImage = computed(() => props.imageSource === 'generated')
 const imageAlt = computed(() => props.imageSource === 'generated' ? `${props.title} Nuxt OgImage` : `${props.title} Cover`)
-const cardImageAttrs = computed<ImgHTMLAttributes>(() => ({
+const cardImageAttrs = computed<PictureImgAttrs>(() => ({
   class: [
     'block size-full transition-transform duration-700 ease-out object-cover group-hover:scale-105',
     isGeneratedImage.value ? 'object-left' : '',

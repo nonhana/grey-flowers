@@ -1,0 +1,37 @@
+{
+  "name": "@grey-flowers/db",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=24.18.0 <25.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint --config ../../apps/main/eslint.config.mjs src",
+    "postinstall": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
+    "prisma:generate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
+    "prisma:migrate:deploy": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate deploy",
+    "prisma:push": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js db push",
+    "prisma:studio": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js studio",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "catalog:db",
+    "@prisma/client": "catalog:db",
+    "pg": "catalog:db"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:",
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:db",
+    "eslint": "catalog:",
+    "prisma": "catalog:db",
+    "typescript": "catalog:"
+  }
+}

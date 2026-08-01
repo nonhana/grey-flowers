@@ -1,4 +1,4 @@
-import type { Prisma } from '~~/prisma/generated/client'
+import type { Prisma } from '@grey-flowers/db'
 
 const activityMusicSelect = {
   id: true,
