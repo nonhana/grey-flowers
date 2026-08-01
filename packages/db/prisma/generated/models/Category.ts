@@ -28,11 +28,13 @@ export type AggregateCategory = {
 
 export type CategoryAvgAggregateOutputType = {
   id: number | null
+  coverAssetId: number | null
   articleCount: number | null
 }
 
 export type CategorySumAggregateOutputType = {
   id: number | null
+  coverAssetId: number | null
   articleCount: number | null
 }
 
@@ -40,6 +42,7 @@ export type CategoryMinAggregateOutputType = {
   id: number | null
   name: string | null
   cover: string | null
+  coverAssetId: number | null
   articleCount: number | null
 }
 
@@ -47,6 +50,7 @@ export type CategoryMaxAggregateOutputType = {
   id: number | null
   name: string | null
   cover: string | null
+  coverAssetId: number | null
   articleCount: number | null
 }
 
@@ -54,6 +58,7 @@ export type CategoryCountAggregateOutputType = {
   id: number
   name: number
   cover: number
+  coverAssetId: number
   articleCount: number
   _all: number
 }
@@ -61,11 +66,13 @@ export type CategoryCountAggregateOutputType = {
 
 export type CategoryAvgAggregateInputType = {
   id?: true
+  coverAssetId?: true
   articleCount?: true
 }
 
 export type CategorySumAggregateInputType = {
   id?: true
+  coverAssetId?: true
   articleCount?: true
 }
 
@@ -73,6 +80,7 @@ export type CategoryMinAggregateInputType = {
   id?: true
   name?: true
   cover?: true
+  coverAssetId?: true
   articleCount?: true
 }
 
@@ -80,6 +88,7 @@ export type CategoryMaxAggregateInputType = {
   id?: true
   name?: true
   cover?: true
+  coverAssetId?: true
   articleCount?: true
 }
 
@@ -87,6 +96,7 @@ export type CategoryCountAggregateInputType = {
   id?: true
   name?: true
   cover?: true
+  coverAssetId?: true
   articleCount?: true
   _all?: true
 }
@@ -181,6 +191,7 @@ export type CategoryGroupByOutputType = {
   id: number
   name: string
   cover: string
+  coverAssetId: number | null
   articleCount: number
   _count: CategoryCountAggregateOutputType | null
   _avg: CategoryAvgAggregateOutputType | null
@@ -211,16 +222,20 @@ export type CategoryWhereInput = {
   id?: Prisma.IntFilter<"Category"> | number
   name?: Prisma.StringFilter<"Category"> | string
   cover?: Prisma.StringFilter<"Category"> | string
+  coverAssetId?: Prisma.IntNullableFilter<"Category"> | number | null
   articleCount?: Prisma.IntFilter<"Category"> | number
   articles?: Prisma.ArticleListRelationFilter
+  coverAsset?: Prisma.XOR<Prisma.AssetNullableScalarRelationFilter, Prisma.AssetWhereInput> | null
 }
 
 export type CategoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   articleCount?: Prisma.SortOrder
   articles?: Prisma.ArticleOrderByRelationAggregateInput
+  coverAsset?: Prisma.AssetOrderByWithRelationInput
 }
 
 export type CategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -230,14 +245,17 @@ export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   cover?: Prisma.StringFilter<"Category"> | string
+  coverAssetId?: Prisma.IntNullableFilter<"Category"> | number | null
   articleCount?: Prisma.IntFilter<"Category"> | number
   articles?: Prisma.ArticleListRelationFilter
+  coverAsset?: Prisma.XOR<Prisma.AssetNullableScalarRelationFilter, Prisma.AssetWhereInput> | null
 }, "id" | "name">
 
 export type CategoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   articleCount?: Prisma.SortOrder
   _count?: Prisma.CategoryCountOrderByAggregateInput
   _avg?: Prisma.CategoryAvgOrderByAggregateInput
@@ -253,6 +271,7 @@ export type CategoryScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Category"> | number
   name?: Prisma.StringWithAggregatesFilter<"Category"> | string
   cover?: Prisma.StringWithAggregatesFilter<"Category"> | string
+  coverAssetId?: Prisma.IntNullableWithAggregatesFilter<"Category"> | number | null
   articleCount?: Prisma.IntWithAggregatesFilter<"Category"> | number
 }
 
@@ -261,12 +280,14 @@ export type CategoryCreateInput = {
   cover: string
   articleCount?: number
   articles?: Prisma.ArticleCreateNestedManyWithoutCategoryInput
+  coverAsset?: Prisma.AssetCreateNestedOneWithoutCategoryCoversInput
 }
 
 export type CategoryUncheckedCreateInput = {
   id?: number
   name: string
   cover: string
+  coverAssetId?: number | null
   articleCount?: number
   articles?: Prisma.ArticleUncheckedCreateNestedManyWithoutCategoryInput
 }
@@ -276,12 +297,14 @@ export type CategoryUpdateInput = {
   cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
   articles?: Prisma.ArticleUpdateManyWithoutCategoryNestedInput
+  coverAsset?: Prisma.AssetUpdateOneWithoutCategoryCoversNestedInput
 }
 
 export type CategoryUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
   articles?: Prisma.ArticleUncheckedUpdateManyWithoutCategoryNestedInput
 }
@@ -290,6 +313,7 @@ export type CategoryCreateManyInput = {
   id?: number
   name: string
   cover: string
+  coverAssetId?: number | null
   articleCount?: number
 }
 
@@ -303,6 +327,7 @@ export type CategoryUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -315,11 +340,13 @@ export type CategoryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
 }
 
 export type CategoryAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
 }
 
@@ -327,6 +354,7 @@ export type CategoryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
 }
 
@@ -334,12 +362,24 @@ export type CategoryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
 }
 
 export type CategorySumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   articleCount?: Prisma.SortOrder
+}
+
+export type CategoryListRelationFilter = {
+  every?: Prisma.CategoryWhereInput
+  some?: Prisma.CategoryWhereInput
+  none?: Prisma.CategoryWhereInput
+}
+
+export type CategoryOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CategoryCreateNestedOneWithoutArticlesInput = {
@@ -358,16 +398,60 @@ export type CategoryUpdateOneWithoutArticlesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CategoryUpdateToOneWithWhereWithoutArticlesInput, Prisma.CategoryUpdateWithoutArticlesInput>, Prisma.CategoryUncheckedUpdateWithoutArticlesInput>
 }
 
+export type CategoryCreateNestedManyWithoutCoverAssetInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutCoverAssetInput, Prisma.CategoryUncheckedCreateWithoutCoverAssetInput> | Prisma.CategoryCreateWithoutCoverAssetInput[] | Prisma.CategoryUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutCoverAssetInput | Prisma.CategoryCreateOrConnectWithoutCoverAssetInput[]
+  createMany?: Prisma.CategoryCreateManyCoverAssetInputEnvelope
+  connect?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+}
+
+export type CategoryUncheckedCreateNestedManyWithoutCoverAssetInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutCoverAssetInput, Prisma.CategoryUncheckedCreateWithoutCoverAssetInput> | Prisma.CategoryCreateWithoutCoverAssetInput[] | Prisma.CategoryUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutCoverAssetInput | Prisma.CategoryCreateOrConnectWithoutCoverAssetInput[]
+  createMany?: Prisma.CategoryCreateManyCoverAssetInputEnvelope
+  connect?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+}
+
+export type CategoryUpdateManyWithoutCoverAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutCoverAssetInput, Prisma.CategoryUncheckedCreateWithoutCoverAssetInput> | Prisma.CategoryCreateWithoutCoverAssetInput[] | Prisma.CategoryUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutCoverAssetInput | Prisma.CategoryCreateOrConnectWithoutCoverAssetInput[]
+  upsert?: Prisma.CategoryUpsertWithWhereUniqueWithoutCoverAssetInput | Prisma.CategoryUpsertWithWhereUniqueWithoutCoverAssetInput[]
+  createMany?: Prisma.CategoryCreateManyCoverAssetInputEnvelope
+  set?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  disconnect?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  delete?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  connect?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  update?: Prisma.CategoryUpdateWithWhereUniqueWithoutCoverAssetInput | Prisma.CategoryUpdateWithWhereUniqueWithoutCoverAssetInput[]
+  updateMany?: Prisma.CategoryUpdateManyWithWhereWithoutCoverAssetInput | Prisma.CategoryUpdateManyWithWhereWithoutCoverAssetInput[]
+  deleteMany?: Prisma.CategoryScalarWhereInput | Prisma.CategoryScalarWhereInput[]
+}
+
+export type CategoryUncheckedUpdateManyWithoutCoverAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.CategoryCreateWithoutCoverAssetInput, Prisma.CategoryUncheckedCreateWithoutCoverAssetInput> | Prisma.CategoryCreateWithoutCoverAssetInput[] | Prisma.CategoryUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutCoverAssetInput | Prisma.CategoryCreateOrConnectWithoutCoverAssetInput[]
+  upsert?: Prisma.CategoryUpsertWithWhereUniqueWithoutCoverAssetInput | Prisma.CategoryUpsertWithWhereUniqueWithoutCoverAssetInput[]
+  createMany?: Prisma.CategoryCreateManyCoverAssetInputEnvelope
+  set?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  disconnect?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  delete?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  connect?: Prisma.CategoryWhereUniqueInput | Prisma.CategoryWhereUniqueInput[]
+  update?: Prisma.CategoryUpdateWithWhereUniqueWithoutCoverAssetInput | Prisma.CategoryUpdateWithWhereUniqueWithoutCoverAssetInput[]
+  updateMany?: Prisma.CategoryUpdateManyWithWhereWithoutCoverAssetInput | Prisma.CategoryUpdateManyWithWhereWithoutCoverAssetInput[]
+  deleteMany?: Prisma.CategoryScalarWhereInput | Prisma.CategoryScalarWhereInput[]
+}
+
 export type CategoryCreateWithoutArticlesInput = {
   name: string
   cover: string
   articleCount?: number
+  coverAsset?: Prisma.AssetCreateNestedOneWithoutCategoryCoversInput
 }
 
 export type CategoryUncheckedCreateWithoutArticlesInput = {
   id?: number
   name: string
   cover: string
+  coverAssetId?: number | null
   articleCount?: number
 }
 
@@ -391,9 +475,92 @@ export type CategoryUpdateWithoutArticlesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.StringFieldUpdateOperationsInput | string
   articleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  coverAsset?: Prisma.AssetUpdateOneWithoutCategoryCoversNestedInput
 }
 
 export type CategoryUncheckedUpdateWithoutArticlesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  articleCount?: Prisma.IntFieldUpdateOperationsInput | number
+}
+
+export type CategoryCreateWithoutCoverAssetInput = {
+  name: string
+  cover: string
+  articleCount?: number
+  articles?: Prisma.ArticleCreateNestedManyWithoutCategoryInput
+}
+
+export type CategoryUncheckedCreateWithoutCoverAssetInput = {
+  id?: number
+  name: string
+  cover: string
+  articleCount?: number
+  articles?: Prisma.ArticleUncheckedCreateNestedManyWithoutCategoryInput
+}
+
+export type CategoryCreateOrConnectWithoutCoverAssetInput = {
+  where: Prisma.CategoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.CategoryCreateWithoutCoverAssetInput, Prisma.CategoryUncheckedCreateWithoutCoverAssetInput>
+}
+
+export type CategoryCreateManyCoverAssetInputEnvelope = {
+  data: Prisma.CategoryCreateManyCoverAssetInput | Prisma.CategoryCreateManyCoverAssetInput[]
+  skipDuplicates?: boolean
+}
+
+export type CategoryUpsertWithWhereUniqueWithoutCoverAssetInput = {
+  where: Prisma.CategoryWhereUniqueInput
+  update: Prisma.XOR<Prisma.CategoryUpdateWithoutCoverAssetInput, Prisma.CategoryUncheckedUpdateWithoutCoverAssetInput>
+  create: Prisma.XOR<Prisma.CategoryCreateWithoutCoverAssetInput, Prisma.CategoryUncheckedCreateWithoutCoverAssetInput>
+}
+
+export type CategoryUpdateWithWhereUniqueWithoutCoverAssetInput = {
+  where: Prisma.CategoryWhereUniqueInput
+  data: Prisma.XOR<Prisma.CategoryUpdateWithoutCoverAssetInput, Prisma.CategoryUncheckedUpdateWithoutCoverAssetInput>
+}
+
+export type CategoryUpdateManyWithWhereWithoutCoverAssetInput = {
+  where: Prisma.CategoryScalarWhereInput
+  data: Prisma.XOR<Prisma.CategoryUpdateManyMutationInput, Prisma.CategoryUncheckedUpdateManyWithoutCoverAssetInput>
+}
+
+export type CategoryScalarWhereInput = {
+  AND?: Prisma.CategoryScalarWhereInput | Prisma.CategoryScalarWhereInput[]
+  OR?: Prisma.CategoryScalarWhereInput[]
+  NOT?: Prisma.CategoryScalarWhereInput | Prisma.CategoryScalarWhereInput[]
+  id?: Prisma.IntFilter<"Category"> | number
+  name?: Prisma.StringFilter<"Category"> | string
+  cover?: Prisma.StringFilter<"Category"> | string
+  coverAssetId?: Prisma.IntNullableFilter<"Category"> | number | null
+  articleCount?: Prisma.IntFilter<"Category"> | number
+}
+
+export type CategoryCreateManyCoverAssetInput = {
+  id?: number
+  name: string
+  cover: string
+  articleCount?: number
+}
+
+export type CategoryUpdateWithoutCoverAssetInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  articleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  articles?: Prisma.ArticleUpdateManyWithoutCategoryNestedInput
+}
+
+export type CategoryUncheckedUpdateWithoutCoverAssetInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  articleCount?: Prisma.IntFieldUpdateOperationsInput | number
+  articles?: Prisma.ArticleUncheckedUpdateManyWithoutCategoryNestedInput
+}
+
+export type CategoryUncheckedUpdateManyWithoutCoverAssetInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   cover?: Prisma.StringFieldUpdateOperationsInput | string
@@ -435,8 +602,10 @@ export type CategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   name?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   articleCount?: boolean
   articles?: boolean | Prisma.Category$articlesArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Category$coverAssetArgs<ExtArgs>
   _count?: boolean | Prisma.CategoryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["category"]>
 
@@ -444,40 +613,52 @@ export type CategorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   name?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   articleCount?: boolean
+  coverAsset?: boolean | Prisma.Category$coverAssetArgs<ExtArgs>
 }, ExtArgs["result"]["category"]>
 
 export type CategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   articleCount?: boolean
+  coverAsset?: boolean | Prisma.Category$coverAssetArgs<ExtArgs>
 }, ExtArgs["result"]["category"]>
 
 export type CategorySelectScalar = {
   id?: boolean
   name?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   articleCount?: boolean
 }
 
-export type CategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "cover" | "articleCount", ExtArgs["result"]["category"]>
+export type CategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "cover" | "coverAssetId" | "articleCount", ExtArgs["result"]["category"]>
 export type CategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   articles?: boolean | Prisma.Category$articlesArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Category$coverAssetArgs<ExtArgs>
   _count?: boolean | Prisma.CategoryCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type CategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type CategoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  coverAsset?: boolean | Prisma.Category$coverAssetArgs<ExtArgs>
+}
+export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  coverAsset?: boolean | Prisma.Category$coverAssetArgs<ExtArgs>
+}
 
 export type $CategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Category"
   objects: {
     articles: Prisma.$ArticlePayload<ExtArgs>[]
+    coverAsset: Prisma.$AssetPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
     cover: string
+    coverAssetId: number | null
     articleCount: number
   }, ExtArgs["result"]["category"]>
   composites: {}
@@ -874,6 +1055,7 @@ readonly fields: CategoryFieldRefs;
 export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   articles<T extends Prisma.Category$articlesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Category$articlesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  coverAsset<T extends Prisma.Category$coverAssetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Category$coverAssetArgs<ExtArgs>>): Prisma.Prisma__AssetClient<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -906,6 +1088,7 @@ export interface CategoryFieldRefs {
   readonly id: Prisma.FieldRef<"Category", 'Int'>
   readonly name: Prisma.FieldRef<"Category", 'String'>
   readonly cover: Prisma.FieldRef<"Category", 'String'>
+  readonly coverAssetId: Prisma.FieldRef<"Category", 'Int'>
   readonly articleCount: Prisma.FieldRef<"Category", 'Int'>
 }
     
@@ -1161,6 +1344,10 @@ export type CategoryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.CategoryCreateManyInput | Prisma.CategoryCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1231,6 +1418,10 @@ export type CategoryUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Categories to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1321,6 +1512,25 @@ export type Category$articlesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ArticleScalarFieldEnum | Prisma.ArticleScalarFieldEnum[]
+}
+
+/**
+ * Category.coverAsset
+ */
+export type Category$coverAssetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Asset
+   */
+  select?: Prisma.AssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Asset
+   */
+  omit?: Prisma.AssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetInclude<ExtArgs> | null
+  where?: Prisma.AssetWhereInput
 }
 
 /**

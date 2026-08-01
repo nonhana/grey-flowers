@@ -10,22 +10,26 @@ datasource db {
 
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model Article {
-  id          Int       @id @default(autoincrement())
-  to          String    @unique
-  title       String    @unique
-  description String?
-  cover       String
-  alt         String    @unique
-  publishedAt DateTime  @default(now())
-  editedAt    DateTime
-  published   Boolean   @default(false)
-  wordCount   Int       @default(0)
-  categoryId  Int?
-  content     String?   @default("")
-  category    Category? @relation(fields: [categoryId], references: [id])
-  tags        Tag[]     @relation("ArticleTags")
+  id           Int                  @id @default(autoincrement())
+  to           String               @unique
+  title        String               @unique
+  description  String?
+  cover        String
+  coverAssetId Int?
+  alt          String               @unique
+  publishedAt  DateTime             @default(now())
+  editedAt     DateTime
+  published    Boolean              @default(false)
+  wordCount    Int                  @default(0)
+  categoryId   Int?
+  content      String?              @default("")
+  category     Category?            @relation(fields: [categoryId], references: [id])
+  coverAsset   Asset?               @relation("ArticleCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
+  inlineAssets ArticleInlineAsset[]
+  tags         Tag[]                @relation("ArticleTags")
 
   @@index([title(ops: raw("gin_trgm_ops"))], map: "Article_search_title_trgm_idx", type: Gin, where: raw("(published = true)"))
+  @@index([coverAssetId])
 }
 
 model Tag {
@@ -39,23 +43,28 @@ model Category {
   id           Int       @id @default(autoincrement())
   name         String    @unique
   cover        String
+  coverAssetId Int?
   articleCount Int       @default(0)
   articles     Article[]
+  coverAsset   Asset?    @relation("CategoryCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
+
+  @@index([coverAssetId])
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  site        String?
-  avatar      String
-  password    String
-  username    String        @unique
-  createdAt   DateTime      @default(now())
-  role        UserRole      @default(USER)
-  updatedAt   DateTime      @updatedAt
-  comments    Comment[]
-  replies     Comment[]     @relation("ReplyToUser")
-  userMessage UserMessage[]
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  site          String?
+  avatar        String
+  password      String
+  username      String        @unique
+  createdAt     DateTime      @default(now())
+  role          UserRole      @default(USER)
+  updatedAt     DateTime      @updatedAt
+  comments      Comment[]
+  replies       Comment[]     @relation("ReplyToUser")
+  userMessage   UserMessage[]
+  createdAssets Asset[]       @relation("AssetCreatedBy")
 }
 
 model Comment {
@@ -88,25 +97,81 @@ model UserMessage {
 }
 
 model Activity {
-  id              Int      @id @default(autoincrement())
-  content         String   @default("")
-  images          String[] @default([])
-  publishedAt     DateTime @default(now())
-  editedAt        DateTime @updatedAt
+  id              Int                  @id @default(autoincrement())
+  content         String               @default("")
+  images          String[]             @default([])
+  publishedAt     DateTime             @default(now())
+  editedAt        DateTime             @updatedAt
   contentMarkdown Json?
+  imageAssets     ActivityImageAsset[]
   music           Music[]
 }
 
 model Music {
-  id         Int       @id @default(autoincrement())
-  title      String
-  src        String
-  seconds    Int
-  activityId Int?
-  album      String
-  artist     String
-  cover      String
-  activity   Activity? @relation(fields: [activityId], references: [id])
+  id            Int       @id @default(autoincrement())
+  title         String
+  src           String
+  sourceAssetId Int?
+  seconds       Int
+  activityId    Int?
+  album         String
+  artist        String
+  cover         String
+  coverAssetId  Int?
+  activity      Activity? @relation(fields: [activityId], references: [id])
+  sourceAsset   Asset?    @relation("MusicSourceAsset", fields: [sourceAssetId], references: [id], onDelete: Restrict)
+  coverAsset    Asset?    @relation("MusicCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
+
+  @@index([sourceAssetId])
+  @@index([coverAssetId])
+}
+
+model Asset {
+  id                  Int                  @id @default(autoincrement())
+  storageKey          String               @unique
+  mediaType           AssetMediaType
+  mimeType            String
+  byteSize            BigInt
+  width               Int?
+  height              Int?
+  durationMs          Int?
+  status              AssetStatus          @default(AVAILABLE)
+  createdById         Int
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
+  createdBy           User                 @relation("AssetCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  articleCovers       Article[]            @relation("ArticleCoverAsset")
+  categoryCovers      Category[]           @relation("CategoryCoverAsset")
+  musicSources        Music[]              @relation("MusicSourceAsset")
+  musicCovers         Music[]              @relation("MusicCoverAsset")
+  activityImages      ActivityImageAsset[]
+  articleInlineAssets ArticleInlineAsset[]
+
+  @@index([status])
+  @@index([createdById])
+}
+
+model ArticleInlineAsset {
+  articleId Int
+  assetId   Int
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  asset     Asset   @relation(fields: [assetId], references: [id], onDelete: Restrict)
+
+  @@id([articleId, assetId])
+  @@index([assetId])
+}
+
+model ActivityImageAsset {
+  activityId Int
+  assetId    Int
+  position   Int
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  asset      Asset    @relation(fields: [assetId], references: [id], onDelete: Restrict)
+
+  @@id([activityId, assetId])
+  @@unique([activityId, position])
+  @@index([assetId])
 }
 
 enum CommentLevel {
@@ -117,4 +182,15 @@ enum CommentLevel {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum AssetMediaType {
+  IMAGE
+  AUDIO
+}
+
+enum AssetStatus {
+  AVAILABLE
+  PENDING_CLEANUP
+  DELETED
 }

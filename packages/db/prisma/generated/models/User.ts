@@ -251,6 +251,7 @@ export type UserWhereInput = {
   comments?: Prisma.CommentListRelationFilter
   replies?: Prisma.CommentListRelationFilter
   userMessage?: Prisma.UserMessageListRelationFilter
+  createdAssets?: Prisma.AssetListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -266,6 +267,7 @@ export type UserOrderByWithRelationInput = {
   comments?: Prisma.CommentOrderByRelationAggregateInput
   replies?: Prisma.CommentOrderByRelationAggregateInput
   userMessage?: Prisma.UserMessageOrderByRelationAggregateInput
+  createdAssets?: Prisma.AssetOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -284,6 +286,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   comments?: Prisma.CommentListRelationFilter
   replies?: Prisma.CommentListRelationFilter
   userMessage?: Prisma.UserMessageListRelationFilter
+  createdAssets?: Prisma.AssetListRelationFilter
 }, "id" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -330,6 +333,7 @@ export type UserCreateInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -345,6 +349,7 @@ export type UserUncheckedCreateInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -359,6 +364,7 @@ export type UserUpdateInput = {
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -374,6 +380,7 @@ export type UserUncheckedUpdateInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -513,6 +520,20 @@ export type UserUpdateOneRequiredWithoutUserMessageNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserMessageInput, Prisma.UserUpdateWithoutUserMessageInput>, Prisma.UserUncheckedUpdateWithoutUserMessageInput>
 }
 
+export type UserCreateNestedOneWithoutCreatedAssetsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedAssetsInput, Prisma.UserUncheckedCreateWithoutCreatedAssetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedAssetsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCreatedAssetsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedAssetsInput, Prisma.UserUncheckedCreateWithoutCreatedAssetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedAssetsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedAssetsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedAssetsInput, Prisma.UserUpdateWithoutCreatedAssetsInput>, Prisma.UserUncheckedUpdateWithoutCreatedAssetsInput>
+}
+
 export type UserCreateWithoutCommentsInput = {
   email: string
   site?: string | null
@@ -524,6 +545,7 @@ export type UserCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -538,6 +560,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   updatedAt?: Date | string
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -556,6 +579,7 @@ export type UserCreateWithoutRepliesInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutRepliesInput = {
@@ -570,6 +594,7 @@ export type UserUncheckedCreateWithoutRepliesInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutRepliesInput = {
@@ -599,6 +624,7 @@ export type UserUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -613,6 +639,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutRepliesInput = {
@@ -637,6 +664,7 @@ export type UserUpdateWithoutRepliesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRepliesInput = {
@@ -651,6 +679,7 @@ export type UserUncheckedUpdateWithoutRepliesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutUserMessageInput = {
@@ -664,6 +693,7 @@ export type UserCreateWithoutUserMessageInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
+  createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutUserMessageInput = {
@@ -678,6 +708,7 @@ export type UserUncheckedCreateWithoutUserMessageInput = {
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
+  createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutUserMessageInput = {
@@ -707,6 +738,7 @@ export type UserUpdateWithoutUserMessageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
+  createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMessageInput = {
@@ -721,6 +753,81 @@ export type UserUncheckedUpdateWithoutUserMessageInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
+  createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedAssetsInput = {
+  email: string
+  site?: string | null
+  avatar: string
+  password: string
+  username: string
+  createdAt?: Date | string
+  role?: $Enums.UserRole
+  updatedAt?: Date | string
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
+  userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
+}
+
+export type UserUncheckedCreateWithoutCreatedAssetsInput = {
+  id?: number
+  email: string
+  site?: string | null
+  avatar: string
+  password: string
+  username: string
+  createdAt?: Date | string
+  role?: $Enums.UserRole
+  updatedAt?: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
+  userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
+}
+
+export type UserCreateOrConnectWithoutCreatedAssetsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedAssetsInput, Prisma.UserUncheckedCreateWithoutCreatedAssetsInput>
+}
+
+export type UserUpsertWithoutCreatedAssetsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedAssetsInput, Prisma.UserUncheckedUpdateWithoutCreatedAssetsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedAssetsInput, Prisma.UserUncheckedCreateWithoutCreatedAssetsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedAssetsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedAssetsInput, Prisma.UserUncheckedUpdateWithoutCreatedAssetsInput>
+}
+
+export type UserUpdateWithoutCreatedAssetsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  site?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
+  userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedAssetsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  site?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
+  userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
 }
 
 
@@ -732,12 +839,14 @@ export type UserCountOutputType = {
   comments: number
   replies: number
   userMessage: number
+  createdAssets: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   replies?: boolean | UserCountOutputTypeCountRepliesArgs
   userMessage?: boolean | UserCountOutputTypeCountUserMessageArgs
+  createdAssets?: boolean | UserCountOutputTypeCountCreatedAssetsArgs
 }
 
 /**
@@ -771,6 +880,13 @@ export type UserCountOutputTypeCountUserMessageArgs<ExtArgs extends runtime.Type
   where?: Prisma.UserMessageWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -785,6 +901,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
   userMessage?: boolean | Prisma.User$userMessageArgs<ExtArgs>
+  createdAssets?: boolean | Prisma.User$createdAssetsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -829,6 +946,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   replies?: boolean | Prisma.User$repliesArgs<ExtArgs>
   userMessage?: boolean | Prisma.User$userMessageArgs<ExtArgs>
+  createdAssets?: boolean | Prisma.User$createdAssetsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -840,6 +958,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     comments: Prisma.$CommentPayload<ExtArgs>[]
     replies: Prisma.$CommentPayload<ExtArgs>[]
     userMessage: Prisma.$UserMessagePayload<ExtArgs>[]
+    createdAssets: Prisma.$AssetPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1248,6 +1367,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   replies<T extends Prisma.User$repliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userMessage<T extends Prisma.User$userMessageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMessageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdAssets<T extends Prisma.User$createdAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1748,6 +1868,30 @@ export type User$userMessageArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.UserMessageScalarFieldEnum | Prisma.UserMessageScalarFieldEnum[]
+}
+
+/**
+ * User.createdAssets
+ */
+export type User$createdAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Asset
+   */
+  select?: Prisma.AssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Asset
+   */
+  omit?: Prisma.AssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetInclude<ExtArgs> | null
+  where?: Prisma.AssetWhereInput
+  orderBy?: Prisma.AssetOrderByWithRelationInput | Prisma.AssetOrderByWithRelationInput[]
+  cursor?: Prisma.AssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetScalarFieldEnum | Prisma.AssetScalarFieldEnum[]
 }
 
 /**

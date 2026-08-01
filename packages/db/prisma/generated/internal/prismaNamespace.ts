@@ -404,7 +404,10 @@ export const ModelName = {
   Comment: 'Comment',
   UserMessage: 'UserMessage',
   Activity: 'Activity',
-  Music: 'Music'
+  Music: 'Music',
+  Asset: 'Asset',
+  ArticleInlineAsset: 'ArticleInlineAsset',
+  ActivityImageAsset: 'ActivityImageAsset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "article" | "tag" | "category" | "user" | "comment" | "userMessage" | "activity" | "music"
+    modelProps: "article" | "tag" | "category" | "user" | "comment" | "userMessage" | "activity" | "music" | "asset" | "articleInlineAsset" | "activityImageAsset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1016,6 +1019,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Asset: {
+      payload: Prisma.$AssetPayload<ExtArgs>
+      fields: Prisma.AssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        findFirst: {
+          args: Prisma.AssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        findMany: {
+          args: Prisma.AssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
+        }
+        create: {
+          args: Prisma.AssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        createMany: {
+          args: Prisma.AssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
+        }
+        delete: {
+          args: Prisma.AssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        update: {
+          args: Prisma.AssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        aggregate: {
+          args: Prisma.AssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAsset>
+        }
+        groupBy: {
+          args: Prisma.AssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetCountAggregateOutputType> | number
+        }
+      }
+    }
+    ArticleInlineAsset: {
+      payload: Prisma.$ArticleInlineAssetPayload<ExtArgs>
+      fields: Prisma.ArticleInlineAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArticleInlineAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArticleInlineAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.ArticleInlineAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArticleInlineAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>
+        }
+        findMany: {
+          args: Prisma.ArticleInlineAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>[]
+        }
+        create: {
+          args: Prisma.ArticleInlineAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>
+        }
+        createMany: {
+          args: Prisma.ArticleInlineAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArticleInlineAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.ArticleInlineAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>
+        }
+        update: {
+          args: Prisma.ArticleInlineAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.ArticleInlineAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArticleInlineAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArticleInlineAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.ArticleInlineAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleInlineAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.ArticleInlineAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArticleInlineAsset>
+        }
+        groupBy: {
+          args: Prisma.ArticleInlineAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArticleInlineAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArticleInlineAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArticleInlineAssetCountAggregateOutputType> | number
+        }
+      }
+    }
+    ActivityImageAsset: {
+      payload: Prisma.$ActivityImageAssetPayload<ExtArgs>
+      fields: Prisma.ActivityImageAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ActivityImageAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ActivityImageAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.ActivityImageAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ActivityImageAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>
+        }
+        findMany: {
+          args: Prisma.ActivityImageAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>[]
+        }
+        create: {
+          args: Prisma.ActivityImageAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>
+        }
+        createMany: {
+          args: Prisma.ActivityImageAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ActivityImageAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.ActivityImageAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>
+        }
+        update: {
+          args: Prisma.ActivityImageAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.ActivityImageAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ActivityImageAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ActivityImageAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.ActivityImageAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityImageAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.ActivityImageAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateActivityImageAsset>
+        }
+        groupBy: {
+          args: Prisma.ActivityImageAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityImageAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ActivityImageAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityImageAssetCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1061,6 +1286,7 @@ export const ArticleScalarFieldEnum = {
   title: 'title',
   description: 'description',
   cover: 'cover',
+  coverAssetId: 'coverAssetId',
   alt: 'alt',
   publishedAt: 'publishedAt',
   editedAt: 'editedAt',
@@ -1086,6 +1312,7 @@ export const CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
   cover: 'cover',
+  coverAssetId: 'coverAssetId',
   articleCount: 'articleCount'
 } as const
 
@@ -1149,14 +1376,52 @@ export const MusicScalarFieldEnum = {
   id: 'id',
   title: 'title',
   src: 'src',
+  sourceAssetId: 'sourceAssetId',
   seconds: 'seconds',
   activityId: 'activityId',
   album: 'album',
   artist: 'artist',
-  cover: 'cover'
+  cover: 'cover',
+  coverAssetId: 'coverAssetId'
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
+
+
+export const AssetScalarFieldEnum = {
+  id: 'id',
+  storageKey: 'storageKey',
+  mediaType: 'mediaType',
+  mimeType: 'mimeType',
+  byteSize: 'byteSize',
+  width: 'width',
+  height: 'height',
+  durationMs: 'durationMs',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const ArticleInlineAssetScalarFieldEnum = {
+  articleId: 'articleId',
+  assetId: 'assetId'
+} as const
+
+export type ArticleInlineAssetScalarFieldEnum = (typeof ArticleInlineAssetScalarFieldEnum)[keyof typeof ArticleInlineAssetScalarFieldEnum]
+
+
+export const ActivityImageAssetScalarFieldEnum = {
+  activityId: 'activityId',
+  assetId: 'assetId',
+  position: 'position'
+} as const
+
+export type ActivityImageAssetScalarFieldEnum = (typeof ActivityImageAssetScalarFieldEnum)[keyof typeof ActivityImageAssetScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1294,6 +1559,48 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetMediaType'
+ */
+export type EnumAssetMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetMediaType'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetMediaType[]'
+ */
+export type ListEnumAssetMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetMediaType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetStatus'
+ */
+export type EnumAssetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetStatus[]'
+ */
+export type ListEnumAssetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetStatus[]'>
     
 
 
@@ -1469,6 +1776,9 @@ export type GlobalOmitConfig = {
   userMessage?: Prisma.UserMessageOmit
   activity?: Prisma.ActivityOmit
   music?: Prisma.MusicOmit
+  asset?: Prisma.AssetOmit
+  articleInlineAsset?: Prisma.ArticleInlineAssetOmit
+  activityImageAsset?: Prisma.ActivityImageAssetOmit
 }
 
 /* Types for Logging */
