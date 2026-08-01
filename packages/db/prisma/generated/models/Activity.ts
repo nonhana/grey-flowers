@@ -216,6 +216,7 @@ export type ActivityWhereInput = {
   publishedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Activity">
+  imageAssets?: Prisma.ActivityImageAssetListRelationFilter
   music?: Prisma.MusicListRelationFilter
 }
 
@@ -226,6 +227,7 @@ export type ActivityOrderByWithRelationInput = {
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageAssets?: Prisma.ActivityImageAssetOrderByRelationAggregateInput
   music?: Prisma.MusicOrderByRelationAggregateInput
 }
 
@@ -239,6 +241,7 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   publishedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Activity">
+  imageAssets?: Prisma.ActivityImageAssetListRelationFilter
   music?: Prisma.MusicListRelationFilter
 }, "id">
 
@@ -274,6 +277,7 @@ export type ActivityCreateInput = {
   publishedAt?: Date | string
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetCreateNestedManyWithoutActivityInput
   music?: Prisma.MusicCreateNestedManyWithoutActivityInput
 }
 
@@ -284,6 +288,7 @@ export type ActivityUncheckedCreateInput = {
   publishedAt?: Date | string
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetUncheckedCreateNestedManyWithoutActivityInput
   music?: Prisma.MusicUncheckedCreateNestedManyWithoutActivityInput
 }
 
@@ -293,6 +298,7 @@ export type ActivityUpdateInput = {
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetUpdateManyWithoutActivityNestedInput
   music?: Prisma.MusicUpdateManyWithoutActivityNestedInput
 }
 
@@ -303,6 +309,7 @@ export type ActivityUncheckedUpdateInput = {
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetUncheckedUpdateManyWithoutActivityNestedInput
   music?: Prisma.MusicUncheckedUpdateManyWithoutActivityNestedInput
 }
 
@@ -376,6 +383,11 @@ export type ActivityNullableScalarRelationFilter = {
   isNot?: Prisma.ActivityWhereInput | null
 }
 
+export type ActivityScalarRelationFilter = {
+  is?: Prisma.ActivityWhereInput
+  isNot?: Prisma.ActivityWhereInput
+}
+
 export type ActivityCreateimagesInput = {
   set: string[]
 }
@@ -401,12 +413,27 @@ export type ActivityUpdateOneWithoutMusicNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityUpdateToOneWithWhereWithoutMusicInput, Prisma.ActivityUpdateWithoutMusicInput>, Prisma.ActivityUncheckedUpdateWithoutMusicInput>
 }
 
+export type ActivityCreateNestedOneWithoutImageAssetsInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutImageAssetsInput, Prisma.ActivityUncheckedCreateWithoutImageAssetsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutImageAssetsInput
+  connect?: Prisma.ActivityWhereUniqueInput
+}
+
+export type ActivityUpdateOneRequiredWithoutImageAssetsNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutImageAssetsInput, Prisma.ActivityUncheckedCreateWithoutImageAssetsInput>
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutImageAssetsInput
+  upsert?: Prisma.ActivityUpsertWithoutImageAssetsInput
+  connect?: Prisma.ActivityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityUpdateToOneWithWhereWithoutImageAssetsInput, Prisma.ActivityUpdateWithoutImageAssetsInput>, Prisma.ActivityUncheckedUpdateWithoutImageAssetsInput>
+}
+
 export type ActivityCreateWithoutMusicInput = {
   content?: string
   images?: Prisma.ActivityCreateimagesInput | string[]
   publishedAt?: Date | string
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityUncheckedCreateWithoutMusicInput = {
@@ -416,6 +443,7 @@ export type ActivityUncheckedCreateWithoutMusicInput = {
   publishedAt?: Date | string
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetUncheckedCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityCreateOrConnectWithoutMusicInput = {
@@ -440,6 +468,7 @@ export type ActivityUpdateWithoutMusicInput = {
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetUpdateManyWithoutActivityNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutMusicInput = {
@@ -449,6 +478,61 @@ export type ActivityUncheckedUpdateWithoutMusicInput = {
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  imageAssets?: Prisma.ActivityImageAssetUncheckedUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityCreateWithoutImageAssetsInput = {
+  content?: string
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  publishedAt?: Date | string
+  editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  music?: Prisma.MusicCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityUncheckedCreateWithoutImageAssetsInput = {
+  id?: number
+  content?: string
+  images?: Prisma.ActivityCreateimagesInput | string[]
+  publishedAt?: Date | string
+  editedAt?: Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  music?: Prisma.MusicUncheckedCreateNestedManyWithoutActivityInput
+}
+
+export type ActivityCreateOrConnectWithoutImageAssetsInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutImageAssetsInput, Prisma.ActivityUncheckedCreateWithoutImageAssetsInput>
+}
+
+export type ActivityUpsertWithoutImageAssetsInput = {
+  update: Prisma.XOR<Prisma.ActivityUpdateWithoutImageAssetsInput, Prisma.ActivityUncheckedUpdateWithoutImageAssetsInput>
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutImageAssetsInput, Prisma.ActivityUncheckedCreateWithoutImageAssetsInput>
+  where?: Prisma.ActivityWhereInput
+}
+
+export type ActivityUpdateToOneWithWhereWithoutImageAssetsInput = {
+  where?: Prisma.ActivityWhereInput
+  data: Prisma.XOR<Prisma.ActivityUpdateWithoutImageAssetsInput, Prisma.ActivityUncheckedUpdateWithoutImageAssetsInput>
+}
+
+export type ActivityUpdateWithoutImageAssetsInput = {
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  music?: Prisma.MusicUpdateManyWithoutActivityNestedInput
+}
+
+export type ActivityUncheckedUpdateWithoutImageAssetsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.ActivityUpdateimagesInput | string[]
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  music?: Prisma.MusicUncheckedUpdateManyWithoutActivityNestedInput
 }
 
 
@@ -457,10 +541,12 @@ export type ActivityUncheckedUpdateWithoutMusicInput = {
  */
 
 export type ActivityCountOutputType = {
+  imageAssets: number
   music: number
 }
 
 export type ActivityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  imageAssets?: boolean | ActivityCountOutputTypeCountImageAssetsArgs
   music?: boolean | ActivityCountOutputTypeCountMusicArgs
 }
 
@@ -472,6 +558,13 @@ export type ActivityCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
    * Select specific fields to fetch from the ActivityCountOutputType
    */
   select?: Prisma.ActivityCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ActivityCountOutputType without action
+ */
+export type ActivityCountOutputTypeCountImageAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityImageAssetWhereInput
 }
 
 /**
@@ -489,6 +582,7 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   publishedAt?: boolean
   editedAt?: boolean
   contentMarkdown?: boolean
+  imageAssets?: boolean | Prisma.Activity$imageAssetsArgs<ExtArgs>
   music?: boolean | Prisma.Activity$musicArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
@@ -522,6 +616,7 @@ export type ActivitySelectScalar = {
 
 export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "images" | "publishedAt" | "editedAt" | "contentMarkdown", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  imageAssets?: boolean | Prisma.Activity$imageAssetsArgs<ExtArgs>
   music?: boolean | Prisma.Activity$musicArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -531,6 +626,7 @@ export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Activity"
   objects: {
+    imageAssets: Prisma.$ActivityImageAssetPayload<ExtArgs>[]
     music: Prisma.$MusicPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -934,6 +1030,7 @@ readonly fields: ActivityFieldRefs;
  */
 export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  imageAssets<T extends Prisma.Activity$imageAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$imageAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityImageAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   music<T extends Prisma.Activity$musicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$musicArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MusicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1360,6 +1457,30 @@ export type ActivityDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Activities to delete.
    */
   limit?: number
+}
+
+/**
+ * Activity.imageAssets
+ */
+export type Activity$imageAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityImageAsset
+   */
+  select?: Prisma.ActivityImageAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityImageAsset
+   */
+  omit?: Prisma.ActivityImageAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityImageAssetInclude<ExtArgs> | null
+  where?: Prisma.ActivityImageAssetWhereInput
+  orderBy?: Prisma.ActivityImageAssetOrderByWithRelationInput | Prisma.ActivityImageAssetOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityImageAssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityImageAssetScalarFieldEnum | Prisma.ActivityImageAssetScalarFieldEnum[]
 }
 
 /**

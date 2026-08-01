@@ -58,7 +58,10 @@ export const ModelName = {
   Comment: 'Comment',
   UserMessage: 'UserMessage',
   Activity: 'Activity',
-  Music: 'Music'
+  Music: 'Music',
+  Asset: 'Asset',
+  ArticleInlineAsset: 'ArticleInlineAsset',
+  ActivityImageAsset: 'ActivityImageAsset'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,6 +86,7 @@ export const ArticleScalarFieldEnum = {
   title: 'title',
   description: 'description',
   cover: 'cover',
+  coverAssetId: 'coverAssetId',
   alt: 'alt',
   publishedAt: 'publishedAt',
   editedAt: 'editedAt',
@@ -108,6 +112,7 @@ export const CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
   cover: 'cover',
+  coverAssetId: 'coverAssetId',
   articleCount: 'articleCount'
 } as const
 
@@ -171,14 +176,52 @@ export const MusicScalarFieldEnum = {
   id: 'id',
   title: 'title',
   src: 'src',
+  sourceAssetId: 'sourceAssetId',
   seconds: 'seconds',
   activityId: 'activityId',
   album: 'album',
   artist: 'artist',
-  cover: 'cover'
+  cover: 'cover',
+  coverAssetId: 'coverAssetId'
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
+
+
+export const AssetScalarFieldEnum = {
+  id: 'id',
+  storageKey: 'storageKey',
+  mediaType: 'mediaType',
+  mimeType: 'mimeType',
+  byteSize: 'byteSize',
+  width: 'width',
+  height: 'height',
+  durationMs: 'durationMs',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const ArticleInlineAssetScalarFieldEnum = {
+  articleId: 'articleId',
+  assetId: 'assetId'
+} as const
+
+export type ArticleInlineAssetScalarFieldEnum = (typeof ArticleInlineAssetScalarFieldEnum)[keyof typeof ArticleInlineAssetScalarFieldEnum]
+
+
+export const ActivityImageAssetScalarFieldEnum = {
+  activityId: 'activityId',
+  assetId: 'assetId',
+  position: 'position'
+} as const
+
+export type ActivityImageAssetScalarFieldEnum = (typeof ActivityImageAssetScalarFieldEnum)[keyof typeof ActivityImageAssetScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -57,3 +57,18 @@ export type Activity = Prisma.ActivityModel
  * 
  */
 export type Music = Prisma.MusicModel
+/**
+ * Model Asset
+ * 
+ */
+export type Asset = Prisma.AssetModel
+/**
+ * Model ArticleInlineAsset
+ * 
+ */
+export type ArticleInlineAsset = Prisma.ArticleInlineAssetModel
+/**
+ * Model ActivityImageAsset
+ * 
+ */
+export type ActivityImageAsset = Prisma.ActivityImageAssetModel

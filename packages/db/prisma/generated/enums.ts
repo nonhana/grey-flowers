@@ -23,3 +23,20 @@ export const UserRole = {
 } as const
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const AssetMediaType = {
+  IMAGE: 'IMAGE',
+  AUDIO: 'AUDIO'
+} as const
+
+export type AssetMediaType = (typeof AssetMediaType)[keyof typeof AssetMediaType]
+
+
+export const AssetStatus = {
+  AVAILABLE: 'AVAILABLE',
+  PENDING_CLEANUP: 'PENDING_CLEANUP',
+  DELETED: 'DELETED'
+} as const
+
+export type AssetStatus = (typeof AssetStatus)[keyof typeof AssetStatus]

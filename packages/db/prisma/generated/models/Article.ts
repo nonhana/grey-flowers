@@ -28,12 +28,14 @@ export type AggregateArticle = {
 
 export type ArticleAvgAggregateOutputType = {
   id: number | null
+  coverAssetId: number | null
   wordCount: number | null
   categoryId: number | null
 }
 
 export type ArticleSumAggregateOutputType = {
   id: number | null
+  coverAssetId: number | null
   wordCount: number | null
   categoryId: number | null
 }
@@ -44,6 +46,7 @@ export type ArticleMinAggregateOutputType = {
   title: string | null
   description: string | null
   cover: string | null
+  coverAssetId: number | null
   alt: string | null
   publishedAt: Date | null
   editedAt: Date | null
@@ -59,6 +62,7 @@ export type ArticleMaxAggregateOutputType = {
   title: string | null
   description: string | null
   cover: string | null
+  coverAssetId: number | null
   alt: string | null
   publishedAt: Date | null
   editedAt: Date | null
@@ -74,6 +78,7 @@ export type ArticleCountAggregateOutputType = {
   title: number
   description: number
   cover: number
+  coverAssetId: number
   alt: number
   publishedAt: number
   editedAt: number
@@ -87,12 +92,14 @@ export type ArticleCountAggregateOutputType = {
 
 export type ArticleAvgAggregateInputType = {
   id?: true
+  coverAssetId?: true
   wordCount?: true
   categoryId?: true
 }
 
 export type ArticleSumAggregateInputType = {
   id?: true
+  coverAssetId?: true
   wordCount?: true
   categoryId?: true
 }
@@ -103,6 +110,7 @@ export type ArticleMinAggregateInputType = {
   title?: true
   description?: true
   cover?: true
+  coverAssetId?: true
   alt?: true
   publishedAt?: true
   editedAt?: true
@@ -118,6 +126,7 @@ export type ArticleMaxAggregateInputType = {
   title?: true
   description?: true
   cover?: true
+  coverAssetId?: true
   alt?: true
   publishedAt?: true
   editedAt?: true
@@ -133,6 +142,7 @@ export type ArticleCountAggregateInputType = {
   title?: true
   description?: true
   cover?: true
+  coverAssetId?: true
   alt?: true
   publishedAt?: true
   editedAt?: true
@@ -235,6 +245,7 @@ export type ArticleGroupByOutputType = {
   title: string
   description: string | null
   cover: string
+  coverAssetId: number | null
   alt: string
   publishedAt: Date
   editedAt: Date
@@ -273,6 +284,7 @@ export type ArticleWhereInput = {
   title?: Prisma.StringFilter<"Article"> | string
   description?: Prisma.StringNullableFilter<"Article"> | string | null
   cover?: Prisma.StringFilter<"Article"> | string
+  coverAssetId?: Prisma.IntNullableFilter<"Article"> | number | null
   alt?: Prisma.StringFilter<"Article"> | string
   publishedAt?: Prisma.DateTimeFilter<"Article"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Article"> | Date | string
@@ -281,6 +293,8 @@ export type ArticleWhereInput = {
   categoryId?: Prisma.IntNullableFilter<"Article"> | number | null
   content?: Prisma.StringNullableFilter<"Article"> | string | null
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  coverAsset?: Prisma.XOR<Prisma.AssetNullableScalarRelationFilter, Prisma.AssetWhereInput> | null
+  inlineAssets?: Prisma.ArticleInlineAssetListRelationFilter
   tags?: Prisma.TagListRelationFilter
 }
 
@@ -290,6 +304,7 @@ export type ArticleOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   alt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -298,6 +313,8 @@ export type ArticleOrderByWithRelationInput = {
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.CategoryOrderByWithRelationInput
+  coverAsset?: Prisma.AssetOrderByWithRelationInput
+  inlineAssets?: Prisma.ArticleInlineAssetOrderByRelationAggregateInput
   tags?: Prisma.TagOrderByRelationAggregateInput
 }
 
@@ -311,6 +328,7 @@ export type ArticleWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ArticleWhereInput | Prisma.ArticleWhereInput[]
   description?: Prisma.StringNullableFilter<"Article"> | string | null
   cover?: Prisma.StringFilter<"Article"> | string
+  coverAssetId?: Prisma.IntNullableFilter<"Article"> | number | null
   publishedAt?: Prisma.DateTimeFilter<"Article"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Article"> | Date | string
   published?: Prisma.BoolFilter<"Article"> | boolean
@@ -318,6 +336,8 @@ export type ArticleWhereUniqueInput = Prisma.AtLeast<{
   categoryId?: Prisma.IntNullableFilter<"Article"> | number | null
   content?: Prisma.StringNullableFilter<"Article"> | string | null
   category?: Prisma.XOR<Prisma.CategoryNullableScalarRelationFilter, Prisma.CategoryWhereInput> | null
+  coverAsset?: Prisma.XOR<Prisma.AssetNullableScalarRelationFilter, Prisma.AssetWhereInput> | null
+  inlineAssets?: Prisma.ArticleInlineAssetListRelationFilter
   tags?: Prisma.TagListRelationFilter
 }, "id" | "to" | "title" | "alt">
 
@@ -327,6 +347,7 @@ export type ArticleOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrderInput | Prisma.SortOrder
   alt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -350,6 +371,7 @@ export type ArticleScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Article"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Article"> | string | null
   cover?: Prisma.StringWithAggregatesFilter<"Article"> | string
+  coverAssetId?: Prisma.IntNullableWithAggregatesFilter<"Article"> | number | null
   alt?: Prisma.StringWithAggregatesFilter<"Article"> | string
   publishedAt?: Prisma.DateTimeWithAggregatesFilter<"Article"> | Date | string
   editedAt?: Prisma.DateTimeWithAggregatesFilter<"Article"> | Date | string
@@ -371,6 +393,8 @@ export type ArticleCreateInput = {
   wordCount?: number
   content?: string | null
   category?: Prisma.CategoryCreateNestedOneWithoutArticlesInput
+  coverAsset?: Prisma.AssetCreateNestedOneWithoutArticleCoversInput
+  inlineAssets?: Prisma.ArticleInlineAssetCreateNestedManyWithoutArticleInput
   tags?: Prisma.TagCreateNestedManyWithoutArticlesInput
 }
 
@@ -380,6 +404,7 @@ export type ArticleUncheckedCreateInput = {
   title: string
   description?: string | null
   cover: string
+  coverAssetId?: number | null
   alt: string
   publishedAt?: Date | string
   editedAt: Date | string
@@ -387,6 +412,7 @@ export type ArticleUncheckedCreateInput = {
   wordCount?: number
   categoryId?: number | null
   content?: string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedCreateNestedManyWithoutArticleInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutArticlesInput
 }
 
@@ -402,6 +428,8 @@ export type ArticleUpdateInput = {
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.CategoryUpdateOneWithoutArticlesNestedInput
+  coverAsset?: Prisma.AssetUpdateOneWithoutArticleCoversNestedInput
+  inlineAssets?: Prisma.ArticleInlineAssetUpdateManyWithoutArticleNestedInput
   tags?: Prisma.TagUpdateManyWithoutArticlesNestedInput
 }
 
@@ -411,6 +439,7 @@ export type ArticleUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   alt?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,6 +447,7 @@ export type ArticleUncheckedUpdateInput = {
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedUpdateManyWithoutArticleNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutArticlesNestedInput
 }
 
@@ -427,6 +457,7 @@ export type ArticleCreateManyInput = {
   title: string
   description?: string | null
   cover: string
+  coverAssetId?: number | null
   alt: string
   publishedAt?: Date | string
   editedAt: Date | string
@@ -455,6 +486,7 @@ export type ArticleUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   alt?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -470,6 +502,7 @@ export type ArticleCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   alt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -481,6 +514,7 @@ export type ArticleCountOrderByAggregateInput = {
 
 export type ArticleAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   wordCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
 }
@@ -491,6 +525,7 @@ export type ArticleMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   alt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -506,6 +541,7 @@ export type ArticleMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   cover?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   alt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   editedAt?: Prisma.SortOrder
@@ -517,6 +553,7 @@ export type ArticleMinOrderByAggregateInput = {
 
 export type ArticleSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  coverAssetId?: Prisma.SortOrder
   wordCount?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
 }
@@ -529,6 +566,11 @@ export type ArticleListRelationFilter = {
 
 export type ArticleOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ArticleScalarRelationFilter = {
+  is?: Prisma.ArticleWhereInput
+  isNot?: Prisma.ArticleWhereInput
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -643,6 +685,62 @@ export type ArticleUncheckedUpdateManyWithoutCategoryNestedInput = {
   deleteMany?: Prisma.ArticleScalarWhereInput | Prisma.ArticleScalarWhereInput[]
 }
 
+export type ArticleCreateNestedManyWithoutCoverAssetInput = {
+  create?: Prisma.XOR<Prisma.ArticleCreateWithoutCoverAssetInput, Prisma.ArticleUncheckedCreateWithoutCoverAssetInput> | Prisma.ArticleCreateWithoutCoverAssetInput[] | Prisma.ArticleUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.ArticleCreateOrConnectWithoutCoverAssetInput | Prisma.ArticleCreateOrConnectWithoutCoverAssetInput[]
+  createMany?: Prisma.ArticleCreateManyCoverAssetInputEnvelope
+  connect?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+}
+
+export type ArticleUncheckedCreateNestedManyWithoutCoverAssetInput = {
+  create?: Prisma.XOR<Prisma.ArticleCreateWithoutCoverAssetInput, Prisma.ArticleUncheckedCreateWithoutCoverAssetInput> | Prisma.ArticleCreateWithoutCoverAssetInput[] | Prisma.ArticleUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.ArticleCreateOrConnectWithoutCoverAssetInput | Prisma.ArticleCreateOrConnectWithoutCoverAssetInput[]
+  createMany?: Prisma.ArticleCreateManyCoverAssetInputEnvelope
+  connect?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+}
+
+export type ArticleUpdateManyWithoutCoverAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.ArticleCreateWithoutCoverAssetInput, Prisma.ArticleUncheckedCreateWithoutCoverAssetInput> | Prisma.ArticleCreateWithoutCoverAssetInput[] | Prisma.ArticleUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.ArticleCreateOrConnectWithoutCoverAssetInput | Prisma.ArticleCreateOrConnectWithoutCoverAssetInput[]
+  upsert?: Prisma.ArticleUpsertWithWhereUniqueWithoutCoverAssetInput | Prisma.ArticleUpsertWithWhereUniqueWithoutCoverAssetInput[]
+  createMany?: Prisma.ArticleCreateManyCoverAssetInputEnvelope
+  set?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  disconnect?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  delete?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  connect?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  update?: Prisma.ArticleUpdateWithWhereUniqueWithoutCoverAssetInput | Prisma.ArticleUpdateWithWhereUniqueWithoutCoverAssetInput[]
+  updateMany?: Prisma.ArticleUpdateManyWithWhereWithoutCoverAssetInput | Prisma.ArticleUpdateManyWithWhereWithoutCoverAssetInput[]
+  deleteMany?: Prisma.ArticleScalarWhereInput | Prisma.ArticleScalarWhereInput[]
+}
+
+export type ArticleUncheckedUpdateManyWithoutCoverAssetNestedInput = {
+  create?: Prisma.XOR<Prisma.ArticleCreateWithoutCoverAssetInput, Prisma.ArticleUncheckedCreateWithoutCoverAssetInput> | Prisma.ArticleCreateWithoutCoverAssetInput[] | Prisma.ArticleUncheckedCreateWithoutCoverAssetInput[]
+  connectOrCreate?: Prisma.ArticleCreateOrConnectWithoutCoverAssetInput | Prisma.ArticleCreateOrConnectWithoutCoverAssetInput[]
+  upsert?: Prisma.ArticleUpsertWithWhereUniqueWithoutCoverAssetInput | Prisma.ArticleUpsertWithWhereUniqueWithoutCoverAssetInput[]
+  createMany?: Prisma.ArticleCreateManyCoverAssetInputEnvelope
+  set?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  disconnect?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  delete?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  connect?: Prisma.ArticleWhereUniqueInput | Prisma.ArticleWhereUniqueInput[]
+  update?: Prisma.ArticleUpdateWithWhereUniqueWithoutCoverAssetInput | Prisma.ArticleUpdateWithWhereUniqueWithoutCoverAssetInput[]
+  updateMany?: Prisma.ArticleUpdateManyWithWhereWithoutCoverAssetInput | Prisma.ArticleUpdateManyWithWhereWithoutCoverAssetInput[]
+  deleteMany?: Prisma.ArticleScalarWhereInput | Prisma.ArticleScalarWhereInput[]
+}
+
+export type ArticleCreateNestedOneWithoutInlineAssetsInput = {
+  create?: Prisma.XOR<Prisma.ArticleCreateWithoutInlineAssetsInput, Prisma.ArticleUncheckedCreateWithoutInlineAssetsInput>
+  connectOrCreate?: Prisma.ArticleCreateOrConnectWithoutInlineAssetsInput
+  connect?: Prisma.ArticleWhereUniqueInput
+}
+
+export type ArticleUpdateOneRequiredWithoutInlineAssetsNestedInput = {
+  create?: Prisma.XOR<Prisma.ArticleCreateWithoutInlineAssetsInput, Prisma.ArticleUncheckedCreateWithoutInlineAssetsInput>
+  connectOrCreate?: Prisma.ArticleCreateOrConnectWithoutInlineAssetsInput
+  upsert?: Prisma.ArticleUpsertWithoutInlineAssetsInput
+  connect?: Prisma.ArticleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ArticleUpdateToOneWithWhereWithoutInlineAssetsInput, Prisma.ArticleUpdateWithoutInlineAssetsInput>, Prisma.ArticleUncheckedUpdateWithoutInlineAssetsInput>
+}
+
 export type ArticleCreateWithoutTagsInput = {
   to: string
   title: string
@@ -655,6 +753,8 @@ export type ArticleCreateWithoutTagsInput = {
   wordCount?: number
   content?: string | null
   category?: Prisma.CategoryCreateNestedOneWithoutArticlesInput
+  coverAsset?: Prisma.AssetCreateNestedOneWithoutArticleCoversInput
+  inlineAssets?: Prisma.ArticleInlineAssetCreateNestedManyWithoutArticleInput
 }
 
 export type ArticleUncheckedCreateWithoutTagsInput = {
@@ -663,6 +763,7 @@ export type ArticleUncheckedCreateWithoutTagsInput = {
   title: string
   description?: string | null
   cover: string
+  coverAssetId?: number | null
   alt: string
   publishedAt?: Date | string
   editedAt: Date | string
@@ -670,6 +771,7 @@ export type ArticleUncheckedCreateWithoutTagsInput = {
   wordCount?: number
   categoryId?: number | null
   content?: string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedCreateNestedManyWithoutArticleInput
 }
 
 export type ArticleCreateOrConnectWithoutTagsInput = {
@@ -702,6 +804,7 @@ export type ArticleScalarWhereInput = {
   title?: Prisma.StringFilter<"Article"> | string
   description?: Prisma.StringNullableFilter<"Article"> | string | null
   cover?: Prisma.StringFilter<"Article"> | string
+  coverAssetId?: Prisma.IntNullableFilter<"Article"> | number | null
   alt?: Prisma.StringFilter<"Article"> | string
   publishedAt?: Prisma.DateTimeFilter<"Article"> | Date | string
   editedAt?: Prisma.DateTimeFilter<"Article"> | Date | string
@@ -722,6 +825,8 @@ export type ArticleCreateWithoutCategoryInput = {
   published?: boolean
   wordCount?: number
   content?: string | null
+  coverAsset?: Prisma.AssetCreateNestedOneWithoutArticleCoversInput
+  inlineAssets?: Prisma.ArticleInlineAssetCreateNestedManyWithoutArticleInput
   tags?: Prisma.TagCreateNestedManyWithoutArticlesInput
 }
 
@@ -731,12 +836,14 @@ export type ArticleUncheckedCreateWithoutCategoryInput = {
   title: string
   description?: string | null
   cover: string
+  coverAssetId?: number | null
   alt: string
   publishedAt?: Date | string
   editedAt: Date | string
   published?: boolean
   wordCount?: number
   content?: string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedCreateNestedManyWithoutArticleInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutArticlesInput
 }
 
@@ -766,6 +873,147 @@ export type ArticleUpdateManyWithWhereWithoutCategoryInput = {
   data: Prisma.XOR<Prisma.ArticleUpdateManyMutationInput, Prisma.ArticleUncheckedUpdateManyWithoutCategoryInput>
 }
 
+export type ArticleCreateWithoutCoverAssetInput = {
+  to: string
+  title: string
+  description?: string | null
+  cover: string
+  alt: string
+  publishedAt?: Date | string
+  editedAt: Date | string
+  published?: boolean
+  wordCount?: number
+  content?: string | null
+  category?: Prisma.CategoryCreateNestedOneWithoutArticlesInput
+  inlineAssets?: Prisma.ArticleInlineAssetCreateNestedManyWithoutArticleInput
+  tags?: Prisma.TagCreateNestedManyWithoutArticlesInput
+}
+
+export type ArticleUncheckedCreateWithoutCoverAssetInput = {
+  id?: number
+  to: string
+  title: string
+  description?: string | null
+  cover: string
+  alt: string
+  publishedAt?: Date | string
+  editedAt: Date | string
+  published?: boolean
+  wordCount?: number
+  categoryId?: number | null
+  content?: string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedCreateNestedManyWithoutArticleInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutArticlesInput
+}
+
+export type ArticleCreateOrConnectWithoutCoverAssetInput = {
+  where: Prisma.ArticleWhereUniqueInput
+  create: Prisma.XOR<Prisma.ArticleCreateWithoutCoverAssetInput, Prisma.ArticleUncheckedCreateWithoutCoverAssetInput>
+}
+
+export type ArticleCreateManyCoverAssetInputEnvelope = {
+  data: Prisma.ArticleCreateManyCoverAssetInput | Prisma.ArticleCreateManyCoverAssetInput[]
+  skipDuplicates?: boolean
+}
+
+export type ArticleUpsertWithWhereUniqueWithoutCoverAssetInput = {
+  where: Prisma.ArticleWhereUniqueInput
+  update: Prisma.XOR<Prisma.ArticleUpdateWithoutCoverAssetInput, Prisma.ArticleUncheckedUpdateWithoutCoverAssetInput>
+  create: Prisma.XOR<Prisma.ArticleCreateWithoutCoverAssetInput, Prisma.ArticleUncheckedCreateWithoutCoverAssetInput>
+}
+
+export type ArticleUpdateWithWhereUniqueWithoutCoverAssetInput = {
+  where: Prisma.ArticleWhereUniqueInput
+  data: Prisma.XOR<Prisma.ArticleUpdateWithoutCoverAssetInput, Prisma.ArticleUncheckedUpdateWithoutCoverAssetInput>
+}
+
+export type ArticleUpdateManyWithWhereWithoutCoverAssetInput = {
+  where: Prisma.ArticleScalarWhereInput
+  data: Prisma.XOR<Prisma.ArticleUpdateManyMutationInput, Prisma.ArticleUncheckedUpdateManyWithoutCoverAssetInput>
+}
+
+export type ArticleCreateWithoutInlineAssetsInput = {
+  to: string
+  title: string
+  description?: string | null
+  cover: string
+  alt: string
+  publishedAt?: Date | string
+  editedAt: Date | string
+  published?: boolean
+  wordCount?: number
+  content?: string | null
+  category?: Prisma.CategoryCreateNestedOneWithoutArticlesInput
+  coverAsset?: Prisma.AssetCreateNestedOneWithoutArticleCoversInput
+  tags?: Prisma.TagCreateNestedManyWithoutArticlesInput
+}
+
+export type ArticleUncheckedCreateWithoutInlineAssetsInput = {
+  id?: number
+  to: string
+  title: string
+  description?: string | null
+  cover: string
+  coverAssetId?: number | null
+  alt: string
+  publishedAt?: Date | string
+  editedAt: Date | string
+  published?: boolean
+  wordCount?: number
+  categoryId?: number | null
+  content?: string | null
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutArticlesInput
+}
+
+export type ArticleCreateOrConnectWithoutInlineAssetsInput = {
+  where: Prisma.ArticleWhereUniqueInput
+  create: Prisma.XOR<Prisma.ArticleCreateWithoutInlineAssetsInput, Prisma.ArticleUncheckedCreateWithoutInlineAssetsInput>
+}
+
+export type ArticleUpsertWithoutInlineAssetsInput = {
+  update: Prisma.XOR<Prisma.ArticleUpdateWithoutInlineAssetsInput, Prisma.ArticleUncheckedUpdateWithoutInlineAssetsInput>
+  create: Prisma.XOR<Prisma.ArticleCreateWithoutInlineAssetsInput, Prisma.ArticleUncheckedCreateWithoutInlineAssetsInput>
+  where?: Prisma.ArticleWhereInput
+}
+
+export type ArticleUpdateToOneWithWhereWithoutInlineAssetsInput = {
+  where?: Prisma.ArticleWhereInput
+  data: Prisma.XOR<Prisma.ArticleUpdateWithoutInlineAssetsInput, Prisma.ArticleUncheckedUpdateWithoutInlineAssetsInput>
+}
+
+export type ArticleUpdateWithoutInlineAssetsInput = {
+  to?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.CategoryUpdateOneWithoutArticlesNestedInput
+  coverAsset?: Prisma.AssetUpdateOneWithoutArticleCoversNestedInput
+  tags?: Prisma.TagUpdateManyWithoutArticlesNestedInput
+}
+
+export type ArticleUncheckedUpdateWithoutInlineAssetsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  to?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  alt?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.TagUncheckedUpdateManyWithoutArticlesNestedInput
+}
+
 export type ArticleUpdateWithoutTagsInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -778,6 +1026,8 @@ export type ArticleUpdateWithoutTagsInput = {
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.CategoryUpdateOneWithoutArticlesNestedInput
+  coverAsset?: Prisma.AssetUpdateOneWithoutArticleCoversNestedInput
+  inlineAssets?: Prisma.ArticleInlineAssetUpdateManyWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateWithoutTagsInput = {
@@ -786,6 +1036,7 @@ export type ArticleUncheckedUpdateWithoutTagsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   alt?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -793,6 +1044,7 @@ export type ArticleUncheckedUpdateWithoutTagsInput = {
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedUpdateManyWithoutArticleNestedInput
 }
 
 export type ArticleUncheckedUpdateManyWithoutTagsInput = {
@@ -801,6 +1053,7 @@ export type ArticleUncheckedUpdateManyWithoutTagsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   alt?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -816,6 +1069,7 @@ export type ArticleCreateManyCategoryInput = {
   title: string
   description?: string | null
   cover: string
+  coverAssetId?: number | null
   alt: string
   publishedAt?: Date | string
   editedAt: Date | string
@@ -835,6 +1089,8 @@ export type ArticleUpdateWithoutCategoryInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverAsset?: Prisma.AssetUpdateOneWithoutArticleCoversNestedInput
+  inlineAssets?: Prisma.ArticleInlineAssetUpdateManyWithoutArticleNestedInput
   tags?: Prisma.TagUpdateManyWithoutArticlesNestedInput
 }
 
@@ -844,17 +1100,48 @@ export type ArticleUncheckedUpdateWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   alt?: Prisma.StringFieldUpdateOperationsInput | string
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedUpdateManyWithoutArticleNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutArticlesNestedInput
 }
 
 export type ArticleUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  to?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  coverAssetId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  alt?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ArticleCreateManyCoverAssetInput = {
+  id?: number
+  to: string
+  title: string
+  description?: string | null
+  cover: string
+  alt: string
+  publishedAt?: Date | string
+  editedAt: Date | string
+  published?: boolean
+  wordCount?: number
+  categoryId?: number | null
+  content?: string | null
+}
+
+export type ArticleUpdateWithoutCoverAssetInput = {
   to?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -865,6 +1152,41 @@ export type ArticleUncheckedUpdateManyWithoutCategoryInput = {
   published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   wordCount?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.CategoryUpdateOneWithoutArticlesNestedInput
+  inlineAssets?: Prisma.ArticleInlineAssetUpdateManyWithoutArticleNestedInput
+  tags?: Prisma.TagUpdateManyWithoutArticlesNestedInput
+}
+
+export type ArticleUncheckedUpdateWithoutCoverAssetInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  to?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inlineAssets?: Prisma.ArticleInlineAssetUncheckedUpdateManyWithoutArticleNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutArticlesNestedInput
+}
+
+export type ArticleUncheckedUpdateManyWithoutCoverAssetInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  to?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cover?: Prisma.StringFieldUpdateOperationsInput | string
+  alt?: Prisma.StringFieldUpdateOperationsInput | string
+  publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  wordCount?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -873,10 +1195,12 @@ export type ArticleUncheckedUpdateManyWithoutCategoryInput = {
  */
 
 export type ArticleCountOutputType = {
+  inlineAssets: number
   tags: number
 }
 
 export type ArticleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  inlineAssets?: boolean | ArticleCountOutputTypeCountInlineAssetsArgs
   tags?: boolean | ArticleCountOutputTypeCountTagsArgs
 }
 
@@ -893,6 +1217,13 @@ export type ArticleCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
 /**
  * ArticleCountOutputType without action
  */
+export type ArticleCountOutputTypeCountInlineAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArticleInlineAssetWhereInput
+}
+
+/**
+ * ArticleCountOutputType without action
+ */
 export type ArticleCountOutputTypeCountTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TagWhereInput
 }
@@ -904,6 +1235,7 @@ export type ArticleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   title?: boolean
   description?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   alt?: boolean
   publishedAt?: boolean
   editedAt?: boolean
@@ -912,6 +1244,8 @@ export type ArticleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   categoryId?: boolean
   content?: boolean
   category?: boolean | Prisma.Article$categoryArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Article$coverAssetArgs<ExtArgs>
+  inlineAssets?: boolean | Prisma.Article$inlineAssetsArgs<ExtArgs>
   tags?: boolean | Prisma.Article$tagsArgs<ExtArgs>
   _count?: boolean | Prisma.ArticleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["article"]>
@@ -922,6 +1256,7 @@ export type ArticleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   description?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   alt?: boolean
   publishedAt?: boolean
   editedAt?: boolean
@@ -930,6 +1265,7 @@ export type ArticleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   categoryId?: boolean
   content?: boolean
   category?: boolean | Prisma.Article$categoryArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Article$coverAssetArgs<ExtArgs>
 }, ExtArgs["result"]["article"]>
 
 export type ArticleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -938,6 +1274,7 @@ export type ArticleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   title?: boolean
   description?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   alt?: boolean
   publishedAt?: boolean
   editedAt?: boolean
@@ -946,6 +1283,7 @@ export type ArticleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   categoryId?: boolean
   content?: boolean
   category?: boolean | Prisma.Article$categoryArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Article$coverAssetArgs<ExtArgs>
 }, ExtArgs["result"]["article"]>
 
 export type ArticleSelectScalar = {
@@ -954,6 +1292,7 @@ export type ArticleSelectScalar = {
   title?: boolean
   description?: boolean
   cover?: boolean
+  coverAssetId?: boolean
   alt?: boolean
   publishedAt?: boolean
   editedAt?: boolean
@@ -963,23 +1302,29 @@ export type ArticleSelectScalar = {
   content?: boolean
 }
 
-export type ArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "to" | "title" | "description" | "cover" | "alt" | "publishedAt" | "editedAt" | "published" | "wordCount" | "categoryId" | "content", ExtArgs["result"]["article"]>
+export type ArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "to" | "title" | "description" | "cover" | "coverAssetId" | "alt" | "publishedAt" | "editedAt" | "published" | "wordCount" | "categoryId" | "content", ExtArgs["result"]["article"]>
 export type ArticleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Article$categoryArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Article$coverAssetArgs<ExtArgs>
+  inlineAssets?: boolean | Prisma.Article$inlineAssetsArgs<ExtArgs>
   tags?: boolean | Prisma.Article$tagsArgs<ExtArgs>
   _count?: boolean | Prisma.ArticleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ArticleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Article$categoryArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Article$coverAssetArgs<ExtArgs>
 }
 export type ArticleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Article$categoryArgs<ExtArgs>
+  coverAsset?: boolean | Prisma.Article$coverAssetArgs<ExtArgs>
 }
 
 export type $ArticlePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Article"
   objects: {
     category: Prisma.$CategoryPayload<ExtArgs> | null
+    coverAsset: Prisma.$AssetPayload<ExtArgs> | null
+    inlineAssets: Prisma.$ArticleInlineAssetPayload<ExtArgs>[]
     tags: Prisma.$TagPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -988,6 +1333,7 @@ export type $ArticlePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     title: string
     description: string | null
     cover: string
+    coverAssetId: number | null
     alt: string
     publishedAt: Date
     editedAt: Date
@@ -1390,6 +1736,8 @@ readonly fields: ArticleFieldRefs;
 export interface Prisma__ArticleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   category<T extends Prisma.Article$categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$categoryArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  coverAsset<T extends Prisma.Article$coverAssetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$coverAssetArgs<ExtArgs>>): Prisma.Prisma__AssetClient<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  inlineAssets<T extends Prisma.Article$inlineAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$inlineAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArticleInlineAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tags<T extends Prisma.Article$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Article$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1425,6 +1773,7 @@ export interface ArticleFieldRefs {
   readonly title: Prisma.FieldRef<"Article", 'String'>
   readonly description: Prisma.FieldRef<"Article", 'String'>
   readonly cover: Prisma.FieldRef<"Article", 'String'>
+  readonly coverAssetId: Prisma.FieldRef<"Article", 'Int'>
   readonly alt: Prisma.FieldRef<"Article", 'String'>
   readonly publishedAt: Prisma.FieldRef<"Article", 'DateTime'>
   readonly editedAt: Prisma.FieldRef<"Article", 'DateTime'>
@@ -1849,6 +2198,49 @@ export type Article$categoryArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.CategoryInclude<ExtArgs> | null
   where?: Prisma.CategoryWhereInput
+}
+
+/**
+ * Article.coverAsset
+ */
+export type Article$coverAssetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Asset
+   */
+  select?: Prisma.AssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Asset
+   */
+  omit?: Prisma.AssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetInclude<ExtArgs> | null
+  where?: Prisma.AssetWhereInput
+}
+
+/**
+ * Article.inlineAssets
+ */
+export type Article$inlineAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArticleInlineAsset
+   */
+  select?: Prisma.ArticleInlineAssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArticleInlineAsset
+   */
+  omit?: Prisma.ArticleInlineAssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArticleInlineAssetInclude<ExtArgs> | null
+  where?: Prisma.ArticleInlineAssetWhereInput
+  orderBy?: Prisma.ArticleInlineAssetOrderByWithRelationInput | Prisma.ArticleInlineAssetOrderByWithRelationInput[]
+  cursor?: Prisma.ArticleInlineAssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArticleInlineAssetScalarFieldEnum | Prisma.ArticleInlineAssetScalarFieldEnum[]
 }
 
 /**
