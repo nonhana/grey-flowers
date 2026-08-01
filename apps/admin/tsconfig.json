@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
@@ -6,10 +7,7 @@
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "noEmit": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2024"
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"]
 }
