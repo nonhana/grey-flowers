@@ -19,3 +19,7 @@ Read the matching guide before changing that area:
 - [API_CONVENTIONS.md](./agent-docs/API_CONVENTIONS.md) — adding or modifying `server/api/` endpoints
 - [CONTENT.md](./agent-docs/CONTENT.md) — editing MDC pages or article rendering
 - [DATABASE.md](./agent-docs/DATABASE.md) — changing Prisma models, generated client code, or migrations
+
+## wiki
+
+The `wiki` directory contains the project's design and decision-making documents, which can be accessed as needed.
