@@ -1,0 +1,45 @@
+{
+  "name": "@grey-flowers/admin",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.18.0 <25.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "format": "oxfmt --write src vite.config.ts",
+    "format:check": "oxfmt --check src vite.config.ts",
+    "lint": "oxlint --config ../../oxlint.config.ts src vite.config.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "catalog:admin",
+    "@codemirror/commands": "catalog:admin",
+    "@codemirror/lang-markdown": "catalog:admin",
+    "@codemirror/search": "catalog:admin",
+    "@grey-flowers/contracts": "workspace:*",
+    "@uiw/react-codemirror": "catalog:admin",
+    "es-toolkit": "catalog:admin",
+    "hono": "catalog:admin",
+    "idb-keyval": "catalog:admin",
+    "lucide-react": "catalog:admin",
+    "react": "catalog:admin",
+    "react-aria-components": "catalog:admin",
+    "react-dom": "catalog:admin",
+    "react-resizable-panels": "catalog:admin"
+  },
+  "devDependencies": {
+    "@grey-flowers/api": "workspace:*",
+    "@tailwindcss/vite": "catalog:admin",
+    "@types/react": "catalog:admin",
+    "@types/react-dom": "catalog:admin",
+    "@vitejs/plugin-react": "catalog:admin",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "tailwindcss": "catalog:admin",
+    "typescript": "catalog:",
+    "vite": "catalog:admin"
+  }
+}

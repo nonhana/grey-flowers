@@ -13,7 +13,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "lint": "eslint --config ../../apps/main/eslint.config.mjs src",
+    "lint": "oxlint --config ../../oxlint.config.ts src",
+    "format": "oxfmt --write src",
+    "format:check": "oxfmt --check src",
     "postinstall": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:generate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:migrate:deploy": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate deploy",
@@ -27,10 +29,10 @@
     "pg": "catalog:db"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "catalog:",
     "@types/node": "catalog:",
     "@types/pg": "catalog:db",
-    "eslint": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
     "prisma": "catalog:db",
     "typescript": "catalog:"
   }
