@@ -2,9 +2,6 @@
   "name": "@grey-flowers/main",
   "type": "module",
   "private": true,
-  "engines": {
-    "node": ">=24.18.0 <25.0.0"
-  },
   "scripts": {
     "analyze": "node --env-file-if-exists=../../.env ./node_modules/nuxt/bin/nuxt.mjs analyze",
     "build": "node --env-file-if-exists=../../.env ./node_modules/nuxt/bin/nuxt.mjs build",
@@ -32,7 +29,7 @@
     "vue-router": "catalog:main"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "catalog:",
+    "@antfu/eslint-config": "catalog:main",
     "@golar/vue": "catalog:main",
     "@nuxt/image": "catalog:main",
     "@nuxtjs/color-mode": "catalog:main",
@@ -40,7 +37,6 @@
     "@nuxtjs/seo": "catalog:main",
     "@pinia/nuxt": "catalog:main",
     "@types/jsonwebtoken": "catalog:main",
-    "@types/node": "catalog:",
     "@types/vivus": "catalog:main",
     "@unocss/eslint-plugin": "catalog:main",
     "@unocss/nuxt": "catalog:main",
@@ -49,7 +45,7 @@
     "@vueuse/nuxt": "catalog:main",
     "@vueuse/router": "catalog:main",
     "bcryptjs": "catalog:main",
-    "eslint": "catalog:",
+    "eslint": "catalog:main",
     "feed": "catalog:main",
     "golar": "catalog:main",
     "gsap": "catalog:main",
@@ -57,7 +53,6 @@
     "nuxt-og-image": "catalog:main",
     "pinia": "catalog:main",
     "pinia-plugin-persistedstate": "catalog:main",
-    "typescript": "catalog:",
     "unocss": "catalog:main",
     "unocss-preset-scrollbar": "catalog:main",
     "vivus": "catalog:main",

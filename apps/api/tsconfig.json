@@ -7,8 +7,8 @@
     "rootDir": "./src",
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2024"
-    ,"types": ["node"]
+    "target": "ES2024",
+    "types": ["node"]
   },
   "include": ["src/**/*.ts"]
 }

@@ -82,10 +82,10 @@ pnpm 称这些版本分组为「catalogs(目录)」。请在 `pnpm-workspace.yam
 
 再添加以下具名 catalog:
 
-| Catalog | 内容 | 使用者 |
-| --- | --- | --- |
-| `main` | Nuxt、Vue、Vue Router、Nuxt 模块、UnoCSS、Pinia、VueUse、站点渲染、邮件、认证、Markdown、动画,以及主站专用的开发依赖 | `@grey-flowers/main` |
-| `db` | `prisma`、`@prisma/client`、`@prisma/adapter-pg`、`pg`、`@types/pg` | `@grey-flowers/db` |
+| Catalog | 内容                                                                                                                 | 使用者               |
+| ------- | -------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `main`  | Nuxt、Vue、Vue Router、Nuxt 模块、UnoCSS、Pinia、VueUse、站点渲染、邮件、认证、Markdown、动画,以及主站专用的开发依赖 | `@grey-flowers/main` |
+| `db`    | `prisma`、`@prisma/client`、`@prisma/adapter-pg`、`pg`、`@types/pg`                                                  | `@grey-flowers/db`   |
 
 `apps/main/package.json` 对主站依赖使用 `catalog:main`,对通用工具链使用默认 `catalog:`。`packages/db/package.json` 对数据库依赖使用 `catalog:db`,对通用工具链使用默认 `catalog:`。根 `package.json` **不**有任何应用运行时依赖。
 
@@ -112,16 +112,16 @@ pnpm 称这些版本分组为「catalogs(目录)」。请在 `pnpm-workspace.yam
 
 根命令保持为稳定的运维接口:
 
-| 根命令 | 委托给 |
-| --- | --- |
-| `pnpm dev` | `@grey-flowers/main` 开发服务器 |
-| `pnpm build` | 按依赖顺序构建整个工作区,最后是 `@grey-flowers/main` |
-| `pnpm typecheck` | 所有工作区 `typecheck` 命令 |
-| `pnpm lint` | 所有工作区 `lint` 命令 |
-| `pnpm prisma:generate` | `@grey-flowers/db` 的 generation 命令 |
-| `pnpm prisma:push` | `@grey-flowers/db` 仅限本地的 push 命令 |
-| `pnpm prisma:migrate:deploy` | `@grey-flowers/db` 的 deploy 命令 |
-| `pnpm prisma:studio` | `@grey-flowers/db` 的 studio 命令 |
+| 根命令                       | 委托给                                               |
+| ---------------------------- | ---------------------------------------------------- |
+| `pnpm dev`                   | `@grey-flowers/main` 开发服务器                      |
+| `pnpm build`                 | 按依赖顺序构建整个工作区,最后是 `@grey-flowers/main` |
+| `pnpm typecheck`             | 所有工作区 `typecheck` 命令                          |
+| `pnpm lint`                  | 所有工作区 `lint` 命令                               |
+| `pnpm prisma:generate`       | `@grey-flowers/db` 的 generation 命令                |
+| `pnpm prisma:push`           | `@grey-flowers/db` 仅限本地的 push 命令              |
+| `pnpm prisma:migrate:deploy` | `@grey-flowers/db` 的 deploy 命令                    |
+| `pnpm prisma:studio`         | `@grey-flowers/db` 的 studio 命令                    |
 
 `apps/main` 包保持当前的 `dev`、`build`、`generate`、`preview`、`analyze`、`typecheck`、`lint`、`prepare` 等语义。它的 Nuxt CLI 脚本显式携带根本地环境文件运行。`packages/db` 拥有 `prisma:generate`、`prisma:push`、`prisma:migrate:deploy`、`prisma:studio`。
 
@@ -229,14 +229,14 @@ workflow **不**添加数据库迁移。经过评审的迁移仍是单独的一�
 
 ## 风险与对策
 
-| 风险 | 对策 |
-| --- | --- |
-| 迁入 `apps/main` 后 Nuxt 根别名发生变化 | 阶段 1 把所有 Nuxt 根资源一起移动,并验证构建后的站点加上现有路由。 |
-| 因为包脚本从 `apps/main` 或 `packages/db` 运行,导致本地环境加载静默失效 | 在需要本地环境值的命令中使用 Node `--env-file-if-exists=../../.env`;CI 和 PM2 仍然注入各自的环境。 |
-| Nitro 把 `@grey-flowers/db` 留成 VPS 上不存在的 workspace 符号链接 | 在 Nitro 中内联内部包,并对构建出的 `.output` 针对 Prisma 支撑的路由做冒烟测试。 |
-| 抽取过程中 Prisma 所有权被复制(出现两份) | 阶段 1 只保留一个应用持有的 Prisma 目录;阶段 2 用 `git mv` 一次移走,并在**同一提交**里清除 main 包的全部 Prisma 所有权。 |
-| 目录移动掩盖了 schema 或迁移改动 | 评审「仅重命名」的 diff,且不运行任何会改 schema 的 Prisma 命令。 |
-| `engineStrict` 下 CI 失败 | 阶段 1 把 Actions 的 Node 与声明的 `>=24.18.0 <25.0.0` 范围对齐。 |
+| 风险                                                                    | 对策                                                                                                                     |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 迁入 `apps/main` 后 Nuxt 根别名发生变化                                 | 阶段 1 把所有 Nuxt 根资源一起移动,并验证构建后的站点加上现有路由。                                                       |
+| 因为包脚本从 `apps/main` 或 `packages/db` 运行,导致本地环境加载静默失效 | 在需要本地环境值的命令中使用 Node `--env-file-if-exists=../../.env`;CI 和 PM2 仍然注入各自的环境。                       |
+| Nitro 把 `@grey-flowers/db` 留成 VPS 上不存在的 workspace 符号链接      | 在 Nitro 中内联内部包,并对构建出的 `.output` 针对 Prisma 支撑的路由做冒烟测试。                                          |
+| 抽取过程中 Prisma 所有权被复制(出现两份)                                | 阶段 1 只保留一个应用持有的 Prisma 目录;阶段 2 用 `git mv` 一次移走,并在**同一提交**里清除 main 包的全部 Prisma 所有权。 |
+| 目录移动掩盖了 schema 或迁移改动                                        | 评审「仅重命名」的 diff,且不运行任何会改 schema 的 Prisma 命令。                                                         |
+| `engineStrict` 下 CI 失败                                               | 阶段 1 把 Actions 的 Node 与声明的 `>=24.18.0 <25.0.0` 范围对齐。                                                        |
 
 ## 假设与停止条件
 

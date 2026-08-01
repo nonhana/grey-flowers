@@ -1,10 +1,7 @@
 {
   "name": "@grey-flowers/db",
-  "type": "module",
   "private": true,
-  "engines": {
-    "node": ">=24.18.0 <25.0.0"
-  },
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
@@ -13,9 +10,10 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "lint": "oxlint --config ../../oxlint.config.ts src",
-    "format": "oxfmt --write src",
-    "format:check": "oxfmt --check src",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "postinstall": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:generate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:migrate:deploy": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate deploy",
@@ -29,11 +27,7 @@
     "pg": "catalog:db"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
     "@types/pg": "catalog:db",
-    "oxfmt": "catalog:",
-    "oxlint": "catalog:",
-    "prisma": "catalog:db",
-    "typescript": "catalog:"
+    "prisma": "catalog:db"
   }
 }

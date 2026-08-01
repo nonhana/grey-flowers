@@ -1,3 +1,7 @@
+packages:
+  - apps/*
+  - packages/*
+
 allowBuilds:
   '@parcel/watcher': true
   '@prisma/engines': true
@@ -9,10 +13,6 @@ allowBuilds:
 catalogMode: prefer
 cleanupUnusedCatalogs: true
 
-packages:
-  - apps/*
-  - packages/*
-
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
@@ -22,9 +22,7 @@ trustPolicyExclude:
   - resend@6.18.1
 
 catalog:
-  '@antfu/eslint-config': ^9.2.0
   '@types/node': ^26.1.2
-  eslint: ^10.8.0
   oxfmt: ^0.61.0
   oxlint: ^1.76.0
   typescript: 6.0.3
@@ -95,6 +93,8 @@ catalogs:
     vue: ^3.5.40
     vue-router: ^5.2.0
     zod: ^4.4.3
+    '@antfu/eslint-config': ^9.2.0
+    eslint: ^10.8.0
   db:
     '@prisma/adapter-pg': ^7.9.1
     '@prisma/client': ^7.9.1

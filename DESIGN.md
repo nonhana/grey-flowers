@@ -2,87 +2,87 @@
 name: Grey Flowers
 description: Even in a grey world, flowers bloom as ever.
 colors:
-  garden-mist: "oklch(0.95 0.0059 239.82)"
-  grid-lilac: "oklch(0.73 0.0336 251.22)"
-  petal-blue-soft: "oklch(0.93 0.0305 212.05)"
-  petal-blue: "oklch(0.5 0.1102 250.04)"
-  ink-fog: "oklch(0.16 0.0413 254.41 / 53.33%)"
-  night-soil: "oklch(0.27 0 0)"
-  paper-bloom: "oklch(0.98 0 0)"
+  garden-mist: 'oklch(0.95 0.0059 239.82)'
+  grid-lilac: 'oklch(0.73 0.0336 251.22)'
+  petal-blue-soft: 'oklch(0.93 0.0305 212.05)'
+  petal-blue: 'oklch(0.5 0.1102 250.04)'
+  ink-fog: 'oklch(0.16 0.0413 254.41 / 53.33%)'
+  night-soil: 'oklch(0.27 0 0)'
+  paper-bloom: 'oklch(0.98 0 0)'
 typography:
   display:
-    fontFamily: "\"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif"
-    fontSize: "3rem"
+    fontFamily: '"Noto Serif", "Noto Serif SC", "Noto Serif JP", serif'
+    fontSize: '3rem'
     fontWeight: 700
     lineHeight: 1.1
   headline:
-    fontFamily: "\"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif"
-    fontSize: "1.875rem"
+    fontFamily: '"Noto Serif", "Noto Serif SC", "Noto Serif JP", serif'
+    fontSize: '1.875rem'
     fontWeight: 700
     lineHeight: 1.2
   title:
-    fontFamily: "\"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif"
-    fontSize: "1.25rem"
+    fontFamily: '"Noto Serif", "Noto Serif SC", "Noto Serif JP", serif'
+    fontSize: '1.25rem'
     fontWeight: 700
     lineHeight: 1.3
   body:
-    fontFamily: "\"Noto Serif\", \"Noto Serif SC\", \"Noto Serif JP\", serif"
-    fontSize: "1rem"
+    fontFamily: '"Noto Serif", "Noto Serif SC", "Noto Serif JP", serif'
+    fontSize: '1rem'
     fontWeight: 400
     lineHeight: 1.75
   label:
-    fontFamily: "\"JetBrains Mono\", monospace"
-    fontSize: "0.875rem"
+    fontFamily: '"JetBrains Mono", monospace'
+    fontSize: '0.875rem'
     fontWeight: 400
     lineHeight: 1.4
-    letterSpacing: "0"
+    letterSpacing: '0'
 rounded:
-  lg: "8px"
-  xl: "12px"
-  xxl: "16px"
-  card: "24px"
-  feature: "28px"
-  pill: "999px"
+  lg: '8px'
+  xl: '12px'
+  xxl: '16px'
+  card: '24px'
+  feature: '28px'
+  pill: '999px'
 spacing:
-  xs: "8px"
-  sm: "12px"
-  md: "16px"
-  lg: "20px"
-  xl: "32px"
-  section: "80px"
+  xs: '8px'
+  sm: '12px'
+  md: '16px'
+  lg: '20px'
+  xl: '32px'
+  section: '80px'
 components:
   button-primary:
-    backgroundColor: "{colors.petal-blue-soft}"
-    textColor: "{colors.petal-blue}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "8px 10px"
+    backgroundColor: '{colors.petal-blue-soft}'
+    textColor: '{colors.petal-blue}'
+    typography: '{typography.label}'
+    rounded: '{rounded.pill}'
+    padding: '8px 10px'
   button-primary-hover:
-    backgroundColor: "{colors.garden-mist}"
-    textColor: "{colors.petal-blue}"
-    rounded: "{rounded.pill}"
+    backgroundColor: '{colors.garden-mist}'
+    textColor: '{colors.petal-blue}'
+    rounded: '{rounded.pill}'
   button-dark:
-    backgroundColor: "{colors.petal-blue}"
-    textColor: "{colors.paper-bloom}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "8px 10px"
+    backgroundColor: '{colors.petal-blue}'
+    textColor: '{colors.paper-bloom}'
+    typography: '{typography.label}'
+    rounded: '{rounded.pill}'
+    padding: '8px 10px'
   input-field:
-    backgroundColor: "{colors.petal-blue-soft}"
-    textColor: "{colors.ink-fog}"
-    typography: "{typography.body}"
-    rounded: "{rounded.lg}"
-    padding: "8px 12px"
+    backgroundColor: '{colors.petal-blue-soft}'
+    textColor: '{colors.ink-fog}'
+    typography: '{typography.body}'
+    rounded: '{rounded.lg}'
+    padding: '8px 12px'
   article-card:
-    backgroundColor: "{colors.paper-bloom}"
-    textColor: "{colors.ink-fog}"
-    rounded: "{rounded.card}"
-    padding: "16px"
+    backgroundColor: '{colors.paper-bloom}'
+    textColor: '{colors.ink-fog}'
+    rounded: '{rounded.card}'
+    padding: '16px'
   dialog-surface:
-    backgroundColor: "{colors.paper-bloom}"
-    textColor: "{colors.ink-fog}"
-    rounded: "{rounded.xxl}"
-    padding: "20px"
+    backgroundColor: '{colors.paper-bloom}'
+    textColor: '{colors.ink-fog}'
+    rounded: '{rounded.xxl}'
+    padding: '20px'
 ---
 
 # Design System: Grey Flowers
