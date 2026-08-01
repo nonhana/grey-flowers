@@ -2,6 +2,12 @@
 
 Grey Flowers is a personal publishing garden for technical learning, software practice, self-exploration, and everyday traces.
 
+## Workspace
+
+- The repository root is the pnpm workspace and operator entrypoint. Use its stable commands: `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`, and `pnpm prisma:*`.
+- `apps/main` is the public Nuxt application. Its deployed Nitro artifact is `apps/main/.output/`.
+- `packages/db` exclusively owns Prisma configuration, schema, migrations, generated client, and Prisma package versions. Applications consume `@grey-flowers/db`; do not import its generated client by filesystem path.
+
 ## Agent Docs
 
 Read the matching guide before changing that area:

@@ -2,19 +2,19 @@
 
 ## Prerequisites
 
-- Use the repository's pinned package manager: `pnpm@11.15.1`.
-- Copy `.env.example` to `.env` and provide every listed value. `server/env/index.ts` exits when any required value is absent; `HANA_DATABASE_URL` is also required by Prisma configuration.
+- Use Node `>=24.18.0 <25.0.0` and the repository's pinned package manager: `pnpm@11.18.0`.
+- Copy `.env.example` to the workspace-root `.env` and provide every listed value. `apps/main/server/env/index.ts` exits when any required value is absent; `HANA_DATABASE_URL` is also required by Prisma configuration.
 
 ## Commands
 
 - Install: `pnpm install`
 - Development server: `pnpm dev` (binds to `localhost:2408`)
 - Production build: `pnpm build`
-- Serve a built application: `pnpm preview`
-- Generate a static site: `pnpm generate`
-- Analyze the Nuxt bundle: `pnpm analyze`
+- Serve a built application: `pnpm --filter @grey-flowers/main run preview`
+- Generate a static site: `pnpm --filter @grey-flowers/main run generate`
+- Analyze the Nuxt bundle: `pnpm --filter @grey-flowers/main run analyze`
 
-`pnpm install` runs `nuxt prepare` and `prisma generate` through `postinstall`.
+`pnpm install` runs the main application's Nuxt preparation and the database package's Prisma generation through package `postinstall` scripts.
 
 ## Database-related build steps
 
@@ -24,4 +24,4 @@
 
 ## Output and deployment artifact
 
-`pnpm build` writes the Nitro application to `.output/`. The GitHub deployment workflow copies `.output/` and `ecosystem.config.cjs` to the VPS, where PM2 runs `.output/server/index.mjs` on port `2408`.
+`pnpm build` first compiles `packages/db`, then writes the Nuxt Nitro application to `apps/main/.output/`. The GitHub deployment workflow copies `apps/main/.output/` and `apps/main/ecosystem.config.cjs` into the VPS deployment layout, where PM2 runs `.output/server/index.mjs` on port `2408`.

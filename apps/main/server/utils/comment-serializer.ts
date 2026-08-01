@@ -1,4 +1,4 @@
-import type { Prisma } from '~~/prisma/generated/client'
+import type { Prisma } from '@grey-flowers/db'
 import type { CommentItem, ParentCommentItem } from '#shared/types/comment'
 import type { MarkdownRenderPayload } from '#shared/types/markdown'
 import type { childCommentArgs, parentCommentArgs } from './prismaShortcut'

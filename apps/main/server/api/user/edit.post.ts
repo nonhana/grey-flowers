@@ -1,4 +1,4 @@
-import type { UserUpdateInput } from '~~/prisma/generated/models'
+import type { UserUpdateInput } from '@grey-flowers/db'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { useZodVerify } from '#server/composables/useZodVerify'

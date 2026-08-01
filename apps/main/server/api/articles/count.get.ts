@@ -1,4 +1,4 @@
-import type { ArticleWhereInput } from '~~/prisma/generated/models'
+import type { ArticleWhereInput } from '@grey-flowers/db'
 import type { ArticleFilterQuery } from '#shared/types/articles'
 import prisma from '#server/utils/prisma'
 import { getPublishedAtMonthRange } from '#shared/utils/date'

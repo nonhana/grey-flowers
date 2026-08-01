@@ -19,8 +19,12 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    externals: {
+      inline: ['@grey-flowers/db'],
+    },
     prerender: {
       crawlLinks: true,
+      ignore: ['/_ipx/'],
       routes: ['/', '/rss.xml'],
     },
   },

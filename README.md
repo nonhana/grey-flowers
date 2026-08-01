@@ -15,7 +15,14 @@ Built with:
 - [Prisma](https://prisma.io)
 - [PostgreSQL](https://postgresql.org)
 
+## Workspace
+
+- `apps/main` contains the public Nuxt SSR application.
+- `packages/db` exclusively owns the Prisma schema, migrations, generated client, configuration, and database package versions.
+- Run the public site and workspace checks from the repository root: `pnpm dev`, `pnpm build`, `pnpm typecheck`, and `pnpm lint`.
+
 ## Database Workflow
 
-- `pnpm prisma:migrate:deploy` applies committed SQL migrations, including the article-search DDL.
+- `pnpm prisma:generate` regenerates the checked-in client in `packages/db/prisma/generated/`.
+- `pnpm prisma:migrate:deploy` applies committed SQL migrations from `packages/db/prisma/migrations/`, including the article-search DDL.
 - `pnpm prisma:push` remains a local schema-sync shortcut and is not the shipping path for search migrations.

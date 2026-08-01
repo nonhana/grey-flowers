@@ -9,6 +9,10 @@ allowBuilds:
 catalogMode: prefer
 cleanupUnusedCatalogs: true
 
+packages:
+  - apps/*
+  - packages/*
+
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
@@ -19,48 +23,54 @@ trustPolicyExclude:
 
 catalog:
   '@antfu/eslint-config': ^9.2.0
-  '@golar/vue': ^0.1.10
-  '@lucide/vue': ^1.28.0
-  '@nuxt/fonts': ^0.14.0
-  '@nuxt/image': ^2.1.0
-  '@nuxtjs/color-mode': ^4.0.1
-  '@nuxtjs/mdc': ^0.22.2
-  '@nuxtjs/seo': ^5.3.6
-  '@pinia/nuxt': ^1.0.1
-  '@prisma/adapter-pg': ^7.9.1
-  '@prisma/client': ^7.9.1
-  '@takumi-rs/core': ^2.5.4
-  '@types/jsonwebtoken': ^9.0.10
   '@types/node': ^26.1.2
-  '@types/vivus': ^0.4.7
-  '@unocss/eslint-plugin': ^66.7.5
-  '@unocss/nuxt': ^66.7.5
-  '@unocss/preset-rem-to-px': ^66.7.5
-  '@unocss/reset': ^66.7.5
-  '@vueuse/core': ^14.4.0
-  '@vueuse/nuxt': ^14.4.0
-  '@vueuse/router': ^14.4.0
-  bcryptjs: ^3.0.3
   eslint: ^10.8.0
-  feed: ^6.0.0
-  golar: ^0.1.10
-  gsap: ^3.15.0
-  hana-img-viewer: ^4.0.0
-  jose: ^6.2.5
-  nuxt: ^4.5.1
-  nuxt-og-image: ^6.7.5
-  pinia: ^4.0.2
-  pinia-plugin-persistedstate: ^4.7.1
-  prisma: ^7.9.1
-  rehype-sanitize: 6.0.0
-  resend: ^6.18.1
   typescript: 6.0.3
-  unocss: ^66.7.5
-  unocss-preset-scrollbar: ^4.0.0
-  vivus: ^0.4.6
-  vue: ^3.5.40
-  vue-router: ^5.2.0
-  zod: ^4.4.3
+
+catalogs:
+  main:
+    '@golar/vue': ^0.1.10
+    '@lucide/vue': ^1.28.0
+    '@nuxt/fonts': ^0.14.0
+    '@nuxt/image': ^2.1.0
+    '@nuxtjs/color-mode': ^4.0.1
+    '@nuxtjs/mdc': ^0.22.2
+    '@nuxtjs/seo': ^5.3.6
+    '@pinia/nuxt': ^1.0.1
+    '@takumi-rs/core': ^2.5.4
+    '@types/jsonwebtoken': ^9.0.10
+    '@types/vivus': ^0.4.7
+    '@unocss/eslint-plugin': ^66.7.5
+    '@unocss/nuxt': ^66.7.5
+    '@unocss/preset-rem-to-px': ^66.7.5
+    '@unocss/reset': ^66.7.5
+    '@vueuse/core': ^14.4.0
+    '@vueuse/nuxt': ^14.4.0
+    '@vueuse/router': ^14.4.0
+    bcryptjs: ^3.0.3
+    feed: ^6.0.0
+    golar: ^0.1.10
+    gsap: ^3.15.0
+    hana-img-viewer: ^4.0.0
+    jose: ^6.2.5
+    nuxt: ^4.5.1
+    nuxt-og-image: ^6.7.5
+    pinia: ^4.0.2
+    pinia-plugin-persistedstate: ^4.7.1
+    rehype-sanitize: 6.0.0
+    resend: ^6.18.1
+    unocss: ^66.7.5
+    unocss-preset-scrollbar: ^4.0.0
+    vivus: ^0.4.6
+    vue: ^3.5.40
+    vue-router: ^5.2.0
+    zod: ^4.4.3
+  db:
+    '@prisma/adapter-pg': ^7.9.1
+    '@prisma/client': ^7.9.1
+    '@types/pg': ^8.20.0
+    pg: ^8.17.2
+    prisma: ^7.9.1
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@prisma/client'
