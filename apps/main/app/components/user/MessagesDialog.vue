@@ -13,7 +13,7 @@ const fetching = ref(false)
 
 async function fetchUserMessages() {
   fetching.value = true
-  const data = await $fetch('/api/user/messages', { query: { id: userInfo.value!.id } })
+  const data = await $fetch('/api/user/messages', { query: { id: userInfo.value!.userId } })
   if (data.success) {
     messages.value = (data.payload as CommentItem[]) ?? []
   }

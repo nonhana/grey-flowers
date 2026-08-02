@@ -15,6 +15,7 @@ const isRecently = computed(() => props.type === 'recently')
 const { userStore } = useStore()
 const { loggedIn } = toRefs(userStore)
 const { callHanaMessage } = useMessage()
+const apiClient = useApiClient()
 
 const route = useRoute()
 const { fullPath, path, hash } = route
@@ -75,18 +76,29 @@ function handleReply(value: IReplyComment) {
 }
 
 async function handleDelete(value: IDeleteComment) {
-  const data = await $fetch('/api/comments/delete', {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    method: 'POST',
-    body: JSON.stringify({ commentId: value.id }),
-  })
-  if (data.success) {
-    removeComment(value)
+  try {
+    const data = await apiClient.legacyBearerRequest('/api/comments/delete', {
+      method: 'POST',
+      body: { commentId: value.id },
+    })
+    if (data.success) {
+      removeComment(value)
+      callHanaMessage({
+        type: 'success',
+        message: '删除成功',
+      })
+      return
+    }
+
     callHanaMessage({
-      type: 'success',
-      message: '删除成功',
+      type: 'error',
+      message: data.statusMessage || '删除失败',
+    })
+  }
+  catch {
+    callHanaMessage({
+      type: 'error',
+      message: '网络连接失败，请稍后重试。',
     })
   }
 }

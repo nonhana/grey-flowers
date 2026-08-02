@@ -8,7 +8,6 @@ if (existsSync('.env'))
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']),
   HANA_DATABASE_URL: z.string(),
-  HANA_JWT_SECRET: z.string(),
   HANA_MAIL_ENABLE: z.enum(['true', 'false']),
   RESEND_API_KEY: z.string(),
   RESEND_FROM: z.string(),

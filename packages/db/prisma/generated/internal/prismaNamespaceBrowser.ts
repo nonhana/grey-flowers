@@ -55,6 +55,7 @@ export const ModelName = {
   Tag: 'Tag',
   Category: 'Category',
   User: 'User',
+  Session: 'Session',
   Comment: 'Comment',
   UserMessage: 'UserMessage',
   Activity: 'Activity',
@@ -132,6 +133,20 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  refreshSecretHash: 'refreshSecretHash',
+  createdAt: 'createdAt',
+  lastUsedAt: 'lastUsedAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokeReason: 'revokeReason'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
 export const CommentScalarFieldEnum = {

@@ -25,6 +25,15 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const SessionRevokeReason = {
+  LOGOUT: 'LOGOUT',
+  PASSWORD_CHANGED: 'PASSWORD_CHANGED',
+  ROLE_CHANGED: 'ROLE_CHANGED'
+} as const
+
+export type SessionRevokeReason = (typeof SessionRevokeReason)[keyof typeof SessionRevokeReason]
+
+
 export const AssetMediaType = {
   IMAGE: 'IMAGE',
   AUDIO: 'AUDIO'

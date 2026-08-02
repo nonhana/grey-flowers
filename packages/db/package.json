@@ -17,6 +17,7 @@
     "postinstall": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:generate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:migrate:deploy": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate deploy",
+    "prisma:migrate:dev": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate dev",
     "prisma:push": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js db push",
     "prisma:studio": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js studio",
     "typecheck": "tsc -p tsconfig.json --noEmit"

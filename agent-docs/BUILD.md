@@ -8,7 +8,7 @@
 ## Commands
 
 - Install: `pnpm install`
-- Development server: `pnpm dev` (binds to `localhost:2408`)
+- Development server: `pnpm dev` (binds to the root `.env` `MAIN_PORT`)
 - Production build: `pnpm build`
 - Serve a built application: `pnpm --filter @grey-flowers/main run preview`
 - Generate a static site: `pnpm --filter @grey-flowers/main run generate`

@@ -38,6 +38,11 @@ export type Category = Prisma.CategoryModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
  * Model Comment
  * 
  */

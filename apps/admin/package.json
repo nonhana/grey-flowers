@@ -22,6 +22,7 @@
     "es-toolkit": "catalog:admin",
     "hono": "catalog:admin",
     "idb-keyval": "catalog:admin",
+    "ky": "catalog:admin",
     "lucide-react": "catalog:admin",
     "react": "catalog:admin",
     "react-aria-components": "catalog:admin",
@@ -29,7 +30,7 @@
     "react-resizable-panels": "catalog:admin"
   },
   "devDependencies": {
-    "@grey-flowers/api": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:admin",
     "@tailwindcss/vite": "catalog:admin",
     "@types/react": "catalog:admin",
     "@types/react-dom": "catalog:admin",

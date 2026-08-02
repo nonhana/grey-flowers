@@ -7,6 +7,7 @@ These rules supplement the Antfu ESLint configuration and `.editorconfig`.
 - Keep a change limited to the requested behavior. Do not reformat, rename, or add defensive fallbacks outside that scope.
 - Do not extract a helper, class, or interface for a single caller; extract only after at least three callers need the same abstraction.
 - Prefer the existing feature component, composable, Pinia store, or server utility over a new layer.
+- Always use functionality provided by the framework or an installed library when it meets the need; never reimplement it with project-local code.
 
 ## Vue and UnoCSS
 

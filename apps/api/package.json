@@ -12,6 +12,8 @@
     }
   },
   "scripts": {
+    "auth:promote-admin": "node --env-file-if-exists=../../.env --import tsx src/cli/promote-admin.ts",
+    "auth:register-user": "node --env-file-if-exists=../../.env --import tsx src/cli/register-user.ts",
     "build": "tsdown",
     "dev": "node --env-file-if-exists=../../.env --import tsx --watch src/main.ts",
     "fmt": "oxfmt",
@@ -26,11 +28,15 @@
     "@grey-flowers/db": "workspace:*",
     "@hono/node-server": "catalog:api",
     "@hono/zod-validator": "catalog:api",
+    "bcryptjs": "catalog:api",
     "es-toolkit": "catalog:api",
     "hono": "catalog:api",
+    "jose": "catalog:api",
+    "pino": "catalog:api",
     "zod": "catalog:api"
   },
   "devDependencies": {
+    "pino-pretty": "catalog:api",
     "tsdown": "catalog:api",
     "tsx": "catalog:api"
   }

@@ -1,4 +1,19 @@
+import { getDefaultSelectors } from 'eslint-plugin-better-tailwindcss/defaults';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, type DummyRuleMap } from 'oxlint';
+
+const ADMIN_CWD = fileURLToPath(new URL('./apps/admin/', import.meta.url));
+
+const BETTER_TAILWIND_RULES: DummyRuleMap = {
+  'better-tailwindcss/enforce-canonical-classes': 'warn',
+  'better-tailwindcss/enforce-consistent-class-order': 'warn',
+  'better-tailwindcss/enforce-consistent-line-wrapping': 'warn',
+  'better-tailwindcss/no-conflicting-classes': 'error',
+  'better-tailwindcss/no-deprecated-classes': 'warn',
+  'better-tailwindcss/no-duplicate-classes': 'warn',
+  'better-tailwindcss/no-unknown-classes': 'error',
+  'better-tailwindcss/no-unnecessary-whitespace': 'warn',
+};
 
 const COMMON_RULES: DummyRuleMap = {
   'array-callback-return': ['error', { allowImplicit: true }],
@@ -105,6 +120,25 @@ const JSX_A11Y_RULES: DummyRuleMap = {
 export default defineConfig({
   categories: { correctness: 'off' },
   env: { builtin: true },
+  options: {
+    reportUnusedDisableDirectives: 'warn',
+    typeAware: true,
+  },
+  jsPlugins: [
+    {
+      name: 'better-tailwindcss',
+      specifier: 'eslint-plugin-better-tailwindcss',
+    },
+  ],
+  settings: {
+    'better-tailwindcss': {
+      cwd: ADMIN_CWD,
+      entryPoint: 'src/styles/index.css',
+      rootFontSize: 16,
+      selectors: getDefaultSelectors(),
+      strictness: 'loose',
+    },
+  },
   plugins: [
     'eslint',
     'typescript',
@@ -124,7 +158,11 @@ export default defineConfig({
     {
       files: ['**/*.tsx'],
       env: { browser: true },
-      rules: { ...REACT_RULES, ...JSX_A11Y_RULES },
+      rules: {
+        ...BETTER_TAILWIND_RULES,
+        ...REACT_RULES,
+        ...JSX_A11Y_RULES,
+      },
     },
     {
       files: ['./*.{ts,mts}'],

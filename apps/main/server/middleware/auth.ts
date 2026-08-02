@@ -1,12 +1,11 @@
-import { jwtVerify } from 'jose'
-import env from '#server/env'
+import { authSessionResponseSchema } from '@grey-flowers/contracts'
 
 export default eventHandler(async (event) => {
   if (!blackList.includes(event.path)) {
     return
   }
 
-  const token = event.headers.get('Authorization')?.split(' ')[1] // Bearer <token>
+  const token = event.headers.get('Authorization')?.match(/^Bearer (\S+)$/)?.[1]
   if (!token) {
     return {
       statusCode: 401,
@@ -15,16 +14,27 @@ export default eventHandler(async (event) => {
     }
   }
 
+  const apiOrigin = useRuntimeConfig(event).public.apiOrigin.replace(/\/$/, '')
   try {
-    const joseSecret = new TextEncoder().encode(env.HANA_JWT_SECRET)
-    const { payload: decoded } = await jwtVerify(token, joseSecret)
-    event.context.jwtPayload = decoded
+    const response = await $fetch.raw(`${apiOrigin}/auth/session`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      ignoreResponseError: true,
+    })
+    const parsed = authSessionResponseSchema.safeParse(response._data)
+    if (parsed.success) {
+      event.context.principal = parsed.data.data.principal
+      return
+    }
   }
   catch {
-    return {
-      statusCode: 401,
-      statusMessage: 'Invalid token, please login',
-      success: false,
-    }
+    // The legacy endpoint keeps its existing authentication failure envelope.
+  }
+
+  return {
+    statusCode: 401,
+    statusMessage: 'Invalid token, please login',
+    success: false,
   }
 })

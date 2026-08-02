@@ -1,7 +1,19 @@
+import process from 'node:process'
 import { seoData } from './shared/data/meta'
+
+const mainPort = Number.parseInt(process.env.MAIN_PORT ?? '2410')
+const apiPort = Number.parseInt(process.env.API_PORT ?? '2408')
+const apiOrigin = process.env.NODE_ENV === 'production'
+  ? 'https://api.caelum.moe'
+  : `http://localhost:${apiPort}`
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiOrigin,
+    },
+  },
   app: {
     head: {
       charset: 'utf-8',
@@ -66,7 +78,7 @@ export default defineNuxtConfig({
   },
   devServer: {
     host: 'localhost',
-    port: 2408,
+    port: mainPort,
   },
   experimental: {
     scanPageMeta: true,
