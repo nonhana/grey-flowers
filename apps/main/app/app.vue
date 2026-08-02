@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { siteMetaData } from '#shared/data/meta'
+import { useApiClient } from '~/composables/useApiClient'
 
 const route = useRoute()
+const apiClient = useApiClient()
 
 const initializing = ref(route.name !== ARTICLE_DETAIL_PAGE)
 
-onMounted(() => initializing.value = false)
+onMounted(() => {
+  initializing.value = false
+  void apiClient.restoreSession().catch(() => undefined)
+})
 
 useHead({
   htmlAttrs: {

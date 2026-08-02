@@ -65,6 +65,22 @@ model User {
   replies       Comment[]     @relation("ReplyToUser")
   userMessage   UserMessage[]
   createdAssets Asset[]       @relation("AssetCreatedBy")
+  sessions      Session[]
+}
+
+model Session {
+  id                String               @id @default(cuid())
+  userId            Int
+  refreshSecretHash String
+  createdAt         DateTime             @default(now())
+  lastUsedAt        DateTime             @default(now())
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  revokeReason      SessionRevokeReason?
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt, expiresAt])
+  @@index([expiresAt])
 }
 
 model Comment {
@@ -182,6 +198,12 @@ enum CommentLevel {
 enum UserRole {
   USER
   ADMIN
+}
+
+enum SessionRevokeReason {
+  LOGOUT
+  PASSWORD_CHANGED
+  ROLE_CHANGED
 }
 
 enum AssetMediaType {

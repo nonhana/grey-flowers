@@ -26,7 +26,7 @@ const { userStore } = useStore()
 
 const { userInfo, loggedIn } = toRefs(userStore)
 
-const isMe = computed(() => userInfo.value?.id === props.comment.author?.id)
+const isMe = computed(() => userInfo.value?.userId === props.comment.author?.id)
 
 const isActive = computed(() => props.activeCommentId === props.comment.id)
 

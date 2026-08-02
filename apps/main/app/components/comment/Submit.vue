@@ -16,6 +16,7 @@ const { fullPath, path } = route
 
 const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
+const apiClient = useApiClient()
 
 const { userInfo } = toRefs(userStore)
 
@@ -66,44 +67,46 @@ async function handlePublish() {
 }
 
 async function publishComment(objData: IPostComment) {
-  const data = await $fetch('/api/comments/post', {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    method: 'POST',
-    body: JSON.stringify(objData),
-  })
-  if (data.success) {
-    const receiverId = data.payload!.parent
-      ? data.payload!.replyToUser
-        ? data.payload!.replyToUser.id
-        : data.payload!.parent.authorId
-      : hanaInfo.id
-    if (userInfo.value!.id !== receiverId) {
-      await $fetch('/api/user/send-message', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          receiverId,
-          commentId: data.payload!.id,
-        }),
+  try {
+    const data = await apiClient.legacyBearerRequest<CommentItem>('/api/comments/post', {
+      method: 'POST',
+      body: objData,
+    })
+    if (data.success && data.payload) {
+      const comment = data.payload
+      const receiverId = comment.parent
+        ? comment.replyToUser
+          ? comment.replyToUser.id
+          : comment.parent.authorId
+        : hanaInfo.id
+      if (userInfo.value!.userId !== receiverId) {
+        await apiClient.legacyBearerRequest('/api/user/send-message', {
+          method: 'POST',
+          body: {
+            receiverId,
+            commentId: comment.id,
+          },
+        })
+      }
+      emits('published', comment)
+      content.value = ''
+      visible.value = false
+      callHanaMessage({
+        type: 'success',
+        message: '发布成功',
       })
     }
-    emits('published', data.payload! as CommentItem)
-    content.value = ''
-    visible.value = false
-    callHanaMessage({
-      type: 'success',
-      message: '发布成功',
-    })
+    else {
+      callHanaMessage({
+        type: 'error',
+        message: data.statusMessage || '发布失败',
+      })
+    }
   }
-  else {
-    const errorList = data.error?.map(item => item.message).join(', ')
+  catch {
     callHanaMessage({
       type: 'error',
-      message: errorList || data.statusMessage || '发布失败',
+      message: '网络连接失败，请稍后重试。',
     })
   }
 }

@@ -31,5 +31,6 @@
     "source.fixAll.prettier": "never",
     "source.organizeImports": "never"
   },
-  "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
 }

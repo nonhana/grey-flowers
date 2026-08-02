@@ -1,1 +1,152 @@
 @import 'tailwindcss';
+
+/* ══════════════════════════════════════════════════════════════
+   Grey Flowers · Admin — 设计 token 的单一来源
+   ──────────────────────────────────────────────────────────
+   本文件只保留「token 定义」与「全局 base」，不再承载任何组件样式。
+   所有组件外观都通过组件内的 Tailwind v4 utility class 组合实现，
+   组合引用下方 token（@theme → :root CSS 变量 → var() 驱动的 utility）。
+
+   结构：
+     1. @theme —— 原始色板 + 语义角色（浅色值）+ 字体 / 圆角 / 阴影
+     2. base  —— body / 网格底纹 / 按钮指针 / 焦点等全局规则
+     3. dark  —— @media(prefers-color-scheme) 覆盖语义变量的深色值
+     4. 动画 / 减动效降级
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Tokens ─────────────────────────────────────────────── */
+
+@theme {
+  /* 原始色板：petal-blue 蓝家族（Grey Flowers 的唯一交互色） */
+  --color-brand: oklch(0.42 0.104 247); /* 品牌蓝（等待态 / 品牌文字） */
+  --color-brand-deep: oklch(0.34 0.082 247); /* shell 品牌蓝（加深） */
+  --color-primary: oklch(0.47 0.116 247); /* 主操作蓝 */
+  --color-primary-deep: oklch(0.42 0.11 247); /* 主操作蓝 hover */
+  --color-primary-ink: oklch(0.25 0.03 252); /* 深色文字（输入值） */
+  --color-on-primary: oklch(0.99 0.003 247); /* 主操作蓝上的文字 */
+  --color-vapor: oklch(0.93 0.028 222); /* 次级淡蓝填充 */
+  --color-vapor-hover: oklch(0.9 0.038 220); /* 次级淡蓝 hover */
+  --color-vapor-edge-hover: oklch(0.61 0.077 240); /* 次级边框 hover */
+  --color-vapor-deep: oklch(0.34 0.032 243); /* 深色模式次级填充 */
+  --color-vapor-deep-ink: oklch(0.85 0.036 233); /* 深色模式次级文字 */
+
+  /* 错误 / 警告家族 */
+  --color-danger: oklch(0.54 0.154 21); /* 错误标记 */
+  --color-danger-edge: oklch(0.57 0.154 21); /* 错误边框 / 侧条 */
+  --color-danger-text: oklch(0.5 0.154 21); /* 错误文字 */
+  --color-danger-soft: oklch(0.94 0.04 23 / 55%); /* 错误提示底 */
+  --color-danger-ink: oklch(0.38 0.11 22); /* 深色错误文字（消息体） */
+  --color-warning: oklch(0.55 0.12 68); /* 警告标记 */
+
+  /* 焦点 */
+  --color-focus: oklch(0.49 0.108 248); /* 输入聚焦边框 */
+  --color-focus-ring: oklch(0.74 0.062 232 / 45%); /* 聚焦光晕 */
+  --color-focus-outline: oklch(0.7 0.073 228 / 68%); /* 轮廓 */
+
+  /* ── 语义角色（浅色值；深色在下方覆盖） ── */
+  --color-canvas: oklch(0.965 0.009 238); /* 页面底色 */
+  --color-canvas-grid: oklch(0.73 0.034 251 / 22%); /* 网格线 */
+  --color-surface: oklch(0.99 0.003 247 / 96%); /* 抬升面（面板 / 头部） */
+  --color-edge: oklch(0.8 0.028 243 / 70%); /* 通用边框 */
+  --color-ink: oklch(0.3 0.023 252); /* 正文默认文字 */
+  --color-ink-strong: oklch(0.26 0.032 252); /* 标题 */
+  --color-ink-muted: oklch(0.38 0.024 250); /* 段落说明 */
+  --color-ink-soft: oklch(0.35 0.031 252); /* 标签 / 账户 */
+  --color-ink-faint: oklch(0.44 0.053 246); /* kicker / 动作状态 */
+  --color-input: oklch(0.95 0.021 230); /* 输入框底 */
+  --color-input-edge: oklch(0.8 0.028 243); /* 输入框边框 */
+  --color-input-hover-edge: oklch(0.62 0.082 242); /* 输入框 hover 边框 */
+  --color-input-placeholder: oklch(0.49 0.025 250); /* 占位文字 */
+  --color-section-edge: oklch(0.7 0.029 248); /* 头部 section 分隔 */
+  --color-section-text: oklch(0.44 0.038 247); /* 头部 section 文字 */
+  --color-logout-edge: oklch(0.76 0.028 246); /* 退出按钮边框 */
+  --color-logout-hover-edge: oklch(0.55 0.083 245); /* 退出 hover 边框 */
+  --color-logout-text: oklch(0.38 0.05 248); /* 退出图标 */
+  --color-tooltip: oklch(0.28 0.014 252); /* 工具提示底 */
+  --color-tooltip-text: oklch(0.96 0.005 246); /* 工具提示文字 */
+
+  /* 浅色模式下的次级操作（被 dark 覆盖为 vapor-deep 族） */
+  --color-accent: oklch(0.93 0.028 222);
+  --color-accent-hover: oklch(0.9 0.038 220);
+  --color-accent-hover-edge: oklch(0.61 0.077 240);
+  --color-accent-text: oklch(0.36 0.085 247);
+
+  /* 字体 */
+  --font-sans: 'Noto Serif', 'Noto Serif SC', 'Noto Serif JP', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* 圆角 */
+  --radius-panel: 8px;
+  --radius-control: 6px;
+
+  /* 阴影（semantic，颜色抽为 --color-shadow 以便深色覆盖） */
+  --color-shadow: rgb(42 57 76 / 13%);
+  --shadow-panel: 0 16px 38px var(--color-shadow);
+}
+
+/* ── 2. Base（全局默认） ─────────────────────────────────────── */
+
+@layer base {
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+    background-image:
+      linear-gradient(var(--color-canvas-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-canvas-grid) 1px, transparent 1px);
+    background-size: 32px 32px;
+    font-family: var(--font-sans);
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: wait;
+  }
+}
+
+/* ── 3. Dark（与浅色同一花园，只是换了天光） ──────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: oklch(0.24 0.012 252);
+    --color-canvas-grid: oklch(0.49 0.028 247 / 28%);
+    --color-surface: oklch(0.29 0.014 252 / 96%);
+    --color-edge: oklch(0.42 0.024 252);
+    --color-ink: oklch(0.9 0.008 245);
+    --color-ink-strong: oklch(0.94 0.007 245);
+    --color-ink-muted: oklch(0.78 0.013 245);
+    --color-ink-soft: oklch(0.84 0.013 245);
+    --color-input: oklch(0.23 0.016 252);
+    --color-input-edge: oklch(0.43 0.028 252);
+    --color-input-placeholder: oklch(0.67 0.015 246);
+    --color-section-edge: oklch(0.47 0.025 250);
+    --color-section-text: oklch(0.7 0.018 247);
+    --color-logout-edge: oklch(0.45 0.025 252);
+    --color-logout-text: oklch(0.78 0.023 245);
+    --color-shadow: rgb(0 0 0 / 20%);
+    /* 次级操作在深色下淡蓝反转为深蓝填充 */
+    --color-accent: var(--color-vapor-deep);
+    --color-accent-hover: var(--color-vapor-deep);
+    --color-accent-text: var(--color-vapor-deep-ink);
+  }
+}
+
+/* ── 4. 减动效降级 ──────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -738,10 +738,6 @@ export type EnumAssetStatusFieldUpdateOperationsInput = {
   set?: $Enums.AssetStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type AssetCreateNestedOneWithoutArticleInlineAssetsInput = {
   create?: Prisma.XOR<Prisma.AssetCreateWithoutArticleInlineAssetsInput, Prisma.AssetUncheckedCreateWithoutArticleInlineAssetsInput>
   connectOrCreate?: Prisma.AssetCreateOrConnectWithoutArticleInlineAssetsInput

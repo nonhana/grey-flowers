@@ -1,7 +1,7 @@
 import prisma from '#server/utils/prisma'
 
 export default formattedEventHandler(async (event) => {
-  const id = event.context.jwtPayload.id
+  const id = event.context.principal.userId
   const body = await readBody(event)
   const { commentId } = body
 

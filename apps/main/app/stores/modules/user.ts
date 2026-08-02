@@ -1,10 +1,10 @@
-import type { JwtPayload } from '#shared/types/jwt'
+import type { Principal } from '@grey-flowers/contracts'
 
 export const useUserInfoStore = defineStore('userInfo', () => {
   const loginWindowVisible = ref(false)
   const registerWindowVisible = ref(false)
 
-  const userInfo = ref<JwtPayload>()
+  const userInfo = ref<Principal>()
   const loggedIn = computed(() => !!userInfo.value)
 
   function toggleLoginWindow(status?: boolean) {
@@ -15,7 +15,7 @@ export const useUserInfoStore = defineStore('userInfo', () => {
     registerWindowVisible.value = status ?? !registerWindowVisible.value
   }
 
-  function setUserInfo(info: JwtPayload) {
+  function setUserInfo(info: Principal) {
     userInfo.value = info
   }
 
@@ -33,9 +33,4 @@ export const useUserInfoStore = defineStore('userInfo', () => {
     setUserInfo,
     logout,
   }
-}, {
-  persist: {
-    storage: piniaPluginPersistedstate.localStorage(),
-    pick: ['userInfo'],
-  },
 })

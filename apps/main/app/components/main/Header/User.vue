@@ -7,27 +7,11 @@ import { useStore } from '~/stores'
 const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
 const { callHanaDialog } = useDialog()
+const apiClient = useApiClient()
 
 const { userInfo, loggedIn, loginWindowVisible, registerWindowVisible } = toRefs(userStore)
 
-// 如果用户已经登录，检查 token 是否过期
-async function checkUserStatus() {
-  if (loggedIn.value) {
-    const data = await $fetch('/api/user/check-status', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    })
-    if (!data.success) {
-      userStore.logout()
-    }
-  }
-}
-
-onMounted(checkUserStatus)
-
-const isMe = computed(() => userInfo.value?.id === hanaInfo.id)
+const isMe = computed(() => userInfo.value?.userId === hanaInfo.id)
 
 interface UserMenuItem {
   text: string
@@ -78,33 +62,41 @@ function toggleLoginRegisterWindow() {
 const logging = ref(false)
 const loginBtnText = computed(() => logging.value ? '登录中...' : '登录')
 async function handleLogin(e: Event) {
-  if (e.target) {
-    const formData = new FormData(e.target as HTMLFormElement)
-    const objData = Object.fromEntries(formData)
-    if (!objData.account || !objData.password) {
-      callHanaMessage({
-        message: '请输入用户名和密码。',
-        type: 'error',
-      })
-      return
-    }
-    logging.value = true
-    const data = await $fetch('/api/auth/login', { method: 'POST', body: JSON.stringify(objData) })
+  const formData = new FormData(e.target as HTMLFormElement)
+  const account = formData.get('account')
+  const password = formData.get('password')
+  if (typeof account !== 'string' || typeof password !== 'string' || !account || !password) {
+    callHanaMessage({
+      message: '请输入用户名和密码。',
+      type: 'error',
+    })
+    return
+  }
+
+  logging.value = true
+  try {
+    const data = await apiClient.login({ account, password })
     if (data.success) {
-      localStorage.setItem('token', data.payload!.token)
-      userStore.setUserInfo(data.payload!.userInfo)
       loginWindowVisible.value = false
       callHanaMessage({
-        message: `欢迎回来，${userInfo.value?.username}。`,
+        message: `欢迎回来，${data.data.principal.username}。`,
         type: 'success',
       })
     }
     else {
       callHanaMessage({
-        message: data.statusMessage || '登录失败。',
+        message: data.error.message || '登录失败。',
         type: 'error',
       })
     }
+  }
+  catch {
+    callHanaMessage({
+      message: '网络连接失败，请稍后重试。',
+      type: 'error',
+    })
+  }
+  finally {
     logging.value = false
   }
 }
@@ -112,21 +104,34 @@ async function handleLogin(e: Event) {
 const registering = ref(false)
 const registerBtnText = computed(() => registering.value ? '注册中...' : '注册')
 async function handleRegister(e: Event) {
-  if (e.target) {
-    const formData = new FormData(e.target as HTMLFormElement)
-    const objData = Object.fromEntries(formData)
-    if (!objData.username || !objData.email || !objData.password) {
-      callHanaMessage({
-        message: '请填写用户名、邮箱和密码。',
-        type: 'error',
-      })
-      return
-    }
-    if (objData.site === '') {
-      delete objData.site
-    }
-    registering.value = true
-    const data = await $fetch('/api/auth/register', { method: 'POST', body: JSON.stringify(objData) })
+  const formData = new FormData(e.target as HTMLFormElement)
+  const username = formData.get('username')
+  const email = formData.get('email')
+  const password = formData.get('password')
+  const site = formData.get('site')
+  if (
+    typeof username !== 'string'
+    || typeof email !== 'string'
+    || typeof password !== 'string'
+    || !username
+    || !email
+    || !password
+  ) {
+    callHanaMessage({
+      message: '请填写用户名、邮箱和密码。',
+      type: 'error',
+    })
+    return
+  }
+
+  registering.value = true
+  try {
+    const data = await apiClient.register({
+      username,
+      email,
+      password,
+      ...(typeof site === 'string' && site ? { site } : {}),
+    })
     if (data.success) {
       callHanaMessage({
         message: '注册成功，请登录',
@@ -136,12 +141,19 @@ async function handleRegister(e: Event) {
       loginWindowVisible.value = true
     }
     else {
-      const errorList = data.payload?.map(item => item.message).join(', ')
       callHanaMessage({
-        message: errorList || '注册失败。',
+        message: data.error.message || '注册失败。',
         type: 'error',
       })
     }
+  }
+  catch {
+    callHanaMessage({
+      message: '网络连接失败，请稍后重试。',
+      type: 'error',
+    })
+  }
+  finally {
     registering.value = false
   }
 }
@@ -183,13 +195,20 @@ function handleUserCommand(command: DropdownCommand) {
         title: '提示',
         content: '确定要退出登录吗？',
         showCancelButton: true,
-        onOk: () => {
-          localStorage.removeItem('token')
-          userStore.logout()
-          callHanaMessage({
-            message: '已退出登录。',
-            type: 'success',
-          })
+        onOk: async () => {
+          try {
+            const data = await apiClient.logout()
+            callHanaMessage({
+              message: data.success ? '已退出登录。' : data.error.message,
+              type: data.success ? 'success' : 'error',
+            })
+          }
+          catch {
+            callHanaMessage({
+              message: '本地登录状态已清除，服务端退出未确认。',
+              type: 'error',
+            })
+          }
         },
       })
       break
@@ -263,7 +282,7 @@ function handleUserCommand(command: DropdownCommand) {
         <HanaInput name="password" :prefix-icon="KeyRound" shape="rounded" type="password" placeholder="密码" />
       </div>
       <div class="mt-8 flex flex-col gap-4">
-        <HanaButton class="w-full" dark-mode type="submit">
+        <HanaButton class="w-full" dark-mode type="submit" :disabled="registering">
           {{ registerBtnText }}
         </HanaButton>
         <HanaButton class="w-full" @click="toggleLoginRegisterWindow">

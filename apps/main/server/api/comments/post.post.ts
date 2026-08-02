@@ -12,7 +12,7 @@ const verifySchema = z.object({
 })
 
 export default formattedEventHandler(async (event) => {
-  const id = event.context.jwtPayload.id
+  const id = event.context.principal.userId
   const body = await readBody(event)
   const { success, errorList, result } = useZodVerify(verifySchema, body)
   if (!success) {

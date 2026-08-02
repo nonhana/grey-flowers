@@ -21,8 +21,10 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "eslint-plugin-better-tailwindcss": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
     "typescript": "catalog:"
   },
   "engines": {
