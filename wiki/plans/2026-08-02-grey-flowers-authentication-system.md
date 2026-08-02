@@ -59,11 +59,11 @@
 
 ### 凭证分工
 
-| 凭证 | 位置 | 生命周期 | 用途 | JavaScript 可读性 |
-| --- | --- | --- | --- | --- |
-| access JWT | 每个站点 Origin 自己的 `localStorage`，键名 `gf.access_token` | 15 分钟 | 每个受保护业务请求的 `Authorization: Bearer` | 可读 |
-| refresh 凭证 | `api.caelum.moe` 的 host-only HttpOnly Cookie，名为 `gf_refresh` | 最长 30 天，绝不滑动续期 | 仅 `POST /auth/refresh` 与 `POST /auth/logout` 的 API 会话恢复/撤销 | 不可读 |
-| Session | PostgreSQL | 最长 30 天或显式撤销 | refresh 凭证的服务端事实、即时撤销和多设备隔离 | 不适用 |
+| 凭证         | 位置                                                             | 生命周期                 | 用途                                                                | JavaScript 可读性 |
+| ------------ | ---------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------- | ----------------- |
+| access JWT   | 每个站点 Origin 自己的 `localStorage`，键名 `gf.access_token`    | 15 分钟                  | 每个受保护业务请求的 `Authorization: Bearer`                        | 可读              |
+| refresh 凭证 | `api.caelum.moe` 的 host-only HttpOnly Cookie，名为 `gf_refresh` | 最长 30 天，绝不滑动续期 | 仅 `POST /auth/refresh` 与 `POST /auth/logout` 的 API 会话恢复/撤销 | 不可读            |
+| Session      | PostgreSQL                                                       | 最长 30 天或显式撤销     | refresh 凭证的服务端事实、即时撤销和多设备隔离                      | 不适用            |
 
 access JWT 只承载短期身份线索，不能单独决定“现在还能否访问”。API 每次验证签名后都以 `sid` 查询仍有效的 Session 及其用户，随后才创建 Principal。因此登出、改密和撤销管理员角色立即生效，不需要等待 15 分钟 access JWT 自然过期。
 
@@ -79,14 +79,14 @@ access JWT 只承载短期身份线索，不能单独决定“现在还能否访
 
 ### 明确拒绝的方案
 
-| 方案 | 结论 | 原因 |
-| --- | --- | --- |
-| Main 使用 JWT，Admin 使用独立 Cookie/Session | 拒绝 | 会形成两套登录语义和两个授权入口，破坏 API 作为身份 SSOT。 |
-| access JWT 放 HttpOnly Cookie | 拒绝 | 会让全部业务写请求变成 Cookie 认证，扩大 CSRF 面，也偏离统一 Bearer 调用。 |
-| refresh token 存入 `localStorage` | 拒绝 | XSS 可取得长期凭证，不能接受。 |
-| 前端解析 `exp` 后定时主动刷新 | 拒绝 | 前端不以 JWT 的 `exp` 作认证决策；只在 API 明确返回 `AUTH_REQUIRED` 时恢复。 |
-| 首个注册用户或指定邮箱自动成为管理员 | 拒绝 | 空库、顺序错误或公开注册都不能隐式授予管理权限。 |
-| 通用 RBAC 表和权限编辑器 | 拒绝 | 当前只有 `USER`、`ADMIN` 两个已证实角色；中间层只提供明确的角色检查。 |
+| 方案                                         | 结论 | 原因                                                                         |
+| -------------------------------------------- | ---- | ---------------------------------------------------------------------------- |
+| Main 使用 JWT，Admin 使用独立 Cookie/Session | 拒绝 | 会形成两套登录语义和两个授权入口，破坏 API 作为身份 SSOT。                   |
+| access JWT 放 HttpOnly Cookie                | 拒绝 | 会让全部业务写请求变成 Cookie 认证，扩大 CSRF 面，也偏离统一 Bearer 调用。   |
+| refresh token 存入 `localStorage`            | 拒绝 | XSS 可取得长期凭证，不能接受。                                               |
+| 前端解析 `exp` 后定时主动刷新                | 拒绝 | 前端不以 JWT 的 `exp` 作认证决策；只在 API 明确返回 `AUTH_REQUIRED` 时恢复。 |
+| 首个注册用户或指定邮箱自动成为管理员         | 拒绝 | 空库、顺序错误或公开注册都不能隐式授予管理权限。                             |
+| 通用 RBAC 表和权限编辑器                     | 拒绝 | 当前只有 `USER`、`ADMIN` 两个已证实角色；中间层只提供明确的角色检查。        |
 
 ## 域名、SSO 与请求拓扑
 
@@ -141,14 +141,14 @@ Principal 是 API 已验证的当前请求身份，不是浏览器自行解码 J
 
 ```ts
 type Principal = {
-  userId: number
-  sessionId: string
-  role: 'USER' | 'ADMIN'
-  email: string
-  username: string
-  avatar: string
-  site: string | null
-}
+  userId: number;
+  sessionId: string;
+  role: 'USER' | 'ADMIN';
+  email: string;
+  username: string;
+  avatar: string;
+  site: string | null;
+};
 ```
 
 `role` 只能来自当前数据库 `User.role`，不从前端输入或 JWT 自己推断。业务模块只消费 `Principal`，不接触 Cookie、JWT 字符串或数据库密码字段。
@@ -157,14 +157,14 @@ type Principal = {
 
 API 使用 `jose` 的 HS256 签名，密钥只存在 API 环境变量 `AUTH_ACCESS_TOKEN_SECRET`。JWT 头部使用 `typ: at+jwt`，payload 必须且只能包含下列认证字段：
 
-| Claim | 值 |
-| --- | --- |
-| `iss` | 由 `NODE_ENV` 派生；生产固定为 `https://api.caelum.moe`，开发为 `http://localhost:${API_PORT}` |
-| `aud` | 固定 `grey-flowers-web` |
-| `sub` | 十进制字符串形式的 `User.id` |
-| `sid` | `Session.id` |
-| `token_use` | 固定 `access` |
-| `iat`、`exp` | 签发时间和 15 分钟后过期时间 |
+| Claim        | 值                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| `iss`        | 由 `NODE_ENV` 派生；生产固定为 `https://api.caelum.moe`，开发为 `http://localhost:${API_PORT}` |
+| `aud`        | 固定 `grey-flowers-web`                                                                        |
+| `sub`        | 十进制字符串形式的 `User.id`                                                                   |
+| `sid`        | `Session.id`                                                                                   |
+| `token_use`  | 固定 `access`                                                                                  |
+| `iat`、`exp` | 签发时间和 15 分钟后过期时间                                                                   |
 
 JWT 不含密码、邮箱、头像、站点、角色、refresh secret 或 Session 状态。验证时必须同时检查算法、`iss`、`aud`、`token_use`、`sub` 与 `sid` 格式、过期时间，以及数据库中的 Session 和 User。任一步失败统一视为 `AUTH_REQUIRED`。
 
@@ -222,14 +222,14 @@ Cookie 值严格为：
 
 ### 会话状态迁移
 
-| 事件 | 数据库效果 | 当前浏览器 | 其他设备 |
-| --- | --- | --- | --- |
-| 成功登录 | 创建一行新的 active Session；若 Cookie 指向当前浏览器已有 active Session，先撤销该行再创建新行 | 设置新 Cookie，取得 access JWT | 不变 |
-| 成功 refresh | 校验 active Session，更新 `lastUsedAt` | 签发新 access JWT，Cookie 不变 | 不变 |
-| 当前浏览器退出 | 当前 Cookie 对应行标记 `LOGOUT`，再清 Cookie | 当前 JWT 随即无法使用 | 不变 |
-| 修改密码 | 事务内更新密码并撤销该用户全部 active Session，原因为 `PASSWORD_CHANGED` | 清本 Origin access JWT，重新登录 | 全部立即失效 |
-| `ADMIN` 被移除或角色被管理员修改 | 事务内更新角色并撤销该用户全部 active Session，原因为 `ROLE_CHANGED` | 所有 access JWT 立即失效 | 全部立即失效 |
-| 自然到期 | 不写数据；查询时拒绝 | refresh 失败并清 Cookie | 各自到期 |
+| 事件                             | 数据库效果                                                                                     | 当前浏览器                       | 其他设备     |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------- | ------------ |
+| 成功登录                         | 创建一行新的 active Session；若 Cookie 指向当前浏览器已有 active Session，先撤销该行再创建新行 | 设置新 Cookie，取得 access JWT   | 不变         |
+| 成功 refresh                     | 校验 active Session，更新 `lastUsedAt`                                                         | 签发新 access JWT，Cookie 不变   | 不变         |
+| 当前浏览器退出                   | 当前 Cookie 对应行标记 `LOGOUT`，再清 Cookie                                                   | 当前 JWT 随即无法使用            | 不变         |
+| 修改密码                         | 事务内更新密码并撤销该用户全部 active Session，原因为 `PASSWORD_CHANGED`                       | 清本 Origin access JWT，重新登录 | 全部立即失效 |
+| `ADMIN` 被移除或角色被管理员修改 | 事务内更新角色并撤销该用户全部 active Session，原因为 `ROLE_CHANGED`                           | 所有 access JWT 立即失效         | 全部立即失效 |
+| 自然到期                         | 不写数据；查询时拒绝                                                                           | refresh 失败并清 Cookie          | 各自到期     |
 
 登录替换当前 Cookie Session 的规则保证同一浏览器先后切换账户不会遗留一个仍可刷新、但浏览器已不可见的会话。多设备从来不互相替换。
 
@@ -241,33 +241,33 @@ Cookie 值严格为：
 
 ```ts
 type ApiSuccess<T> = {
-  success: true
-  data: T
-  requestId: string
-}
+  success: true;
+  data: T;
+  requestId: string;
+};
 
 type ApiFailure = {
-  success: false
+  success: false;
   error: {
-    code: ApiErrorCode
-    message: string
-    fields?: Record<string, string[]>
-  }
-  requestId: string
-}
+    code: ApiErrorCode;
+    message: string;
+    fields?: Record<string, string[]>;
+  };
+  requestId: string;
+};
 ```
 
 `X-Request-Id` 在 API 为每次请求新建 UUID，不信任或回显调用方提供的值。`fields` 只用于 `VALIDATION_FAILED`，字段名必须是合同字段名，值为可显示的短消息；不得泄露 Zod 内部结构、数据库错误、SQL、密码哈希、refresh Cookie 或堆栈。
 
-| HTTP | 错误码 | 使用条件 |
-| --- | --- | --- |
-| 400 | `VALIDATION_FAILED` | body 或普通参数不符合合同。 |
-| 401 | `AUTH_INVALID_CREDENTIALS` | 登录账户不存在或密码不正确；两种情况消息完全相同。 |
-| 401 | `AUTH_REQUIRED` | 缺失、过期、伪造或已撤销 access/refresh 凭证。 |
-| 403 | `AUTH_FORBIDDEN` | Origin 不允许、当前角色不允许该操作。 |
-| 404 | `NOT_FOUND` | 调用方可安全处理的不存在资源。 |
-| 409 | `CONFLICT` | 用户名或邮箱已被占用等状态冲突。 |
-| 500 | `INTERNAL_ERROR` | 未预期错误；日志仅以 request ID 关联详细诊断。 |
+| HTTP | 错误码                     | 使用条件                                           |
+| ---- | -------------------------- | -------------------------------------------------- |
+| 400  | `VALIDATION_FAILED`        | body 或普通参数不符合合同。                        |
+| 401  | `AUTH_INVALID_CREDENTIALS` | 登录账户不存在或密码不正确；两种情况消息完全相同。 |
+| 401  | `AUTH_REQUIRED`            | 缺失、过期、伪造或已撤销 access/refresh 凭证。     |
+| 403  | `AUTH_FORBIDDEN`           | Origin 不允许、当前角色不允许该操作。              |
+| 404  | `NOT_FOUND`                | 调用方可安全处理的不存在资源。                     |
+| 409  | `CONFLICT`                 | 用户名或邮箱已被占用等状态冲突。                   |
+| 500  | `INTERNAL_ERROR`           | 未预期错误；日志仅以 request ID 关联详细诊断。     |
 
 认证失败绝不在 `AUTH_INVALID_CREDENTIALS` 中区分“不存在账户”与“密码错误”。`AUTH_REQUIRED` 的客户端处理是尝试一次 refresh；`AUTH_FORBIDDEN` 不是 refresh 信号。
 
@@ -275,14 +275,14 @@ type ApiFailure = {
 
 所有路由都直接位于 `/auth`，不增加未经需要的 `/v1` 前缀。
 
-| 端点 | 成功状态 | 认证与 Origin | 输入 | 成功 `data` | 特殊规则 |
-| --- | --- | --- | --- | --- | --- |
-| `POST /auth/register` | 201 | 精确允许 Origin | `{ username, email, password, site? }` | `{ user: PublicUser }` | 维持当前密码长度 8-32、用户名长度 1-16 和可选合法 URL；邮箱仅 trim，保持既有 `User.email` 的精确匹配语义；头像由服务端从邮箱生成；只注册，不登录、不写 Cookie。 |
-| `POST /auth/login` | 200 | 精确允许 Origin | `{ account, password }` | `{ accessToken, expiresIn: 900, principal }` | `account` 可为邮箱或用户名；成功时创建新 Session、设置 Cookie；失败统一为 `AUTH_INVALID_CREDENTIALS`。 |
-| `POST /auth/refresh` | 200 | 精确允许 Origin + Cookie | 无 body | `{ accessToken, expiresIn: 900, principal }` | 只读 `gf_refresh`；成功更新 `lastUsedAt`；缺失、格式错误、伪造、过期或撤销的 Cookie 都清 Cookie 后返回 `AUTH_REQUIRED`。 |
-| `POST /auth/logout` | 200 | 精确允许 Origin + Cookie | 无 body | `{}` | 尽力撤销当前 Cookie 指向的 Session，始终清 Cookie 并返回成功，避免把失效 Cookie 变成状态探针。 |
-| `GET /auth/session` | 200 | Bearer access JWT | 无 body | `{ principal }` | 建立当前 Principal；不读取 Cookie；供浏览器启动校验和 Main 的遗留路由适配器使用。 |
-| `PATCH /auth/me` | 200 | 精确允许 Origin + Bearer access JWT | `{ username?, email?, site?: string \| null, currentPassword?, newPassword? }` | `{ principal, requiresReauthentication }` | 只能更新本人；`site: null` 清空站点 URL；`currentPassword` 和 `newPassword` 必须同时出现；改密以 bcryptjs 验证旧密码、按当前成本 10 重哈希新密码，并在同一事务撤销所有 Session；此时 `requiresReauthentication: true`。 |
+| 端点                  | 成功状态 | 认证与 Origin                       | 输入                                                                           | 成功 `data`                                  | 特殊规则                                                                                                                                                                                                                |
+| --------------------- | -------- | ----------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /auth/register` | 201      | 精确允许 Origin                     | `{ username, email, password, site? }`                                         | `{ user: PublicUser }`                       | 维持当前密码长度 8-32、用户名长度 1-16 和可选合法 URL；邮箱仅 trim，保持既有 `User.email` 的精确匹配语义；头像由服务端从邮箱生成；只注册，不登录、不写 Cookie。                                                         |
+| `POST /auth/login`    | 200      | 精确允许 Origin                     | `{ account, password }`                                                        | `{ accessToken, expiresIn: 900, principal }` | `account` 可为邮箱或用户名；成功时创建新 Session、设置 Cookie；失败统一为 `AUTH_INVALID_CREDENTIALS`。                                                                                                                  |
+| `POST /auth/refresh`  | 200      | 精确允许 Origin + Cookie            | 无 body                                                                        | `{ accessToken, expiresIn: 900, principal }` | 只读 `gf_refresh`；成功更新 `lastUsedAt`；缺失、格式错误、伪造、过期或撤销的 Cookie 都清 Cookie 后返回 `AUTH_REQUIRED`。                                                                                                |
+| `POST /auth/logout`   | 200      | 精确允许 Origin + Cookie            | 无 body                                                                        | `{}`                                         | 尽力撤销当前 Cookie 指向的 Session，始终清 Cookie 并返回成功，避免把失效 Cookie 变成状态探针。                                                                                                                          |
+| `GET /auth/session`   | 200      | Bearer access JWT                   | 无 body                                                                        | `{ principal }`                              | 建立当前 Principal；不读取 Cookie；供浏览器启动校验和 Main 的遗留路由适配器使用。                                                                                                                                       |
+| `PATCH /auth/me`      | 200      | 精确允许 Origin + Bearer access JWT | `{ username?, email?, site?: string \| null, currentPassword?, newPassword? }` | `{ principal, requiresReauthentication }`    | 只能更新本人；`site: null` 清空站点 URL；`currentPassword` 和 `newPassword` 必须同时出现；改密以 bcryptjs 验证旧密码、按当前成本 10 重哈希新密码，并在同一事务撤销所有 Session；此时 `requiresReauthentication: true`。 |
 
 `PublicUser` 与 `principal` 均仅包含 `id`、`email`、`username`、`avatar`、`site`；`principal` 额外包含 `role` 和 API 内部不可由客户端伪造的 Session 语义。密码哈希、Session ID、refresh secret 与创建时间不出现在任何成功 DTO。
 
@@ -416,14 +416,14 @@ pnpm --filter @grey-flowers/api run auth:promote-admin -- --email nonhana@outloo
 
 `apps/api/src/env.ts` 在启动时一次性验证：
 
-| 变量 | 生产值/约束 | 用途 |
-| --- | --- | --- |
-| `API_PORT` | `1`-`65535` | API 监听端口。 |
-| `MAIN_PORT` | 开发环境 `1`-`65535` | Main 本地监听端口，也是开发 CORS Origin 的端口。 |
-| `ADMIN_PORT` | 开发环境 `1`-`65535` | Admin 本地监听端口，也是开发 CORS Origin 的端口。 |
-| `HANA_DATABASE_URL` | PostgreSQL URL | Prisma 连接。 |
-| `AUTH_ACCESS_TOKEN_SECRET` | base64url 解码后至少 32 字节的随机值 | HS256 access JWT 签名。 |
-| `AUTH_REFRESH_TOKEN_PEPPER` | base64url 解码后至少 32 字节的随机值，且不同于 JWT 密钥 | refresh secret HMAC。 |
+| 变量                        | 生产值/约束                                             | 用途                                              |
+| --------------------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| `API_PORT`                  | `1`-`65535`                                             | API 监听端口。                                    |
+| `MAIN_PORT`                 | 开发环境 `1`-`65535`                                    | Main 本地监听端口，也是开发 CORS Origin 的端口。  |
+| `ADMIN_PORT`                | 开发环境 `1`-`65535`                                    | Admin 本地监听端口，也是开发 CORS Origin 的端口。 |
+| `HANA_DATABASE_URL`         | PostgreSQL URL                                          | Prisma 连接。                                     |
+| `AUTH_ACCESS_TOKEN_SECRET`  | base64url 解码后至少 32 字节的随机值                    | HS256 access JWT 签名。                           |
+| `AUTH_REFRESH_TOKEN_PEPPER` | base64url 解码后至少 32 字节的随机值，且不同于 JWT 密钥 | refresh secret HMAC。                             |
 
 access JWT TTL、30 天 Session 最大寿命、Cookie 名、Cookie Path 与 audience 是代码常量，不以环境变量提供“临时”改变安全语义的入口。JWT issuer、允许 Origin 和 Cookie `Secure` 也不是部署输入：`NODE_ENV=production` 时固定为 `https://api.caelum.moe`、`https://caelum.moe` 与 `https://admin.caelum.moe`，并使用 Secure Cookie；开发时从 `API_PORT`、`MAIN_PORT`、`ADMIN_PORT` 构造本地值。生产环境不需要 Main/Admin 端口。
 
@@ -515,22 +515,22 @@ rg -n "gf_refresh|AUTH_ACCESS_TOKEN_SECRET|AUTH_REFRESH_TOKEN_PEPPER|require-pri
 
 ### 手工 API 与浏览器验收矩阵
 
-| 场景 | 预期结果 |
-| --- | --- |
-| 注册新用户 | 返回 `201` 成功 envelope；创建 `USER`，不设置 refresh Cookie，不自动登录。 |
-| 不存在账户登录与错误密码登录 | 都返回 `401 AUTH_INVALID_CREDENTIALS` 和相同对外消息；不泄露哪个字段错误。 |
-| Main 正常登录 | API 返回 15 分钟 access JWT、principal 和仅 `api.caelum.moe` 可见的 Cookie；业务 Bearer 调用成功。 |
-| Main 刷新页面且 access JWT 有效 | 仅 `/auth/session` 恢复本 Origin 状态，不主动请求 `/auth/refresh`。 |
-| access JWT 无效/过期 | 首个业务请求得到 `AUTH_REQUIRED`；该 Origin 只发一次 refresh，原请求只重放一次。 |
-| 打开 Admin | 无 Admin local token 时调用一次 refresh；主站已有 API Cookie 且用户为 `ADMIN` 时进入后台，不再输入密码。 |
-| 普通用户打开 Admin | 可完成普通登录但 guard 返回无权限；Admin 清自己的 access token，不调用 logout，不影响主站会话。 |
-| 两个浏览器配置文件登录同一用户 | 数据库有两行 active Session；退出 A 后 A 的 API 调用立即 401，B 仍可调用。 |
-| 同时从 Main 与 Admin refresh | 两边各自得到可用 access JWT，Cookie 不改变，Session 不被撤销。 |
-| 修改密码 | 所有设备下一次 API 调用立即 `AUTH_REQUIRED`；各 Origin 清本地 access token，必须重新登录。 |
-| 解除 `ADMIN` | 全部会话被撤销；原后台 access JWT 立即不能调用管理接口。 |
-| 伪造/过期/已撤销 refresh Cookie | `/auth/refresh` 清 Cookie 并返回 `AUTH_REQUIRED`，不签发 JWT。 |
-| 来自未允许 Origin 的带 Cookie refresh/logout | CORS 不允许读取，服务器返回 `AUTH_FORBIDDEN`，不读取/改变会话。 |
-| 遗留 Main 评论/消息路由 | 有效 API access JWT 可用；撤销 Session 后即使 JWT 尚未过期也被 Nuxt 适配器拒绝。 |
+| 场景                                         | 预期结果                                                                                                 |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 注册新用户                                   | 返回 `201` 成功 envelope；创建 `USER`，不设置 refresh Cookie，不自动登录。                               |
+| 不存在账户登录与错误密码登录                 | 都返回 `401 AUTH_INVALID_CREDENTIALS` 和相同对外消息；不泄露哪个字段错误。                               |
+| Main 正常登录                                | API 返回 15 分钟 access JWT、principal 和仅 `api.caelum.moe` 可见的 Cookie；业务 Bearer 调用成功。       |
+| Main 刷新页面且 access JWT 有效              | 仅 `/auth/session` 恢复本 Origin 状态，不主动请求 `/auth/refresh`。                                      |
+| access JWT 无效/过期                         | 首个业务请求得到 `AUTH_REQUIRED`；该 Origin 只发一次 refresh，原请求只重放一次。                         |
+| 打开 Admin                                   | 无 Admin local token 时调用一次 refresh；主站已有 API Cookie 且用户为 `ADMIN` 时进入后台，不再输入密码。 |
+| 普通用户打开 Admin                           | 可完成普通登录但 guard 返回无权限；Admin 清自己的 access token，不调用 logout，不影响主站会话。          |
+| 两个浏览器配置文件登录同一用户               | 数据库有两行 active Session；退出 A 后 A 的 API 调用立即 401，B 仍可调用。                               |
+| 同时从 Main 与 Admin refresh                 | 两边各自得到可用 access JWT，Cookie 不改变，Session 不被撤销。                                           |
+| 修改密码                                     | 所有设备下一次 API 调用立即 `AUTH_REQUIRED`；各 Origin 清本地 access token，必须重新登录。               |
+| 解除 `ADMIN`                                 | 全部会话被撤销；原后台 access JWT 立即不能调用管理接口。                                                 |
+| 伪造/过期/已撤销 refresh Cookie              | `/auth/refresh` 清 Cookie 并返回 `AUTH_REQUIRED`，不签发 JWT。                                           |
+| 来自未允许 Origin 的带 Cookie refresh/logout | CORS 不允许读取，服务器返回 `AUTH_FORBIDDEN`，不读取/改变会话。                                          |
+| 遗留 Main 评论/消息路由                      | 有效 API access JWT 可用；撤销 Session 后即使 JWT 尚未过期也被 Nuxt 适配器拒绝。                         |
 
 无需增加 Vitest、Playwright 或其他自动化测试框架。以上 API 流程以本地开发服务、浏览器开发者工具和一次性测试数据库验证；验证 Session 行时只检查 ID、时间和撤销状态，绝不打印 refresh secret 或密码哈希。
 

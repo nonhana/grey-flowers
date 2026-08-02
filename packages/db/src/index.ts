@@ -3,6 +3,8 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../prisma/generated/client.js';
 
 export { Prisma } from '../prisma/generated/client.js';
+
+export type { PrismaClient } from '../prisma/generated/client.js';
 export type * from '../prisma/generated/models.js';
 
 export function createPrismaClient(connectionString: string) {

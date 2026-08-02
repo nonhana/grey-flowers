@@ -8,6 +8,10 @@ export const apiErrorCodeSchema = z.enum([
   'NOT_FOUND',
   'CONFLICT',
   'INTERNAL_ERROR',
+  'ASSET_PAYLOAD_TOO_LARGE',
+  'UNSUPPORTED_MEDIA_TYPE',
+  'UPLOAD_FAILED',
+  'ASSET_REFERENCED',
 ]);
 
 export type ApiErrorCode = z.infer<typeof apiErrorCodeSchema>;

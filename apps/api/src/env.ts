@@ -33,6 +33,12 @@ const postgresUrl = z.url().refine(
 
 const port = z.coerce.number().int().min(1).max(65_535);
 
+const r2AccountId = z.string().min(1);
+const r2AccessKeyId = z.string().min(1);
+const r2SecretAccessKey = z.string().min(1);
+const r2BucketName = z.string().min(1);
+const r2PublicUrl = z.url();
+
 const environmentSchema = z
   .discriminatedUnion('NODE_ENV', [
     z.object({
@@ -43,6 +49,11 @@ const environmentSchema = z
       HANA_DATABASE_URL: postgresUrl,
       MAIN_PORT: port,
       NODE_ENV: z.literal('development'),
+      R2_ACCESS_KEY_ID: r2AccessKeyId,
+      R2_ACCOUNT_ID: r2AccountId,
+      R2_BUCKET_NAME: r2BucketName,
+      R2_PUBLIC_URL: r2PublicUrl,
+      R2_SECRET_ACCESS_KEY: r2SecretAccessKey,
     }),
     z.object({
       ADMIN_PORT: port.optional(),
@@ -52,6 +63,11 @@ const environmentSchema = z
       HANA_DATABASE_URL: postgresUrl,
       MAIN_PORT: port.optional(),
       NODE_ENV: z.literal('production'),
+      R2_ACCESS_KEY_ID: r2AccessKeyId,
+      R2_ACCOUNT_ID: r2AccountId,
+      R2_BUCKET_NAME: r2BucketName,
+      R2_PUBLIC_URL: r2PublicUrl,
+      R2_SECRET_ACCESS_KEY: r2SecretAccessKey,
     }),
   ])
   .superRefine((env, context) => {
@@ -68,10 +84,21 @@ const environmentSchema = z
 type ParsedApiEnvironment = z.output<typeof environmentSchema>;
 
 export type ApiEnvironment = ParsedApiEnvironment & {
+  ASSET_PUBLIC_URL: string;
   AUTH_ALLOWED_ORIGINS: string[];
   AUTH_COOKIE_SECURE: boolean;
   AUTH_JWT_ISSUER: string;
+  R2_ENDPOINT: string;
+  R2_REGION: string;
 };
+
+function deriveAssetEnvironment(env: ParsedApiEnvironment) {
+  return {
+    ASSET_PUBLIC_URL: env.R2_PUBLIC_URL,
+    R2_ENDPOINT: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    R2_REGION: 'auto',
+  };
+}
 
 function deriveAuthenticationEnvironment(env: ParsedApiEnvironment) {
   if (env.NODE_ENV === 'production') {
@@ -96,6 +123,7 @@ export function readApiEnvironment(env: NodeJS.ProcessEnv): ApiEnvironment {
   const parsedEnvironment = environmentSchema.parse(env);
   return {
     ...parsedEnvironment,
+    ...deriveAssetEnvironment(parsedEnvironment),
     ...deriveAuthenticationEnvironment(parsedEnvironment),
   };
 }

@@ -18,6 +18,7 @@
     "@codemirror/lang-markdown": "catalog:admin",
     "@codemirror/search": "catalog:admin",
     "@grey-flowers/contracts": "workspace:*",
+    "@tanstack/react-router": "catalog:admin",
     "@uiw/react-codemirror": "catalog:admin",
     "es-toolkit": "catalog:admin",
     "hono": "catalog:admin",

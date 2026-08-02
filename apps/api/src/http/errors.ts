@@ -13,22 +13,30 @@ interface ApiErrorOptions {
 }
 
 const errorStatus: Record<ApiErrorCode, ContentfulStatusCode> = {
+  ASSET_PAYLOAD_TOO_LARGE: 413,
+  ASSET_REFERENCED: 409,
   AUTH_FORBIDDEN: 403,
   AUTH_INVALID_CREDENTIALS: 401,
   AUTH_REQUIRED: 401,
   CONFLICT: 409,
   INTERNAL_ERROR: 500,
   NOT_FOUND: 404,
+  UNSUPPORTED_MEDIA_TYPE: 415,
+  UPLOAD_FAILED: 502,
   VALIDATION_FAILED: 400,
 };
 
 const errorMessages: Record<ApiErrorCode, string> = {
+  ASSET_PAYLOAD_TOO_LARGE: 'Asset payload exceeds the allowed size',
+  ASSET_REFERENCED: 'Asset is still in use and cannot be changed',
   AUTH_FORBIDDEN: 'Access is forbidden',
   AUTH_INVALID_CREDENTIALS: 'Invalid account or password',
   AUTH_REQUIRED: 'Authentication is required',
   CONFLICT: 'Request conflicts with the current state',
   INTERNAL_ERROR: 'An unexpected error occurred',
   NOT_FOUND: 'Resource not found',
+  UNSUPPORTED_MEDIA_TYPE: 'Unsupported media type',
+  UPLOAD_FAILED: 'Upload failed',
   VALIDATION_FAILED: 'The request is invalid',
 };
 

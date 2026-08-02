@@ -5,6 +5,7 @@ packages:
 allowBuilds:
   '@parcel/watcher': true
   '@prisma/engines': true
+  core-js: true
   esbuild: true
   prisma: true
   sharp: true
@@ -20,17 +21,22 @@ trustPolicyExclude:
   - undici-types@6.21.0
   - semver@6.3.1
   - resend@6.18.1
+  - semver@5.7.2
+  - volar-service-pug@0.0.71
 
 catalog:
   '@types/node': 24.13.3
+  '@vue/language-server': ^3.3.9
   eslint-plugin-better-tailwindcss: ^4.7.0
   oxfmt: ^0.61.0
   oxlint: ^1.76.0
   oxlint-tsgolint: ^7.0.2001
   typescript: 6.0.3
+  typescript-language-server: ^5.3.0
 
 catalogs:
   admin:
+    '@tanstack/react-router': ^1.170.0
     '@codemirror/autocomplete': ^6.20.3
     '@codemirror/commands': ^6.10.4
     '@codemirror/lang-markdown': ^6.5.1
@@ -54,9 +60,13 @@ catalogs:
     ky: ^2.0.2
 
   api:
+    '@aws-sdk/client-s3': ^3.0.0
     '@hono/node-server': ^2.0.12
     '@hono/zod-validator': ^0.9.0
     bcryptjs: ^3.0.3
+    file-type: ^22.0.0
+    music-metadata: ^11.0.0
+    sharp: ^0.35.0
     es-toolkit: ^1.50.0
     hono: ^4.12.33
     jose: ^6.2.5
