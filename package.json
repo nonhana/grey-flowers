@@ -9,8 +9,8 @@
     "dev:admin": "pnpm -F @grey-flowers/admin run dev",
     "dev:api": "pnpm -F @grey-flowers/api run dev",
     "dev:main": "pnpm -F @grey-flowers/main run dev",
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
+    "fmt": "pnpm -r --workspace-concurrency=1 run fmt",
+    "fmt:check": "pnpm -r --workspace-concurrency=1 run fmt:check",
     "lint": "pnpm -r --workspace-concurrency=1 run lint",
     "lint:fix": "pnpm -r --workspace-concurrency=1 run lint:fix",
     "prisma:generate": "pnpm -F @grey-flowers/db run prisma:generate",
@@ -21,11 +21,13 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@vue/language-server": "catalog:",
     "eslint-plugin-better-tailwindcss": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "typescript-language-server": "catalog:"
   },
   "engines": {
     "node": ">=24.18.0 <25.0.0"

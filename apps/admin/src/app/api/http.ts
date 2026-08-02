@@ -34,9 +34,13 @@ export interface HttpRequestOptions<
   TSchema extends ResponseSchema<unknown>,
 > extends Omit<RequestInit, 'body' | 'headers' | 'method' | 'signal'> {
   authenticated?: boolean;
-  retryOnAuthRequired?: boolean;
+  body?: FormData;
   json?: unknown;
+  /** 0..1 上传进度；仅对 FormData 上传生效 */
+  onUploadProgress?: (progress: number) => void;
+  retryOnAuthRequired?: boolean;
   schema: TSchema;
+  searchParams?: URLSearchParams;
 }
 
 type HttpMethod = 'get' | 'post' | 'patch' | 'delete';
@@ -88,10 +92,23 @@ export function createHttp(options: HttpOptions) {
 
     try {
       response = await api[method](path, {
-        json: requestOptions.json,
+        ...(requestOptions.body === undefined
+          ? {}
+          : { body: requestOptions.body }),
+        ...(requestOptions.json === undefined
+          ? {}
+          : { json: requestOptions.json }),
         headers: requestOptions.authenticated
           ? { Authorization: `Bearer ${options.getAccessToken()}` }
           : undefined,
+        ...(requestOptions.onUploadProgress === undefined
+          ? {}
+          : {
+              onUploadProgress(requestProgress: { percent: number }) {
+                requestOptions.onUploadProgress?.(requestProgress.percent);
+              },
+            }),
+        searchParams: requestOptions.searchParams,
       });
     } catch (error) {
       throw new ApiNetworkError(error);
@@ -137,6 +154,120 @@ export function createHttp(options: HttpOptions) {
       options.setAccessToken(response.accessToken);
       return response;
     });
+  }
+
+  /**
+   * 上传专用通道：fetch 对 FormData 无上传进度，ky 会为进度把 body 包成流
+   * （在部分环境下跨域流式 POST 触发 ALPN 失败），因此上传走 XHR + 原生
+   * upload.onprogress，保留相同的 envelope 解码与 AUTH_REQUIRED 重试语义。
+   */
+  function uploadOnce<TSchema extends ResponseSchema<unknown>>(
+    path: string,
+    requestOptions: HttpRequestOptions<TSchema>,
+  ): Promise<ResponseData<TSchema>> {
+    const { promise, reject, resolve } =
+      Promise.withResolvers<ResponseData<TSchema>>();
+
+    if (requestOptions.authenticated && !options.getAccessToken()) {
+      reject(
+        new ApiRequestError(
+          {
+            success: false,
+            error: {
+              code: 'AUTH_REQUIRED',
+              message: LOCAL_AUTH_REQUIRED_MESSAGE,
+            },
+            requestId: '',
+          },
+          401,
+        ),
+      );
+      return promise;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', new URL(path, options.prefixUrl).toString());
+    xhr.withCredentials = true;
+
+    if (requestOptions.authenticated) {
+      xhr.setRequestHeader(
+        'Authorization',
+        `Bearer ${options.getAccessToken()}`,
+      );
+    }
+
+    if (requestOptions.onUploadProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable && event.total > 0) {
+          requestOptions.onUploadProgress?.(event.loaded / event.total);
+        }
+      };
+    }
+
+    xhr.onerror = () => reject(new ApiNetworkError('Upload request failed'));
+    xhr.onload = () => {
+      let body: unknown;
+      try {
+        body = JSON.parse(xhr.responseText);
+      } catch {
+        reject(new ApiResponseError());
+        return;
+      }
+
+      const parsed = requestOptions.schema.safeParse(body);
+      if (parsed.success) {
+        resolve(parsed.data.data as ResponseData<TSchema>);
+        return;
+      }
+
+      const failure = apiFailureSchema.safeParse(body);
+      if (failure.success) {
+        reject(new ApiRequestError(failure.data, xhr.status));
+        return;
+      }
+
+      reject(new ApiResponseError());
+    };
+
+    xhr.send(requestOptions.body);
+    return promise;
+  }
+
+  async function upload<TSchema extends ResponseSchema<unknown>>(
+    path: string,
+    requestOptions: HttpRequestOptions<TSchema>,
+  ): Promise<ResponseData<TSchema>> {
+    try {
+      return await uploadOnce(path, requestOptions);
+    } catch (error) {
+      if (
+        requestOptions.authenticated &&
+        requestOptions.retryOnAuthRequired !== false &&
+        isApiRequestError(error, 'AUTH_REQUIRED')
+      ) {
+        try {
+          await refreshOnce();
+        } catch {
+          expireAccess();
+          throw error;
+        }
+
+        try {
+          return await uploadOnce(path, {
+            ...requestOptions,
+            retryOnAuthRequired: false,
+          });
+        } catch (retryError) {
+          if (isApiRequestError(retryError, 'AUTH_REQUIRED')) {
+            expireAccess();
+          }
+
+          throw retryError;
+        }
+      }
+
+      throw error;
+    }
   }
 
   async function request<TSchema extends ResponseSchema<unknown>>(
@@ -196,6 +327,7 @@ export function createHttp(options: HttpOptions) {
     ) => request('delete', path, requestOptions),
     refresh,
     setSessionExpiredHandler,
+    upload,
   };
 }
 

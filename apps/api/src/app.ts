@@ -7,6 +7,7 @@ import type { ApiEnvironment } from './http/context.js';
 import { createFailure, createSuccess, handleError } from './http/errors.js';
 import { requestId } from './http/middleware/request-id.js';
 import { requestLogger } from './http/middleware/request-logger.js';
+import { createAssetRoutes } from './modules/assets/routes.js';
 import { createAuthRoutes } from './modules/auth/routes.js';
 
 export function createApp(dependencies: AppDependencies) {
@@ -22,7 +23,7 @@ export function createApp(dependencies: AppDependencies) {
     '*',
     cors({
       allowHeaders: ['Authorization', 'Content-Type', 'X-Request-Id'],
-      allowMethods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+      allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
       credentials: true,
       exposeHeaders: ['X-Request-Id'],
       origin: (origin) =>
@@ -36,6 +37,7 @@ export function createApp(dependencies: AppDependencies) {
     createSuccess(c, 'Welcome to GreyFlowers Hono API Service'),
   );
   app.route('/auth', createAuthRoutes(dependencies));
+  app.route('/assets', createAssetRoutes(dependencies));
   app.notFound((c) => createFailure(c, 'NOT_FOUND'));
 
   return app;

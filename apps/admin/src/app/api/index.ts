@@ -1,3 +1,4 @@
+import { createAssetsApi, type AssetsApi } from './assets.js';
 import { createAuthApi, type AuthApi } from './auth.js';
 import { createHttp } from './http.js';
 
@@ -35,6 +36,7 @@ export function setAccessToken(accessToken: string | null) {
 }
 
 export class ApiClient {
+  readonly assets: AssetsApi;
   readonly auth: AuthApi;
 
   private readonly http = createHttp({
@@ -44,6 +46,7 @@ export class ApiClient {
   });
 
   constructor() {
+    this.assets = createAssetsApi(this.http);
     this.auth = createAuthApi(this.http);
   }
 

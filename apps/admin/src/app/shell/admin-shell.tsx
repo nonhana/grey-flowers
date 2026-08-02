@@ -1,13 +1,13 @@
 import type { Principal } from '@grey-flowers/contracts';
 import type { ReactNode } from 'react';
 
+import { RouterProvider } from '@tanstack/react-router';
 import {
   CloudOff,
   Flower2,
   LockKeyhole,
   LogOut,
   RefreshCw,
-  ShieldCheck,
   ShieldX,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from 'react-aria-components';
 
+import { router } from '../../routes/route-tree.js';
 import { useAuth } from '../providers.js';
 
 /** 圆形状态标记：waiting 用品牌蓝 + 长转，warning/error 用对应语义色。 */
@@ -343,21 +344,7 @@ function AuthenticatedShell({
           </TooltipTrigger>
         </div>
       </header>
-      <section
-        className="
-          mx-auto grid w-[min(100%-48px,580px)] content-center
-          justify-items-start gap-3.5 py-22
-        "
-        aria-labelledby="admin-ready-title"
-      >
-        <StatusMark tone="waiting">
-          <ShieldCheck aria-hidden="true" />
-        </StatusMark>
-        <p className={KICKER}>SESSION VERIFIED</p>
-        <h1 id="admin-ready-title" className={HEADING}>
-          已安全进入管理后台
-        </h1>
-        <p className={MUTED}>运营模块将在对应工作流完成后开放。</p>
+      <section className="min-h-0">
         {logoutError ? (
           <p
             className="
@@ -369,6 +356,7 @@ function AuthenticatedShell({
             {logoutError}
           </p>
         ) : null}
+        <RouterProvider router={router} />
       </section>
     </main>
   );
