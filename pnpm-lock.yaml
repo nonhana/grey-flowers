@@ -15,9 +15,18 @@ catalogs:
     '@codemirror/lang-markdown':
       specifier: ^6.5.1
       version: 6.5.1
+    '@codemirror/language':
+      specifier: ^6.12.4
+      version: 6.12.4
     '@codemirror/search':
       specifier: ^6.7.1
       version: 6.7.1
+    '@codemirror/state':
+      specifier: ^6.7.1
+      version: 6.7.1
+    '@codemirror/view':
+      specifier: ^6.43.7
+      version: 6.43.7
     '@rolldown/plugin-babel':
       specifier: ^0.2.3
       version: 0.2.3
@@ -39,6 +48,9 @@ catalogs:
     '@vitejs/plugin-react':
       specifier: ^6.0.5
       version: 6.0.5
+    cnfast:
+      specifier: ^0.1.0
+      version: 0.1.0
     es-toolkit:
       specifier: ^1.50.0
       version: 1.50.0
@@ -82,6 +94,9 @@ catalogs:
     '@hono/zod-validator':
       specifier: ^0.9.0
       version: 0.9.0
+    '@nuxtjs/mdc':
+      specifier: ^0.22.2
+      version: 0.22.2
     bcryptjs:
       specifier: ^3.0.3
       version: 3.0.3
@@ -106,6 +121,9 @@ catalogs:
     pino-pretty:
       specifier: ^13.1.3
       version: 13.1.3
+    pinyin-pro:
+      specifier: ^3.28.2
+      version: 3.28.2
     sharp:
       specifier: ^0.35.0
       version: 0.35.3
@@ -306,9 +324,18 @@ importers:
       '@codemirror/lang-markdown':
         specifier: catalog:admin
         version: 6.5.1
+      '@codemirror/language':
+        specifier: catalog:admin
+        version: 6.12.4
       '@codemirror/search':
         specifier: catalog:admin
         version: 6.7.1
+      '@codemirror/state':
+        specifier: catalog:admin
+        version: 6.7.1
+      '@codemirror/view':
+        specifier: catalog:admin
+        version: 6.43.7
       '@grey-flowers/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -318,6 +345,9 @@ importers:
       '@uiw/react-codemirror':
         specifier: catalog:admin
         version: 4.25.11(@babel/runtime@8.0.0)(@codemirror/autocomplete@6.20.3)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.1)(@codemirror/state@6.7.1)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.7)(codemirror@6.0.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      cnfast:
+        specifier: catalog:admin
+        version: 0.1.0
       es-toolkit:
         specifier: catalog:admin
         version: 1.50.0
@@ -385,6 +415,9 @@ importers:
       '@hono/zod-validator':
         specifier: catalog:api
         version: 0.9.0(hono@4.12.33)(zod@4.4.3)
+      '@nuxtjs/mdc':
+        specifier: catalog:api
+        version: 0.22.2(magic-string@1.1.0)(magicast@0.5.3)(oxc-parser@0.142.0)(rolldown@1.2.0)(supports-color@10.2.2)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.60.2)(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.103.0(esbuild@0.28.0)))
       bcryptjs:
         specifier: catalog:api
         version: 3.0.3
@@ -406,6 +439,9 @@ importers:
       pino:
         specifier: catalog:api
         version: 10.3.1
+      pinyin-pro:
+        specifier: catalog:api
+        version: 3.28.2
       sharp:
         specifier: catalog:api
         version: 0.35.3(@types/node@24.13.3)
@@ -4857,6 +4893,10 @@ packages:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
+  cnfast@0.1.0:
+    resolution: {integrity: sha512-rH0jBKeLkVrK7NsZ5Ba2l7WdMBmm1k0FMpABeXUU1PgTUxbz3261gEuCSsrYuXo4BwAe3yCcIbQ93YyS52lOGQ==}
+    hasBin: true
+
   codemirror@6.0.2:
     resolution: {integrity: sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw==}
 
@@ -7341,6 +7381,9 @@ packages:
   pino@10.3.1:
     resolution: {integrity: sha512-r34yH/GlQpKZbU1BvFFqOjhISRo1MNx1tWYsYvmj6KIRHSPMT2+yHOEb1SG6NMvRoHRF0a07kCOox/9yakl1vg==}
     hasBin: true
+
+  pinyin-pro@3.28.2:
+    resolution: {integrity: sha512-jV38yxXHLfidirMC4hrXasLDozLCSq/4DfX88GnHcSEJ2+GpSedG6I9VOiEXJu6iQ5dbJC/RjmzyMuS5h/wH5A==}
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
@@ -11226,6 +11269,60 @@ snapshots:
       - supports-color
       - unplugin
 
+  '@nuxtjs/mdc@0.22.2(magic-string@1.1.0)(magicast@0.5.3)(oxc-parser@0.142.0)(rolldown@1.2.0)(supports-color@10.2.2)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.60.2)(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.103.0(esbuild@0.28.0)))':
+    dependencies:
+      '@nuxt/kit': 4.5.1(magic-string@1.1.0)(magicast@0.5.3)(oxc-parser@0.142.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.60.2)(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.103.0(esbuild@0.28.0)))
+      '@shikijs/core': 4.3.1
+      '@shikijs/engine-javascript': 4.3.0
+      '@shikijs/langs': 4.3.0
+      '@shikijs/themes': 4.3.0
+      '@shikijs/transformers': 4.3.1
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      '@vue/compiler-core': 3.5.40
+      consola: 3.4.2
+      debug: 4.4.3(supports-color@10.2.2)
+      defu: 6.1.7
+      destr: 2.0.5
+      detab: 3.0.2
+      github-slugger: 2.0.0
+      hast-util-format: 1.1.0
+      hast-util-to-mdast: 10.1.2
+      hast-util-to-string: 3.0.1
+      mdast-util-to-hast: 13.2.1
+      micromark-util-sanitize-uri: 2.0.1
+      parse5: 8.0.1
+      pathe: 2.0.3
+      property-information: 7.2.0
+      rehype-external-links: 3.0.0
+      rehype-minify-whitespace: 6.0.2
+      rehype-raw: 7.0.0
+      rehype-remark: 10.0.1
+      rehype-slug: 6.0.0
+      rehype-sort-attribute-values: 5.0.1
+      rehype-sort-attributes: 5.0.1
+      remark-emoji: 5.0.2
+      remark-gfm: 4.0.1(supports-color@10.2.2)
+      remark-mdc: 3.11.1(supports-color@10.2.2)
+      remark-parse: 11.0.0(supports-color@10.2.2)
+      remark-rehype: 11.1.2
+      remark-stringify: 11.0.0
+      scule: 1.3.0
+      shiki: 4.3.0
+      ufo: 1.6.4
+      unified: 11.0.5
+      unist-builder: 4.0.0
+      unist-util-visit: 5.1.0
+      unwasm: 0.5.3
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - magic-string
+      - magicast
+      - oxc-parser
+      - rolldown
+      - supports-color
+      - unplugin
+
   '@nuxtjs/robots@6.1.3(@nuxt/schema@4.5.1)(magic-string@1.1.0)(magicast@0.5.3)(nuxt@4.5.1(efc34107c76c05ab33a95852a5f00449))(oxc-parser@0.140.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.60.2)(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.1)(yaml@2.9.0))(webpack@5.103.0(esbuild@0.28.0)))(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.1)(yaml@2.9.0))(vue@3.5.40(typescript@6.0.3))(zod@4.4.3)':
     dependencies:
       '@fingerprintjs/botd': 2.0.0
@@ -13954,6 +14051,8 @@ snapshots:
   clsx@2.1.1: {}
 
   cluster-key-slot@1.1.2: {}
+
+  cnfast@0.1.0: {}
 
   codemirror@6.0.2:
     dependencies:
@@ -17356,6 +17455,8 @@ snapshots:
       safe-stable-stringify: 2.5.0
       sonic-boom: 4.2.1
       thread-stream: 4.2.0
+
+  pinyin-pro@3.28.2: {}
 
   pkg-types@1.3.1:
     dependencies:

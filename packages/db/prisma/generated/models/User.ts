@@ -253,6 +253,7 @@ export type UserWhereInput = {
   userMessage?: Prisma.UserMessageListRelationFilter
   createdAssets?: Prisma.AssetListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
+  articleSnapshots?: Prisma.ArticleSnapshotListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -270,6 +271,7 @@ export type UserOrderByWithRelationInput = {
   userMessage?: Prisma.UserMessageOrderByRelationAggregateInput
   createdAssets?: Prisma.AssetOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
+  articleSnapshots?: Prisma.ArticleSnapshotOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -290,6 +292,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   userMessage?: Prisma.UserMessageListRelationFilter
   createdAssets?: Prisma.AssetListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
+  articleSnapshots?: Prisma.ArticleSnapshotListRelationFilter
 }, "id" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -338,6 +341,7 @@ export type UserCreateInput = {
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -355,6 +359,7 @@ export type UserUncheckedCreateInput = {
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -371,6 +376,7 @@ export type UserUpdateInput = {
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -388,6 +394,7 @@ export type UserUncheckedUpdateInput = {
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -423,6 +430,11 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -469,14 +481,23 @@ export type UserSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
-}
-
 export type UserNullableScalarRelationFilter = {
   is?: Prisma.UserWhereInput | null
   isNot?: Prisma.UserWhereInput | null
+}
+
+export type UserCreateNestedOneWithoutArticleSnapshotsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArticleSnapshotsInput, Prisma.UserUncheckedCreateWithoutArticleSnapshotsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArticleSnapshotsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutArticleSnapshotsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArticleSnapshotsInput, Prisma.UserUncheckedCreateWithoutArticleSnapshotsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArticleSnapshotsInput
+  upsert?: Prisma.UserUpsertWithoutArticleSnapshotsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutArticleSnapshotsInput, Prisma.UserUpdateWithoutArticleSnapshotsInput>, Prisma.UserUncheckedUpdateWithoutArticleSnapshotsInput>
 }
 
 export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -555,6 +576,88 @@ export type UserUpdateOneRequiredWithoutCreatedAssetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedAssetsInput, Prisma.UserUpdateWithoutCreatedAssetsInput>, Prisma.UserUncheckedUpdateWithoutCreatedAssetsInput>
 }
 
+export type UserCreateWithoutArticleSnapshotsInput = {
+  email: string
+  site?: string | null
+  avatar: string
+  password: string
+  username: string
+  createdAt?: Date | string
+  role?: $Enums.UserRole
+  updatedAt?: Date | string
+  comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput
+  replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
+  userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutArticleSnapshotsInput = {
+  id?: number
+  email: string
+  site?: string | null
+  avatar: string
+  password: string
+  username: string
+  createdAt?: Date | string
+  role?: $Enums.UserRole
+  updatedAt?: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput
+  replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
+  userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
+  createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutArticleSnapshotsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutArticleSnapshotsInput, Prisma.UserUncheckedCreateWithoutArticleSnapshotsInput>
+}
+
+export type UserUpsertWithoutArticleSnapshotsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutArticleSnapshotsInput, Prisma.UserUncheckedUpdateWithoutArticleSnapshotsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutArticleSnapshotsInput, Prisma.UserUncheckedCreateWithoutArticleSnapshotsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutArticleSnapshotsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutArticleSnapshotsInput, Prisma.UserUncheckedUpdateWithoutArticleSnapshotsInput>
+}
+
+export type UserUpdateWithoutArticleSnapshotsInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  site?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput
+  replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
+  userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutArticleSnapshotsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  site?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput
+  replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
+  userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
+  createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutSessionsInput = {
   email: string
   site?: string | null
@@ -568,6 +671,7 @@ export type UserCreateWithoutSessionsInput = {
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
+  articleSnapshots?: Prisma.ArticleSnapshotCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -584,6 +688,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -615,6 +720,7 @@ export type UserUpdateWithoutSessionsInput = {
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -631,6 +737,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -646,6 +753,7 @@ export type UserCreateWithoutCommentsInput = {
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -662,6 +770,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -682,6 +791,7 @@ export type UserCreateWithoutRepliesInput = {
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutRepliesInput = {
@@ -698,6 +808,7 @@ export type UserUncheckedCreateWithoutRepliesInput = {
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
   createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutRepliesInput = {
@@ -729,6 +840,7 @@ export type UserUpdateWithoutCommentsInput = {
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -745,6 +857,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutRepliesInput = {
@@ -771,6 +884,7 @@ export type UserUpdateWithoutRepliesInput = {
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRepliesInput = {
@@ -787,6 +901,7 @@ export type UserUncheckedUpdateWithoutRepliesInput = {
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
   createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutUserMessageInput = {
@@ -802,6 +917,7 @@ export type UserCreateWithoutUserMessageInput = {
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
   createdAssets?: Prisma.AssetCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutUserMessageInput = {
@@ -818,6 +934,7 @@ export type UserUncheckedCreateWithoutUserMessageInput = {
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
   createdAssets?: Prisma.AssetUncheckedCreateNestedManyWithoutCreatedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutUserMessageInput = {
@@ -849,6 +966,7 @@ export type UserUpdateWithoutUserMessageInput = {
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
   createdAssets?: Prisma.AssetUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMessageInput = {
@@ -865,6 +983,7 @@ export type UserUncheckedUpdateWithoutUserMessageInput = {
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
   createdAssets?: Prisma.AssetUncheckedUpdateManyWithoutCreatedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedAssetsInput = {
@@ -880,6 +999,7 @@ export type UserCreateWithoutCreatedAssetsInput = {
   replies?: Prisma.CommentCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageCreateNestedManyWithoutReceiverInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedAssetsInput = {
@@ -896,6 +1016,7 @@ export type UserUncheckedCreateWithoutCreatedAssetsInput = {
   replies?: Prisma.CommentUncheckedCreateNestedManyWithoutReplyToUserInput
   userMessage?: Prisma.UserMessageUncheckedCreateNestedManyWithoutReceiverInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedAssetsInput = {
@@ -927,6 +1048,7 @@ export type UserUpdateWithoutCreatedAssetsInput = {
   replies?: Prisma.CommentUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUpdateManyWithoutReceiverNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedAssetsInput = {
@@ -943,6 +1065,7 @@ export type UserUncheckedUpdateWithoutCreatedAssetsInput = {
   replies?: Prisma.CommentUncheckedUpdateManyWithoutReplyToUserNestedInput
   userMessage?: Prisma.UserMessageUncheckedUpdateManyWithoutReceiverNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  articleSnapshots?: Prisma.ArticleSnapshotUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -956,6 +1079,7 @@ export type UserCountOutputType = {
   userMessage: number
   createdAssets: number
   sessions: number
+  articleSnapshots: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -964,6 +1088,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   userMessage?: boolean | UserCountOutputTypeCountUserMessageArgs
   createdAssets?: boolean | UserCountOutputTypeCountCreatedAssetsArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+  articleSnapshots?: boolean | UserCountOutputTypeCountArticleSnapshotsArgs
 }
 
 /**
@@ -1011,6 +1136,13 @@ export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.SessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountArticleSnapshotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArticleSnapshotWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1027,6 +1159,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userMessage?: boolean | Prisma.User$userMessageArgs<ExtArgs>
   createdAssets?: boolean | Prisma.User$createdAssetsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  articleSnapshots?: boolean | Prisma.User$articleSnapshotsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1073,6 +1206,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   userMessage?: boolean | Prisma.User$userMessageArgs<ExtArgs>
   createdAssets?: boolean | Prisma.User$createdAssetsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  articleSnapshots?: boolean | Prisma.User$articleSnapshotsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1086,6 +1220,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     userMessage: Prisma.$UserMessagePayload<ExtArgs>[]
     createdAssets: Prisma.$AssetPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
+    articleSnapshots: Prisma.$ArticleSnapshotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1496,6 +1631,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   userMessage<T extends Prisma.User$userMessageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMessageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdAssets<T extends Prisma.User$createdAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  articleSnapshots<T extends Prisma.User$articleSnapshotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$articleSnapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArticleSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2044,6 +2180,30 @@ export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
+}
+
+/**
+ * User.articleSnapshots
+ */
+export type User$articleSnapshotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArticleSnapshot
+   */
+  select?: Prisma.ArticleSnapshotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArticleSnapshot
+   */
+  omit?: Prisma.ArticleSnapshotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArticleSnapshotInclude<ExtArgs> | null
+  where?: Prisma.ArticleSnapshotWhereInput
+  orderBy?: Prisma.ArticleSnapshotOrderByWithRelationInput | Prisma.ArticleSnapshotOrderByWithRelationInput[]
+  cursor?: Prisma.ArticleSnapshotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArticleSnapshotScalarFieldEnum | Prisma.ArticleSnapshotScalarFieldEnum[]
 }
 
 /**

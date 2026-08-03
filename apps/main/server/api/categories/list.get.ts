@@ -1,11 +1,7 @@
-import prisma from '#server/utils/prisma'
-
-async function getCategories() {
-  const categories = await prisma.category.findMany()
-  return categories
-}
+import type { PublicCategory } from '@grey-flowers/contracts'
+import { apiGet } from '#server/utils/api-gateway'
 
 export default formattedEventHandler(async () => {
-  const categories = await getCategories()
-  return { payload: categories }
+  const data = await apiGet<{ items: PublicCategory[] }>('/public/categories')
+  return { payload: data.items }
 })

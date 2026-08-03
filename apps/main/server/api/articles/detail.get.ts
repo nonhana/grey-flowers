@@ -1,6 +1,7 @@
+import type { ArticleDetail } from '@grey-flowers/contracts'
 import type { ArticleMarkdownPayload } from '#shared/types/markdown'
+import { apiGet, isApiNotFound } from '#server/utils/api-gateway'
 import { resolveArticleImagePolicy } from '#server/utils/article-generated-image'
-import prisma from '#server/utils/prisma'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)
@@ -14,24 +15,25 @@ export default formattedEventHandler(async (event) => {
     }
   }
 
-  // 从数据库查询文章
-  const article = await prisma.article.findUnique({
-    where: { to: path, published: true },
-    select: {
-      to: true,
-      title: true,
-      description: true,
-      cover: true,
-      alt: true,
-      content: true,
-      publishedAt: true,
-      editedAt: true,
-      published: true,
-      wordCount: true,
-      tags: { select: { name: true } },
-      category: { select: { name: true } },
-    },
-  })
+  const previewToken = (query.preview as string | undefined) || undefined
+
+  let article: ArticleDetail | null = null
+  try {
+    article = await apiGet<ArticleDetail>('/public/articles/detail', { path })
+  }
+  catch (error) {
+    if (previewToken && isApiNotFound(error)) {
+      // 草稿预览：一次 token 门控 SSR，未发布页面不被索引
+      article = await apiGet<ArticleDetail>('/public/articles/preview', {
+        path,
+        token: previewToken,
+      })
+      setResponseHeader(event, 'X-Robots-Tag', 'noindex')
+    }
+    else if (!isApiNotFound(error)) {
+      throw error
+    }
+  }
 
   if (!article) {
     return {
@@ -49,7 +51,7 @@ export default formattedEventHandler(async (event) => {
       to: article.to,
       title: article.title,
       cover: article.cover,
-      publishedAt: article.publishedAt.toISOString(),
+      publishedAt: article.publishedAt,
     }),
     id: article.to,
     path: article.to,
@@ -58,10 +60,10 @@ export default formattedEventHandler(async (event) => {
     description: article.description || '',
     cover: article.cover,
     alt: article.alt,
-    tags: article.tags.map(tag => tag.name),
-    category: article.category?.name || '未分类',
-    publishedAt: article.publishedAt.toISOString(),
-    editedAt: article.editedAt.toISOString(),
+    tags: article.tags,
+    category: article.category || '未分类',
+    publishedAt: article.publishedAt,
+    editedAt: article.editedAt,
     published: article.published,
     wordCount: article.wordCount,
     ...toMarkdownRenderPayload(parsed),

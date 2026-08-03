@@ -38,15 +38,18 @@ export function UploadDialog({
   const [phase, setPhase] = useState<Phase>('idle');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (open) return;
-
-    setPurpose(null);
-    setFile(null);
-    setProgress(0);
-    setPhase('idle');
-    setError('');
-  }, [open]);
+  // 对话框关闭后重置表单：在渲染期、受条件保护地调整 state（React 官方推荐模式）
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (prevOpen !== open) {
+    setPrevOpen(open);
+    if (!open) {
+      setPurpose(null);
+      setFile(null);
+      setProgress(0);
+      setPhase('idle');
+      setError('');
+    }
+  }
 
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
 

@@ -7,6 +7,7 @@ export const apiErrorCodeSchema = z.enum([
   'AUTH_FORBIDDEN',
   'NOT_FOUND',
   'CONFLICT',
+  'ARTICLE_STALE',
   'INTERNAL_ERROR',
   'ASSET_PAYLOAD_TOO_LARGE',
   'UNSUPPORTED_MEDIA_TYPE',

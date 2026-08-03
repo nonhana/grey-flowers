@@ -3,7 +3,7 @@ import {
   authRefreshResponseSchema,
   type AuthRefreshData,
 } from '@grey-flowers/contracts';
-import ky, { type KyInstance } from 'ky';
+import ky from 'ky';
 
 import {
   ApiNetworkError,

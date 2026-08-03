@@ -157,7 +157,6 @@ export function AssetsDetailPage({ assetId }: { assetId: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    setState({ kind: 'loading' });
 
     apiClient.assets
       .detail(id)
@@ -187,6 +186,7 @@ export function AssetsDetailPage({ assetId }: { assetId: string }) {
         await apiClient.assets.remove(id);
       }
       setConfirm(null);
+      setState({ kind: 'loading' });
       setVersion((current) => current + 1);
     } catch (cause) {
       setActionError(assetErrorMessage(cause));
@@ -229,7 +229,10 @@ export function AssetsDetailPage({ assetId }: { assetId: string }) {
             focus-visible:outline-[3px] focus-visible:outline-offset-2
             focus-visible:outline-focus-outline
           "
-          onPress={() => setVersion((current) => current + 1)}
+          onPress={() => {
+            setState({ kind: 'loading' });
+            setVersion((current) => current + 1);
+          }}
         >
           重试
         </Button>

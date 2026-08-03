@@ -1,6 +1,8 @@
+import { createArticlesApi, type ArticlesApi } from './articles.js';
 import { createAssetsApi, type AssetsApi } from './assets.js';
 import { createAuthApi, type AuthApi } from './auth.js';
 import { createHttp } from './http.js';
+import { createTaxonomyApi, type TaxonomyApi } from './taxonomy.js';
 
 export {
   ApiNetworkError,
@@ -36,8 +38,10 @@ export function setAccessToken(accessToken: string | null) {
 }
 
 export class ApiClient {
+  readonly articles: ArticlesApi;
   readonly assets: AssetsApi;
   readonly auth: AuthApi;
+  readonly taxonomy: TaxonomyApi;
 
   private readonly http = createHttp({
     prefixUrl: getApiOrigin(),
@@ -46,8 +50,10 @@ export class ApiClient {
   });
 
   constructor() {
+    this.articles = createArticlesApi(this.http);
     this.assets = createAssetsApi(this.http);
     this.auth = createAuthApi(this.http);
+    this.taxonomy = createTaxonomyApi(this.http);
   }
 
   /** transport 凭据续期（refresh 属于 transport，见 D5） */

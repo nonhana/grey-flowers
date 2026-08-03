@@ -10,9 +10,11 @@ import type { ApiEnvironment } from './context.js';
 interface ApiErrorOptions {
   cause?: unknown;
   fields?: Record<string, string[]>;
+  message?: string;
 }
 
 const errorStatus: Record<ApiErrorCode, ContentfulStatusCode> = {
+  ARTICLE_STALE: 409,
   ASSET_PAYLOAD_TOO_LARGE: 413,
   ASSET_REFERENCED: 409,
   AUTH_FORBIDDEN: 403,
@@ -27,6 +29,8 @@ const errorStatus: Record<ApiErrorCode, ContentfulStatusCode> = {
 };
 
 const errorMessages: Record<ApiErrorCode, string> = {
+  ARTICLE_STALE:
+    'Article has been changed elsewhere; resolve the conflict first',
   ASSET_PAYLOAD_TOO_LARGE: 'Asset payload exceeds the allowed size',
   ASSET_REFERENCED: 'Asset is still in use and cannot be changed',
   AUTH_FORBIDDEN: 'Access is forbidden',
@@ -45,7 +49,7 @@ export class ApiError extends Error {
   readonly fields?: Record<string, string[]>;
 
   constructor(code: ApiErrorCode, options: ApiErrorOptions = {}) {
-    super(errorMessages[code], { cause: options.cause });
+    super(options.message ?? errorMessages[code], { cause: options.cause });
     this.code = code;
     this.fields = options.fields;
   }
@@ -75,12 +79,13 @@ export function createFailure(
   c: Context<ApiEnvironment>,
   code: ApiErrorCode,
   fields?: Record<string, string[]>,
+  message?: string,
 ) {
   const body: ApiFailure = {
     success: false,
     error: {
       code,
-      message: errorMessages[code],
+      message: message ?? errorMessages[code],
       ...(fields ? { fields } : {}),
     },
     requestId: c.get('requestId'),
@@ -106,7 +111,7 @@ export function createSuccess<TData>(
 
 export function handleError(error: Error, c: Context<ApiEnvironment>) {
   if (error instanceof ApiError)
-    return createFailure(c, error.code, error.fields);
+    return createFailure(c, error.code, error.fields, error.message);
 
   process.stderr.write(`Unhandled API error requestId=${c.get('requestId')}\n`);
   return createFailure(c, 'INTERNAL_ERROR');

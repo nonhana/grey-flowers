@@ -10,14 +10,20 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, envPath, '');
   const adminPort = Number.parseInt(env.ADMIN_PORT);
   const apiPort = Number.parseInt(env.API_PORT);
+  const mainPort = Number.parseInt(env.MAIN_PORT);
   const apiOrigin =
     mode === 'production'
       ? 'https://api.caelum.moe'
       : `http://localhost:${apiPort}`;
+  const mainOrigin =
+    mode === 'production'
+      ? 'https://caelum.moe'
+      : `http://localhost:${mainPort}`;
 
   return {
     define: {
       'import.meta.env.VITE_API_ORIGIN': JSON.stringify(apiOrigin),
+      'import.meta.env.VITE_MAIN_ORIGIN': JSON.stringify(mainOrigin),
     },
     plugins: [
       react(),
