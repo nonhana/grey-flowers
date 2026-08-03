@@ -10,8 +10,8 @@ import {
   ModalOverlay,
 } from 'react-aria-components';
 
-import { apiClient, isApiRequestError } from '../../../app/api/index.js';
-import { formatBytes } from '../../assets/display.js';
+import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import { formatBytes } from '@/features/assets/display.js';
 
 const ASSET_PAGE_SIZE = 12;
 

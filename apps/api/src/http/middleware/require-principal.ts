@@ -1,10 +1,12 @@
 import type { MiddlewareHandler } from 'hono';
 
-import type { ApiEnvironment } from '../../env.js';
+import type { ApiEnvironment } from '@/env.js';
+
+import { findActivePrincipal } from '@/modules/auth/principal.js';
+import { verifyAccessToken } from '@/modules/auth/tokens.js';
+
 import type { ApiEnvironment as ContextEnvironment } from '../context.js';
 
-import { findActivePrincipal } from '../../modules/auth/principal.js';
-import { verifyAccessToken } from '../../modules/auth/tokens.js';
 import { ApiError } from '../errors.js';
 
 const bearerTokenPattern =

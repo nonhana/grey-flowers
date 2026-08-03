@@ -15,7 +15,8 @@ import {
   Text,
 } from 'react-aria-components';
 
-import { apiClient } from '../../app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+
 import { assetErrorMessage, purposeLabels, purposeOptions } from './display.js';
 
 const IMAGE_ACCEPT = 'image/jpeg,image/png,image/gif,image/webp';

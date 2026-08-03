@@ -8,7 +8,7 @@ import {
   apiClient,
   isApiNetworkError,
   isApiRequestError,
-} from '../../../app/api/index.js';
+} from '@/app/api/index.js';
 
 export interface ArticleDraft {
   alt: string;

@@ -32,6 +32,11 @@ export default defineConfig(({ mode }) => {
         presets: [reactCompilerPreset()],
       }),
     ],
+    resolve: {
+      alias: {
+        '@': path.resolve(import.meta.dirname, './src'),
+      },
+    },
     server: {
       port: adminPort,
     },

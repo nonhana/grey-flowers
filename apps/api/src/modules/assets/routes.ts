@@ -6,13 +6,14 @@ import {
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import type { AppDependencies } from '../../bootstrap/dependencies.js';
-import type { ApiEnvironment } from '../../http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies.js';
+import type { ApiEnvironment } from '@/http/context.js';
 
-import { ApiError, createSuccess, validationError } from '../../http/errors.js';
-import { requirePrincipal } from '../../http/middleware/require-principal.js';
-import { requireRole } from '../../http/middleware/require-role.js';
-import { parseBody } from '../../lib/parse-body.js';
+import { ApiError, createSuccess, validationError } from '@/http/errors.js';
+import { requirePrincipal } from '@/http/middleware/require-principal.js';
+import { requireRole } from '@/http/middleware/require-role.js';
+import { parseBody } from '@/lib/parse-body.js';
+
 import { MAX_UPLOAD_BYTES } from './service.js';
 
 /** multipart 边界等开销，只为避免 Content-Length 预检误伤。 */

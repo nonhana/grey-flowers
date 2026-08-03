@@ -3,7 +3,8 @@ import { ArrowLeft, Loader2, Play } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from 'react-aria-components';
 
-import { apiClient } from '../../app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+
 import { articleErrorMessage } from './display.js';
 
 const SLUG_PATTERN = /^\/articles\/[a-z0-9]+(?:-[a-z0-9]+)*$/;

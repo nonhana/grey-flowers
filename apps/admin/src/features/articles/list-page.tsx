@@ -6,7 +6,8 @@ import { FilePlus2, Loader2, Search } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from 'react-aria-components';
 
-import { apiClient } from '../../app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+
 import { formatDateTime, publishedLabel } from './display.js';
 
 const PAGE_SIZE = 20;

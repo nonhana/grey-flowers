@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-import type { ApiEnvironment } from '../../env.js';
+import type { ApiEnvironment } from '@/env.js';
 
 const PREVIEW_TYPE = 'preview';
 export const PREVIEW_TTL_SECONDS = 15 * 60;

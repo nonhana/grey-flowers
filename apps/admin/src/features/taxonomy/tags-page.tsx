@@ -5,7 +5,7 @@ import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-aria-components';
 
-import { apiClient, isApiRequestError } from '../../app/api/index.js';
+import { apiClient, isApiRequestError } from '@/app/api/index.js';
 
 export const TagsPage = () => {
   const [items, setItems] = useState<TagAdmin[]>([]);

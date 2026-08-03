@@ -34,7 +34,8 @@ import {
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Button } from 'react-aria-components';
 
-import { apiClient } from '../../../app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+
 import { AssetPickerDialog } from './asset-picker.js';
 
 const editorTheme = EditorView.theme({
