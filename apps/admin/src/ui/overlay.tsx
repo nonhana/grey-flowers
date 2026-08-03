@@ -2,7 +2,9 @@ import type { ReactNode } from 'react';
 
 import { cn } from 'cnfast';
 import { X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useReducedMotion } from 'motion/react';
+import { useRef } from 'react';
+import { FocusScope, mergeProps, useDialog, useModalOverlay } from 'react-aria';
 import {
   Dialog,
   Heading,
@@ -11,6 +13,11 @@ import {
   Tooltip as AriaTooltip,
   TooltipTrigger,
 } from 'react-aria-components';
+import { Sheet } from 'react-modal-sheet';
+import {
+  type OverlayTriggerState,
+  useOverlayTriggerState,
+} from 'react-stately';
 
 import { Button, IconButton } from './button.js';
 
@@ -24,94 +31,113 @@ const scrimClass = cn(
 
 /* ─────────────────────────── 底部抽屉（移动端） ─────────────────────────── */
 
-const DISMISS_DISTANCE = 96;
+interface BottomSheetProps {
+  children: ReactNode;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+}
+
+const BottomSheetContents = ({
+  children,
+  state,
+  title,
+}: {
+  children: ReactNode;
+  state: OverlayTriggerState;
+  title: string;
+}) => {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const { dialogProps, titleProps } = useDialog({}, panelRef);
+  const { modalProps } = useModalOverlay(
+    { isDismissable: true },
+    state,
+    panelRef,
+  );
+  const {
+    'aria-describedby': ariaDescribedBy,
+    'aria-labelledby': ariaLabelledBy,
+    onBlur,
+    onFocus,
+    onKeyDown,
+    role,
+    tabIndex,
+  } = mergeProps(dialogProps, modalProps);
+  return (
+    // eslint-disable-next-line jsx-a11y/no-autofocus -- React Aria must move focus into this modal scope.
+    <FocusScope autoFocus contain restoreFocus>
+      <Sheet.Container
+        aria-describedby={ariaDescribedBy}
+        aria-labelledby={ariaLabelledBy}
+        aria-modal
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
+        role={role}
+        tabIndex={tabIndex}
+        className={cn(
+          '[--gf-surface:var(--color-case-raised)]',
+          'max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised',
+          'shadow-float outline-none',
+        )}
+        ref={panelRef}
+        unstyled
+      >
+        <h2 {...titleProps} className="sr-only">
+          {title}
+        </h2>
+        <Sheet.Header
+          className="
+            grid cursor-grab justify-items-center pt-2.5 pb-1.5
+            active:cursor-grabbing
+          "
+          unstyled
+        >
+          <span aria-hidden="true" className="h-1 w-10 rounded-full bg-edge" />
+        </Sheet.Header>
+        <Sheet.Content
+          className="min-h-0"
+          scrollClassName="overscroll-contain"
+          scrollStyle={{
+            paddingBottom:
+              'max(env(safe-area-inset-bottom), env(keyboard-inset-height, var(--keyboard-inset-height, 0px)))',
+          }}
+          unstyled
+        >
+          {children}
+        </Sheet.Content>
+      </Sheet.Container>
+    </FocusScope>
+  );
+};
 
 /**
- * 移动端的 sheet。抓手是真能拖的：跟手下滑，越过阈值松手即关闭。
- * 这是「移动端是一等写作设备」这条原则最先被检验的地方。
+ * 移动端的 sheet。交互、滚动与虚拟键盘避让由 react-modal-sheet 处理；
+ * React Aria 负责模态语义、焦点和关闭行为。
  */
 export const BottomSheet = ({
   children,
   isOpen,
   onOpenChange,
   title,
-}: {
-  children: ReactNode;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-}) => {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const startY = useRef<number | null>(null);
-  const [dragOffset, setDragOffset] = useState(0);
-
-  const endDrag = () => {
-    if (startY.current === null) return;
-    startY.current = null;
-    if (dragOffset > DISMISS_DISTANCE) onOpenChange(false);
-    setDragOffset(0);
-  };
+}: BottomSheetProps) => {
+  const prefersReducedMotion = useReducedMotion();
+  const state = useOverlayTriggerState({ isOpen, onOpenChange });
 
   return (
-    <ModalOverlay
-      className={scrimClass}
-      isDismissable
+    <Sheet
+      detent="content"
       isOpen={isOpen}
-      onOpenChange={onOpenChange}
+      onClose={state.close}
+      prefersReducedMotion={prefersReducedMotion ?? false}
+      style={{ zIndex: 50 }}
+      unstyled
     >
-      <Modal
-        className={cn(
-          '[--gf-surface:var(--color-case-raised)]',
-          'absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-hidden',
-          'rounded-t-sheet bg-case-raised shadow-float outline-none',
-          `
-            data-entering:animate-sheet-in
-            data-exiting:animate-sheet-out
-          `,
-        )}
-        ref={panelRef}
-        style={
-          dragOffset > 0
-            ? { transform: `translateY(${String(dragOffset)}px)` }
-            : undefined
-        }
-      >
-        <Dialog
-          aria-label={title}
-          className="grid max-h-[88dvh] grid-rows-[auto_1fr] outline-none"
-        >
-          <div
-            className="
-              grid cursor-grab touch-none justify-items-center pt-2.5 pb-1.5
-              active:cursor-grabbing
-            "
-            onPointerCancel={endDrag}
-            onPointerDown={(event) => {
-              startY.current = event.clientY;
-              event.currentTarget.setPointerCapture(event.pointerId);
-            }}
-            onPointerMove={(event) => {
-              if (startY.current === null) return;
-              setDragOffset(Math.max(0, event.clientY - startY.current));
-            }}
-            onPointerUp={endDrag}
-          >
-            <span
-              aria-hidden="true"
-              className="h-1 w-10 rounded-full bg-edge"
-            />
-          </div>
-          <div
-            className="
-              min-h-0 overflow-y-auto overscroll-contain
-              pb-[env(safe-area-inset-bottom)]
-            "
-          >
-            {children}
-          </div>
-        </Dialog>
-      </Modal>
-    </ModalOverlay>
+      <BottomSheetContents state={state} title={title}>
+        {children}
+      </BottomSheetContents>
+      <Sheet.Backdrop className="bg-scrim" unstyled />
+    </Sheet>
   );
 };
 

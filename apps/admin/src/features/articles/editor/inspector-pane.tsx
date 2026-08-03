@@ -376,8 +376,11 @@ export const InspectorPane = ({
             });
           }}
         >
-          在主站预览
+          打开主站
         </Button>
+        <p className="text-2xs/relaxed text-ink-dim">
+          编辑区已是所见即所得；这个按钮只在真实主站做发布前最终确认，草稿会自动生成一次性预览链接。
+        </p>
         <Button
           icon={<Trash2 aria-hidden="true" />}
           onPress={() => setConfirm({ kind: 'delete' })}

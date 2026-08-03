@@ -214,23 +214,27 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
       <Images aria-hidden="true" />
       资产
     </Link>
-    {/* 动作键不带文字标签，所以要单独对齐到标签行之上的那条视觉中线。 */}
-    <Link
-      aria-label="新建文章"
-      className="
-        grid h-11 w-14 shrink-0 place-items-center self-start rounded-control
-        bg-accent text-accent-on transition-colors duration-150
-        [&_svg]:size-5
-      "
-      to="/articles/new"
-    >
-      <SquarePen aria-hidden="true" />
-    </Link>
     <button className={tabClass} onClick={onMore} type="button">
       <MoreHorizontal aria-hidden="true" />
       更多
     </button>
   </nav>
+);
+const MobileCreateArticle = () => (
+  <Link
+    aria-label="新建文章"
+    className="
+      fixed right-[max(1rem,env(safe-area-inset-right))]
+      bottom-[calc(6rem+env(safe-area-inset-bottom))] z-40 inline-flex min-h-11
+      items-center gap-2 rounded-full bg-accent px-3.5 font-mono text-sm
+      text-accent-on shadow-float transition-colors duration-150
+      hover:bg-accent-hover
+      md:hidden
+    "
+    to="/articles/new"
+  >
+    <SquarePen aria-hidden="true" className="size-4" />
+  </Link>
 );
 
 const MoreSheet = ({
@@ -291,12 +295,22 @@ export const ConsoleShell = () => {
         <main
           className={cn(
             'min-h-0 flex-1',
-            isFullBleed ? 'overflow-hidden' : 'overflow-y-auto',
+            isFullBleed
+              ? 'overflow-hidden'
+              : `
+                overflow-y-auto pb-[calc(6rem+env(safe-area-inset-bottom))]
+                md:pb-0
+              `,
           )}
         >
           <Outlet />
         </main>
-        {isFullBleed ? null : <MobileTabBar onMore={() => setMoreOpen(true)} />}
+        {isFullBleed ? null : (
+          <>
+            <MobileCreateArticle />
+            <MobileTabBar onMore={() => setMoreOpen(true)} />
+          </>
+        )}
       </div>
       <MoreSheet isOpen={moreOpen} onOpenChange={setMoreOpen} />
     </div>
