@@ -8,7 +8,7 @@ interface ApiFailureBody {
   error?: { code?: string; message?: string };
 }
 
-export function requestLogger(): MiddlewareHandler<ApiEnvironment> {
+export const requestLogger = (): MiddlewareHandler<ApiEnvironment> => {
   return async (context, next) => {
     const { logger } = context.get('dependencies');
     const startedAt = performance.now();
@@ -45,4 +45,4 @@ export function requestLogger(): MiddlewareHandler<ApiEnvironment> {
 
     logger.info({ requestId, status, responseTimeMs }, line);
   };
-}
+};

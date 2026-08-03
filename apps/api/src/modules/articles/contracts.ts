@@ -41,9 +41,9 @@ export interface ArticleListAdminRecord {
   wordCount: number;
 }
 
-export function toArticleListAdmin(
+export const toArticleListAdmin = (
   record: ArticleListAdminRecord,
-): ArticleListAdmin {
+): ArticleListAdmin => {
   return {
     alt: record.alt,
     category: record.category?.name ?? null,
@@ -61,7 +61,7 @@ export function toArticleListAdmin(
     to: record.to,
     wordCount: record.wordCount,
   };
-}
+};
 
 export interface ArticleCardRecord {
   category: { name: string } | null;
@@ -76,7 +76,7 @@ export interface ArticleCardRecord {
   wordCount: number;
 }
 
-export function toArticleCard(record: ArticleCardRecord): ArticleCard {
+export const toArticleCard = (record: ArticleCardRecord): ArticleCard => {
   return {
     category: record.category?.name ?? null,
     cover: record.cover,
@@ -89,7 +89,7 @@ export function toArticleCard(record: ArticleCardRecord): ArticleCard {
     to: record.to,
     wordCount: record.wordCount,
   };
-}
+};
 
 export interface ArticleDetailRecord extends ArticleCardRecord {
   alt: string;
@@ -97,16 +97,16 @@ export interface ArticleDetailRecord extends ArticleCardRecord {
   published: boolean;
 }
 
-export function toArticleDetail(record: ArticleDetailRecord): ArticleDetail {
+export const toArticleDetail = (record: ArticleDetailRecord): ArticleDetail => {
   return {
     ...toArticleCard(record),
     alt: record.alt,
     content: record.content ?? '',
     published: record.published,
   };
-}
+};
 
-export function toArticleAdmin(
+export const toArticleAdmin = (
   record: ArticleDetailRecord & {
     categoryId: number | null;
     coverAssetId: number | null;
@@ -114,7 +114,7 @@ export function toArticleAdmin(
     revision: number;
   },
   inlineAssetIds: number[],
-): ArticleAdmin {
+): ArticleAdmin => {
   return {
     ...toArticleDetail(record),
     categoryId: record.categoryId,
@@ -123,4 +123,4 @@ export function toArticleAdmin(
     inlineAssetIds,
     revision: record.revision,
   };
-}
+};

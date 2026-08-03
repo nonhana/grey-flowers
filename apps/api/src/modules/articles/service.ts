@@ -52,11 +52,11 @@ interface SearchRow {
   score: number | string;
 }
 
-function normalizeSearchQuery(value: string) {
+const normalizeSearchQuery = (value: string) => {
   return value.replaceAll('"', ' ').trim();
-}
+};
 
-function toPlainSearchText(value: string | null | undefined) {
+const toPlainSearchText = (value: string | null | undefined) => {
   if (!value) return '';
   return value
     .replace(/```[\s\S]*?```/g, ' ')
@@ -67,14 +67,14 @@ function toPlainSearchText(value: string | null | undefined) {
     .replace(/[>*_~#]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-}
+};
 
-function truncateSnippet(value: string, length = 120) {
+const truncateSnippet = (value: string, length = 120) => {
   if (value.length <= length) return value;
   return `${value.slice(0, length).trim()}…`;
-}
+};
 
-function extractSnippet(value: string, query: string) {
+const extractSnippet = (value: string, query: string) => {
   const plainText = toPlainSearchText(value);
   if (!plainText) return '';
 
@@ -104,9 +104,9 @@ function extractSnippet(value: string, query: string) {
   if (start > 0) snippet = `…${snippet}`;
   if (end < plainText.length) snippet = `${snippet}…`;
   return snippet;
-}
+};
 
-function createSnippet(row: SearchRow, query: string) {
+const createSnippet = (row: SearchRow, query: string) => {
   const description = toPlainSearchText(row.description);
   const content = toPlainSearchText(row.content);
   const loweredQuery = query.toLowerCase();
@@ -120,15 +120,15 @@ function createSnippet(row: SearchRow, query: string) {
 
   const fallback = description || content;
   return fallback ? truncateSnippet(fallback) : '暂无摘要';
-}
+};
 
 /** cover/coverAssetId 归一：置 asset 则 cover=deliveryUrl；仅外部 URL 则 coverAssetId=null。 */
-async function resolveCover(
+const resolveCover = async (
   client: Prisma.TransactionClient,
   assetPublicUrl: string,
   cover: string,
   coverAssetId: number | null,
-): Promise<{ cover: string; coverAssetId: number | null }> {
+): Promise<{ cover: string; coverAssetId: number | null }> => {
   if (coverAssetId !== null) {
     const asset = await client.asset.findUnique({
       select: { status: true, storageKey: true },
@@ -145,12 +145,12 @@ async function resolveCover(
     };
   }
   return { cover, coverAssetId: null };
-}
+};
 
-async function assertCategoryExists(
+const assertCategoryExists = async (
   client: Prisma.TransactionClient,
   categoryId: number | null,
-) {
+) => {
   if (categoryId === null) return;
   const category = await client.category.findUnique({
     select: { id: true },
@@ -161,14 +161,14 @@ async function assertCategoryExists(
       fields: { categoryId: ['Selected category does not exist'] },
     });
   }
-}
+};
 
 /** 校验正文受管引用：asset 存在且 AVAILABLE、URL 等于其 deliveryUrl；任一失败 → VALIDATION_FAILED。 */
-async function assertContentAssets(
+const assertContentAssets = async (
   client: Prisma.TransactionClient,
   assetPublicUrl: string,
   content: string,
-): Promise<InlineAssetRef[]> {
+): Promise<InlineAssetRef[]> => {
   const refs = await extractInlineAssetRefs(content);
   if (refs.length === 0) return refs;
 
@@ -201,14 +201,14 @@ async function assertContentAssets(
     });
   }
   return refs;
-}
+};
 
-function monthRange(month: string): Prisma.DateTimeFilter {
+const monthRange = (month: string): Prisma.DateTimeFilter => {
   const [year, monthNumber] = month.split('-').map(Number);
   const start = new Date(Date.UTC(year, monthNumber - 1, 1));
   const end = new Date(Date.UTC(year, monthNumber, 1));
   return { gte: start, lt: end };
-}
+};
 
 export class ArticleService {
   constructor(

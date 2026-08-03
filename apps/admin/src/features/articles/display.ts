@@ -1,13 +1,13 @@
 import { isApiRequestError } from '../../app/api/errors.js';
 
-export function formatDateTime(iso: string) {
+export const formatDateTime = (iso: string) => {
   return new Intl.DateTimeFormat('zh-CN', {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(iso));
-}
+};
 
-export function articleErrorMessage(error: unknown) {
+export const articleErrorMessage = (error: unknown) => {
   if (isApiRequestError(error)) {
     switch (error.code) {
       case 'ARTICLE_STALE':
@@ -26,12 +26,12 @@ export function articleErrorMessage(error: unknown) {
   }
 
   return '暂时无法完成此操作。';
-}
+};
 
-export function publishedLabel(published: boolean) {
+export const publishedLabel = (published: boolean) => {
   return published ? '已发布' : '草稿';
-}
+};
 
-export function slugFromTo(to: string) {
+export const slugFromTo = (to: string) => {
   return to.replace(/^\/articles\//, '');
-}
+};

@@ -11,10 +11,10 @@ interface PublicUserFields {
   username: string;
 }
 
-export function toPrincipal(
+export const toPrincipal = (
   user: PublicUserFields,
   sessionId: string,
-): Principal {
+): Principal => {
   return {
     userId: user.id,
     sessionId,
@@ -24,13 +24,13 @@ export function toPrincipal(
     avatar: user.avatar,
     site: user.site,
   };
-}
+};
 
-export async function findActivePrincipal(
+export const findActivePrincipal = async (
   dependencies: AppDependencies,
   userId: number,
   sessionId: string,
-): Promise<Principal | undefined> {
+): Promise<Principal | undefined> => {
   const session = await dependencies.prisma.session.findFirst({
     where: {
       id: sessionId,
@@ -54,4 +54,4 @@ export async function findActivePrincipal(
   });
 
   return session ? toPrincipal(session.user, session.id) : undefined;
-}
+};

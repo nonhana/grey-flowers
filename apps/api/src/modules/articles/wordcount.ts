@@ -8,7 +8,7 @@ const CJK_PATTERN = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
  * 说明存量值为导入期旧口径；本函数作为新写入的规范口径，
  * 存量行保留原值、仅在重新保存时按本口径增量校正（详见切片计划 §十一）。
  */
-export function countArticleWordCount(markdown: string): number {
+export const countArticleWordCount = (markdown: string): number => {
   let text = markdown.replace(/```[\s\S]*?```/g, ' ');
   text = text.replace(/`([^`]*)`/g, '$1');
   text = text.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1');
@@ -33,4 +33,4 @@ export function countArticleWordCount(markdown: string): number {
     }
   }
   return count;
-}
+};

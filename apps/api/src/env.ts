@@ -92,15 +92,15 @@ export type ApiEnvironment = ParsedApiEnvironment & {
   R2_REGION: string;
 };
 
-function deriveAssetEnvironment(env: ParsedApiEnvironment) {
+const deriveAssetEnvironment = (env: ParsedApiEnvironment) => {
   return {
     ASSET_PUBLIC_URL: env.R2_PUBLIC_URL,
     R2_ENDPOINT: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
     R2_REGION: 'auto',
   };
-}
+};
 
-function deriveAuthenticationEnvironment(env: ParsedApiEnvironment) {
+const deriveAuthenticationEnvironment = (env: ParsedApiEnvironment) => {
   if (env.NODE_ENV === 'production') {
     return {
       AUTH_ALLOWED_ORIGINS: [...productionOrigins],
@@ -117,13 +117,13 @@ function deriveAuthenticationEnvironment(env: ParsedApiEnvironment) {
     AUTH_COOKIE_SECURE: false,
     AUTH_JWT_ISSUER: `http://localhost:${env.API_PORT}`,
   };
-}
+};
 
-export function readApiEnvironment(env: NodeJS.ProcessEnv): ApiEnvironment {
+export const readApiEnvironment = (env: NodeJS.ProcessEnv): ApiEnvironment => {
   const parsedEnvironment = environmentSchema.parse(env);
   return {
     ...parsedEnvironment,
     ...deriveAssetEnvironment(parsedEnvironment),
     ...deriveAuthenticationEnvironment(parsedEnvironment),
   };
-}
+};

@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { createDependencies } from '../bootstrap/dependencies.js';
 import { readApiEnvironment } from '../env.js';
 
-function readEmailArgument(arguments_: string[]) {
+const readEmailArgument = (arguments_: string[]) => {
   if (
     arguments_.length !== 2 ||
     arguments_[0] !== '--email' ||
@@ -14,9 +14,9 @@ function readEmailArgument(arguments_: string[]) {
   }
 
   return z.email().trim().parse(arguments_[1]);
-}
+};
 
-async function main() {
+const main = async () => {
   const email = readEmailArgument(process.argv.slice(2));
   if (!email) throw new Error('Usage: auth:promote-admin -- --email <email>');
 
@@ -42,7 +42,7 @@ async function main() {
   } finally {
     await dependencies.prisma.$disconnect();
   }
-}
+};
 
 main().catch((error: unknown) => {
   process.stderr.write(

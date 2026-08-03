@@ -46,33 +46,33 @@ export interface RefreshCredential {
   sessionId: string;
 }
 
-function decodeSecret(value: string) {
+const decodeSecret = (value: string) => {
   return Buffer.from(value, 'base64url');
-}
+};
 
-function createRefreshSecretHash(
+const createRefreshSecretHash = (
   refreshSecret: string,
   environment: ApiEnvironment,
-) {
+) => {
   return createHmac(
     'sha256',
     decodeSecret(environment.AUTH_REFRESH_TOKEN_PEPPER),
   )
     .update(refreshSecret)
     .digest('base64url');
-}
+};
 
-export function createRefreshSecret() {
+export const createRefreshSecret = () => {
   return randomBytes(32).toString('base64url');
-}
+};
 
-export function formatRefreshCredential(credential: RefreshCredential) {
+export const formatRefreshCredential = (credential: RefreshCredential) => {
   return `${credential.sessionId}.${credential.refreshSecret}`;
-}
+};
 
-export function parseRefreshCredential(
+export const parseRefreshCredential = (
   value: string | undefined,
-): RefreshCredential | undefined {
+): RefreshCredential | undefined => {
   if (!value) return undefined;
 
   const parts = value.split('.');
@@ -88,20 +88,20 @@ export function parseRefreshCredential(
     return undefined;
 
   return { sessionId, refreshSecret };
-}
+};
 
-export function hashRefreshSecret(
+export const hashRefreshSecret = (
   refreshSecret: string,
   environment: ApiEnvironment,
-) {
+) => {
   return createRefreshSecretHash(refreshSecret, environment);
-}
+};
 
-export function verifyRefreshSecret(
+export const verifyRefreshSecret = (
   refreshSecret: string,
   refreshSecretHash: string,
   environment: ApiEnvironment,
-) {
+) => {
   const expected = Buffer.from(
     createRefreshSecretHash(refreshSecret, environment),
   );
@@ -110,12 +110,12 @@ export function verifyRefreshSecret(
     expected.byteLength === actual.byteLength &&
     timingSafeEqual(expected, actual)
   );
-}
+};
 
-export async function signAccessToken(
+export const signAccessToken = async (
   claims: AccessTokenClaims,
   environment: ApiEnvironment,
-) {
+) => {
   return new SignJWT({
     sid: claims.sessionId,
     token_use: 'access',
@@ -127,12 +127,12 @@ export async function signAccessToken(
     .setSubject(String(claims.userId))
     .setExpirationTime(`${ACCESS_TOKEN_TTL_SECONDS}s`)
     .sign(decodeSecret(environment.AUTH_ACCESS_TOKEN_SECRET));
-}
+};
 
-export async function verifyAccessToken(
+export const verifyAccessToken = async (
   token: string,
   environment: ApiEnvironment,
-): Promise<AccessTokenClaims | undefined> {
+): Promise<AccessTokenClaims | undefined> => {
   try {
     const { payload } = await jwtVerify(
       token,
@@ -157,9 +157,9 @@ export async function verifyAccessToken(
   } catch {
     return undefined;
   }
-}
+};
 
-export function refreshCookieOptions(environment: ApiEnvironment) {
+export const refreshCookieOptions = (environment: ApiEnvironment) => {
   return {
     httpOnly: true,
     maxAge: SESSION_TTL_SECONDS,
@@ -167,4 +167,4 @@ export function refreshCookieOptions(environment: ApiEnvironment) {
     sameSite: 'Strict' as const,
     secure: environment.AUTH_COOKIE_SECURE,
   };
-}
+};

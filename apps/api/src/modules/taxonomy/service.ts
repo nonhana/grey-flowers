@@ -23,22 +23,22 @@ import {
   toTagAdmin,
 } from './contracts.js';
 
-function isUniqueConstraint(error: unknown) {
+const isUniqueConstraint = (error: unknown) => {
   return (
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
     error.code === 'P2002'
   );
-}
+};
 
 /** 分类封面归一：置 asset 则 cover=deliveryUrl；仅外部 URL 则 coverAssetId=null。 */
-async function normalizeCategoryCover(
+const normalizeCategoryCover = async (
   prisma: PrismaClient,
   assetPublicUrl: string,
   cover: string,
   coverAssetId: number | null | undefined,
-): Promise<{ cover: string; coverAssetId: number | null }> {
+): Promise<{ cover: string; coverAssetId: number | null }> => {
   if (coverAssetId !== undefined && coverAssetId !== null) {
     const asset = await prisma.asset.findUnique({
       select: { status: true, storageKey: true },
@@ -56,7 +56,7 @@ async function normalizeCategoryCover(
   }
 
   return { cover, coverAssetId: null };
-}
+};
 
 export class TaxonomyService {
   constructor(

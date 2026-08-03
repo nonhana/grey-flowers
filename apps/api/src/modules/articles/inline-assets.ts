@@ -9,7 +9,7 @@ export interface InlineAssetRef {
  * 用与主站同一解析器（@nuxtjs/mdc）解析正文，收集携带 asset-id 的 image 节点。
  * 外部图 / 代码块示例 / 无 asset-id 的图不建立关系。
  */
-function collectImageRefs(node: unknown, refs: InlineAssetRef[]) {
+const collectImageRefs = (node: unknown, refs: InlineAssetRef[]) => {
   if (!node || typeof node !== 'object') return;
 
   const record = node as Record<string, unknown>;
@@ -28,15 +28,15 @@ function collectImageRefs(node: unknown, refs: InlineAssetRef[]) {
   if (Array.isArray(children)) {
     for (const child of children) collectImageRefs(child, refs);
   }
-}
+};
 
-export async function extractInlineAssetRefs(
+export const extractInlineAssetRefs = async (
   content: string,
-): Promise<InlineAssetRef[]> {
+): Promise<InlineAssetRef[]> => {
   if (!content.trim()) return [];
 
   const parsed = await parseMarkdown(content);
   const refs: InlineAssetRef[] = [];
   collectImageRefs(parsed.body, refs);
   return refs;
-}
+};

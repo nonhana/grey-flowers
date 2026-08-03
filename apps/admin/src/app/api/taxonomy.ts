@@ -17,7 +17,7 @@ import {
 
 import type { Http } from './http.js';
 
-export function createTaxonomyApi(http: Http) {
+export const createTaxonomyApi = (http: Http) => {
   return {
     listCategories: (): Promise<CategoryListData> =>
       http.get('/categories', {
@@ -65,6 +65,6 @@ export function createTaxonomyApi(http: Http) {
         schema: tagDeleteResponseSchema,
       }),
   };
-}
+};
 
 export type TaxonomyApi = ReturnType<typeof createTaxonomyApi>;

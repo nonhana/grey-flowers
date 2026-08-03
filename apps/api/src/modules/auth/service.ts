@@ -60,7 +60,7 @@ export interface UpdateMeResult {
   requiresReauthentication: boolean;
 }
 
-function toPublicUser(user: AuthUser): PublicUser {
+const toPublicUser = (user: AuthUser): PublicUser => {
   return {
     id: user.id,
     email: user.email,
@@ -68,23 +68,23 @@ function toPublicUser(user: AuthUser): PublicUser {
     avatar: user.avatar,
     site: user.site,
   };
-}
+};
 
-function avatarUrl(email: string) {
+const avatarUrl = (email: string) => {
   const hash = createHash('sha256')
     .update(email.trim().toLowerCase())
     .digest('hex');
   return `https://weavatar.com/avatar/${hash}`;
-}
+};
 
-function isUniqueConstraint(error: unknown) {
+const isUniqueConstraint = (error: unknown) => {
   return (
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
     error.code === 'P2002'
   );
-}
+};
 
 export class AuthService {
   constructor(

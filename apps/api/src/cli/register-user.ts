@@ -4,7 +4,7 @@ import process from 'node:process';
 import { createDependencies } from '../bootstrap/dependencies.js';
 import { readApiEnvironment } from '../env.js';
 
-function readArguments(arguments_: string[]) {
+const readArguments = (arguments_: string[]) => {
   const flags = arguments_.filter((argument_) => argument_ !== '--');
   const lookup = new Map<string, string>();
   for (let index = 0; index < flags.length; index += 1) {
@@ -39,9 +39,9 @@ function readArguments(arguments_: string[]) {
   if (!parsed.success) throw usage;
 
   return parsed.data;
-}
+};
 
-async function main() {
+const main = async () => {
   const input = readArguments(process.argv.slice(2));
 
   const environment = readApiEnvironment(process.env);
@@ -55,7 +55,7 @@ async function main() {
   } finally {
     await dependencies.prisma.$disconnect();
   }
-}
+};
 
 main().catch((error: unknown) => {
   process.stderr.write(

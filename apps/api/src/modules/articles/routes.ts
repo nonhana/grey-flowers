@@ -22,14 +22,14 @@ import { parseBody } from '../../lib/parse-body.js';
 
 const articleIdSchema = z.coerce.number().int().positive();
 
-function parseArticleId(value: string | undefined) {
+const parseArticleId = (value: string | undefined) => {
   const parsed = articleIdSchema.safeParse(value);
   if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
   return parsed.data;
-}
+};
 
 /** 管理接口：挂载于 /articles */
-export function createArticleAdminRoutes(dependencies: AppDependencies) {
+export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const principal = requirePrincipal(dependencies.environment);
   const admin = requireRole('ADMIN');
@@ -109,10 +109,10 @@ export function createArticleAdminRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};
 
 /** 公开接口：挂载于 /public/articles */
-export function createArticlePublicRoutes(dependencies: AppDependencies) {
+export const createArticlePublicRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
 
   routes.get('/list', async (context) => {
@@ -176,4 +176,4 @@ export function createArticlePublicRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};

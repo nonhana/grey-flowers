@@ -17,13 +17,13 @@ export interface TagRecord {
   name: string;
 }
 
-export function toTagAdmin(record: TagRecord): TagAdmin {
+export const toTagAdmin = (record: TagRecord): TagAdmin => {
   return {
     articleCount: record.articleCount,
     id: record.id,
     name: record.name,
   };
-}
+};
 
 export const categoryProjection = {
   articleCount: true,
@@ -41,7 +41,7 @@ export interface CategoryRecord {
   name: string;
 }
 
-export function toCategoryAdmin(record: CategoryRecord): CategoryAdmin {
+export const toCategoryAdmin = (record: CategoryRecord): CategoryAdmin => {
   return {
     articleCount: record.articleCount,
     cover: record.cover,
@@ -49,7 +49,7 @@ export function toCategoryAdmin(record: CategoryRecord): CategoryAdmin {
     id: record.id,
     name: record.name,
   };
-}
+};
 
 interface TagWithPublishedCount {
   name: string;
@@ -58,9 +58,9 @@ interface TagWithPublishedCount {
   };
 }
 
-export function toPublicTag(record: TagWithPublishedCount): PublicTag {
+export const toPublicTag = (record: TagWithPublishedCount): PublicTag => {
   return { count: record._count.articles, name: record.name };
-}
+};
 
 interface CategoryWithPublishedCount {
   cover: string;
@@ -71,13 +71,13 @@ interface CategoryWithPublishedCount {
   };
 }
 
-export function toPublicCategory(
+export const toPublicCategory = (
   record: CategoryWithPublishedCount,
-): PublicCategory {
+): PublicCategory => {
   return {
     articleCount: record._count.articles,
     cover: record.cover,
     id: record.id,
     name: record.name,
   };
-}
+};

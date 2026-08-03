@@ -26,7 +26,7 @@ const NAV_ITEMS = [
   { label: '资产库', path: '/assets' },
 ];
 
-function NavigationTab({ label, path }: { label: string; path: string }) {
+const NavigationTab = ({ label, path }: { label: string; path: string }) => {
   return (
     <Link
       className={cn(
@@ -51,9 +51,9 @@ function NavigationTab({ label, path }: { label: string; path: string }) {
       {label}
     </Link>
   );
-}
+};
 
-function NavigationRail() {
+const NavigationRail = () => {
   return (
     <aside
       aria-label="主导航"
@@ -85,7 +85,7 @@ function NavigationRail() {
       ))}
     </aside>
   );
-}
+};
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -123,7 +123,7 @@ const rootRoute = createRootRoute({
   ),
 });
 
-function RedirectToLists() {
+const RedirectToLists = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function RedirectToLists() {
   }, [navigate]);
 
   return null;
-}
+};
 
 const indexRoute = createRoute({
   component: RedirectToLists,
@@ -151,12 +151,12 @@ const newArticleRoute = createRoute({
   path: '/articles/new',
 });
 
-function ArticleWorkspaceRouteView() {
+const ArticleWorkspaceRouteView = () => {
   const { articleId } = useParams({ strict: false }) as {
     articleId: string;
   };
   return <ArticleWorkspacePage articleId={articleId} />;
-}
+};
 
 const articleWorkspaceRoute = createRoute({
   component: ArticleWorkspaceRouteView,
@@ -182,10 +182,10 @@ const assetsListRoute = createRoute({
   path: '/assets',
 });
 
-function AssetsDetailRouteView() {
+const AssetsDetailRouteView = () => {
   const { assetId } = useParams({ strict: false }) as { assetId: string };
   return <AssetsDetailPage assetId={assetId} />;
-}
+};
 
 const assetsDetailRoute = createRoute({
   component: AssetsDetailRouteView,

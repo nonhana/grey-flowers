@@ -45,7 +45,7 @@ export interface HttpRequestOptions<
 
 type HttpMethod = 'get' | 'post' | 'patch' | 'delete';
 
-export function createHttp(options: HttpOptions) {
+export const createHttp = (options: HttpOptions) => {
   const api = ky.create({
     prefix: options.prefixUrl,
     credentials: 'include',
@@ -56,20 +56,20 @@ export function createHttp(options: HttpOptions) {
   let refreshPromise: Promise<AuthRefreshData> | undefined;
   let sessionExpiredHandler: (() => void) | undefined;
 
-  function setSessionExpiredHandler(handler: () => void) {
+  const setSessionExpiredHandler = (handler: () => void) => {
     sessionExpiredHandler = handler;
-  }
+  };
 
-  function expireAccess() {
+  const expireAccess = () => {
     options.setAccessToken(null);
     sessionExpiredHandler?.();
-  }
+  };
 
-  async function send<TSchema extends ResponseSchema<unknown>>(
+  const send = async <TSchema extends ResponseSchema<unknown>>(
     method: HttpMethod,
     path: string,
     requestOptions: HttpRequestOptions<TSchema>,
-  ): Promise<ResponseData<TSchema>> {
+  ): Promise<ResponseData<TSchema>> => {
     if (requestOptions.authenticated) {
       const accessToken = options.getAccessToken();
 
@@ -135,15 +135,15 @@ export function createHttp(options: HttpOptions) {
     }
 
     throw new ApiResponseError();
-  }
+  };
 
-  function refresh(): Promise<AuthRefreshData> {
+  const refresh = (): Promise<AuthRefreshData> => {
     return send('post', '/auth/refresh', {
       schema: authRefreshResponseSchema,
     });
-  }
+  };
 
-  async function refreshOnce() {
+  const refreshOnce = async () => {
     if (!refreshPromise) {
       refreshPromise = refresh().finally(() => {
         refreshPromise = undefined;
@@ -154,17 +154,17 @@ export function createHttp(options: HttpOptions) {
       options.setAccessToken(response.accessToken);
       return response;
     });
-  }
+  };
 
   /**
    * 上传专用通道：fetch 对 FormData 无上传进度，ky 会为进度把 body 包成流
    * （在部分环境下跨域流式 POST 触发 ALPN 失败），因此上传走 XHR + 原生
    * upload.onprogress，保留相同的 envelope 解码与 AUTH_REQUIRED 重试语义。
    */
-  function uploadOnce<TSchema extends ResponseSchema<unknown>>(
+  const uploadOnce = <TSchema extends ResponseSchema<unknown>>(
     path: string,
     requestOptions: HttpRequestOptions<TSchema>,
-  ): Promise<ResponseData<TSchema>> {
+  ): Promise<ResponseData<TSchema>> => {
     const { promise, reject, resolve } =
       Promise.withResolvers<ResponseData<TSchema>>();
 
@@ -231,12 +231,12 @@ export function createHttp(options: HttpOptions) {
 
     xhr.send(requestOptions.body);
     return promise;
-  }
+  };
 
-  async function upload<TSchema extends ResponseSchema<unknown>>(
+  const upload = async <TSchema extends ResponseSchema<unknown>>(
     path: string,
     requestOptions: HttpRequestOptions<TSchema>,
-  ): Promise<ResponseData<TSchema>> {
+  ): Promise<ResponseData<TSchema>> => {
     try {
       return await uploadOnce(path, requestOptions);
     } catch (error) {
@@ -268,13 +268,13 @@ export function createHttp(options: HttpOptions) {
 
       throw error;
     }
-  }
+  };
 
-  async function request<TSchema extends ResponseSchema<unknown>>(
+  const request = async <TSchema extends ResponseSchema<unknown>>(
     method: HttpMethod,
     path: string,
     requestOptions: HttpRequestOptions<TSchema>,
-  ): Promise<ResponseData<TSchema>> {
+  ): Promise<ResponseData<TSchema>> => {
     try {
       return await send(method, path, requestOptions);
     } catch (error) {
@@ -306,7 +306,7 @@ export function createHttp(options: HttpOptions) {
 
       throw error;
     }
-  }
+  };
 
   return {
     get: <TSchema extends ResponseSchema<unknown>>(
@@ -329,6 +329,6 @@ export function createHttp(options: HttpOptions) {
     setSessionExpiredHandler,
     upload,
   };
-}
+};
 
 export type Http = ReturnType<typeof createHttp>;

@@ -20,13 +20,13 @@ const MULTIPART_OVERHEAD = 64 * 1024;
 
 const assetIdSchema = z.coerce.number().int().positive();
 
-function parseAssetId(value: string) {
+const parseAssetId = (value: string) => {
   const parsed = assetIdSchema.safeParse(value);
   if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
   return parsed.data;
-}
+};
 
-export function createAssetRoutes(dependencies: AppDependencies) {
+export const createAssetRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const principal = requirePrincipal(dependencies.environment);
   const admin = requireRole('ADMIN');
@@ -94,4 +94,4 @@ export function createAssetRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};

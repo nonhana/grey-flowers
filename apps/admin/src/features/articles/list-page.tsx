@@ -13,7 +13,7 @@ const PAGE_SIZE = 20;
 
 type StatusFilter = 'all' | 'draft' | 'published';
 
-export function ArticlesListPage() {
+export const ArticlesListPage = () => {
   const [items, setItems] = useState<ArticleListAdmin[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -242,4 +242,4 @@ export function ArticlesListPage() {
       ) : null}
     </div>
   );
-}
+};

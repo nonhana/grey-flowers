@@ -11,24 +11,24 @@ interface PreviewClaims {
   revision: number;
 }
 
-function derivationKey(environment: ApiEnvironment) {
+const derivationKey = (environment: ApiEnvironment) => {
   return createHmac(
     'sha256',
     Buffer.from(environment.AUTH_ACCESS_TOKEN_SECRET, 'base64url'),
   )
     .update('grey-flowers:preview-token:1')
     .digest();
-}
+};
 
-function sign(payload: string, key: Buffer) {
+const sign = (payload: string, key: Buffer) => {
   return createHmac('sha256', key).update(payload).digest('base64url');
-}
+};
 
-export function createPreviewToken(
+export const createPreviewToken = (
   environment: ApiEnvironment,
   articleId: number,
   revision: number,
-): { token: string; expiresIn: number } {
+): { token: string; expiresIn: number } => {
   const issuedAt = Math.floor(Date.now() / 1000);
   const claims = {
     exp: issuedAt + PREVIEW_TTL_SECONDS,
@@ -43,12 +43,12 @@ export function createPreviewToken(
     token: `${payload}.${sign(payload, key)}`,
     expiresIn: PREVIEW_TTL_SECONDS,
   };
-}
+};
 
-export function verifyPreviewToken(
+export const verifyPreviewToken = (
   environment: ApiEnvironment,
   token: string,
-): PreviewClaims | undefined {
+): PreviewClaims | undefined => {
   const parts = token.split('.');
   if (parts.length !== 2) return undefined;
   const [payload, signature] = parts;
@@ -89,4 +89,4 @@ export function verifyPreviewToken(
   } catch {
     return undefined;
   }
-}
+};

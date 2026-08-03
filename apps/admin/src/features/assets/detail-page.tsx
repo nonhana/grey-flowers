@@ -37,13 +37,13 @@ type DetailState =
 
 type ConfirmAction = 'cleanup' | 'delete' | null;
 
-function MetadataRow({
+const MetadataRow = ({
   label,
   children,
 }: {
   children: React.ReactNode;
   label: string;
-}) {
+}) => {
   return (
     <div
       className="
@@ -55,9 +55,9 @@ function MetadataRow({
       <dd className="m-0 text-[0.9rem] text-ink">{children}</dd>
     </div>
   );
-}
+};
 
-function ReferenceRow({ count, label }: { count: number; label: string }) {
+const ReferenceRow = ({ count, label }: { count: number; label: string }) => {
   return (
     <div className="flex items-center justify-between py-1.5">
       <span className="text-[0.9rem] text-ink-muted">{label}</span>
@@ -71,9 +71,9 @@ function ReferenceRow({ count, label }: { count: number; label: string }) {
       </span>
     </div>
   );
-}
+};
 
-function BaseConfirmDialog({
+const BaseConfirmDialog = ({
   confirmLabel,
   message,
   onCancel,
@@ -87,7 +87,7 @@ function BaseConfirmDialog({
   onConfirm: () => void;
   open: boolean;
   title: string;
-}) {
+}) => {
   return (
     <ModalOverlay
       className="
@@ -144,9 +144,9 @@ function BaseConfirmDialog({
       </Modal>
     </ModalOverlay>
   );
-}
+};
 
-export function AssetsDetailPage({ assetId }: { assetId: string }) {
+export const AssetsDetailPage = ({ assetId }: { assetId: string }) => {
   const id = Number(assetId);
   const [state, setState] = useState<DetailState>({ kind: 'loading' });
   const [version, setVersion] = useState(0);
@@ -173,7 +173,7 @@ export function AssetsDetailPage({ assetId }: { assetId: string }) {
     };
   }, [id, version]);
 
-  async function runAction(action: 'cleanup' | 'delete' | 'restore') {
+  const runAction = async (action: 'cleanup' | 'delete' | 'restore') => {
     setBusy(true);
     setActionError('');
 
@@ -194,15 +194,15 @@ export function AssetsDetailPage({ assetId }: { assetId: string }) {
     } finally {
       setBusy(false);
     }
-  }
+  };
 
-  async function copyDeliveryUrl() {
+  const copyDeliveryUrl = async () => {
     if (state.kind !== 'ready') return;
 
     await navigator.clipboard.writeText(state.data.asset.deliveryUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
-  }
+  };
 
   if (state.kind === 'loading') {
     return (
@@ -552,4 +552,4 @@ export function AssetsDetailPage({ assetId }: { assetId: string }) {
       />
     </div>
   );
-}
+};

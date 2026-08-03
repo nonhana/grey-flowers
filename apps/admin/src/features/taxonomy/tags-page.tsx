@@ -7,7 +7,7 @@ import { Button } from 'react-aria-components';
 
 import { apiClient, isApiRequestError } from '../../app/api/index.js';
 
-export function TagsPage() {
+export const TagsPage = () => {
   const [items, setItems] = useState<TagAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +39,7 @@ export function TagsPage() {
     };
   }, [reloadKey, unusedOnly]);
 
-  async function handleCreate() {
+  const handleCreate = async () => {
     const name = newName.trim();
     if (!name) return;
     setCreating(true);
@@ -59,9 +59,9 @@ export function TagsPage() {
     } finally {
       setCreating(false);
     }
-  }
+  };
 
-  async function handleDelete() {
+  const handleDelete = async () => {
     if (!pendingDelete) return;
     try {
       await apiClient.taxonomy.deleteTag(pendingDelete.id);
@@ -75,7 +75,7 @@ export function TagsPage() {
       );
       setPendingDelete(null);
     }
-  }
+  };
 
   return (
     <div className="mx-auto w-full max-w-3xl p-5">
@@ -243,4 +243,4 @@ export function TagsPage() {
       ) : null}
     </div>
   );
-}
+};

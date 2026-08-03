@@ -16,7 +16,7 @@ import { AssetPickerDialog } from './asset-picker.js';
 
 type Editor = ReturnType<typeof useArticleEditor>;
 
-function SectionLabel({ children, id }: { children: string; id?: string }) {
+const SectionLabel = ({ children, id }: { children: string; id?: string }) => {
   return (
     <h3
       className="
@@ -27,9 +27,9 @@ function SectionLabel({ children, id }: { children: string; id?: string }) {
       {children}
     </h3>
   );
-}
+};
 
-function inputClass(base: string) {
+const inputClass = (base: string) => {
   return cn(
     `
       min-h-10.5 w-full rounded-control border border-input-edge bg-input
@@ -42,7 +42,7 @@ function inputClass(base: string) {
     `,
     base,
   );
-}
+};
 
 interface InspectorPaneProps {
   categories: CategoryAdmin[];
@@ -57,12 +57,12 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
 }
 
-function ConfirmDialog({
+const ConfirmDialog = ({
   confirmLabel,
   message,
   onCancel,
   onConfirm,
-}: ConfirmDialogProps) {
+}: ConfirmDialogProps) => {
   return (
     <div
       className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-6"
@@ -102,13 +102,13 @@ function ConfirmDialog({
       </div>
     </div>
   );
-}
+};
 
-export function InspectorPane({
+export const InspectorPane = ({
   categories,
   editor,
   tags,
-}: InspectorPaneProps) {
+}: InspectorPaneProps) => {
   const [coverPickerOpen, setCoverPickerOpen] = useState(false);
   const [expandedSnapshot, setExpandedSnapshot] = useState<number | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -547,4 +547,4 @@ export function InspectorPane({
       ) : null}
     </div>
   );
-}
+};

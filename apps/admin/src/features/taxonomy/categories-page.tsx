@@ -15,7 +15,7 @@ interface CategoryForm {
 
 const EMPTY_FORM: CategoryForm = { cover: '', coverAssetId: null, name: '' };
 
-export function CategoriesPage() {
+export const CategoriesPage = () => {
   const [items, setItems] = useState<CategoryAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,14 +51,14 @@ export function CategoriesPage() {
     };
   }, [reloadKey]);
 
-  function openCreate() {
+  const openCreate = () => {
     setEditing(null);
     setForm(EMPTY_FORM);
     setError(null);
     setDialogOpen(true);
-  }
+  };
 
-  function openEdit(category: CategoryAdmin) {
+  const openEdit = (category: CategoryAdmin) => {
     setEditing(category);
     setForm({
       cover: category.cover,
@@ -67,9 +67,9 @@ export function CategoriesPage() {
     });
     setError(null);
     setDialogOpen(true);
-  }
+  };
 
-  async function handleSave() {
+  const handleSave = async () => {
     const name = form.name.trim();
     if (!name) {
       setError('分类名不能为空。');
@@ -103,9 +103,9 @@ export function CategoriesPage() {
     } finally {
       setSaving(false);
     }
-  }
+  };
 
-  async function handleDelete() {
+  const handleDelete = async () => {
     if (!pendingDelete) return;
     try {
       await apiClient.taxonomy.deleteCategory(pendingDelete.id);
@@ -123,7 +123,7 @@ export function CategoriesPage() {
       );
       setPendingDelete(null);
     }
-  }
+  };
 
   return (
     <div className="mx-auto w-full max-w-3xl p-5">
@@ -437,4 +437,4 @@ export function CategoriesPage() {
       />
     </div>
   );
-}
+};

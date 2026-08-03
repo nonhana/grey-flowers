@@ -5,13 +5,13 @@ import type { ApiEnvironment } from '../context.js';
 
 import { ApiError } from '../errors.js';
 
-export function requireRole(
+export const requireRole = (
   role: Principal['role'],
-): MiddlewareHandler<ApiEnvironment> {
+): MiddlewareHandler<ApiEnvironment> => {
   return async (context, next) => {
     if (context.get('principal').role !== role)
       throw new ApiError('AUTH_FORBIDDEN');
 
     await next();
   };
-}
+};
