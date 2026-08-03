@@ -44,6 +44,7 @@ catalogs:
     '@codemirror/search': ^6.7.1
     '@codemirror/state': ^6.7.1
     '@codemirror/view': ^6.43.7
+    '@lezer/common': ^1.5.0
     '@lezer/highlight': ^1.2.3
     '@fontsource/jetbrains-mono': ^5.3.0
     '@tailwindcss/vite': ^4.3.3
@@ -63,6 +64,10 @@ catalogs:
     '@rolldown/plugin-babel': ^0.2.3
     ky: ^2.0.2
     cnfast: ^0.1.0
+    motion: 12.35.0
+    react-aria: 3.51.0
+    react-modal-sheet: 5.6.0
+    react-stately: 3.49.0
 
   api:
     '@aws-sdk/client-s3': ^3.0.0
