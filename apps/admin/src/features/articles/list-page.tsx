@@ -1,246 +1,277 @@
 import type { ArticleListAdmin } from '@grey-flowers/contracts';
 
-import { Link } from '@tanstack/react-router';
-import { cn } from 'cnfast';
-import { FilePlus2, Loader2, Search } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
-import { Button } from 'react-aria-components';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { FileText, SearchX, SquarePen } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import {
+  Alert,
+  Button,
+  buttonClass,
+  EmptyState,
+  FilterChip,
+  MetaLine,
+  PageBody,
+  PageHeader,
+  PublishBadge,
+  RowSkeleton,
+  RowStack,
+  SearchInput,
+} from '@/ui/index.js';
 
-import { formatDateTime, publishedLabel } from './display.js';
+import type { ArticleStatusFilter } from './display.js';
+
+import { formatDateTime, parseStatusFilter } from './display.js';
 
 const PAGE_SIZE = 20;
 
-type StatusFilter = 'all' | 'draft' | 'published';
+const FILTERS = [
+  { label: '全部', search: {}, status: 'all' },
+  { label: '草稿', search: { status: 'draft' }, status: 'draft' },
+  { label: '已发布', search: { status: 'published' }, status: 'published' },
+] as const;
+
+const EMPTY_TITLE: Record<ArticleStatusFilter, string> = {
+  all: '这座花园还没有文章',
+  draft: '没有草稿在等你',
+  published: '还没有文章对访客可见',
+};
+
+const EMPTY_COPY: Record<ArticleStatusFilter, string> = {
+  all: '写下第一篇。它会先以草稿形式保存，随时可以回来继续，发布是另一个动作。',
+  draft: '新建的文章会先落在这里，发布之后才会离开草稿。',
+  published: '在编辑页打开元数据面板，点「发布」，文章就会出现在主站上。',
+};
+
+const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
+  <Link
+    className="
+      group grid gap-1.5 px-4 py-3.5 transition-colors
+      hover:bg-accent-wash
+    "
+    params={{ articleId: String(article.id) }}
+    to="/articles/$articleId"
+  >
+    <div className="flex items-start justify-between gap-3">
+      <span
+        className="
+          text-md font-bold text-ink-strong
+          group-hover:text-accent-text
+        "
+      >
+        {article.title || '（未命名）'}
+      </span>
+      <PublishBadge published={article.published} />
+    </div>
+    <p className="truncate text-base text-ink-dim">
+      {article.description || '无简介'}
+    </p>
+    <MetaLine>
+      <span>{article.category ?? '未分类'}</span>
+      <span>{article.tags.join(' · ') || '无标签'}</span>
+      <span>{article.wordCount} 字</span>
+      <span>rev {article.revision}</span>
+      <span className="ml-auto">{formatDateTime(article.editedAt)}</span>
+    </MetaLine>
+  </Link>
+);
+
+const EmptyArticles = ({ status }: { status: ArticleStatusFilter }) => (
+  <EmptyState
+    action={
+      <Link className={buttonClass({ tone: 'solid' })} to="/articles/new">
+        <SquarePen aria-hidden="true" className="size-4" />
+        新建文章
+      </Link>
+    }
+    icon={<FileText aria-hidden="true" />}
+    title={EMPTY_TITLE[status]}
+  >
+    {EMPTY_COPY[status]}
+  </EmptyState>
+);
+
+const EmptySearch = ({
+  onClear,
+  query,
+}: {
+  onClear: () => void;
+  query: string;
+}) => (
+  <EmptyState
+    action={<Button onPress={onClear}>清除搜索</Button>}
+    icon={<SearchX aria-hidden="true" />}
+    title={`没有标题匹配「${query}」`}
+  >
+    搜索只匹配标题。换个关键词，或者清除搜索看看全部文章。
+  </EmptyState>
+);
 
 export const ArticlesListPage = () => {
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as { status?: unknown };
+  const status = parseStatusFilter(search.status);
+
   const [items, setItems] = useState<ArticleListAdmin[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [status, setStatus] = useState<StatusFilter>('all');
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 每一次按键都发一次请求既浪费也让列表抖动，落后 250ms 再查。
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+      setPage(1);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
+  // 放进 effect 里会触发级联渲染。
+  const requestKey = `${status}|${debouncedQuery}|${String(page)}|${String(reloadKey)}`;
+  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
+  if (prevRequestKey !== requestKey) {
+    setPrevRequestKey(requestKey);
+    setLoading(true);
+    setError(null);
+  }
+
   useEffect(() => {
     let cancelled = false;
+
     void apiClient.articles
-      .list({ page, pageSize: PAGE_SIZE, q: query, status })
+      .list({ page, pageSize: PAGE_SIZE, q: debouncedQuery, status })
       .then((data) => {
         if (cancelled) return;
         setItems(data.items);
         setTotal(data.total);
-        setLoading(false);
       })
       .catch((loadError: unknown) => {
         if (cancelled) return;
         setError(loadError instanceof Error ? loadError.message : '加载失败。');
-        setLoading(false);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
-  }, [page, query, status]);
+  }, [debouncedQuery, page, reloadKey, status]);
 
-  const statusChip = useCallback(
-    (value: StatusFilter, label: string) => (
-      <button
-        className={cn(
-          'min-h-10 rounded-full border px-3.5 font-mono text-[0.76rem]',
-          status === value
-            ? 'border-brand bg-vapor text-brand'
-            : `
-              border-edge text-ink-soft
-              hover:border-input-hover-edge
-            `,
-        )}
-        key={value}
-        onClick={() => {
-          setStatus(value);
-          setPage(1);
-          setLoading(true);
-          setError(null);
-        }}
-        type="button"
-      >
-        {label}
-      </button>
-    ),
-    [status],
-  );
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const isSearching = debouncedQuery.trim().length > 0;
 
   return (
-    <div className="mx-auto w-full max-w-4xl p-5">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-[1.4rem] font-medium text-ink-strong">文章</h1>
-        <Link
-          className="
-            inline-flex min-h-11 items-center gap-2 rounded-control border
-            border-transparent bg-primary px-4 font-mono text-[0.82rem]
-            text-on-primary transition-colors
-            hover:bg-primary-deep
-            focus-visible:outline-[3px] focus-visible:outline-offset-2
-            focus-visible:outline-focus-outline
-            [&_svg]:size-4
-          "
-          to="/articles/new"
-        >
-          <FilePlus2 aria-hidden="true" />
-          新建文章
-        </Link>
-      </header>
-
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <div className="flex gap-1.5">
-          {statusChip('all', '全部')}
-          {statusChip('draft', '草稿')}
-          {statusChip('published', '已发布')}
-        </div>
-        <div className="relative ml-auto min-w-56">
-          <Search
-            aria-hidden="true"
+    <PageBody>
+      {/* 搜索是这一屏唯一的控件，跟标题同排；桌面端的状态筛选由侧栏子项承担。 */}
+      <PageHeader
+        actions={
+          <SearchInput
             className="
-              absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-faint
+              hidden w-64
+              md:block
             "
-          />
-          <input
-            aria-label="搜索文章标题"
-            className="
-              min-h-11 w-full rounded-control border border-input-edge bg-input
-              pr-3 pl-9 text-[0.9rem] text-primary-ink outline-none
-              placeholder:text-input-placeholder
-              hover:border-input-hover-edge
-              focus-visible:border-focus focus-visible:ring-[3px]
-              focus-visible:ring-focus-ring
-            "
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setPage(1);
-              setLoading(true);
-              setError(null);
-            }}
+            label="搜索文章标题"
+            onChange={setQuery}
             placeholder="搜索标题…"
             value={query}
           />
+        }
+        description="草稿与已发布都在这里。点开任意一篇进入写作台。"
+        title="文章"
+      />
+
+      <div
+        className="
+          mt-5 grid gap-3
+          md:hidden
+        "
+      >
+        <div className="flex flex-wrap gap-1.5">
+          {FILTERS.map((filter) => (
+            <FilterChip
+              isSelected={status === filter.status}
+              key={filter.status}
+              onPress={() => {
+                setPage(1);
+                void navigate({ search: filter.search, to: '/articles' });
+              }}
+            >
+              {filter.label}
+            </FilterChip>
+          ))}
         </div>
+        <SearchInput
+          label="搜索文章标题"
+          onChange={setQuery}
+          placeholder="搜索标题…"
+          value={query}
+        />
       </div>
 
-      <div className="mt-4 grid gap-2">
+      <div className="mt-4">
         {loading ? (
-          <div className="flex justify-center py-12 text-ink-faint">
-            <Loader2 aria-hidden="true" className="animate-spin" />
-          </div>
+          <RowSkeleton />
         ) : error ? (
-          <p
-            className="
-              rounded-control border border-danger-edge bg-danger-soft px-4 py-3
-              text-[0.85rem] text-danger-ink
-            "
-            role="alert"
+          <Alert
+            action={
+              <Button
+                onPress={() => setReloadKey((current) => current + 1)}
+                size="sm"
+              >
+                重试
+              </Button>
+            }
           >
             {error}
-          </p>
+          </Alert>
         ) : items.length === 0 ? (
-          <p className="py-12 text-center text-ink-muted">暂无匹配的文章。</p>
+          isSearching ? (
+            <EmptySearch onClear={() => setQuery('')} query={debouncedQuery} />
+          ) : (
+            <EmptyArticles status={status} />
+          )
         ) : (
-          items.map((article) => (
-            <Link
-              className="
-                group grid gap-1.5 rounded-panel border border-edge bg-surface
-                p-4 transition-colors
-                hover:border-accent-hover-edge
-                focus-visible:outline-[3px] focus-visible:outline-offset-2
-                focus-visible:outline-focus-outline
-              "
-              key={article.id}
-              to="/articles/$articleId"
-              params={{ articleId: String(article.id) }}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span
-                  className="
-                    text-[0.95rem] font-medium text-ink-strong
-                    group-hover:text-brand
-                  "
-                >
-                  {article.title || '（未命名）'}
-                </span>
-                <span
-                  className={cn(
-                    `
-                      shrink-0 rounded-full border px-2 py-0.5 font-mono
-                      text-[0.68rem]
-                    `,
-                    article.published
-                      ? 'border-brand/30 bg-vapor text-brand'
-                      : 'bg-accent text-ink-soft',
-                  )}
-                >
-                  {publishedLabel(article.published)}
-                </span>
-              </div>
-              <p className="truncate text-[0.82rem] text-ink-muted">
-                {article.description || '无简介'}
-              </p>
-              <div
-                className="
-                  flex flex-wrap items-center gap-x-3 font-mono text-[0.7rem]
-                  text-ink-faint
-                "
-              >
-                <span>{article.category ?? '未分类'}</span>
-                <span>{article.tags.join(' · ') || '无标签'}</span>
-                <span>{article.wordCount} 字</span>
-                <span>rev {article.revision}</span>
-                <span className="ml-auto">
-                  {formatDateTime(article.editedAt)}
-                </span>
-              </div>
-            </Link>
-          ))
+          <RowStack>
+            {items.map((article) => (
+              <ArticleRow article={article} key={article.id} />
+            ))}
+          </RowStack>
         )}
       </div>
 
-      {total > PAGE_SIZE ? (
-        <div
-          className="
-            mt-5 flex items-center justify-center gap-2 font-mono text-[0.78rem]
-          "
+      {total > PAGE_SIZE && !loading ? (
+        <nav
+          aria-label="分页"
+          className="mt-5 flex items-center justify-between gap-3"
         >
-          <Button
-            className="
-              min-h-11 rounded-control border border-edge px-4 text-ink-soft
-              hover:bg-accent
-            "
-            isDisabled={page <= 1}
-            onPress={() => {
-              setPage((current) => current - 1);
-              setLoading(true);
-              setError(null);
-            }}
-          >
-            上一页
-          </Button>
-          <span className="px-2 text-ink-faint">
-            第 {page} 页 / 共 {Math.max(1, Math.ceil(total / PAGE_SIZE))} 页
+          <span className="font-mono text-xs text-ink-dim">
+            共 {total} 篇 · 第 {page} / {totalPages} 页
           </span>
-          <Button
-            className="
-              min-h-11 rounded-control border border-edge px-4 text-ink-soft
-              hover:bg-accent
-            "
-            isDisabled={page * PAGE_SIZE >= total}
-            onPress={() => {
-              setPage((current) => current + 1);
-              setLoading(true);
-              setError(null);
-            }}
-          >
-            下一页
-          </Button>
-        </div>
+          <div className="flex gap-2">
+            <Button
+              isDisabled={page <= 1}
+              onPress={() => setPage((current) => Math.max(1, current - 1))}
+              size="sm"
+            >
+              上一页
+            </Button>
+            <Button
+              isDisabled={page >= totalPages}
+              onPress={() => setPage((current) => current + 1)}
+              size="sm"
+            >
+              下一页
+            </Button>
+          </div>
+        </nav>
       ) : null}
-    </div>
+    </PageBody>
   );
 };

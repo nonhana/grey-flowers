@@ -1,144 +1,387 @@
 @import 'tailwindcss';
 
-/* ══════════════════════════════════════════════════════════════
-   Grey Flowers · Admin — 设计 token 的单一来源
-   ──────────────────────────────────────────────────────────
-   本文件只保留「token 定义」与「全局 base」，不再承载任何组件样式。
-   所有组件外观都通过组件内的 Tailwind v4 utility class 组合实现，
-   组合引用下方 token（@theme → :root CSS 变量 → var() 驱动的 utility）。
+/* ══════════════════════════════════════════════════════════════════════════
+   Grey Flowers · Admin —— 设计 token 的单一来源
 
-   结构：
-     1. @theme —— 原始色板 + 语义角色（浅色值）+ 字体 / 圆角 / 阴影
-     2. base  —— body / 网格底纹 / 按钮指针 / 焦点等全局规则
-     3. dark  —— @media(prefers-color-scheme) 覆盖语义变量的深色值
-     4. 动画 / 减动效降级
-   ══════════════════════════════════════════════════════════════ */
+   排字房法则（The Composing Room）
+   ─────────────────────────────────────────────────────────────────────────
+   后台只有两种物质，任何组件必须明确属于其中之一：
 
-/* ── 1. Tokens ─────────────────────────────────────────────── */
+     字盘 (case)  控制台层：侧栏、列表、筛选、控件、元数据、状态。
+                  按格对齐、表格化数字、紧行高、拉丁数据走等宽。
+
+     纸  (paper)  写作与长文阅读层。黑体、68ch 行宽、行高 1.9、
+                  抬升面不被任何边框切割。
+
+   派生规则
+     · 强调色只有 petal-blue 一族。「已发布」也用蓝，不引入第二个语义色系。
+     · 抬升只声明一次：要么描边，要么投影，不能又描边又投影。
+     · 控制台内不铺网格底纹；网格只属于 auth stage（.gf-stage-grid）。
+     · 类型尺度固定 rem，不做流体缩放（Operate register）。
+
+   结构
+     1. @theme        —— token → Tailwind utility 的映射（引用第 2 节的变量）
+     2. :root / dark  —— 两套天光下的同一座花园
+     3. base          —— 全局默认与统一焦点环
+     4. utilities     —— 少量无法由 utility 组合表达的具名类
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. token → utility 映射 ──────────────────────────────────────────────
+   这里只做转发，真实取值在第 2 节按主题给出，
+   因此 bg-case / text-ink 这类 utility 天生跟随 data-theme 切换。 */
 
 @theme {
-  /* 原始色板：petal-blue 蓝家族（Grey Flowers 的唯一交互色） */
-  --color-brand: oklch(0.42 0.104 247); /* 品牌蓝（等待态 / 品牌文字） */
-  --color-brand-deep: oklch(0.34 0.082 247); /* shell 品牌蓝（加深） */
-  --color-primary: oklch(0.47 0.116 247); /* 主操作蓝 */
-  --color-primary-deep: oklch(0.42 0.11 247); /* 主操作蓝 hover */
-  --color-primary-ink: oklch(0.25 0.03 252); /* 深色文字（输入值） */
-  --color-on-primary: oklch(0.99 0.003 247); /* 主操作蓝上的文字 */
-  --color-vapor: oklch(0.93 0.028 222); /* 次级淡蓝填充 */
-  --color-vapor-hover: oklch(0.9 0.038 220); /* 次级淡蓝 hover */
-  --color-vapor-edge-hover: oklch(0.61 0.077 240); /* 次级边框 hover */
-  --color-vapor-deep: oklch(0.34 0.032 243); /* 深色模式次级填充 */
-  --color-vapor-deep-ink: oklch(0.85 0.036 233); /* 深色模式次级文字 */
+  /* 表面（由深到浅：字盘 → 画布 → 纸） */
+  --color-case: var(--gf-case);
+  --color-case-raised: var(--gf-case-raised);
+  --color-canvas: var(--gf-canvas);
+  --color-paper: var(--gf-paper);
+  --color-well: var(--gf-well);
 
-  /* 错误 / 警告家族 */
-  --color-danger: oklch(0.54 0.154 21); /* 错误标记 */
-  --color-danger-edge: oklch(0.57 0.154 21); /* 错误边框 / 侧条 */
-  --color-danger-text: oklch(0.5 0.154 21); /* 错误文字 */
-  --color-danger-soft: oklch(0.94 0.04 23 / 55%); /* 错误提示底 */
-  --color-danger-ink: oklch(0.38 0.11 22); /* 深色错误文字（消息体） */
-  --color-warning: oklch(0.55 0.12 68); /* 警告标记 */
+  /* 线 */
+  --color-rule: var(--gf-rule);
+  --color-edge: var(--gf-edge);
+  --color-edge-hover: var(--gf-edge-hover);
 
-  /* 焦点 */
-  --color-focus: oklch(0.49 0.108 248); /* 输入聚焦边框 */
-  --color-focus-ring: oklch(0.74 0.062 232 / 45%); /* 聚焦光晕 */
-  --color-focus-outline: oklch(0.7 0.073 228 / 68%); /* 轮廓 */
+  /* 墨（三级，不再更多） */
+  --color-ink-strong: var(--gf-ink-strong);
+  --color-ink: var(--gf-ink);
+  --color-ink-dim: var(--gf-ink-dim);
 
-  /* ── 语义角色（浅色值；深色在下方覆盖） ── */
-  --color-canvas: oklch(0.965 0.009 238); /* 页面底色 */
-  --color-canvas-grid: oklch(0.73 0.034 251 / 22%); /* 网格线 */
-  --color-surface: oklch(0.99 0.003 247 / 96%); /* 抬升面（面板 / 头部） */
-  --color-edge: oklch(0.8 0.028 243 / 70%); /* 通用边框 */
-  --color-ink: oklch(0.3 0.023 252); /* 正文默认文字 */
-  --color-ink-strong: oklch(0.26 0.032 252); /* 标题 */
-  --color-ink-muted: oklch(0.38 0.024 250); /* 段落说明 */
-  --color-ink-soft: oklch(0.35 0.031 252); /* 标签 / 账户 */
-  --color-ink-faint: oklch(0.44 0.053 246); /* kicker / 动作状态 */
-  --color-input: oklch(0.95 0.021 230); /* 输入框底 */
-  --color-input-edge: oklch(0.8 0.028 243); /* 输入框边框 */
-  --color-input-hover-edge: oklch(0.62 0.082 242); /* 输入框 hover 边框 */
-  --color-input-placeholder: oklch(0.49 0.025 250); /* 占位文字 */
-  --color-section-edge: oklch(0.7 0.029 248); /* 头部 section 分隔 */
-  --color-section-text: oklch(0.44 0.038 247); /* 头部 section 文字 */
-  --color-logout-edge: oklch(0.76 0.028 246); /* 退出按钮边框 */
-  --color-logout-hover-edge: oklch(0.55 0.083 245); /* 退出 hover 边框 */
-  --color-logout-text: oklch(0.38 0.05 248); /* 退出图标 */
-  --color-tooltip: oklch(0.28 0.014 252); /* 工具提示底 */
-  --color-tooltip-text: oklch(0.96 0.005 246); /* 工具提示文字 */
+  /* 强调：唯一的交互色族 */
+  --color-accent: var(--gf-accent);
+  --color-accent-hover: var(--gf-accent-hover);
+  --color-accent-on: var(--gf-accent-on);
+  --color-accent-text: var(--gf-accent-text);
+  --color-accent-wash: var(--gf-accent-wash);
+  --color-accent-wash-hover: var(--gf-accent-wash-hover);
+  --color-accent-rule: var(--gf-accent-rule);
 
-  /* 浅色模式下的次级操作（被 dark 覆盖为 vapor-deep 族） */
-  --color-accent: oklch(0.93 0.028 222);
-  --color-accent-hover: oklch(0.9 0.038 220);
-  --color-accent-hover-edge: oklch(0.61 0.077 240);
-  --color-accent-text: oklch(0.36 0.085 247);
+  /* 状态：错误与警告。成功态复用强调蓝。 */
+  --color-danger: var(--gf-danger);
+  --color-danger-hover: var(--gf-danger-hover);
+  --color-danger-on: var(--gf-danger-on);
+  --color-danger-text: var(--gf-danger-text);
+  --color-danger-wash: var(--gf-danger-wash);
+  --color-danger-rule: var(--gf-danger-rule);
+  --color-warn-text: var(--gf-warn-text);
+  --color-warn-wash: var(--gf-warn-wash);
+  --color-warn-rule: var(--gf-warn-rule);
 
-  /* 字体 */
-  --font-sans: 'Noto Serif', 'Noto Serif SC', 'Noto Serif JP', serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* 焦点与遮罩 */
+  --color-focus: var(--gf-focus);
+  --color-scrim: var(--gf-scrim);
 
-  /* 圆角 */
-  --radius-panel: 8px;
-  --radius-control: 6px;
+  /* 字族。JetBrains Mono 无 CJK，故中文回退到 Noto Sans SC：
+     同一个标签里拉丁与数字是等宽的、中文是黑体的，这是刻意的。 */
+  --font-sans:
+    'Noto Sans SC', 'Noto Sans', 'Noto Sans JP', -apple-system, 'PingFang SC',
+    'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'Noto Sans SC', ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 
-  /* 阴影（semantic，颜色抽为 --color-shadow 以便深色覆盖） */
-  --color-shadow: rgb(42 57 76 / 13%);
-  --shadow-panel: 0 16px 38px var(--color-shadow);
+  /* 类型尺度：固定 rem，步进 ~1.15 */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.45;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.45;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.55;
+  --text-md: 1rem;
+  --text-md--line-height: 1.6;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.4;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.3;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 1.25;
+
+  /* 圆角：控件小、面板中、浮层大 */
+  --radius-control: 8px;
+  --radius-panel: 14px;
+  --radius-sheet: 18px;
+
+  /* 投影：只给真正浮起来的东西。浮层不描边，描边的不投影。
+     case-down / case-up 是字盘压在纸上的那道边 —— 字盘与纸相接时
+     用投影而不是描边，因为「抬升面不被任何边框切割」。 */
+  --shadow-case-down:
+    0 1px 3px var(--gf-shadow-near), 0 6px 14px -8px var(--gf-shadow-far);
+  --shadow-case-up:
+    0 -1px 3px var(--gf-shadow-near), 0 -6px 14px -8px var(--gf-shadow-far);
+  --shadow-float:
+    0 2px 6px var(--gf-shadow-near), 0 18px 44px -14px var(--gf-shadow-far);
+
+  /* 时长与动效。Operate register：150–250ms，只报告状态，不表演。 */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-scrim-in: gf-fade-in 180ms ease-out;
+  --animate-scrim-out: gf-fade-out 140ms ease-in;
+  --animate-sheet-in: gf-sheet-in 240ms var(--ease-out-quint);
+  --animate-sheet-out: gf-sheet-out 160ms ease-in;
+  --animate-dialog-in: gf-dialog-in 200ms var(--ease-out-quint);
+  --animate-dialog-out: gf-dialog-out 140ms ease-in;
+  --animate-pop-in: gf-pop-in 140ms var(--ease-out-quint);
 }
 
-/* ── 2. Base（全局默认） ─────────────────────────────────────── */
+@keyframes gf-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes gf-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes gf-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes gf-sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes gf-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+@keyframes gf-dialog-out {
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+  }
+}
+
+@keyframes gf-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ── 2. 两套天光下的同一座花园 ───────────────────────────────────────────── */
+
+:root {
+  /* 白天。两种物质不只差在明度，也差在色温：
+     字盘偏冷（金属与铅字），纸偏暖（棉浆）。这一点温差比明度差更早被眼睛读到。 */
+  --gf-case: oklch(0.925 0.01 244);
+  --gf-case-raised: oklch(0.972 0.005 242);
+  --gf-canvas: oklch(0.955 0.006 242);
+  --gf-paper: oklch(0.997 0.004 92);
+  --gf-well: oklch(0.945 0.012 240);
+
+  --gf-rule: oklch(0.855 0.012 242);
+  --gf-edge: oklch(0.78 0.018 242);
+  --gf-edge-hover: oklch(0.66 0.045 244);
+
+  --gf-ink-strong: oklch(0.24 0.03 252);
+  --gf-ink: oklch(0.34 0.022 250);
+  /* 0.44 而不是 0.46：字盘沉下去之后，最淡的一级墨要跟着沉，
+     才能在 case 上维持 4.5:1。 */
+  --gf-ink-dim: oklch(0.44 0.019 248);
+
+  --gf-accent: oklch(0.46 0.116 250);
+  --gf-accent-hover: oklch(0.4 0.11 250);
+  --gf-accent-on: oklch(0.99 0.004 250);
+  --gf-accent-text: oklch(0.44 0.115 250);
+  --gf-accent-wash: oklch(0.93 0.03 240);
+  --gf-accent-wash-hover: oklch(0.9 0.04 240);
+  --gf-accent-rule: oklch(0.7 0.075 248);
+
+  --gf-danger: oklch(0.5 0.17 25);
+  --gf-danger-hover: oklch(0.44 0.165 25);
+  --gf-danger-on: oklch(0.99 0.004 25);
+  --gf-danger-text: oklch(0.45 0.17 25);
+  --gf-danger-wash: oklch(0.955 0.025 25);
+  --gf-danger-rule: oklch(0.72 0.11 25);
+  --gf-warn-text: oklch(0.45 0.1 70);
+  --gf-warn-wash: oklch(0.955 0.035 80);
+  --gf-warn-rule: oklch(0.74 0.085 75);
+
+  --gf-focus: oklch(0.5 0.13 250);
+  --gf-scrim: oklch(0.24 0.03 252 / 42%);
+
+  --gf-shadow-near: oklch(0.35 0.04 250 / 10%);
+  --gf-shadow-far: oklch(0.3 0.05 250 / 22%);
+
+  --gf-grid-line: oklch(0.73 0.034 251 / 20%);
+}
+
+html[data-theme='dark'] {
+  /* 夜里：台灯照在纸上，纸依旧是房间里最亮的一块。
+     纸面对齐品牌的 Night Soil（oklch 0.27），机房层再依次沉下去。 */
+  --gf-case: oklch(0.19 0.012 252);
+  --gf-case-raised: oklch(0.245 0.012 252);
+  --gf-canvas: oklch(0.22 0.012 252);
+  /* 只留一丝暖 —— 再多就从「台灯下的纸」变成第二个色系（土黄）了。 */
+  --gf-paper: oklch(0.269 0.004 84);
+  --gf-well: oklch(0.18 0.012 252);
+
+  --gf-rule: oklch(0.32 0.014 250);
+  --gf-edge: oklch(0.4 0.018 250);
+  --gf-edge-hover: oklch(0.54 0.035 248);
+
+  --gf-ink-strong: oklch(0.95 0.006 245);
+  --gf-ink: oklch(0.87 0.009 245);
+  --gf-ink-dim: oklch(0.7 0.013 245);
+
+  --gf-accent: oklch(0.63 0.115 248);
+  --gf-accent-hover: oklch(0.69 0.108 248);
+  --gf-accent-on: oklch(0.16 0.03 252);
+  --gf-accent-text: oklch(0.79 0.082 244);
+  --gf-accent-wash: oklch(0.31 0.045 246);
+  --gf-accent-wash-hover: oklch(0.36 0.052 246);
+  --gf-accent-rule: oklch(0.48 0.07 248);
+
+  --gf-danger: oklch(0.58 0.17 25);
+  --gf-danger-hover: oklch(0.64 0.16 25);
+  --gf-danger-on: oklch(0.15 0.02 25);
+  --gf-danger-text: oklch(0.79 0.125 25);
+  --gf-danger-wash: oklch(0.28 0.055 25);
+  --gf-danger-rule: oklch(0.5 0.13 25);
+  --gf-warn-text: oklch(0.83 0.1 78);
+  --gf-warn-wash: oklch(0.28 0.045 75);
+  --gf-warn-rule: oklch(0.5 0.085 75);
+
+  --gf-focus: oklch(0.72 0.1 248);
+  --gf-scrim: oklch(0.12 0.02 252 / 62%);
+
+  --gf-shadow-near: oklch(0 0 0 / 30%);
+  --gf-shadow-far: oklch(0 0 0 / 45%);
+}
+
+/* ── 3. base ─────────────────────────────────────────────────────────────── */
 
 @layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
   body {
     min-width: 320px;
-    min-height: 100vh;
     margin: 0;
     color: var(--color-ink);
     background-color: var(--color-canvas);
-    background-image:
-      linear-gradient(var(--color-canvas-grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-canvas-grid) 1px, transparent 1px);
-    background-size: 32px 32px;
     font-family: var(--font-sans);
+    font-size: 0.875rem;
     font-synthesis: none;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  /* 统一焦点环：一处定义，组件不必各自重复。
+     :where() 保持 0 特异性，个别组件仍可覆盖。 */
+  :where(
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
   }
 
   button {
     cursor: pointer;
   }
 
-  button:disabled {
-    cursor: wait;
+  button:disabled,
+  [data-disabled] {
+    cursor: not-allowed;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-wash);
+    color: var(--color-ink-strong);
+  }
+
+  /* 字盘层的数字必须能上下对齐 */
+  :where(.font-mono) {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* 滚动条槽必须透明。默认的浅灰轨道会在纸面右缘拉出一条通高的冷灰竖线 ——
+     那正是「抬升面不被任何边框切割」要拒绝的东西。槽透明之后，
+     滚动条落在谁身上就是谁的颜色。 */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-edge) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-color: var(--color-edge);
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-edge-hover);
   }
 }
 
-/* ── 3. Dark（与浅色同一花园，只是换了天光） ──────────────────── */
+/* ── 4. 具名类 ───────────────────────────────────────────────────────────── */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-canvas: oklch(0.24 0.012 252);
-    --color-canvas-grid: oklch(0.49 0.028 247 / 28%);
-    --color-surface: oklch(0.29 0.014 252 / 96%);
-    --color-edge: oklch(0.42 0.024 252);
-    --color-ink: oklch(0.9 0.008 245);
-    --color-ink-strong: oklch(0.94 0.007 245);
-    --color-ink-muted: oklch(0.78 0.013 245);
-    --color-ink-soft: oklch(0.84 0.013 245);
-    --color-input: oklch(0.23 0.016 252);
-    --color-input-edge: oklch(0.43 0.028 252);
-    --color-input-placeholder: oklch(0.67 0.015 246);
-    --color-section-edge: oklch(0.47 0.025 250);
-    --color-section-text: oklch(0.7 0.018 247);
-    --color-logout-edge: oklch(0.45 0.025 252);
-    --color-logout-text: oklch(0.78 0.023 245);
-    --color-shadow: rgb(0 0 0 / 20%);
-    /* 次级操作在深色下淡蓝反转为深蓝填充 */
-    --color-accent: var(--color-vapor-deep);
-    --color-accent-hover: var(--color-vapor-deep);
-    --color-accent-text: var(--color-vapor-deep-ink);
+/* 网格底纹只属于 auth stage —— 那里品牌在说话；控制台里它只会
+   把每一处布局缝隙暴露成「没做完」。 */
+@utility gf-stage-grid {
+  background-image:
+    linear-gradient(var(--gf-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gf-grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center;
+}
+
+/* 夜里不铺网格。主站 DESIGN.md 的原话是「白天纸压在淡网格上，夜里只剩焦墨」，
+   这条例外沿用的是那条规则，就不能只沿用一半。 */
+html[data-theme='dark'] .gf-stage-grid {
+  background-image: none;
+}
+
+/* 隐藏滚动轨道但保留滚动，只用于横向工具条这种不需要可见轨道的场合。 */
+@utility gf-scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-/* ── 4. 减动效降级 ──────────────────────────────────────────── */
+/* ── 5. 减动效降级 ──────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   *,

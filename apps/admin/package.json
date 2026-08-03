@@ -20,7 +20,9 @@
     "@codemirror/search": "catalog:admin",
     "@codemirror/state": "catalog:admin",
     "@codemirror/view": "catalog:admin",
+    "@fontsource/jetbrains-mono": "catalog:admin",
     "@grey-flowers/contracts": "workspace:*",
+    "@lezer/highlight": "catalog:admin",
     "@tanstack/react-router": "catalog:admin",
     "@uiw/react-codemirror": "catalog:admin",
     "cnfast": "catalog:admin",
@@ -31,8 +33,7 @@
     "lucide-react": "catalog:admin",
     "react": "catalog:admin",
     "react-aria-components": "catalog:admin",
-    "react-dom": "catalog:admin",
-    "react-resizable-panels": "catalog:admin"
+    "react-dom": "catalog:admin"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "catalog:admin",

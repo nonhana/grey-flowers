@@ -27,6 +27,12 @@ catalogs:
     '@codemirror/view':
       specifier: ^6.43.7
       version: 6.43.7
+    '@fontsource/jetbrains-mono':
+      specifier: ^5.3.0
+      version: 5.3.0
+    '@lezer/highlight':
+      specifier: ^1.2.3
+      version: 1.2.3
     '@rolldown/plugin-babel':
       specifier: ^0.2.3
       version: 0.2.3
@@ -75,9 +81,6 @@ catalogs:
     react-dom:
       specifier: ^19.2.8
       version: 19.2.8
-    react-resizable-panels:
-      specifier: ^4.12.2
-      version: 4.12.2
     tailwindcss:
       specifier: ^4.3.3
       version: 4.3.3
@@ -336,9 +339,15 @@ importers:
       '@codemirror/view':
         specifier: catalog:admin
         version: 6.43.7
+      '@fontsource/jetbrains-mono':
+        specifier: catalog:admin
+        version: 5.3.0
       '@grey-flowers/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@lezer/highlight':
+        specifier: catalog:admin
+        version: 1.2.3
       '@tanstack/react-router':
         specifier: catalog:admin
         version: 1.170.18(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -372,9 +381,6 @@ importers:
       react-dom:
         specifier: catalog:admin
         version: 19.2.8(react@19.2.8)
-      react-resizable-panels:
-        specifier: catalog:admin
-        version: 4.12.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
       '@rolldown/plugin-babel':
         specifier: catalog:admin
@@ -1435,6 +1441,9 @@ packages:
 
   '@fingerprintjs/botd@2.0.0':
     resolution: {integrity: sha512-yhuz23NKEcBDTHmGz/ULrXlGnbHenO+xZmVwuBkuqHUkqvaZ5TAA0kAgcRy4Wyo5dIBdkIf57UXX8/c9UlMLJg==}
+
+  '@fontsource/jetbrains-mono@5.3.0':
+    resolution: {integrity: sha512-fqDfB5I9f1p1TV486aUgB9t8zP84P0O1FtQR5Ol9vjwPy+S+EIGlVYm1cvj2W5shcZMTg2nZFdVMoH5wFu8a1A==}
 
   '@golar/darwin-arm64@0.1.10':
     resolution: {integrity: sha512-r4Iz1g2izi4cEskMsgL71uVY70o9/iZCBeCzO1z01EH1Z8Bp/Bp0q2+Rbtk0Hq1Gy9cKX5GG22BphqdhK4ltWQ==}
@@ -7704,12 +7713,6 @@ packages:
     peerDependencies:
       react: ^19.2.8
 
-  react-resizable-panels@4.12.2:
-    resolution: {integrity: sha512-NwY5LCo4WrxVvDh0xoMML6EMLPONP/8ckKcIdpnojxexoatZdjLiRqLJQjQK5CPkd4SYiB/2M5BVrjZBQtOO7Q==}
-    peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-
   react-stately@3.49.0:
     resolution: {integrity: sha512-13iNq2KzBrRAzxRc+n53hgROfIistiYY/sPtIhCw1qUB7/kmo+X1xEU2uiS5zcCIrc55AUPwoHqOIIpKWSwB9A==}
     peerDependencies:
@@ -10310,6 +10313,8 @@ snapshots:
       levn: 0.4.1
 
   '@fingerprintjs/botd@2.0.0': {}
+
+  '@fontsource/jetbrains-mono@5.3.0': {}
 
   '@golar/darwin-arm64@0.1.10':
     optional: true
@@ -17768,11 +17773,6 @@ snapshots:
     dependencies:
       react: 19.2.8
       scheduler: 0.27.0
-
-  react-resizable-panels@4.12.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
-    dependencies:
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
 
   react-stately@3.49.0(react@19.2.8):
     dependencies:
