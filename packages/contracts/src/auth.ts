@@ -52,7 +52,9 @@ export interface ApiSuccess<TData> {
 
 export type ApiEnvelope<TData> = ApiSuccess<TData> | ApiFailure;
 
-export function apiSuccessSchema<TData extends z.ZodType>(dataSchema: TData) {
+export const apiSuccessSchema = <TData extends z.ZodType>(
+  dataSchema: TData,
+) => {
   return z
     .object({
       success: z.literal(true),
@@ -60,11 +62,13 @@ export function apiSuccessSchema<TData extends z.ZodType>(dataSchema: TData) {
       requestId: z.uuid(),
     })
     .strict();
-}
+};
 
-export function apiEnvelopeSchema<TData extends z.ZodType>(dataSchema: TData) {
+export const apiEnvelopeSchema = <TData extends z.ZodType>(
+  dataSchema: TData,
+) => {
   return z.union([apiSuccessSchema(dataSchema), apiFailureSchema]);
-}
+};
 
 const usernameSchema = z
   .string()

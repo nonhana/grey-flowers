@@ -10,7 +10,7 @@ import {
 
 import type { Http } from './http.js';
 
-export function createAuthApi(http: Http) {
+export const createAuthApi = (http: Http) => {
   return {
     login: (input: AuthLoginInput): Promise<AuthLoginData> =>
       http.post('/auth/login', {
@@ -25,6 +25,6 @@ export function createAuthApi(http: Http) {
         schema: authSessionResponseSchema,
       }),
   };
-}
+};
 
 export type AuthApi = ReturnType<typeof createAuthApi>;

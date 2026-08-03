@@ -8,7 +8,7 @@ import { articleErrorMessage } from './display.js';
 
 const SLUG_PATTERN = /^\/articles\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export function NewArticlePage() {
+export const NewArticlePage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
@@ -28,7 +28,7 @@ export function NewArticlePage() {
 
   const targetSlug = slug.trim() ? slug : suggestedSlug;
 
-  async function handleCreate() {
+  const handleCreate = async () => {
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
       setError('标题不能为空。');
@@ -53,7 +53,7 @@ export function NewArticlePage() {
     } finally {
       setSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="mx-auto w-full max-w-2xl p-5">
@@ -183,4 +183,4 @@ export function NewArticlePage() {
       </div>
     </div>
   );
-}
+};

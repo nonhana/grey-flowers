@@ -24,13 +24,13 @@ interface AssetPickerDialogProps {
   title: string;
 }
 
-export function AssetPickerDialog({
+export const AssetPickerDialog = ({
   onClose,
   onSelect,
   open,
   purpose,
   title,
-}: AssetPickerDialogProps) {
+}: AssetPickerDialogProps) => {
   const [items, setItems] = useState<AssetDto[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -107,7 +107,7 @@ export function AssetPickerDialog({
     };
   }, [open, purpose]);
 
-  async function handleUpload(file: File) {
+  const handleUpload = async (file: File) => {
     setUploading(0);
     setError(null);
     try {
@@ -125,7 +125,7 @@ export function AssetPickerDialog({
     } finally {
       setUploading(null);
     }
-  }
+  };
 
   return (
     <ModalOverlay
@@ -277,4 +277,4 @@ export function AssetPickerDialog({
       </Modal>
     </ModalOverlay>
   );
-}
+};

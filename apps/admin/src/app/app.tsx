@@ -1,10 +1,10 @@
 import { AppProviders } from './providers.js';
 import { AdminShell } from './shell/admin-shell.js';
 
-export function App() {
+export const App = () => {
   return (
     <AppProviders>
       <AdminShell />
     </AppProviders>
   );
-}
+};

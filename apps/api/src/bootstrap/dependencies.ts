@@ -25,9 +25,9 @@ export interface AppDependencies {
   taxonomy: TaxonomyService;
 }
 
-export function createDependencies(
+export const createDependencies = (
   environment: ApiEnvironment,
-): AppDependencies {
+): AppDependencies => {
   const prisma = createPrismaClient(environment.HANA_DATABASE_URL);
   const logger = createLogger(environment);
   const objectStorage = new R2ObjectStorage(environment);
@@ -43,4 +43,4 @@ export function createDependencies(
     auth: new AuthService(prisma, environment),
     taxonomy,
   };
-}
+};

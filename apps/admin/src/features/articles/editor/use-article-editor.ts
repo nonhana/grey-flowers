@@ -37,11 +37,11 @@ export interface ConflictState {
 
 const AUTOSAVE_DELAY_MS = 1000;
 
-function draftKey(articleId: number) {
+const draftKey = (articleId: number) => {
   return `gf.article-draft.${articleId}`;
-}
+};
 
-export function toDraft(article: ArticleAdmin): ArticleDraft {
+export const toDraft = (article: ArticleAdmin): ArticleDraft => {
   return {
     alt: article.alt,
     category: article.category,
@@ -53,9 +53,9 @@ export function toDraft(article: ArticleAdmin): ArticleDraft {
     tags: article.tags,
     title: article.title,
   };
-}
+};
 
-export function useArticleEditor(articleId: number | null) {
+export const useArticleEditor = (articleId: number | null) => {
   const [article, setArticle] = useState<ArticleAdmin | null>(null);
   const [draft, setDraftState] = useState<ArticleDraft | null>(null);
   const [loading, setLoading] = useState(articleId !== null);
@@ -446,4 +446,4 @@ export function useArticleEditor(articleId: number | null) {
     unpublish,
     updateDraft,
   };
-}
+};

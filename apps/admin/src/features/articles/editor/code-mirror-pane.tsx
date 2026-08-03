@@ -73,33 +73,33 @@ const editorTheme = EditorView.theme({
   '.cm-placeholder': { color: 'var(--color-input-placeholder)' },
 });
 
-function isUrl(value: string) {
+const isUrl = (value: string) => {
   try {
     const url = new URL(value.trim());
     return url.protocol === 'http:' || url.protocol === 'https:';
   } catch {
     return false;
   }
-}
+};
 
-function isInsideCode(view: EditorView, position: number) {
+const isInsideCode = (view: EditorView, position: number) => {
   const node = syntaxTree(view.state).resolveInner(position);
   return node.name.includes('Code');
-}
+};
 
-function wrappedMarkdown(asset: AssetDto, alt: string) {
+const wrappedMarkdown = (asset: AssetDto, alt: string) => {
   return `![${alt}](${asset.deliveryUrl}){asset-id=${asset.id}}`;
-}
+};
 
-function altForFile(file: File) {
+const altForFile = (file: File) => {
   return file.name.replace(/\.[^.]+$/, '') || '图片';
-}
+};
 
-function altForAsset(asset: AssetDto) {
+const altForAsset = (asset: AssetDto) => {
   return (asset.storageKey.split('/').pop() ?? '图片').replace(/\.[^.]+$/, '');
-}
+};
 
-function wrapSelection(view: EditorView, before: string, after: string) {
+const wrapSelection = (view: EditorView, before: string, after: string) => {
   const selection = view.state.selection.main;
   const selected = view.state.sliceDoc(selection.from, selection.to);
   const content = selected || '文本';
@@ -114,18 +114,18 @@ function wrapSelection(view: EditorView, before: string, after: string) {
     },
   });
   view.focus();
-}
+};
 
-function insertInline(view: EditorView, text: string) {
+const insertInline = (view: EditorView, text: string) => {
   const selection = view.state.selection.main;
   view.dispatch({
     changes: { from: selection.from, to: selection.to, insert: text },
     selection: { anchor: selection.from + text.length },
   });
   view.focus();
-}
+};
 
-function prefixLine(view: EditorView, prefix: string) {
+const prefixLine = (view: EditorView, prefix: string) => {
   const selection = view.state.selection.main;
   const line = view.state.doc.lineAt(selection.head);
   view.dispatch({
@@ -133,9 +133,9 @@ function prefixLine(view: EditorView, prefix: string) {
     selection: { anchor: selection.head + prefix.length },
   });
   view.focus();
-}
+};
 
-function lineWrappedMarkdown(view: EditorView, open: string, close: string) {
+const lineWrappedMarkdown = (view: EditorView, open: string, close: string) => {
   const selection = view.state.selection.main;
   const from = view.state.doc.lineAt(selection.from).from;
   const to = view.state.doc.lineAt(selection.to).to;
@@ -147,7 +147,7 @@ function lineWrappedMarkdown(view: EditorView, open: string, close: string) {
     },
   });
   view.focus();
-}
+};
 
 interface ToolbarButton {
   label: string;
@@ -195,7 +195,7 @@ interface CodeMirrorPaneProps {
   value: string;
 }
 
-export function CodeMirrorPane({ onChange, value }: CodeMirrorPaneProps) {
+export const CodeMirrorPane = ({ onChange, value }: CodeMirrorPaneProps) => {
   const viewRef = useRef<EditorView | null>(null);
   const [pendingUploads, setPendingUploads] = useState<PendingUpload[]>([]);
   const [failedFiles, setFailedFiles] = useState<File[]>([]);
@@ -413,4 +413,4 @@ export function CodeMirrorPane({ onChange, value }: CodeMirrorPaneProps) {
       />
     </div>
   );
-}
+};

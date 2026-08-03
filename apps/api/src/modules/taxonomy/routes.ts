@@ -16,14 +16,14 @@ import { parseBody } from '../../lib/parse-body.js';
 
 const idSchema = z.coerce.number().int().positive();
 
-function parseId(value: string | undefined) {
+const parseId = (value: string | undefined) => {
   const parsed = idSchema.safeParse(value);
   if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
   return parsed.data;
-}
+};
 
 /** 管理接口：/categories */
-export function createCategoryRoutes(dependencies: AppDependencies) {
+export const createCategoryRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const principal = requirePrincipal(dependencies.environment);
   const admin = requireRole('ADMIN');
@@ -55,10 +55,10 @@ export function createCategoryRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};
 
 /** 管理接口：/tags */
-export function createTagRoutes(dependencies: AppDependencies) {
+export const createTagRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const principal = requirePrincipal(dependencies.environment);
   const admin = requireRole('ADMIN');
@@ -85,10 +85,10 @@ export function createTagRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};
 
 /** 公开接口：/public/tags 与 /public/categories */
-export function createPublicTaxonomyRoutes(dependencies: AppDependencies) {
+export const createPublicTaxonomyRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
 
   routes.get('/tags', async (context) => {
@@ -103,4 +103,4 @@ export function createPublicTaxonomyRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};

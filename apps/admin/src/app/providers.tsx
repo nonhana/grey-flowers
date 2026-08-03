@@ -34,7 +34,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function messageFor(error: unknown) {
+const messageFor = (error: unknown) => {
   if (isApiRequestError(error)) {
     return error.message;
   }
@@ -44,9 +44,9 @@ function messageFor(error: unknown) {
   }
 
   return '暂时无法完成此操作。';
-}
+};
 
-export function AppProviders({ children }: PropsWithChildren) {
+export const AppProviders = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<AuthenticationState>({
     status: 'checking',
   });
@@ -64,16 +64,16 @@ export function AppProviders({ children }: PropsWithChildren) {
     setState({ status: 'forbidden' });
   };
 
-  function handleAuthenticationRequired() {
+  const handleAuthenticationRequired = () => {
     setAccessToken(null);
     setState({ status: 'unauthenticated' });
-  }
+  };
 
   useEffect(() => {
     apiClient.setSessionExpiredHandler(handleAuthenticationRequired);
   }, []);
 
-  async function restoreSession() {
+  const restoreSession = async () => {
     try {
       const accessToken = getAccessToken();
       if (accessToken) {
@@ -100,12 +100,12 @@ export function AppProviders({ children }: PropsWithChildren) {
 
       setState({ status: 'network-error', error: messageFor(error) });
     }
-  }
+  };
 
-  async function retry() {
+  const retry = async () => {
     setState({ status: 'checking' });
     await restoreSession();
-  }
+  };
 
   useEffect(() => {
     if (hasBootstrapped.current) {
@@ -116,7 +116,7 @@ export function AppProviders({ children }: PropsWithChildren) {
     void restoreSession();
   }, []);
 
-  async function signIn(input: { account: string; password: string }) {
+  const signIn = async (input: { account: string; password: string }) => {
     setIsSubmitting(true);
 
     try {
@@ -134,9 +134,9 @@ export function AppProviders({ children }: PropsWithChildren) {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
-  async function signOut() {
+  const signOut = async () => {
     setState((current) =>
       current.status === 'authenticated'
         ? { ...current, logoutError: undefined }
@@ -154,11 +154,11 @@ export function AppProviders({ children }: PropsWithChildren) {
       setAccessToken(null);
       setIsSigningOut(false);
     }
-  }
+  };
 
-  function useAnotherAccount() {
+  const useAnotherAccount = () => {
     setState({ status: 'unauthenticated' });
-  }
+  };
 
   const value: AuthContextValue = {
     state,
@@ -171,9 +171,9 @@ export function AppProviders({ children }: PropsWithChildren) {
   };
 
   return <AuthContext value={value}>{children}</AuthContext>;
-}
+};
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
@@ -181,4 +181,4 @@ export function useAuth() {
   }
 
   return context;
-}
+};

@@ -55,7 +55,7 @@ export class ApiError extends Error {
   }
 }
 
-export function validationError(error: z.ZodError): ApiError {
+export const validationError = (error: z.ZodError): ApiError => {
   const fields = error.issues.reduce<Record<string, string[]>>(
     (result, issue) => {
       if (issue.code === 'unrecognized_keys') return result;
@@ -73,14 +73,14 @@ export function validationError(error: z.ZodError): ApiError {
     cause: error,
     fields: Object.keys(fields).length > 0 ? fields : undefined,
   });
-}
+};
 
-export function createFailure(
+export const createFailure = (
   c: Context<ApiEnvironment>,
   code: ApiErrorCode,
   fields?: Record<string, string[]>,
   message?: string,
-) {
+) => {
   const body: ApiFailure = {
     success: false,
     error: {
@@ -92,13 +92,13 @@ export function createFailure(
   };
 
   return c.json(body, errorStatus[code]);
-}
+};
 
-export function createSuccess<TData>(
+export const createSuccess = <TData>(
   c: Context<ApiEnvironment>,
   data: TData,
   status: ContentfulStatusCode = 200,
-) {
+) => {
   return c.json(
     {
       success: true as const,
@@ -107,12 +107,12 @@ export function createSuccess<TData>(
     },
     status,
   );
-}
+};
 
-export function handleError(error: Error, c: Context<ApiEnvironment>) {
+export const handleError = (error: Error, c: Context<ApiEnvironment>) => {
   if (error instanceof ApiError)
     return createFailure(c, error.code, error.fields, error.message);
 
   process.stderr.write(`Unhandled API error requestId=${c.get('requestId')}\n`);
   return createFailure(c, 'INTERNAL_ERROR');
-}
+};

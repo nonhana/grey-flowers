@@ -16,7 +16,7 @@ import {
 
 import type { Http } from './http.js';
 
-function listSearchParams(query: AssetListQuery) {
+const listSearchParams = (query: AssetListQuery) => {
   const params = new URLSearchParams();
   params.set('page', String(query.page));
   params.set('pageSize', String(query.pageSize));
@@ -24,9 +24,9 @@ function listSearchParams(query: AssetListQuery) {
   if (query.purpose !== undefined) params.set('purpose', query.purpose);
   if (query.status !== undefined) params.set('status', query.status);
   return params;
-}
+};
 
-export function createAssetsApi(http: Http) {
+export const createAssetsApi = (http: Http) => {
   return {
     list: (query: AssetListQuery): Promise<AssetListData> =>
       http.get('/assets', {
@@ -68,6 +68,6 @@ export function createAssetsApi(http: Http) {
         schema: assetDeleteResponseSchema,
       }),
   };
-}
+};
 
 export type AssetsApi = ReturnType<typeof createAssetsApi>;

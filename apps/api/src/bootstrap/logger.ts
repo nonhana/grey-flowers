@@ -2,9 +2,9 @@ import { pino, type Logger } from 'pino';
 
 export type ApiLogger = Logger;
 
-export function createLogger(environment: {
+export const createLogger = (environment: {
   NODE_ENV: 'development' | 'production';
-}): ApiLogger {
+}): ApiLogger => {
   if (environment.NODE_ENV === 'development') {
     return pino({
       level: 'debug',
@@ -22,4 +22,4 @@ export function createLogger(environment: {
   return pino({
     level: 'info',
   });
-}
+};

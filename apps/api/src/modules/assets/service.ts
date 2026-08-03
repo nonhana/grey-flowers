@@ -80,7 +80,7 @@ const purposeProfiles: Record<AssetPurpose, PurposeProfile> = {
   },
 };
 
-function normalizeDeclaredMime(value: string) {
+const normalizeDeclaredMime = (value: string) => {
   switch (value) {
     case 'application/ogg':
       return 'audio/ogg';
@@ -92,12 +92,12 @@ function normalizeDeclaredMime(value: string) {
     default:
       return value;
   }
-}
+};
 
-function currentMonthPrefix() {
+const currentMonthPrefix = () => {
   const now = new Date();
   return `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
-}
+};
 
 interface MediaMetadata {
   durationMs?: number;
@@ -105,16 +105,20 @@ interface MediaMetadata {
   width?: number;
 }
 
-async function readImageDimensions(buffer: Uint8Array): Promise<MediaMetadata> {
+const readImageDimensions = async (
+  buffer: Uint8Array,
+): Promise<MediaMetadata> => {
   try {
     const { height, width } = await sharp(buffer).metadata();
     return { height: height ?? undefined, width: width ?? undefined };
   } catch {
     return { height: undefined, width: undefined };
   }
-}
+};
 
-async function readAudioDuration(buffer: Uint8Array): Promise<MediaMetadata> {
+const readAudioDuration = async (
+  buffer: Uint8Array,
+): Promise<MediaMetadata> => {
   try {
     const { format } = await parseBuffer(buffer);
     return {
@@ -126,7 +130,7 @@ async function readAudioDuration(buffer: Uint8Array): Promise<MediaMetadata> {
   } catch {
     return { durationMs: undefined };
   }
-}
+};
 
 export class AssetService {
   constructor(

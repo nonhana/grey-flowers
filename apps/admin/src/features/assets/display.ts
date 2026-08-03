@@ -35,7 +35,7 @@ export const statusLabels: Record<AssetStatus, string> = {
   PENDING_CLEANUP: '待清理',
 };
 
-export function formatBytes(bytes: number) {
+export const formatBytes = (bytes: number) => {
   if (bytes < 1024) return `${bytes} B`;
 
   const units = ['KB', 'MB', 'GB'] as const;
@@ -49,22 +49,22 @@ export function formatBytes(bytes: number) {
   }
 
   return `${value >= 100 ? Math.round(value) : value.toFixed(1)} ${unit}`;
-}
+};
 
-export function formatDateTime(iso: string) {
+export const formatDateTime = (iso: string) => {
   return new Intl.DateTimeFormat('zh-CN', {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(iso));
-}
+};
 
-export function formatDurationMs(durationMs: number) {
+export const formatDurationMs = (durationMs: number) => {
   const seconds = Math.round(durationMs / 1000);
   const minutes = Math.floor(seconds / 60);
   return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
-}
+};
 
-export function assetErrorMessage(error: unknown) {
+export const assetErrorMessage = (error: unknown) => {
   if (isApiRequestError(error)) {
     switch (error.code) {
       case 'ASSET_PAYLOAD_TOO_LARGE':
@@ -83,4 +83,4 @@ export function assetErrorMessage(error: unknown) {
   }
 
   return '暂时无法完成此操作。';
-}
+};

@@ -24,7 +24,7 @@ import { CodeMirrorPane } from './editor/code-mirror-pane.js';
 import { InspectorPane } from './editor/inspector-pane.js';
 import { useArticleEditor } from './editor/use-article-editor.js';
 
-function useDesktopMedia() {
+const useDesktopMedia = () => {
   return useSyncExternalStore(
     (onChange) => {
       const media = window.matchMedia('(min-width: 768px)');
@@ -38,13 +38,13 @@ function useDesktopMedia() {
     () => window.matchMedia('(min-width: 768px)').matches,
     () => false,
   );
-}
+};
 
 interface WorkspacePageProps {
   articleId: string;
 }
 
-function ArticleNavPane({
+const ArticleNavPane = ({
   articleId,
   recent,
 }: {
@@ -55,7 +55,7 @@ function ArticleNavPane({
     revision: number;
     title: string;
   }>;
-}) {
+}) => {
   return (
     <nav
       aria-label="文章导航"
@@ -94,9 +94,9 @@ function ArticleNavPane({
       ))}
     </nav>
   );
-}
+};
 
-function useSaveStatus(editor: ReturnType<typeof useArticleEditor>) {
+const useSaveStatus = (editor: ReturnType<typeof useArticleEditor>) => {
   switch (editor.phase) {
     case 'saving':
       return {
@@ -129,9 +129,9 @@ function useSaveStatus(editor: ReturnType<typeof useArticleEditor>) {
         tone: 'warn' as const,
       };
   }
-}
+};
 
-function RestoreBanner({
+const RestoreBanner = ({
   onApply,
   onDiscard,
   savedAt,
@@ -139,7 +139,7 @@ function RestoreBanner({
   onApply: () => void;
   onDiscard: () => void;
   savedAt: number;
-}) {
+}) => {
   return (
     <div
       className="
@@ -183,15 +183,15 @@ function RestoreBanner({
       </div>
     </div>
   );
-}
+};
 
-function ConflictDialog({
+const ConflictDialog = ({
   editor,
   revision,
 }: {
   editor: ReturnType<typeof useArticleEditor>;
   revision: number;
-}) {
+}) => {
   return (
     <ModalOverlay
       className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-6"
@@ -256,9 +256,9 @@ function ConflictDialog({
       </Modal>
     </ModalOverlay>
   );
-}
+};
 
-function MobileToolsSheet({
+const MobileToolsSheet = ({
   children,
   isOpen,
   onOpenChange,
@@ -266,7 +266,7 @@ function MobileToolsSheet({
   children: ReactNode;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-}) {
+}) => {
   return (
     <ModalOverlay
       className="fixed inset-0 z-50 bg-black/40"
@@ -286,9 +286,9 @@ function MobileToolsSheet({
       </Modal>
     </ModalOverlay>
   );
-}
+};
 
-export function ArticleWorkspacePage({ articleId }: WorkspacePageProps) {
+export const ArticleWorkspacePage = ({ articleId }: WorkspacePageProps) => {
   const numericId = useMemo(
     () => Number.parseInt(articleId, 10) || null,
     [articleId],
@@ -513,4 +513,4 @@ export function ArticleWorkspacePage({ articleId }: WorkspacePageProps) {
       ) : null}
     </div>
   );
-}
+};

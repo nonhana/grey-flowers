@@ -49,7 +49,7 @@ const INPUT_CLASS = `
   aria-invalid:border-danger-edge
 `;
 
-function FilterSelect<T extends string>({
+const FilterSelect = <T extends string>({
   label,
   options,
   optionLabels,
@@ -61,7 +61,7 @@ function FilterSelect<T extends string>({
   onChange: (value: T | undefined) => void;
   options: readonly T[];
   value: T | undefined;
-}) {
+}) => {
   return (
     <div className="grid min-w-0 gap-1">
       <Label className="font-mono text-[0.7rem] text-ink-soft">{label}</Label>
@@ -134,9 +134,9 @@ function FilterSelect<T extends string>({
       </Select>
     </div>
   );
-}
+};
 
-function StatusBadge({ status }: { status: AssetStatus }) {
+const StatusBadge = ({ status }: { status: AssetStatus }) => {
   const tone =
     status === 'AVAILABLE'
       ? 'text-brand'
@@ -153,9 +153,9 @@ function StatusBadge({ status }: { status: AssetStatus }) {
       {statusLabels[status]}
     </span>
   );
-}
+};
 
-function AssetCard({ asset }: { asset: AssetListData['items'][number] }) {
+const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => {
   const isAudio = asset.mediaType === 'AUDIO';
   return (
     <Link
@@ -202,9 +202,9 @@ function AssetCard({ asset }: { asset: AssetListData['items'][number] }) {
       </div>
     </Link>
   );
-}
+};
 
-function SkeletonGrid() {
+const SkeletonGrid = () => {
   return (
     <div
       className="
@@ -227,9 +227,9 @@ function SkeletonGrid() {
       ))}
     </div>
   );
-}
+};
 
-export function AssetsListPage() {
+export const AssetsListPage = () => {
   const [filters, setFilters] = useState<FilterState>(EMPTY_FILTER);
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -493,4 +493,4 @@ export function AssetsListPage() {
       />
     </div>
   );
-}
+};

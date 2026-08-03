@@ -17,7 +17,7 @@ import {
 
 import type { Http } from './http.js';
 
-export function createArticlesApi(http: Http) {
+export const createArticlesApi = (http: Http) => {
   return {
     list: (query: ArticleListAdminQuery): Promise<ArticleListAdminData> => {
       const params = new URLSearchParams();
@@ -76,6 +76,6 @@ export function createArticlesApi(http: Http) {
         schema: previewTokenResponseSchema,
       }),
   };
-}
+};
 
 export type ArticlesApi = ReturnType<typeof createArticlesApi>;

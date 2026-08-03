@@ -26,13 +26,13 @@ import { router } from '../../routes/route-tree.js';
 import { useAuth } from '../providers.js';
 
 /** 圆形状态标记：waiting 用品牌蓝 + 长转，warning/error 用对应语义色。 */
-function StatusMark({
+const StatusMark = ({
   tone,
   children,
 }: {
   tone: 'waiting' | 'warning' | 'error';
   children: ReactNode;
-}) {
+}) => {
   const toneClass =
     tone === 'waiting'
       ? 'text-brand [&_svg]:animate-spin [&_svg]:[animation-duration:1.2s]'
@@ -52,7 +52,7 @@ function StatusMark({
       {children}
     </span>
   );
-}
+};
 
 const STAGE =
   'grid min-h-screen place-items-center p-6 max-[480px]:items-start max-[480px]:p-4 max-[480px]:pt-[12vh]';
@@ -69,7 +69,7 @@ const HEADING = 'm-0 text-[1.8rem] leading-[1.22] text-ink-strong';
 
 const MUTED = 'm-0 text-[0.96rem] leading-[1.7] text-ink-muted';
 
-function LoadingScreen() {
+const LoadingScreen = () => {
   return (
     <section className={STAGE} aria-live="polite">
       <div className={PANEL_COMPACT}>
@@ -81,15 +81,15 @@ function LoadingScreen() {
       </div>
     </section>
   );
-}
+};
 
-function LoginScreen({
+const LoginScreen = ({
   error,
   isSubmitting,
 }: {
   error?: string;
   isSubmitting: boolean;
-}) {
+}) => {
   const { signIn } = useAuth();
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
@@ -203,9 +203,9 @@ function LoginScreen({
       </Form>
     </section>
   );
-}
+};
 
-function ForbiddenScreen() {
+const ForbiddenScreen = () => {
   const { useAnotherAccount } = useAuth();
 
   return (
@@ -234,9 +234,9 @@ function ForbiddenScreen() {
       </div>
     </section>
   );
-}
+};
 
-function NetworkErrorScreen({ error }: { error: string }) {
+const NetworkErrorScreen = ({ error }: { error: string }) => {
   const { retry } = useAuth();
 
   return (
@@ -267,15 +267,15 @@ function NetworkErrorScreen({ error }: { error: string }) {
       </div>
     </section>
   );
-}
+};
 
-function AuthenticatedShell({
+const AuthenticatedShell = ({
   principal,
   logoutError,
 }: {
   principal: Principal;
   logoutError?: string;
-}) {
+}) => {
   const { isSigningOut, signOut } = useAuth();
 
   return (
@@ -364,9 +364,9 @@ function AuthenticatedShell({
       </section>
     </main>
   );
-}
+};
 
-export function AdminShell() {
+export const AdminShell = () => {
   const { state, isSubmitting } = useAuth();
 
   switch (state.status) {
@@ -386,4 +386,4 @@ export function AdminShell() {
         />
       );
   }
-}
+};

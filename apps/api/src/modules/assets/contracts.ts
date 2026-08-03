@@ -27,17 +27,17 @@ const directoryAssetPurpose: Record<string, AssetPurpose> = {
   'music-sources': 'MUSIC_SOURCE',
 };
 
-export function assetPurposeFromStorageKey(
+export const assetPurposeFromStorageKey = (
   storageKey: string,
   mediaType: AssetMediaType,
-): AssetPurpose {
+): AssetPurpose => {
   const prefix = storageKey.split('/')[0] ?? '';
   return (
     directoryAssetPurpose[prefix] ??
     // 防御分支：本切片的上传总是写入已知前缀；异常行按 mediaType 回退，不中断列表。
     (mediaType === 'AUDIO' ? 'MUSIC_SOURCE' : 'ARTICLE_COVER')
   );
-}
+};
 
 export interface AssetRecord {
   byteSize: bigint;
@@ -67,10 +67,10 @@ export const assetProjection = {
   width: true,
 } as const;
 
-export function toAssetDto(
+export const toAssetDto = (
   record: AssetRecord,
   assetPublicUrl: string,
-): AssetDto {
+): AssetDto => {
   return {
     byteSize: Number(record.byteSize),
     createdAt: record.createdAt.toISOString(),
@@ -86,7 +86,7 @@ export function toAssetDto(
     updatedAt: record.updatedAt.toISOString(),
     width: record.width ?? undefined,
   };
-}
+};
 
 export interface AssetReferenceCounts {
   activityImages: number;
@@ -98,14 +98,14 @@ export interface AssetReferenceCounts {
   total: number;
 }
 
-export function toReferenceCounts(counts: {
+export const toReferenceCounts = (counts: {
   activityImages: number;
   articleCovers: number;
   articleInlineAssets: number;
   categoryCovers: number;
   musicCovers: number;
   musicSources: number;
-}): AssetReferenceCounts {
+}): AssetReferenceCounts => {
   const {
     activityImages,
     articleCovers,
@@ -130,4 +130,4 @@ export function toReferenceCounts(counts: {
       musicCovers +
       musicSources,
   };
-}
+};

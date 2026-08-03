@@ -23,7 +23,7 @@ const AUDIO_ACCEPT = 'audio/mpeg,audio/wav,audio/ogg,audio/flac,audio/aac';
 
 type Phase = 'idle' | 'uploading' | 'error';
 
-export function UploadDialog({
+export const UploadDialog = ({
   onUploaded,
   open,
   setOpen,
@@ -31,7 +31,7 @@ export function UploadDialog({
   onUploaded: () => void;
   open: boolean;
   setOpen: (value: boolean) => void;
-}) {
+}) => {
   const [purpose, setPurpose] = useState<AssetPurpose | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
@@ -53,7 +53,7 @@ export function UploadDialog({
 
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
 
-  async function submit() {
+  const submit = async () => {
     if (purpose === null || file === null) return;
 
     setPhase('uploading');
@@ -68,7 +68,7 @@ export function UploadDialog({
       setError(assetErrorMessage(cause));
       setPhase('error');
     }
-  }
+  };
 
   const accept = purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT : IMAGE_ACCEPT;
 
@@ -281,4 +281,4 @@ export function UploadDialog({
       </Modal>
     </ModalOverlay>
   );
-}
+};

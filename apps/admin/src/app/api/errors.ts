@@ -35,16 +35,16 @@ export class ApiResponseError extends Error {
   }
 }
 
-export function isApiRequestError(
+export const isApiRequestError = (
   error: unknown,
   code?: ApiErrorCode,
-): error is ApiRequestError {
+): error is ApiRequestError => {
   return (
     error instanceof ApiRequestError &&
     (code === undefined || error.code === code)
   );
-}
+};
 
-export function isApiNetworkError(error: unknown): error is ApiNetworkError {
+export const isApiNetworkError = (error: unknown): error is ApiNetworkError => {
   return error instanceof ApiNetworkError;
-}
+};

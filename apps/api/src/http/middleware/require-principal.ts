@@ -10,9 +10,9 @@ import { ApiError } from '../errors.js';
 const bearerTokenPattern =
   /^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/;
 
-export function requirePrincipal(
+export const requirePrincipal = (
   environment: ApiEnvironment,
-): MiddlewareHandler<ContextEnvironment> {
+): MiddlewareHandler<ContextEnvironment> => {
   return async (context, next) => {
     const authorization = context.req.header('Authorization');
     const match = authorization?.match(bearerTokenPattern);
@@ -31,4 +31,4 @@ export function requirePrincipal(
     context.set('principal', principal);
     await next();
   };
-}
+};

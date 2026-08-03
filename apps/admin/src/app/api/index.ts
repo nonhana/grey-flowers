@@ -14,7 +14,7 @@ export {
 
 export const ACCESS_TOKEN_KEY = 'gf.access_token';
 
-function getApiOrigin() {
+const getApiOrigin = () => {
   const origin = import.meta.env.VITE_API_ORIGIN as string;
 
   if (!origin) {
@@ -22,20 +22,20 @@ function getApiOrigin() {
   }
 
   return new URL(origin).toString();
-}
+};
 
-export function getAccessToken() {
+export const getAccessToken = () => {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
-}
+};
 
-export function setAccessToken(accessToken: string | null) {
+export const setAccessToken = (accessToken: string | null) => {
   if (accessToken) {
     localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
     return;
   }
 
   localStorage.removeItem(ACCESS_TOKEN_KEY);
-}
+};
 
 export class ApiClient {
   readonly articles: ArticlesApi;

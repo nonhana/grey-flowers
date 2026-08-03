@@ -19,7 +19,7 @@ import {
   createTagRoutes,
 } from './modules/taxonomy/routes.js';
 
-export function createApp(dependencies: AppDependencies) {
+export const createApp = (dependencies: AppDependencies) => {
   const app = new Hono<ApiEnvironment>();
 
   app.use('*', requestId());
@@ -55,6 +55,6 @@ export function createApp(dependencies: AppDependencies) {
   app.notFound((c) => createFailure(c, 'NOT_FOUND'));
 
   return app;
-}
+};
 
 export type AppType = ReturnType<typeof createApp>;

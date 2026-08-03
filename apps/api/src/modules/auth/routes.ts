@@ -22,17 +22,17 @@ import {
   refreshCookieOptions,
 } from './tokens.js';
 
-function clearRefreshCookie(
+const clearRefreshCookie = (
   context: Parameters<typeof deleteCookie>[0],
   dependencies: AppDependencies,
-) {
+) => {
   deleteCookie(context, REFRESH_COOKIE_NAME, {
     ...refreshCookieOptions(dependencies.environment),
     maxAge: 0,
   });
-}
+};
 
-export function createAuthRoutes(dependencies: AppDependencies) {
+export const createAuthRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const requireOrigin = requireAllowedOrigin(dependencies.environment);
   const principal = requirePrincipal(dependencies.environment);
@@ -105,4 +105,4 @@ export function createAuthRoutes(dependencies: AppDependencies) {
   });
 
   return routes;
-}
+};
