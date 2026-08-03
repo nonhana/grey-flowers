@@ -2,23 +2,30 @@
 
 ## Current automation
 
-This repository has no test framework, `test` script, test-file convention, watch command, or coverage threshold. No `*.test.*` or `*.spec.*` files are present.
+There is no test framework, `test` script, test-file convention, watch command, or coverage threshold. No `*.test.*` / `*.spec.*` files exist. Validation is static checks plus manual/scripted smoke tests.
 
-Use the existing regression gate for every code change:
+Use the regression gate for every code change:
 
 ```sh
 pnpm typecheck && pnpm lint && pnpm build
 ```
 
-For a focused check, run `pnpm typecheck` or `pnpm lint`. The database package lints its source interface only; generated Prisma code under `packages/db/prisma/generated/` is not linted.
+- `pnpm typecheck` = root `tsc -p tsconfig.json --noEmit` (root `*.ts` only) + per-package `typecheck`. Nuxt `nuxt typecheck` for `apps/main`, `tsc --noEmit` for the others.
+- `pnpm lint` = ESLint (Antfu) for `apps/main`; oxlint for `apps/api`, `apps/admin`, `packages/contracts`, `packages/db`. Generated Prisma code under `packages/db/prisma/generated/` is not linted.
+- Do not report a suite as passing when only static checks have run.
 
 ## Prerequisites
 
-`pnpm build` imports the main application server environment and needs the complete workspace-root `.env` described in [BUILD.md](./BUILD.md). Do not report a test suite as passing when only these static checks have run.
+`pnpm build` and `pnpm dev` import application environments and need the complete root `.env` described in [BUILD.md](./BUILD.md) (`HANA_DATABASE_URL`, API/auth/R2 secrets, mail). The API process exits at startup if the environment is invalid.
 
 ## Change-specific smoke checks
 
-- For an API change, use the development server and verify the response envelope's `success`, `payload`, and error fields.
-- For a UI change, check both color modes and a narrow viewport; the site is SSR-rendered and uses responsive UnoCSS utilities.
-- For Prisma changes, run `pnpm prisma:generate` before type checking. Do not run `pnpm prisma:push` or `pnpm prisma:migrate:deploy` as a validation shortcut.
-- For a workspace or database-package change, start the built application from `apps/main/.output/` with the complete environment, then request a Prisma-backed page and `/rss.xml`. This verifies that Nitro included `@grey-flowers/db` in the deployable artifact without mutating data.
+- **API change** — run `pnpm dev:api`, then verify the envelope: `{ success: true, data, requestId }` on success, `{ success: false, error: { code, message, fields? }, requestId }` on failure, with the correct HTTP status for the code (see [API_CONVENTIONS.md](./API_CONVENTIONS.md)). Admin calls additionally need a valid bearer token and an allowed origin.
+- **Admin UI change** — run `pnpm dev:admin`, exercise the flow at desktop and narrow viewport widths, and in both App color modes. The admin is a React 19 + TanStack Router SPA; check the failure and empty states, not just the happy path.
+- **Main UI change** — the site is SSR-rendered; verify both color modes and a narrow viewport, and that unpublished articles stay hidden from public routes except the token-gated preview.
+- **Prisma change** — run `pnpm prisma:generate` before type checking. Do not run `pnpm prisma:push` or `pnpm prisma:migrate:deploy` as a validation shortcut.
+- **Cross-workspace / contract change** — change `packages/contracts`, then `pnpm build` and check that consumers in `apps/api`, `apps/admin`, and `apps/main` all compile against the new DTOs.
+
+## Runtime regression check for database-backed routes
+
+Start the built main app from `apps/main/.output/` with the complete environment (plus a running `apps/api`), then request a Prisma-backed page and `/rss.xml`. This verifies Nitro included the required packages and the deployed route wiring without mutating data. `rss.xml.ts` currently reads Prisma directly, so it needs no running API.

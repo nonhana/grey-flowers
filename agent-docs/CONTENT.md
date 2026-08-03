@@ -1,23 +1,34 @@
 # Content
 
-## Two Markdown sources
+## Article content model
 
-Long-form articles are database records: `Article.content` is parsed by `server/api/articles/detail.get.ts` and only published articles are exposed by the public article APIs.
+Long-form articles are database records. `Article.content` is the raw Markdown/MDC text and the SSOT for authoring — editors, preview, and migrations must never rewrite, drop, or degrade MDC directives. The API stores and returns the raw text; the main site renders it.
 
-`public/markdown/` is not the article store. It contains only the static MDC sources for the About and Friends pages:
+- Public article endpoints (`apps/api` `/public/articles/*`) expose published articles only. `Article.title`/`Article.alt` unique constraints used to exist; they were relaxed with article versioning, so uniqueness today is governed by business logic in `apps/api`, not DB constraints.
+- `published` starts `false`; publishing sets `publishedAt = now()` on first publish. Unpublishing hides it from all public routes.
+- `to` (the slug, e.g. `/articles/foo-bar`) is unique and validated by a lowercase-dash regex in `packages/contracts`.
 
-- `public/markdown/about.md` is served by `/api/markdown/about`.
-- `public/markdown/friends.md` is served by `/api/markdown/friends`.
+## Editing and versioning semantics (slice 2 workflow)
 
-The allowed static slugs are an explicit `about`/`friends` whitelist in `server/utils/markdown.ts` and the `StaticMarkdownPageSlug` type in `shared/types/markdown.d.ts`. Adding another static page requires updating both places as well as its route or consumer.
+- Save (`PATCH /articles/:id`) is revision-guarded. The client sends the `revision` it based on; a mismatch returns `ARTICLE_STALE` (409). `createSnapshot` / `preserveServerSnapshot` booleans drive snapshot creation and conflict loss-avoidance; snapshots are per-revision (`ArticleSnapshot`, unique `[articleId, revision]`).
+- Snapshots are listed via `GET /articles/:id/snapshots` and can restore earlier versions (restore semantics negotiated with `ARTICLE_STALE`).
+- `wordCount` is computed server-side (MDC-stripped, CJK per char + ASCII per word) and is stored per article and snapshot — do not compute or send it from the client.
 
-## Rendering path
+## Managed assets inside Markdown
 
-Pages request static Markdown through `/api/markdown/:slug`; they do not read these files in the browser. The server uses `parseAppMarkdown`, which generates a depth-two table of contents and returns the MDC renderer payload.
+`ArticleInlineAsset` links assets referenced from the article body. At save time the API extracts managed references from the MDC text (via `@nuxtjs/mdc`), validates their delivery `URL`s, and reconciles the `ArticleInlineAsset` rows. Ordinary external image URLs remain expressible and are not silently rewritten to managed assets. Covers (`coverAssetId`) are normalized server-side to the asset delivery URL.
 
-At runtime, the loader checks `.output/public/markdown` first and `public/markdown` second. Keep static Markdown under `public/` so it is included in a built artifact.
+## Preview
+
+The admin mints a short-lived preview token (`POST /articles/:id/preview-token`) and opens the main site detail URL with it. `apps/main/server/api/articles/detail.get.ts` first tries the public detail; on `NOT_FOUND` with a token it falls back to `GET /public/articles/preview` and adds `X-Robots-Tag: noindex` so drafts are never indexed.
+
+## Rendered markdown (main site)
+
+- `apps/main/server/utils/markdown.ts` (`parseAppMarkdown`) generates a depth-two table of contents and returns the MDC renderer payload; `components/prose/` overrides MDC element rendering globally and `components/hana/` provides shared feature components. Article detail SSR composes these for reading pages.
+- Static Markdown pages are not articles. `apps/main/public/markdown/about.md` and `friends.md` are served by `/api/markdown/:slug`, gated by an explicit `about`/`friends` whitelist (the `StaticMarkdownPageSlug` type in `apps/main/shared/types/markdown.d.ts` plus the whitelist in `server/utils/markdown.ts`). Adding a static page requires updating both places and its consumer.
+- Comments do not use this path; comment Markdown follows the separate restrictive parser `apps/main/server/utils/comment-markdown.ts`.
 
 ## Content constraints
 
-- Treat article and static-page Markdown as trusted authored content; comment Markdown follows the separate restrictive path in [API_CONVENTIONS.md](./API_CONVENTIONS.md).
-- Preserve the reading experience: content changes must remain legible in both color modes and work on narrow screens.
+- Treat article and static-page Markdown as trusted authored content.
+- Preserve the reading experience: content changes must stay legible in both color modes and on narrow screens; keep `prose/` and `hana/` semantics intact when touching renderers.
