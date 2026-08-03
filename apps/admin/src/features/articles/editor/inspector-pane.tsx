@@ -6,8 +6,21 @@ import type {
 
 import { cn } from 'cnfast';
 import { ChevronDown, Eye, ImagePlus, Trash2, X } from 'lucide-react';
-import { useRef, useState } from 'react';
-import { Button } from 'react-aria-components';
+import { useState } from 'react';
+
+import {
+  AssetImage,
+  Button,
+  ConfirmDialog,
+  controlClass,
+  FilterChip,
+  IconButton,
+  MetaLine,
+  PublishBadge,
+  SectionLabel,
+  TextAreaField,
+  TextField,
+} from '@/ui/index.js';
 
 import type { useArticleEditor } from './use-article-editor.js';
 
@@ -16,330 +29,329 @@ import { AssetPickerDialog } from './asset-picker.js';
 
 type Editor = ReturnType<typeof useArticleEditor>;
 
-const SectionLabel = ({ children, id }: { children: string; id?: string }) => {
-  return (
-    <h3
-      className="
-        font-mono text-[0.7rem] tracking-[0.14em] text-ink-faint uppercase
-      "
-      id={id}
-    >
-      {children}
-    </h3>
-  );
+type PendingConfirm =
+  | { kind: 'delete' }
+  | { kind: 'publish' }
+  | { kind: 'restore'; snapshot: ArticleSnapshot }
+  | { kind: 'unpublish' };
+
+const CONFIRM_COPY: Record<
+  'delete' | 'publish' | 'restore' | 'unpublish',
+  { confirmLabel: string; destructive: boolean; title: string }
+> = {
+  delete: {
+    confirmLabel: '删除文章',
+    destructive: true,
+    title: '删除这篇文章？',
+  },
+  publish: {
+    confirmLabel: '发布',
+    destructive: false,
+    title: '发布这篇文章？',
+  },
+  restore: {
+    confirmLabel: '恢复',
+    destructive: false,
+    title: '恢复到这个旧版本？',
+  },
+  unpublish: {
+    confirmLabel: '下架',
+    destructive: true,
+    title: '从主站下架？',
+  },
 };
 
-const inputClass = (base: string) => {
-  return cn(
-    `
-      min-h-10.5 w-full rounded-control border border-input-edge bg-input
-      px-2.75 py-2 text-[0.9rem] leading-normal text-primary-ink
-      transition-colors outline-none
-      placeholder:text-input-placeholder
-      hover:border-input-hover-edge
-      focus-visible:border-focus focus-visible:ring-[3px]
-      focus-visible:ring-focus-ring
-    `,
-    base,
+const Block = ({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) => (
+  <div className="grid gap-2">
+    <SectionLabel>{label}</SectionLabel>
+    {children}
+  </div>
+);
+
+const VersionList = ({ editor }: { editor: Editor }) => {
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [pendingRestore, setPendingRestore] = useState<ArticleSnapshot | null>(
+    null,
   );
-};
 
-interface InspectorPaneProps {
-  categories: CategoryAdmin[];
-  editor: Editor;
-  tags: TagAdmin[];
-}
-
-interface ConfirmDialogProps {
-  confirmLabel: string;
-  message: string;
-  onCancel: () => void;
-  onConfirm: () => void;
-}
-
-const ConfirmDialog = ({
-  confirmLabel,
-  message,
-  onCancel,
-  onConfirm,
-}: ConfirmDialogProps) => {
   return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-6"
-      role="presentation"
-    >
-      <div
-        className="
-          w-full max-w-sm rounded-panel border border-edge bg-surface p-5
-          shadow-panel
-        "
-        role="alertdialog"
-        aria-modal="true"
+    <>
+      <Button
+        icon={<ChevronDown aria-hidden="true" />}
+        onPress={() => void editor.loadVersions()}
+        size="sm"
       >
-        <p className="text-[0.9rem] leading-relaxed text-ink">{message}</p>
-        <div className="mt-5 flex justify-end gap-2">
-          <Button
-            className="
-              min-h-10.5 rounded-control border border-edge px-3.5 font-mono
-              text-[0.8rem] text-ink-soft
-              hover:bg-accent
-            "
-            onPress={onCancel}
-          >
-            取消
-          </Button>
-          <Button
-            className="
-              min-h-10.5 rounded-control border border-transparent bg-danger
-              px-3.5 font-mono text-[0.8rem] text-white
-              hover:brightness-90
-            "
-            onPress={onConfirm}
-          >
-            {confirmLabel}
-          </Button>
-        </div>
-      </div>
-    </div>
+        加载版本快照
+      </Button>
+      {editor.versions === null ? null : editor.versions.length === 0 ? (
+        <p className="text-xs/relaxed text-ink-dim">
+          还没有快照。发布、下架或冲突覆盖时会自动留一份。
+        </p>
+      ) : (
+        <ul className="grid gap-2">
+          {editor.versions.map((snapshot) => (
+            <li
+              className="rounded-control border border-rule p-2.5"
+              key={snapshot.id}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-2xs text-ink-dim">
+                  rev {snapshot.revision} · {formatDateTime(snapshot.createdAt)}
+                </span>
+                <div className="flex gap-1">
+                  <Button
+                    onPress={() =>
+                      setExpanded((current) =>
+                        current === snapshot.id ? null : snapshot.id,
+                      )
+                    }
+                    size="sm"
+                    tone="ghost"
+                  >
+                    {expanded === snapshot.id ? '收起' : '查看'}
+                  </Button>
+                  <Button onPress={() => setPendingRestore(snapshot)} size="sm">
+                    恢复
+                  </Button>
+                </div>
+              </div>
+              <p className="mt-1 truncate text-base text-ink">
+                {snapshot.title}
+              </p>
+              {expanded === snapshot.id ? (
+                <pre
+                  className="
+                    mt-2 max-h-48 overflow-auto rounded-control bg-well p-2
+                    font-mono text-2xs/relaxed whitespace-pre-wrap text-ink-dim
+                  "
+                >
+                  {snapshot.content}
+                </pre>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      )}
+      <ConfirmDialog
+        confirmLabel="恢复"
+        isOpen={pendingRestore !== null}
+        message={
+          pendingRestore
+            ? `恢复到 rev ${String(pendingRestore.revision)} 会产生一个新版本，且无法撤销。`
+            : ''
+        }
+        onCancel={() => setPendingRestore(null)}
+        onConfirm={() => {
+          const target = pendingRestore;
+          setPendingRestore(null);
+          if (target) void editor.restoreVersion(target);
+        }}
+        title="恢复到这个旧版本？"
+      />
+    </>
   );
 };
 
 export const InspectorPane = ({
   categories,
   editor,
+  onClose,
   tags,
-}: InspectorPaneProps) => {
+}: {
+  categories: CategoryAdmin[];
+  editor: Editor;
+  onClose?: () => void;
+  tags: TagAdmin[];
+}) => {
   const [coverPickerOpen, setCoverPickerOpen] = useState(false);
-  const [expandedSnapshot, setExpandedSnapshot] = useState<number | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [confirmPublish, setConfirmPublish] = useState<
-    'publish' | 'unpublish' | null
-  >(null);
-  const [restoreSnapshot, setRestoreSnapshot] =
-    useState<ArticleSnapshot | null>(null);
-  const tagInputRef = useRef<HTMLInputElement>(null);
+  const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
 
   const draft = editor.draft;
   if (!draft || !editor.article) return null;
 
   const { article } = editor;
+  const confirmCopy = confirm ? CONFIRM_COPY[confirm.kind] : null;
+
+  const runConfirm = () => {
+    const pending = confirm;
+    setConfirm(null);
+    if (!pending) return;
+    if (pending.kind === 'publish') void editor.publish();
+    if (pending.kind === 'unpublish') void editor.unpublish();
+    if (pending.kind === 'delete') void editor.removeArticle();
+    if (pending.kind === 'restore')
+      void editor.restoreVersion(pending.snapshot);
+  };
 
   return (
-    <div
-      className="
-        flex h-full flex-col gap-5 overflow-y-auto p-4 font-mono text-[0.8rem]
-      "
-    >
-      <div className="grid gap-1.5">
-        <SectionLabel>状态</SectionLabel>
+    <div className="grid h-full content-start gap-6 p-4 pb-8">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-mono text-xs text-ink-dim">元数据</h2>
+        {onClose ? (
+          <IconButton label="收起元数据" onPress={onClose} size="sm">
+            <X aria-hidden="true" />
+          </IconButton>
+        ) : null}
+      </div>
+
+      <div className="grid gap-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={cn(
-              'rounded-full border px-2.5 py-1 text-[0.72rem]',
-              article.published
-                ? 'border-brand/30 bg-vapor text-brand'
-                : 'bg-accent text-ink-soft',
-            )}
-          >
-            {article.published ? '已发布' : '草稿'}
-          </span>
-          <span className="text-ink-faint">
-            rev {article.revision} · {formatDateTime(article.editedAt)} 更新
-          </span>
+          <PublishBadge published={article.published} />
+          <MetaLine>
+            <span>rev {article.revision}</span>
+            <span>{formatDateTime(article.editedAt)}</span>
+          </MetaLine>
         </div>
-        <div className="text-ink-faint">
-          ids {article.wordCount} 字 · {slugFromTo(article.to)}
-        </div>
+        <MetaLine>
+          <span>{article.wordCount} 字</span>
+          <span className="truncate">/{slugFromTo(article.to)}</span>
+        </MetaLine>
       </div>
 
-      <div className="grid gap-1.5">
-        <SectionLabel>标题</SectionLabel>
-        <input
-          aria-label="文章标题"
-          className={inputClass('')}
-          onKeyDown={(event) => event.stopPropagation()}
-          onChange={(event) =>
-            editor.updateDraft({ title: event.target.value })
-          }
-          value={draft.title}
-        />
-      </div>
+      <TextField
+        label="标题"
+        onChange={(value) => editor.updateDraft({ title: value })}
+        value={draft.title}
+      />
 
-      <div className="grid gap-1.5">
-        <SectionLabel>简介</SectionLabel>
-        <textarea
-          aria-label="文章简介"
-          className={cn(
-            inputClass('min-h-20 resize-y'),
-            'leading-relaxed',
-            'font-sans',
-          )}
-          onChange={(event) =>
-            editor.updateDraft({ description: event.target.value || null })
-          }
-          onKeyDown={(event) => event.stopPropagation()}
-          value={draft.description ?? ''}
-        />
-      </div>
+      <TextAreaField
+        inputClassName="font-sans"
+        label="简介"
+        onChange={(value) => editor.updateDraft({ description: value || null })}
+        rows={3}
+        value={draft.description ?? ''}
+      />
 
-      <div className="grid gap-1.5">
-        <SectionLabel>封面</SectionLabel>
+      <Block label="封面">
         {draft.cover ? (
           <div
             className="
-              mb-1 grid aspect-video w-full overflow-hidden rounded-control
-              border border-edge bg-input
+              overflow-hidden rounded-control border border-rule bg-well
             "
           >
-            <img alt="封面预览" className="object-cover" src={draft.cover} />
+            <AssetImage
+              alt="封面预览"
+              className="aspect-video w-full object-cover"
+              src={draft.cover}
+            />
           </div>
         ) : null}
         <div className="flex flex-wrap items-center gap-2">
           <Button
-            className="
-              flex min-h-10.5 items-center gap-2 rounded-control border
-              border-input-edge bg-input px-3 text-[0.8rem] text-ink-soft
-              hover:border-input-hover-edge
-              focus-visible:outline-[3px] focus-visible:outline-offset-2
-              focus-visible:outline-focus-outline
-              [&_svg]:size-4
-            "
+            icon={<ImagePlus aria-hidden="true" />}
             onPress={() => setCoverPickerOpen(true)}
+            size="sm"
           >
-            <ImagePlus aria-hidden="true" />
-            选择封面
+            {draft.cover ? '更换封面' : '选择封面'}
           </Button>
-          {draft.coverAssetId !== null ? (
-            <Button
-              aria-label="移除封面资产"
-              className="
-                grid size-10.5 place-items-center rounded-control text-ink-faint
-                hover:bg-accent
-              "
+          {draft.cover ? (
+            <IconButton
+              label="移除封面"
               onPress={() =>
                 editor.updateDraft({ cover: '', coverAssetId: null })
               }
+              size="sm"
             >
               <X aria-hidden="true" />
-            </Button>
+            </IconButton>
           ) : null}
         </div>
         <input
           aria-label="封面外部 URL"
-          className={inputClass('')}
-          onKeyDown={(event) => event.stopPropagation()}
+          className={cn(controlClass, 'font-mono text-base')}
           onChange={(event) =>
             editor.updateDraft({
               cover: event.target.value,
               coverAssetId: null,
             })
           }
+          onKeyDown={(event) => event.stopPropagation()}
           placeholder="或粘贴外部封面 URL"
           value={draft.cover}
         />
-      </div>
+      </Block>
 
-      <div className="grid gap-1.5">
-        <SectionLabel>封面声明文字（alt）</SectionLabel>
-        <input
-          aria-label="封面 alt"
-          className={inputClass('')}
-          onKeyDown={(event) => event.stopPropagation()}
-          onChange={(event) => editor.updateDraft({ alt: event.target.value })}
-          value={draft.alt}
-        />
-      </div>
+      <TextField
+        description="图片无法显示时读到的文字，也用于无障碍阅读。"
+        label="封面替代文字"
+        onChange={(value) => editor.updateDraft({ alt: value })}
+        value={draft.alt}
+      />
 
-      <div className="grid gap-1.5">
-        <SectionLabel>分类</SectionLabel>
+      <Block label="分类">
         <div className="flex flex-wrap gap-1.5">
-          <button
-            className={cn(
-              'min-h-10 rounded-full border px-3 text-[0.78rem]',
-              draft.categoryId === null
-                ? 'border-brand bg-vapor text-brand'
-                : `
-                  border-edge text-ink-soft
-                  hover:border-input-hover-edge
-                `,
-            )}
-            onClick={() =>
-              editor.updateDraft({ categoryId: null, category: null })
+          <FilterChip
+            isSelected={draft.categoryId === null}
+            onPress={() =>
+              editor.updateDraft({ category: null, categoryId: null })
             }
-            type="button"
           >
             未分类
-          </button>
+          </FilterChip>
           {categories.map((category) => (
-            <button
-              className={cn(
-                'min-h-10 rounded-full border px-3 text-[0.78rem]',
-                draft.categoryId === category.id
-                  ? 'border-brand bg-vapor text-brand'
-                  : `
-                    border-edge text-ink-soft
-                    hover:border-input-hover-edge
-                  `,
-              )}
+            <FilterChip
+              isSelected={draft.categoryId === category.id}
               key={category.id}
-              onClick={() =>
+              onPress={() =>
                 editor.updateDraft({
                   category: category.name,
                   categoryId: category.id,
                 })
               }
-              type="button"
             >
               {category.name}
-            </button>
+            </FilterChip>
           ))}
         </div>
-      </div>
+      </Block>
 
-      <div className="grid gap-1.5">
-        <SectionLabel id="article-tags-label">标签</SectionLabel>
+      <Block label="标签">
         <div className="flex flex-wrap items-center gap-1.5">
           {draft.tags.map((name) => (
             <span
               className="
-                inline-flex min-h-9 items-center gap-1 rounded-full border
-                border-edge bg-accent px-2.5 text-[0.76rem] text-accent-text
+                inline-flex min-h-8 items-center gap-1 rounded-full border
+                border-rule bg-well pr-1 pl-2.5 font-mono text-2xs text-ink
               "
               key={name}
             >
               {name}
-              <button
-                aria-label={`移除标签 ${name}`}
+              <IconButton
                 className="
-                  grid size-5 place-items-center rounded-full
-                  hover:bg-black/10
+                  size-6
+                  [&_svg]:size-3
                 "
-                onClick={() =>
+                label={`移除标签 ${name}`}
+                onPress={() =>
                   editor.updateDraft({
                     tags: draft.tags.filter((item) => item !== name),
                   })
                 }
-                type="button"
+                size="sm"
               >
-                <X aria-hidden="true" className="size-3" />
-              </button>
+                <X aria-hidden="true" />
+              </IconButton>
             </span>
           ))}
           <input
-            ref={tagInputRef}
-            aria-labelledby="article-tags-label"
-            className={inputClass('min-h-9 w-32')}
+            aria-label="添加标签"
+            className={cn(controlClass, 'min-h-8 w-28 py-1 text-base')}
             list="gf-tag-options"
             onKeyDown={(event) => {
               event.stopPropagation();
-              if (event.key === 'Enter') {
-                event.preventDefault();
-                const value = event.currentTarget.value.trim();
-                if (value && !draft.tags.includes(value)) {
-                  editor.updateDraft({ tags: [...draft.tags, value] });
-                }
-                event.currentTarget.value = '';
+              if (event.key !== 'Enter') return;
+              event.preventDefault();
+              const value = event.currentTarget.value.trim();
+              if (value && !draft.tags.includes(value)) {
+                editor.updateDraft({ tags: [...draft.tags, value] });
               }
+              event.currentTarget.value = '';
             }}
             placeholder="添加…"
           />
@@ -353,36 +365,10 @@ export const InspectorPane = ({
               ))}
           </datalist>
         </div>
-      </div>
+      </Block>
 
-      <div className="grid gap-2 border-t border-edge pt-4">
+      <div className="grid gap-2">
         <Button
-          className="
-            flex min-h-11 items-center justify-center gap-2 rounded-control
-            border border-transparent bg-primary px-3 font-mono text-[0.82rem]
-            text-on-primary transition-colors
-            hover:bg-primary-deep
-            focus-visible:outline-[3px] focus-visible:outline-offset-2
-            focus-visible:outline-focus-outline
-            [&_svg]:size-4
-          "
-          isDisabled={!editor.canPublish}
-          onPress={() => {
-            if (article.published) setConfirmPublish('unpublish');
-            else setConfirmPublish('publish');
-          }}
-        >
-          <Eye aria-hidden="true" />
-          {article.published ? '下架' : '发布'}
-        </Button>
-        <Button
-          className="
-            flex min-h-11 items-center justify-center gap-2 rounded-control
-            border border-edge px-3 font-mono text-[0.82rem] text-ink-soft
-            hover:bg-accent hover:text-accent-text
-            focus-visible:outline-[3px] focus-visible:outline-offset-2
-            focus-visible:outline-focus-outline
-          "
           isDisabled={!editor.canPublish}
           onPress={() => {
             void editor.requestPreview().then((url) => {
@@ -390,101 +376,44 @@ export const InspectorPane = ({
             });
           }}
         >
-          预览
+          在主站预览
         </Button>
         <Button
-          className="
-            flex min-h-11 items-center justify-center gap-2 rounded-control
-            border border-danger-edge px-3 font-mono text-[0.82rem]
-            text-danger-text
-            hover:bg-danger-soft
-            focus-visible:outline-[3px] focus-visible:outline-offset-2
-            focus-visible:outline-focus-outline
-            [&_svg]:size-4
-          "
-          onPress={() => setConfirmDelete(true)}
+          icon={<Trash2 aria-hidden="true" />}
+          onPress={() => setConfirm({ kind: 'delete' })}
+          tone="warnish"
         >
-          <Trash2 aria-hidden="true" />
           删除文章
         </Button>
       </div>
 
-      <div className="grid gap-2 border-t border-edge pt-4">
+      <div className="grid gap-2 border-t border-rule pt-5">
         <SectionLabel>版本</SectionLabel>
+        <VersionList editor={editor} />
+      </div>
+
+      {/*
+        「发布」是这一列唯一的去处，不能排在一条会滚出视口的长队末尾。
+        吸底：桌面端贴在面板下沿，移动端贴在 sheet 下沿，两处都在可滚容器内。
+      */}
+      <div
+        className="
+          sticky bottom-0 -mx-4 -mb-8 border-t border-rule bg-(--gf-surface)
+          px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]
+        "
+      >
         <Button
-          className="
-            flex min-h-10 items-center gap-1 rounded-control border border-edge
-            px-3 text-[0.78rem] text-ink-soft
-            hover:bg-accent
-            focus-visible:outline-[3px] focus-visible:outline-offset-2
-            focus-visible:outline-focus-outline
-          "
-          onPress={() => void editor.loadVersions()}
+          className="w-full"
+          icon={<Eye aria-hidden="true" />}
+          isDisabled={!editor.canPublish}
+          onPress={() =>
+            setConfirm({ kind: article.published ? 'unpublish' : 'publish' })
+          }
+          size="lg"
+          tone="solid"
         >
-          <ChevronDown aria-hidden="true" className="size-4" />
-          加载版本快照
+          {article.published ? '从主站下架' : '发布到主站'}
         </Button>
-        {editor.versions === null ? null : editor.versions.length === 0 ? (
-          <p className="text-[0.76rem] text-ink-muted">
-            尚无快照。发布 / 下架 / 冲突覆盖时自动生成。
-          </p>
-        ) : (
-          <ul className="grid gap-2">
-            {editor.versions.map((snapshot) => (
-              <li
-                className="rounded-control border border-edge p-2.5"
-                key={snapshot.id}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-[0.76rem] text-ink-soft">
-                    rev {snapshot.revision} ·{' '}
-                    {formatDateTime(snapshot.createdAt)}
-                  </span>
-                  <div className="flex gap-1">
-                    <Button
-                      className="
-                        min-h-8 rounded-control border border-edge px-2
-                        text-[0.7rem] text-ink-soft
-                        hover:bg-accent
-                      "
-                      onPress={() =>
-                        setExpandedSnapshot((current) =>
-                          current === snapshot.id ? null : snapshot.id,
-                        )
-                      }
-                    >
-                      {expandedSnapshot === snapshot.id ? '收起' : '查看'}
-                    </Button>
-                    <Button
-                      className="
-                        min-h-8 rounded-control border border-brand/40 px-2
-                        text-[0.7rem] text-brand
-                        hover:bg-vapor
-                      "
-                      onPress={() => setRestoreSnapshot(snapshot)}
-                    >
-                      恢复
-                    </Button>
-                  </div>
-                </div>
-                <p className="mt-1 truncate text-[0.8rem] text-ink">
-                  {snapshot.title}
-                </p>
-                {expandedSnapshot === snapshot.id ? (
-                  <pre
-                    className="
-                      mt-2 max-h-48 overflow-auto rounded-sm bg-canvas p-2
-                      text-[0.7rem] leading-relaxed whitespace-pre-wrap
-                      text-ink-muted
-                    "
-                  >
-                    {snapshot.content}
-                  </pre>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
       <AssetPickerDialog
@@ -501,50 +430,21 @@ export const InspectorPane = ({
         title="选择文章封面"
       />
 
-      {confirmPublish ? (
-        <ConfirmDialog
-          confirmLabel={confirmPublish === 'publish' ? '确认发布' : '确认下架'}
-          message={
-            confirmPublish === 'publish'
-              ? '发布后主站将对访客可见。确定发布这篇文章吗？'
-              : '下架后主站将立即隐藏这篇文章。确定下架吗？'
-          }
-          onCancel={() => setConfirmPublish(null)}
-          onConfirm={() => {
-            const action =
-              confirmPublish === 'publish'
-                ? editor.publish()
-                : editor.unpublish();
-            setConfirmPublish(null);
-            void action;
-          }}
-        />
-      ) : null}
-
-      {restoreSnapshot ? (
-        <ConfirmDialog
-          confirmLabel="恢复旧版本"
-          message={`确定恢复到 rev ${restoreSnapshot.revision} 吗？恢复后会产生一个新版本且无法撤销。`}
-          onCancel={() => setRestoreSnapshot(null)}
-          onConfirm={() => {
-            const target = restoreSnapshot;
-            setRestoreSnapshot(null);
-            void editor.restoreVersion(target);
-          }}
-        />
-      ) : null}
-
-      {confirmDelete ? (
-        <ConfirmDialog
-          confirmLabel="确认删除"
-          message="删除后文章将从主站和后台移除（封面与正文资产不受影响）。此操作不可撤销。确定删除吗？"
-          onCancel={() => setConfirmDelete(false)}
-          onConfirm={() => {
-            setConfirmDelete(false);
-            void editor.removeArticle();
-          }}
-        />
-      ) : null}
+      <ConfirmDialog
+        confirmLabel={confirmCopy?.confirmLabel ?? ''}
+        isDestructive={confirmCopy?.destructive ?? false}
+        isOpen={confirm !== null && confirm.kind !== 'restore'}
+        message={
+          confirm?.kind === 'publish'
+            ? '发布后这篇文章会立即对主站访客可见。'
+            : confirm?.kind === 'unpublish'
+              ? '下架后主站会立即隐藏这篇文章，内容和版本都会保留。'
+              : '文章会从主站和后台移除，封面与正文里用到的资产不受影响。此操作不可撤销。'
+        }
+        onCancel={() => setConfirm(null)}
+        onConfirm={runConfirm}
+        title={confirmCopy?.title ?? ''}
+      />
     </div>
   );
 };

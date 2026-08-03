@@ -1,140 +1,27 @@
 import {
-  createRoute,
   createRootRoute,
+  createRoute,
   createRouter,
-  Link,
-  Outlet,
-  useNavigate,
+  Navigate,
   useParams,
 } from '@tanstack/react-router';
-import { cn } from 'cnfast';
-import { useEffect } from 'react';
 
-import { ArticlesListPage } from '../features/articles/list-page.js';
-import { NewArticlePage } from '../features/articles/new-article-page.js';
-import { ArticleWorkspacePage } from '../features/articles/workspace-page.js';
-import { AssetsDetailPage } from '../features/assets/detail-page.js';
-import { AssetsListPage } from '../features/assets/list-page.js';
-import { CategoriesPage } from '../features/taxonomy/categories-page.js';
-import { TagsPage } from '../features/taxonomy/tags-page.js';
+import { ConsoleShell } from '@/app/shell/console-shell.js';
+import { parseStatusFilter } from '@/features/articles/display.js';
+import { ArticlesListPage } from '@/features/articles/list-page.js';
+import { NewArticlePage } from '@/features/articles/new-article-page.js';
+import { ArticleWorkspacePage } from '@/features/articles/workspace-page.js';
+import { AssetsDetailPage } from '@/features/assets/detail-page.js';
+import { AssetsListPage } from '@/features/assets/list-page.js';
+import { CategoriesPage } from '@/features/taxonomy/categories-page.js';
+import { TagsPage } from '@/features/taxonomy/tags-page.js';
 
-const NAV_ITEMS = [
-  { label: '文章', path: '/articles' },
-  { label: '新建文章', path: '/articles/new' },
-  { label: '分类', path: '/categories' },
-  { label: '标签', path: '/tags' },
-  { label: '资产库', path: '/assets' },
-];
+const rootRoute = createRootRoute({ component: ConsoleShell });
 
-const NavigationTab = ({ label, path }: { label: string; path: string }) => {
-  return (
-    <Link
-      className={cn(
-        'flex min-h-10.5 shrink-0 items-center rounded-control px-3 font-mono',
-        `
-          text-[0.8rem] leading-[1.2] text-ink-soft transition-colors
-          duration-150
-        `,
-        `
-          ease-out
-          hover:bg-accent hover:text-accent-text
-        `,
-        'focus-visible:outline-[3px] focus-visible:outline-offset-2',
-        `
-          focus-visible:outline-focus-outline
-          [&.active]:bg-vapor
-        `,
-        '[&.active]:text-brand',
-      )}
-      to={path}
-    >
-      {label}
-    </Link>
-  );
-};
-
-const NavigationRail = () => {
-  return (
-    <aside
-      aria-label="主导航"
-      className="
-        flex w-52 shrink-0 flex-col gap-1 border-r border-edge bg-surface p-3
-      "
-    >
-      {NAV_ITEMS.map((item) => (
-        <Link
-          className={cn(
-            'flex min-h-10.5 items-center rounded-control px-3 font-mono',
-            'text-[0.82rem] leading-[1.2] text-ink-soft transition-colors',
-            `
-              duration-150 ease-out
-              hover:bg-accent hover:text-accent-text
-            `,
-            'focus-visible:outline-[3px] focus-visible:outline-offset-2',
-            `
-              focus-visible:outline-focus-outline
-              [&.active]:bg-vapor
-            `,
-            '[&.active]:text-brand',
-          )}
-          key={item.path}
-          to={item.path}
-        >
-          {item.label}
-        </Link>
-      ))}
-    </aside>
-  );
-};
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <div className="flex h-full min-h-0 flex-col">
-      <div
-        className="
-          flex items-center gap-1 overflow-x-auto border-b border-edge
-          bg-surface px-3 py-1
-          md:hidden
-        "
-      >
-        {NAV_ITEMS.map((item) => (
-          <NavigationTab key={item.path} label={item.label} path={item.path} />
-        ))}
-      </div>
-      <div
-        className="
-          flex h-full min-h-0 flex-1 flex-col
-          md:flex-row
-        "
-      >
-        <div
-          className="
-            hidden h-full
-            md:block
-          "
-        >
-          <NavigationRail />
-        </div>
-        <section className="h-full min-w-0 flex-1 overflow-auto">
-          <Outlet />
-        </section>
-      </div>
-    </div>
-  ),
-});
-
-const RedirectToLists = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    void navigate({ to: '/articles' });
-  }, [navigate]);
-
-  return null;
-};
+const RedirectToArticles = () => <Navigate replace to="/articles" />;
 
 const indexRoute = createRoute({
-  component: RedirectToLists,
+  component: RedirectToArticles,
   getParentRoute: () => rootRoute,
   path: '/',
 });
@@ -143,6 +30,12 @@ const articlesListRoute = createRoute({
   component: ArticlesListPage,
   getParentRoute: () => rootRoute,
   path: '/articles',
+  // 「全部」是无查询串的规范 URL，草稿与已发布各自带一个 status。
+  // 这样侧栏子项可以深链，而普通的「去文章列表」不必拖着查询串走。
+  validateSearch: (search: Record<string, unknown>) => {
+    const status = parseStatusFilter(search.status);
+    return status === 'all' ? {} : { status };
+  },
 });
 
 const newArticleRoute = createRoute({
@@ -152,9 +45,7 @@ const newArticleRoute = createRoute({
 });
 
 const ArticleWorkspaceRouteView = () => {
-  const { articleId } = useParams({ strict: false }) as {
-    articleId: string;
-  };
+  const { articleId } = useParams({ strict: false }) as { articleId: string };
   return <ArticleWorkspacePage articleId={articleId} />;
 };
 
@@ -162,6 +53,8 @@ const articleWorkspaceRoute = createRoute({
   component: ArticleWorkspaceRouteView,
   getParentRoute: () => rootRoute,
   path: '/articles/$articleId',
+  // 写作要独占视口：外壳收起移动端的拇指栏，把滚动交还给纸面。
+  staticData: { fullBleed: true },
 });
 
 const tagsRoute = createRoute({

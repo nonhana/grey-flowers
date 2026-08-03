@@ -1,28 +1,22 @@
 import type { AssetDto, AssetPurpose } from '@grey-flowers/contracts';
 
-import { ImageUp, Loader2, X } from 'lucide-react';
+import { ImageUp, Images } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Dialog,
-  Heading,
-  Modal,
-  ModalOverlay,
-} from 'react-aria-components';
+import { Button as AriaButton } from 'react-aria-components';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
 import { formatBytes } from '@/features/assets/display.js';
+import {
+  Alert,
+  AppDialog,
+  AssetImage,
+  Button,
+  EmptyState,
+  Skeleton,
+  Spinner,
+} from '@/ui/index.js';
 
 const ASSET_PAGE_SIZE = 12;
-
-interface AssetPickerDialogProps {
-  articleId?: string;
-  onClose: () => void;
-  onSelect: (asset: AssetDto) => void;
-  open: boolean;
-  purpose: AssetPurpose;
-  title: string;
-}
 
 export const AssetPickerDialog = ({
   onClose,
@@ -30,7 +24,13 @@ export const AssetPickerDialog = ({
   open,
   purpose,
   title,
-}: AssetPickerDialogProps) => {
+}: {
+  onClose: () => void;
+  onSelect: (asset: AssetDto) => void;
+  open: boolean;
+  purpose: AssetPurpose;
+  title: string;
+}) => {
   const [items, setItems] = useState<AssetDto[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -52,30 +52,6 @@ export const AssetPickerDialog = ({
     }
   }
 
-  const loadPage = async (nextPage: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await apiClient.assets.list({
-        page: nextPage,
-        pageSize: ASSET_PAGE_SIZE,
-        purpose,
-        status: 'AVAILABLE',
-      });
-      setItems((current) =>
-        nextPage === 1 ? data.items : [...current, ...data.items],
-      );
-      setPage(nextPage);
-      setTotal(data.total);
-    } catch (loadError) {
-      setError(
-        isApiRequestError(loadError) ? loadError.message : '资产加载失败。',
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
@@ -92,14 +68,15 @@ export const AssetPickerDialog = ({
         setItems(data.items);
         setPage(1);
         setTotal(data.total);
-        setLoading(false);
       })
       .catch((loadError: unknown) => {
         if (cancelled) return;
         setError(
           isApiRequestError(loadError) ? loadError.message : '资产加载失败。',
         );
-        setLoading(false);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
 
     return () => {
@@ -107,7 +84,30 @@ export const AssetPickerDialog = ({
     };
   }, [open, purpose]);
 
-  const handleUpload = async (file: File) => {
+  const loadMore = async () => {
+    const nextPage = page + 1;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await apiClient.assets.list({
+        page: nextPage,
+        pageSize: ASSET_PAGE_SIZE,
+        purpose,
+        status: 'AVAILABLE',
+      });
+      setItems((current) => [...current, ...data.items]);
+      setPage(nextPage);
+      setTotal(data.total);
+    } catch (loadError) {
+      setError(
+        isApiRequestError(loadError) ? loadError.message : '资产加载失败。',
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const upload = async (file: File) => {
     setUploading(0);
     setError(null);
     try {
@@ -115,8 +115,6 @@ export const AssetPickerDialog = ({
         { file, purpose },
         (progress) => setUploading(Math.round(progress * 100)),
       );
-      setItems((current) => [asset, ...current]);
-      setTotal((current) => current + 1);
       onSelect(asset);
     } catch (uploadError) {
       setError(
@@ -128,153 +126,109 @@ export const AssetPickerDialog = ({
   };
 
   return (
-    <ModalOverlay
-      className="
-        fixed inset-0 z-50 grid place-items-end bg-black/40 p-0
-        md:place-items-center md:p-6
-      "
-      isDismissable
+    <AppDialog
       isOpen={open}
       onOpenChange={(isOpen) => {
         if (!isOpen) onClose();
       }}
+      size="lg"
+      title={title}
     >
-      <Modal
-        className="
-          max-h-[88vh] w-full max-w-lg overflow-hidden rounded-panel border
-          border-edge bg-surface shadow-panel outline-none
-          md:max-w-xl
-        "
-      >
-        <Dialog aria-label={title} className="outline-none">
-          <div
+      <div className="grid gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            icon={<ImageUp aria-hidden="true" />}
+            isLoading={uploading !== null}
+            onPress={() => fileInputRef.current?.click()}
+            tone="solid"
+          >
+            {uploading === null ? '上传新图片' : `上传中 ${String(uploading)}%`}
+          </Button>
+          <input
+            accept="image/png,image/jpeg,image/gif,image/webp"
+            aria-hidden="true"
+            className="hidden"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) void upload(file);
+              event.target.value = '';
+            }}
+            ref={fileInputRef}
+            tabIndex={-1}
+            type="file"
+          />
+        </div>
+
+        {error ? <Alert>{error}</Alert> : null}
+
+        {loading && items.length === 0 ? (
+          <ul
             className="
-              flex items-center justify-between border-b border-edge px-5 py-3.5
+              grid grid-cols-3 gap-3
+              sm:grid-cols-4
             "
           >
-            <Heading className="font-mono text-[0.9rem] text-ink-strong">
-              {title}
-            </Heading>
-            <Button
-              aria-label="关闭"
-              className="
-                grid size-9 place-items-center rounded-control text-ink-faint
-                hover:bg-accent
-              "
-              onPress={onClose}
-            >
-              <X aria-hidden="true" />
-            </Button>
-          </div>
+            {Array.from({ length: 8 }, (_, index) => (
+              <li key={index}>
+                <Skeleton className="aspect-square w-full" />
+              </li>
+            ))}
+          </ul>
+        ) : items.length === 0 ? (
+          <EmptyState
+            icon={<Images aria-hidden="true" />}
+            title="这个用途下还没有资产"
+          >
+            用上面的按钮传一张，它会立刻被选中并插入。
+          </EmptyState>
+        ) : (
+          <ul
+            className="
+              grid grid-cols-3 gap-3
+              sm:grid-cols-4
+            "
+          >
+            {items.map((asset) => (
+              <li key={asset.id}>
+                <AriaButton
+                  className="
+                    group grid w-full gap-1.5 rounded-control border border-rule
+                    bg-well p-1.5 text-left transition-colors
+                    hover:border-accent-rule hover:bg-accent-wash
+                  "
+                  onPress={() => onSelect(asset)}
+                >
+                  <span
+                    className="
+                      grid aspect-square place-items-center overflow-hidden
+                      rounded-control bg-canvas
+                    "
+                  >
+                    <AssetImage
+                      alt=""
+                      className="size-full object-cover"
+                      src={asset.deliveryUrl}
+                    />
+                  </span>
+                  <span className="px-0.5 font-mono text-2xs text-ink-dim">
+                    {formatBytes(asset.byteSize)}
+                  </span>
+                </AriaButton>
+              </li>
+            ))}
+          </ul>
+        )}
 
-          <div className="grid max-h-[calc(88vh-140px)] gap-4 overflow-auto p-5">
-            <div className="flex flex-wrap items-center gap-3">
-              <Button
-                className="
-                  flex min-h-10.5 items-center gap-2 rounded-control border
-                  border-transparent bg-primary px-3.5 font-mono text-[0.82rem]
-                  text-on-primary transition-colors
-                  hover:bg-primary-deep
-                "
-                onPress={() => fileInputRef.current?.click()}
-              >
-                <ImageUp aria-hidden="true" />
-                {uploading === null ? '上传新图片' : `上传中 ${uploading}%`}
-              </Button>
-              <input
-                ref={fileInputRef}
-                accept="image/png,image/jpeg,image/gif,image/webp"
-                className="hidden"
-                type="file"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) void handleUpload(file);
-                  event.target.value = '';
-                }}
-              />
-              {loading ? (
-                <Loader2 aria-hidden="true" className="animate-spin" />
-              ) : null}
-            </div>
+        {items.length > 0 && items.length < total ? (
+          <Button isDisabled={loading} onPress={() => void loadMore()}>
+            加载更多（{items.length}/{total}）
+          </Button>
+        ) : null}
 
-            {error ? (
-              <p
-                className="
-                  border-l-[3px] border-l-danger-edge bg-danger-soft px-2.5 py-2
-                  text-[0.85rem] text-danger-ink
-                "
-                role="alert"
-              >
-                {error}
-              </p>
-            ) : null}
-
-            {items.length === 0 && !loading ? (
-              <p className="text-[0.9rem] text-ink-muted">
-                暂无可用资产，先上传一张图片。
-              </p>
-            ) : (
-              <ul
-                className="
-                  grid grid-cols-3 gap-3
-                  sm:grid-cols-4
-                "
-              >
-                {items.map((asset) => (
-                  <li key={asset.id}>
-                    <Button
-                      className="
-                        group grid w-full gap-1.5 rounded-control border
-                        border-edge bg-canvas p-1.5 text-left transition-colors
-                        outline-none
-                        hover:border-accent-hover-edge
-                        focus-visible:outline-[3px]
-                        focus-visible:outline-offset-2
-                        focus-visible:outline-focus-outline
-                      "
-                      onPress={() => onSelect(asset)}
-                    >
-                      <span
-                        className="
-                          grid aspect-square place-items-center overflow-hidden
-                          rounded-sm bg-input
-                        "
-                      >
-                        <img
-                          alt={asset.storageKey}
-                          className="object-cover"
-                          src={asset.deliveryUrl}
-                        />
-                      </span>
-                      <span
-                        className="
-                          px-0.5 font-mono text-[0.68rem] text-ink-faint
-                        "
-                      >
-                        {formatBytes(asset.byteSize)}
-                      </span>
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {items.length < total ? (
-              <Button
-                className="
-                  min-h-10.5 rounded-control border border-edge font-mono
-                  text-[0.82rem] text-ink-soft
-                  hover:bg-accent
-                "
-                isDisabled={loading}
-                onPress={() => void loadPage(page + 1)}
-              >
-                加载更多（{items.length}/{total}）
-              </Button>
-            ) : null}
-          </div>
-        </Dialog>
-      </Modal>
-    </ModalOverlay>
+        {loading && items.length > 0 ? (
+          <Spinner className="justify-self-center" label="加载中" />
+        ) : null}
+      </div>
+    </AppDialog>
   );
 };

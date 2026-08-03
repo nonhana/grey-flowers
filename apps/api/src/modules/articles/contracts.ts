@@ -4,8 +4,9 @@ import type {
   ArticleDetail,
   ArticleListAdmin,
 } from '@grey-flowers/contracts';
+import type { ArticleSelect } from '@grey-flowers/db';
 
-export const articleListAdminProjection = {
+export const articleListAdminProjection: ArticleSelect = {
   alt: true,
   category: { select: { name: true } },
   categoryId: true,
@@ -21,7 +22,7 @@ export const articleListAdminProjection = {
   title: true,
   to: true,
   wordCount: true,
-} as const;
+};
 
 export interface ArticleListAdminRecord {
   alt: string;

@@ -1,0 +1,608 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-03T00:00:00.000Z",
+  "title": "Design System: Grey Flowers Admin",
+  "extensions": {
+    "colorMeta": {
+      "case": {
+        "role": "neutral",
+        "displayName": "Type Case",
+        "canonical": "oklch(0.925 0.01 244)",
+        "darkCanonical": "oklch(0.19 0.012 252)",
+        "tonalRamp": [
+          "oklch(0.15 0.012 244)",
+          "oklch(0.24 0.012 244)",
+          "oklch(0.35 0.012 244)",
+          "oklch(0.47 0.012 244)",
+          "oklch(0.6 0.011 244)",
+          "oklch(0.73 0.011 244)",
+          "oklch(0.86 0.01 244)",
+          "oklch(0.95 0.01 244)"
+        ]
+      },
+      "case-raised": {
+        "role": "neutral",
+        "displayName": "Case Raised",
+        "canonical": "oklch(0.972 0.005 242)",
+        "darkCanonical": "oklch(0.245 0.012 252)"
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Canvas",
+        "canonical": "oklch(0.955 0.006 242)",
+        "darkCanonical": "oklch(0.22 0.012 252)"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(0.997 0.004 92)",
+        "darkCanonical": "oklch(0.269 0.004 84)",
+        "tonalRamp": [
+          "oklch(0.15 0.004 92)",
+          "oklch(0.27 0.004 92)",
+          "oklch(0.39 0.004 92)",
+          "oklch(0.51 0.004 92)",
+          "oklch(0.63 0.004 92)",
+          "oklch(0.75 0.004 92)",
+          "oklch(0.88 0.004 92)",
+          "oklch(0.997 0.004 92)"
+        ]
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well",
+        "canonical": "oklch(0.945 0.012 240)",
+        "darkCanonical": "oklch(0.18 0.012 252)"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.855 0.012 242)",
+        "darkCanonical": "oklch(0.32 0.014 250)"
+      },
+      "edge": {
+        "role": "neutral",
+        "displayName": "Edge",
+        "canonical": "oklch(0.78 0.018 242)",
+        "darkCanonical": "oklch(0.4 0.018 250)"
+      },
+      "edge-hover": {
+        "role": "neutral",
+        "displayName": "Edge Awake",
+        "canonical": "oklch(0.66 0.045 244)",
+        "darkCanonical": "oklch(0.54 0.035 248)"
+      },
+      "ink-strong": {
+        "role": "neutral",
+        "displayName": "Ink Strong",
+        "canonical": "oklch(0.24 0.03 252)",
+        "darkCanonical": "oklch(0.95 0.006 245)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 252)",
+          "oklch(0.24 0.03 252)",
+          "oklch(0.34 0.028 252)",
+          "oklch(0.45 0.026 252)",
+          "oklch(0.57 0.022 252)",
+          "oklch(0.7 0.018 252)",
+          "oklch(0.84 0.012 252)",
+          "oklch(0.95 0.006 252)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.34 0.022 250)",
+        "darkCanonical": "oklch(0.87 0.009 245)"
+      },
+      "ink-dim": {
+        "role": "neutral",
+        "displayName": "Ink Dim",
+        "canonical": "oklch(0.44 0.019 248)",
+        "darkCanonical": "oklch(0.7 0.013 245)"
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Petal Ink",
+        "canonical": "oklch(0.46 0.116 250)",
+        "darkCanonical": "oklch(0.63 0.115 248)",
+        "tonalRamp": [
+          "oklch(0.16 0.06 250)",
+          "oklch(0.26 0.085 250)",
+          "oklch(0.36 0.105 250)",
+          "oklch(0.46 0.116 250)",
+          "oklch(0.58 0.115 250)",
+          "oklch(0.7 0.095 250)",
+          "oklch(0.83 0.055 250)",
+          "oklch(0.94 0.025 250)"
+        ]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "Petal Ink Deep",
+        "canonical": "oklch(0.4 0.11 250)",
+        "darkCanonical": "oklch(0.69 0.108 248)"
+      },
+      "accent-on": {
+        "role": "primary",
+        "displayName": "On Petal",
+        "canonical": "oklch(0.99 0.004 250)",
+        "darkCanonical": "oklch(0.16 0.03 252)"
+      },
+      "accent-text": {
+        "role": "primary",
+        "displayName": "Petal Read",
+        "canonical": "oklch(0.44 0.115 250)",
+        "darkCanonical": "oklch(0.79 0.082 244)"
+      },
+      "accent-wash": {
+        "role": "primary",
+        "displayName": "Petal Wash",
+        "canonical": "oklch(0.93 0.03 240)",
+        "darkCanonical": "oklch(0.31 0.045 246)"
+      },
+      "accent-wash-hover": {
+        "role": "primary",
+        "displayName": "Petal Wash Awake",
+        "canonical": "oklch(0.9 0.04 240)",
+        "darkCanonical": "oklch(0.36 0.052 246)"
+      },
+      "accent-rule": {
+        "role": "primary",
+        "displayName": "Petal Rule",
+        "canonical": "oklch(0.7 0.075 248)",
+        "darkCanonical": "oklch(0.48 0.07 248)"
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Alarm Red",
+        "canonical": "oklch(0.5 0.17 25)",
+        "darkCanonical": "oklch(0.58 0.17 25)",
+        "tonalRamp": [
+          "oklch(0.18 0.08 25)",
+          "oklch(0.28 0.12 25)",
+          "oklch(0.39 0.155 25)",
+          "oklch(0.5 0.17 25)",
+          "oklch(0.62 0.165 25)",
+          "oklch(0.74 0.135 25)",
+          "oklch(0.86 0.085 25)",
+          "oklch(0.955 0.025 25)"
+        ]
+      },
+      "danger-hover": {
+        "role": "tertiary",
+        "displayName": "Alarm Red Deep",
+        "canonical": "oklch(0.44 0.165 25)",
+        "darkCanonical": "oklch(0.64 0.16 25)"
+      },
+      "danger-on": {
+        "role": "tertiary",
+        "displayName": "On Alarm",
+        "canonical": "oklch(0.99 0.004 25)",
+        "darkCanonical": "oklch(0.15 0.02 25)"
+      },
+      "danger-text": {
+        "role": "tertiary",
+        "displayName": "Alarm Read",
+        "canonical": "oklch(0.45 0.17 25)",
+        "darkCanonical": "oklch(0.79 0.125 25)"
+      },
+      "danger-wash": {
+        "role": "tertiary",
+        "displayName": "Alarm Wash",
+        "canonical": "oklch(0.955 0.025 25)",
+        "darkCanonical": "oklch(0.28 0.055 25)"
+      },
+      "danger-rule": {
+        "role": "tertiary",
+        "displayName": "Alarm Rule",
+        "canonical": "oklch(0.72 0.11 25)",
+        "darkCanonical": "oklch(0.5 0.13 25)"
+      },
+      "warn-text": {
+        "role": "tertiary",
+        "displayName": "Caution Read",
+        "canonical": "oklch(0.45 0.1 70)",
+        "darkCanonical": "oklch(0.83 0.1 78)",
+        "tonalRamp": [
+          "oklch(0.18 0.05 74)",
+          "oklch(0.28 0.07 74)",
+          "oklch(0.38 0.09 74)",
+          "oklch(0.48 0.1 74)",
+          "oklch(0.6 0.1 74)",
+          "oklch(0.72 0.095 74)",
+          "oklch(0.85 0.07 74)",
+          "oklch(0.955 0.035 74)"
+        ]
+      },
+      "warn-wash": {
+        "role": "tertiary",
+        "displayName": "Caution Wash",
+        "canonical": "oklch(0.955 0.035 80)",
+        "darkCanonical": "oklch(0.28 0.045 75)"
+      },
+      "warn-rule": {
+        "role": "tertiary",
+        "displayName": "Caution Rule",
+        "canonical": "oklch(0.74 0.085 75)",
+        "darkCanonical": "oklch(0.5 0.085 75)"
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus",
+        "canonical": "oklch(0.5 0.13 250)",
+        "darkCanonical": "oklch(0.72 0.1 248)"
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Scrim",
+        "canonical": "oklch(0.24 0.03 252 / 42%)",
+        "darkCanonical": "oklch(0.12 0.02 252 / 62%)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page title and auth headline. Nothing in the console is larger — the title must outweigh the create button."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Dialog headings, empty-state titles, and the 16px floor for control text (below 1rem, iOS Safari zooms on focus)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Console default: descriptions, list rows, alert copy, menu items, button text."
+      },
+      "manuscript": {
+        "displayName": "Manuscript",
+        "purpose": "The editor's paper. 72ch border-box with 1.25rem side padding lands the measure at roughly 68 characters."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Monospace. The name of a thing: field labels, section labels, rail sub-navigation."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Monospace, tabular. The measurement of a thing: metadata, badges, status readouts, tooltips, tab labels."
+      }
+    },
+    "fonts": [
+      {
+        "name": "JetBrains Mono",
+        "delivery": "self-hosted",
+        "detail": "@fontsource/jetbrains-mono, latin subset, weights 400/500, ~43 kB total. Self-hosted so the type case keeps its character on a cold offline load. No 700 is loaded, and font-synthesis is off, so monospace emphasis tops out at 500."
+      },
+      {
+        "name": "Noto Serif SC",
+        "delivery": "google-fonts",
+        "detail": "Deliberately NOT self-hosted, and the reason is measured rather than lazy: @fontsource/noto-serif-sc ships the whole simplified-Chinese range as a single ~1.3 MB woff2 per weight, so 400/500/700 would push ~4 MB at a phone. Google slices the same face into ~100 unicode-range shards of which a Chinese screen fetches three or four. Mobile is a first-class long-form writing device here, which is an argument about bytes and first paint, so it argues against self-hosting. Offline the stack falls to Songti SC / SimSun / Noto Serif CJK — still a serif; the paper never becomes a system sans. Revisit only if the sliced shards get vendored properly."
+      }
+    ],
+    "shadows": [
+      {
+        "name": "case-down",
+        "value": "0 1px 3px var(--gf-shadow-near), 0 6px 14px -8px var(--gf-shadow-far)",
+        "purpose": "The seam where type-case chrome rests on top of paper — mobile workspace header, desktop editor toolbar. Never a hairline: the paper is a lifted plane and a rule would cut it."
+      },
+      {
+        "name": "case-up",
+        "value": "0 -1px 3px var(--gf-shadow-near), 0 -6px 14px -8px var(--gf-shadow-far)",
+        "purpose": "The same seam inverted, for chrome sitting below the paper — the keyboard-following editor toolbar on mobile."
+      },
+      {
+        "name": "float",
+        "value": "0 2px 6px var(--gf-shadow-near), 0 18px 44px -14px var(--gf-shadow-far)",
+        "purpose": "Anything that has genuinely left the page: dialogs, sheets, popovers, menus, tooltips, the auth card. Floating surfaces carry no border — elevation is declared once."
+      },
+      {
+        "name": "shadow-near / shadow-far (ingredients)",
+        "value": "light: oklch(0.35 0.04 250 / 10%) and oklch(0.3 0.05 250 / 22%); dark: oklch(0 0 0 / 30%) and oklch(0 0 0 / 45%)",
+        "purpose": "Shadow colour is theme-aware — blue-tinted ink by day, neutral black at night."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-quint",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Entrance easing for sheets, dialogs, and popovers."
+      },
+      {
+        "name": "scrim-in / scrim-out",
+        "value": "180ms ease-out / 140ms ease-in",
+        "purpose": "Overlay fade. Exits are always shorter than entrances."
+      },
+      {
+        "name": "sheet-in / sheet-out",
+        "value": "240ms ease-out-quint / 160ms ease-in",
+        "purpose": "Bottom sheet and mobile-anchored dialog translateY."
+      },
+      {
+        "name": "dialog-in / dialog-out",
+        "value": "200ms ease-out-quint / 140ms ease-in",
+        "purpose": "Centred dialog: 8px rise with a 0.985 scale."
+      },
+      {
+        "name": "pop-in",
+        "value": "140ms ease-out-quint",
+        "purpose": "Tooltips and popovers: a 4px drop, opacity only otherwise."
+      },
+      {
+        "name": "transition-colors",
+        "value": "150ms",
+        "purpose": "Every hover and active state change in the console. Colour moves; nothing scales, lifts, or translates."
+      },
+      {
+        "name": "inspector width",
+        "value": "200ms ease-out",
+        "purpose": "The desktop inspector animates its outer width only; inner content stays pinned so the manuscript never reflows."
+      },
+      {
+        "name": "indeterminate progress (exempt)",
+        "value": "spin 1s, auth-stage spin 1.4s, skeleton pulse 2s",
+        "purpose": "The 140-240ms band governs state transitions and enter/exit. Continuous progress indicators report ongoing work rather than a change of state and are deliberately outside it."
+      },
+      {
+        "name": "reduced motion",
+        "value": "prefers-reduced-motion: reduce collapses all transitions and animations to 0.01ms",
+        "purpose": "Honoured globally in the base layer, not per component."
+      }
+    ],
+    "breakpoints": [
+      { "name": "compact-auth", "value": "480px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ],
+    "layout": [
+      { "name": "rail-width", "value": "264px" },
+      { "name": "inspector-width", "value": "380px" },
+      { "name": "tab-bar-height", "value": "56px" },
+      { "name": "auth-card-width", "value": "416px" },
+      { "name": "page-narrow", "value": "42rem" },
+      { "name": "page-default", "value": "56rem" },
+      { "name": "page-wide", "value": "72rem" },
+      {
+        "name": "manuscript-measure",
+        "value": "72ch border-box (~68ch of glyphs)"
+      },
+      { "name": "overlay-max-height", "value": "88dvh" }
+    ],
+    "focus": {
+      "value": "outline: 2px solid var(--color-focus); outline-offset: 2px",
+      "purpose": "Defined once in the base layer at zero specificity via :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible. Components do not redefine it; inputs alone add to it by shifting their border to accent and tightening the offset to 1px."
+    },
+    "scrollbars": {
+      "value": "scrollbar-width: thin; scrollbar-color: var(--color-edge) transparent; ::-webkit-scrollbar-track { background: transparent }; thumb is a 10px pill inset by a 3px transparent border",
+      "purpose": "Tracks are transparent everywhere. A default pale track draws a full-height cold-grey line down the right edge of the paper — exactly what the Case-Meets-Paper Rule exists to prevent."
+    }
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Submission. At most one per screen — it is what the operator came to do.",
+      "html": "<button class=\"ds-btn-solid\">保存并发布</button>",
+      "css": ".ds-btn-solid { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid transparent; border-radius: var(--radius-control, 8px); background: var(--color-accent); color: var(--color-accent-on); font-family: var(--font-mono); font-size: 0.875rem; line-height: 1; white-space: nowrap; cursor: pointer; transition: background-color 150ms, color 150ms, border-color 150ms; } .ds-btn-solid:hover:not(:disabled) { background: var(--color-accent-hover); } .ds-btn-solid:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-btn-solid:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "The default. Every secondary action in the console is this.",
+      "html": "<button class=\"ds-btn-quiet\">取消</button>",
+      "css": ".ds-btn-quiet { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--color-edge); border-radius: var(--radius-control, 8px); background: var(--color-case-raised); color: var(--color-ink); font-family: var(--font-mono); font-size: 0.875rem; line-height: 1; white-space: nowrap; cursor: pointer; transition: background-color 150ms, color 150ms, border-color 150ms; } .ds-btn-quiet:hover:not(:disabled) { border-color: var(--color-edge-hover); background: var(--color-accent-wash); color: var(--color-accent-text); } .ds-btn-quiet:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-btn-quiet:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Warnish Button",
+      "kind": "button",
+      "refersTo": "button-warnish",
+      "description": "The entry to a destructive action — outlined, never filled, so it cannot be pressed by reflex. Only the confirming end is a filled danger button.",
+      "html": "<button class=\"ds-btn-warnish\">删除资产</button>",
+      "css": ".ds-btn-warnish { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--color-danger-rule); border-radius: var(--radius-control, 8px); background: transparent; color: var(--color-danger-text); font-family: var(--font-mono); font-size: 0.875rem; line-height: 1; white-space: nowrap; cursor: pointer; transition: background-color 150ms; } .ds-btn-warnish:hover:not(:disabled) { background: var(--color-danger-wash); } .ds-btn-warnish:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Recessed well fill with an interactive edge. Font size is locked at 1rem — anything smaller makes iOS Safari zoom on focus, which ruins mobile long-form writing.",
+      "html": "<span class=\"ds-field\"><span class=\"ds-field-label\">标题</span><input class=\"ds-field-input\" placeholder=\"给这篇文章起个名字\" /></span>",
+      "css": ".ds-field { display: grid; gap: 6px; } .ds-field-label { font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.45; color: var(--color-ink-dim); } .ds-field-input { min-height: 44px; width: 100%; box-sizing: border-box; padding: 8px 12px; border: 1px solid var(--color-edge); border-radius: var(--radius-control, 8px); background: var(--color-well); color: var(--color-ink-strong); font-family: var(--font-serif); font-size: 1rem; line-height: 1.6; outline: none; transition: border-color 150ms; } .ds-field-input::placeholder { color: var(--color-ink-dim); } .ds-field-input:hover:not(:disabled) { border-color: var(--color-edge-hover); } .ds-field-input:focus-visible { border-color: var(--color-accent); outline: 2px solid var(--color-focus); outline-offset: 1px; } .ds-field-input[data-invalid] { border-color: var(--color-danger-rule); }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "filter-chip",
+      "description": "Pill silhouette means 'a state you read'. Selection changes fill, border, and text together — never hue alone.",
+      "html": "<span class=\"ds-chip-row\"><button class=\"ds-chip\">全部</button><button class=\"ds-chip ds-chip-on\" aria-pressed=\"true\">已发布</button></span>",
+      "css": ".ds-chip-row { display: inline-flex; gap: 8px; } .ds-chip { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid var(--color-edge); border-radius: 999px; background: transparent; color: var(--color-ink-dim); font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.45; cursor: pointer; transition: color 150ms, background-color 150ms, border-color 150ms; } .ds-chip:hover { border-color: var(--color-edge-hover); color: var(--color-ink); } .ds-chip:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-chip-on { border-color: var(--color-accent-rule); background: var(--color-accent-wash); color: var(--color-accent-text); }"
+    },
+    {
+      "name": "Status Readout",
+      "kind": "custom",
+      "refersTo": "status-readout-ok",
+      "description": "The workspace signature: one pill reporting one value at a time (saving / saved + revision / conflict / offline / unsaved), aria-live polite. It replaced a row of chips that each answered a different question.",
+      "html": "<span class=\"ds-readout\"><span aria-live=\"polite\">已保存 · rev 12</span></span>",
+      "css": ".ds-readout { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; border: 1px solid var(--color-accent-rule); border-radius: 999px; background: var(--color-accent-wash); color: var(--color-accent-text); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.45; font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; }"
+    },
+    {
+      "name": "Publish Badge",
+      "kind": "chip",
+      "refersTo": "filter-chip-selected",
+      "description": "The words carry the meaning; colour only reinforces them. Published reuses the accent family — there is no success green in this world.",
+      "html": "<span class=\"ds-badge\"><span class=\"ds-badge-dot\" aria-hidden=\"true\"></span>已发布</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border: 1px solid var(--color-accent-rule); border-radius: 999px; background: var(--color-accent-wash); color: var(--color-accent-text); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.45; } .ds-badge-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--color-accent); }"
+    },
+    {
+      "name": "Row Stack",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "The type case's list primitive: one bordered container that clips its children and draws hairlines between them, rather than a deck of identical floating cards. Border is the elevation — no shadow.",
+      "html": "<div class=\"ds-stack\"><div class=\"ds-stack-row\"><span class=\"ds-stack-title\">写在灰色世界里的第七封信</span><span class=\"ds-stack-meta\">rev 12 · 2026-07-28 · 1,842 字</span></div><div class=\"ds-stack-row\"><span class=\"ds-stack-title\">关于排字房的一则笔记</span><span class=\"ds-stack-meta\">rev 3 · 2026-07-21 · 604 字</span></div></div>",
+      "css": ".ds-stack { overflow: hidden; border: 1px solid var(--color-rule); border-radius: var(--radius-panel, 14px); background: var(--color-case-raised); } .ds-stack-row { display: grid; gap: 8px; padding: 14px 16px; } .ds-stack-row + .ds-stack-row { border-top: 1px solid var(--color-rule); } .ds-stack-title { font-family: var(--font-serif); font-size: 0.875rem; line-height: 1.55; font-weight: 700; color: var(--color-ink-strong); } .ds-stack-meta { font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.45; font-variant-numeric: tabular-nums; color: var(--color-ink-dim); }"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "nav-row-active",
+      "description": "264px type-case rail. The create action is a solid button sitting above the groups — deliberately unlike every row beneath it, because it performs an action rather than naming a location. Active state rides on data-status so it out-specifies the base colour deterministically.",
+      "html": "<nav class=\"ds-rail\"><a class=\"ds-rail-action\">新建文章</a><p class=\"ds-rail-group\">内容</p><a class=\"ds-rail-row\" data-status=\"active\">文章</a><a class=\"ds-rail-sub\" data-status=\"active\">草稿</a><a class=\"ds-rail-sub\">已发布</a><p class=\"ds-rail-group\">组织</p><a class=\"ds-rail-row\">分类</a><a class=\"ds-rail-row\">标签</a></nav>",
+      "css": ".ds-rail { display: grid; gap: 2px; width: 264px; padding: 12px; border-right: 1px solid var(--color-rule); background: var(--color-case); } .ds-rail-action { display: flex; align-items: center; justify-content: center; min-height: 40px; margin-bottom: 8px; border-radius: var(--radius-control, 8px); background: var(--color-accent); color: var(--color-accent-on); font-family: var(--font-mono); font-size: 0.875rem; line-height: 1; cursor: pointer; transition: background-color 150ms; } .ds-rail-action:hover { background: var(--color-accent-hover); } .ds-rail-group { margin: 0; padding: 12px 10px 4px; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.45; color: var(--color-ink-dim); } .ds-rail-row { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border-radius: var(--radius-control, 8px); font-family: var(--font-serif); font-size: 0.875rem; line-height: 1.55; color: var(--color-ink-dim); cursor: pointer; transition: background-color 150ms, color 150ms; } .ds-rail-row:hover { background: var(--color-accent-wash); color: var(--color-accent-text); } .ds-rail-row[data-status=\"active\"] { background: var(--color-accent-wash); color: var(--color-accent-text); font-weight: 700; } .ds-rail-sub { display: flex; align-items: center; min-height: 32px; padding: 4px 10px 4px 36px; border-radius: var(--radius-control, 8px); font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.45; color: var(--color-ink-dim); cursor: pointer; transition: color 150ms; } .ds-rail-sub:hover { color: var(--color-accent-text); } .ds-rail-sub[data-status=\"active\"] { color: var(--color-accent-text); font-weight: 500; }"
+    },
+    {
+      "name": "Alert",
+      "kind": "custom",
+      "refersTo": "dialog-surface",
+      "description": "A whole pale field with a 1px rule, not a thick coloured left bar — a bar is decoration, not information.",
+      "html": "<div class=\"ds-alert\" role=\"alert\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/></svg><div>本机存着一份更新的未保存草稿。</div></div>",
+      "css": ".ds-alert { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid var(--color-warn-rule); border-radius: var(--radius-control, 8px); background: var(--color-warn-wash); color: var(--color-warn-text); font-family: var(--font-serif); font-size: 0.875rem; line-height: 1.625; } .ds-alert svg { margin-top: 2px; flex-shrink: 0; }"
+    },
+    {
+      "name": "Dialog Surface",
+      "kind": "card",
+      "refersTo": "dialog-surface",
+      "description": "Case-raised on float, no border — elevation declared once. Hairline header, scrolling body, capped at 88dvh. Below 640px it anchors to the bottom edge and squares its lower corners.",
+      "html": "<div class=\"ds-dialog\"><div class=\"ds-dialog-head\"><span class=\"ds-dialog-title\">内容冲突</span></div><div class=\"ds-dialog-body\">这篇文章在另一个窗口被改过，服务端已经到 rev 13。选一份留下：</div></div>",
+      "css": ".ds-dialog { overflow: hidden; width: 100%; max-width: 32rem; border-radius: var(--radius-sheet, 18px); background: var(--color-case-raised); box-shadow: 0 2px 6px var(--gf-shadow-near), 0 18px 44px -14px var(--gf-shadow-far); } .ds-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--color-rule); } .ds-dialog-title { font-family: var(--font-serif); font-size: 1rem; line-height: 1.6; font-weight: 700; color: var(--color-ink-strong); } .ds-dialog-body { padding: 16px 20px; font-family: var(--font-serif); font-size: 0.875rem; line-height: 1.625; color: var(--color-ink); }"
+    },
+    {
+      "name": "Paper (manuscript)",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "The writing surface. Warm paper, serif at 17px/1.9, measure capped at a 72ch border box (~68ch of glyphs), no line numbers. Markdown notation is pushed down to ink-dim so the content floats above it; only links and list markers take the accent.",
+      "html": "<div class=\"ds-paper\"><p class=\"ds-paper-line\"><span class=\"ds-paper-mark\">## </span><span class=\"ds-paper-h2\">排字房</span></p><p class=\"ds-paper-line\">后台是一间排字房。字盘与纸两种物质，<span class=\"ds-paper-mark\">**</span><b>永不混淆</b><span class=\"ds-paper-mark\">**</span>。</p><p class=\"ds-paper-line\"><span class=\"ds-paper-list\">- </span>字盘按格对齐，拉丁数据走等宽。</p></div>",
+      "css": ".ds-paper { box-sizing: border-box; max-width: 72ch; margin-inline: auto; padding: 2.25rem 1.25rem; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-serif); font-size: 17px; line-height: 1.9; caret-color: var(--color-accent); overflow-wrap: break-word; } .ds-paper-line { margin: 0; } .ds-paper-h2 { font-size: 1.22em; font-weight: 700; color: var(--color-ink-strong); } .ds-paper-mark { color: var(--color-ink-dim); } .ds-paper-list { color: var(--color-accent-text); } .ds-paper b { font-weight: 700; color: var(--color-ink-strong); } .ds-paper ::selection { background: var(--color-accent-wash); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Composing Room",
+    "overview": "The console behind Grey Flowers is a room with two materials in it, and they are never mixed. There is a type case — the metal drawer of sorts, cool and gridded, where navigation, lists, filters, controls, metadata and state live, aligned to cells, set tight, with Latin data on monospace and numerals that stack. And there is paper — warm, uncut, serif, one measure wide, where writing and long-form reading happen. An operator should be able to tell which material she is touching before she reads a single word on it.\n\nWhat this world refuses is the homogenising paste: navigation, a data table, a form control and a paragraph of prose all poured into the same rounded-grey-bordered-soft-shadowed card until the interface has one texture and no hierarchy. The type case is dense because density is honest about what it holds; the paper is generous because a sentence needs room. Neither borrows the other's manners.\n\nThe admin inherits the Grey Flowers identity unchanged — petal-blue as the only accent, Noto Serif SC with JetBrains Mono, misted neutrals, rounded but never toy-like — and adds one thing the public site does not need: a register split. The site performs a little; the console reports. Type is a fixed rem ramp with no fluid clamping. Motion states a fact in under a quarter second and stops. The faint two-axis grid that carries the brand on the public site survives here only on the auth stage, and only by day, because inside the console a grid showing through a layout gap reads as unfinished work rather than atmosphere.",
+    "keyCharacteristics": [
+      "Two materials, distinguished by temperature as well as by value.",
+      "One accent family; \"published\" is blue, not green.",
+      "Three ink levels, the palest of which is a contrast floor rather than a decorative grey.",
+      "Monospace carries measurement; serif carries meaning.",
+      "Density in the chrome, generosity on the page, and a visible seam between them."
+    ],
+    "rules": [
+      {
+        "name": "The Two Materials Rule",
+        "body": "Every surface in this console is either type case or paper, and the component must know which it is before it picks a background. There is no third material, and there is no blend. The two ramps differ in temperature as well as in value — a cool case against warm paper — because a pure lightness ramp made them read as one substance at three brightnesses.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "Petal-blue carries interaction, selection, emphasis, and success. \"Published\" is blue. Do not introduce a success green, a second accent, or a decorative hue. Danger and warn are the only other families and they only speak when something is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Inks Rule",
+        "body": "ink-strong, ink, ink-dim. There is no fourth level, and ink-dim is not a \"quieter grey\" to be dialled down further — it sits at oklch(0.44 …) in light specifically to hold 4.5:1 against the deepened case. That number is a legibility floor. If a label needs to recede further, change its size or its position, not its ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Colour Is Never Alone Rule",
+        "body": "Every stateful object changes at least two of {fill, border, text} together. A published badge changes wash, rule, and text; a selected filter chip does the same. State that rides on hue alone is not state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Serif Carries Meaning Rule",
+        "body": "Inherited from Grey Flowers and unchanged: if it is meant to be read, serif carries it. Mono is for signals, metadata, identifiers, and code — never a substitute for the reading voice.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Is Data Rule",
+        "body": "Monospace marks measurement: labels, identifiers, counts, revisions, timestamps, filenames, and control text. Any element set in mono inherits font-variant-numeric: tabular-nums and zero letter-spacing so that numbers in adjacent rows line up. Mono is never decoration and never a \"techy\" texture.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mixed Run Rule",
+        "body": "JetBrains Mono ships no CJK, so Chinese inside a mono run falls through to the serif. Latin and digits in that same label are monospaced and aligned; the Chinese beside them is a serif. This is the intended result, not a fallback bug — do not \"fix\" it by adding a CJK monospace face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Weight Follows the Face Rule",
+        "body": "font-synthesis: none is set globally, so a weight that is not loaded simply does not render. The serif has 400/500/700; the self-hosted mono has 400/500 only. Emphasis on a mono run therefore tops out at font-medium (500) — the rail's serif rows go bold on active, its mono sub-rows go medium. Never reach for font-bold on monospace.",
+        "section": "typography"
+      },
+      {
+        "name": "The Fixed Ramp Rule",
+        "body": "The type scale is fixed rem with no fluid clamping and no viewport-relative sizing. Operate register: a label must be the same size on every screen so the operator never re-reads it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Uncut Measure Rule",
+        "body": "Consulting metadata must never reflow the writing. Any panel that appears beside the paper takes its space from the margins, at a fixed inner width, never from the measure.",
+        "section": "layout"
+      },
+      {
+        "name": "The Reachable Action Rule",
+        "body": "On mobile the primary action of a surface belongs at the bottom, above the safe-area inset, and follows the keyboard when the keyboard is up.",
+        "section": "layout"
+      },
+      {
+        "name": "The Declared Once Rule",
+        "body": "Border or shadow, never both, on a single surface. If a component needs to feel more separated, move it up the surface ramp — do not stack treatments.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Case-Meets-Paper Rule",
+        "body": "Where the type case touches the paper, the seam is a shadow, never a rule. The paper is a lifted plane and a 1px line cuts it. Hairlines are still correct within the case — between chrome and chrome, between rows of a stack, under a dialog header.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Transparent Track Rule",
+        "body": "Scrollbar tracks are transparent everywhere. A default pale track draws a full-height cold-grey line down the right edge of the paper, which is exactly what the Case-Meets-Paper Rule exists to prevent. The thumb is a 10px pill inset by a 3px transparent border, so it reads as floating on whatever surface it happens to cross.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Pill Is Not A Button Rule",
+        "body": "This is the console's clearest divergence from the public site, where navigation and utility buttons are pills. Here, a pill silhouette means \"this is a state you are reading\", and an 8px rounded rectangle means \"this is a thing you press\". A pill-shaped button would make a chip and an action indistinguishable in a dense filter row.",
+        "section": "shapes"
+      },
+      {
+        "name": "The One Solid Rule",
+        "body": "At most one solid button per screen. It is what the operator came to that screen to do. A second one means the screen has two purposes and should be two screens.",
+        "section": "components"
+      },
+      {
+        "name": "The One Value Rule",
+        "body": "A status area reports one value at a time. Several chips each answering a different question is not a status area, it is a legend the operator has to learn.",
+        "section": "components"
+      },
+      {
+        "name": "The Report Don't Perform Rule",
+        "body": "State transitions and enter/exit animations live in the 140-240ms band and change opacity, colour, transform, or width only. This band governs transitions; indeterminate progress is exempt and continuous by nature — the button spinner (1s), the auth-stage waiting mark (1.4s), and skeleton pulses report ongoing work rather than a change of state.",
+        "section": "components"
+      },
+      {
+        "name": "The One Focus Ring Rule",
+        "body": "Focus is defined once, in the base layer, at zero specificity via :where(): 2px solid var(--color-focus) at 2px offset, on every anchor, button, input, textarea, select, summary, and [tabindex]. Components do not redefine it; at most they add to it, as inputs do.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do decide which material a new surface belongs to — type case or paper — before choosing anything else about it, and take its background from the five surface tokens.",
+      "Do set every label, identifier, count, revision, and timestamp in monospace, so numbers in adjacent rows align on tabular figures.",
+      "Do give a stateful object at least two simultaneous changes (fill, border, text) so it never depends on hue alone.",
+      "Do keep the manuscript at roughly a 68-character measure, 17px / 1.9, and take panel space out of its margins rather than out of its measure.",
+      "Do keep control text at 1rem or larger; anything smaller makes iOS Safari zoom on focus.",
+      "Do express router-driven selection through data-[status=active] rather than an appended active class.",
+      "Do reserve solid for the one action a screen exists for, and give a destructive action an outlined entry and a filled confirmation.",
+      "Do keep light and dark as the same room under different light — the case/paper temperature relationship holds in both."
+    ],
+    "donts": [
+      "Don't blend the two materials: no serif long-form measure inside the type case, and no gridded tabular chrome poured onto the paper.",
+      "Don't give one surface both a border and a shadow.",
+      "Don't draw a hairline where the type case meets the paper — that seam is case-down or case-up, always.",
+      "Don't introduce a success green, a second accent, or any decorative hue. Published is blue.",
+      "Don't add a fourth ink level, and don't lighten ink-dim past oklch(0.44 …) in light — it is holding 4.5:1 against the case.",
+      "Don't tile the grid texture anywhere inside the console, or in dark mode at all. It belongs to the auth stage by day.",
+      "Don't put a kicker or eyebrow above a page title; the title is the largest thing on the screen and carries itself.",
+      "Don't use font-bold on a monospace run — font-synthesis: none means the weight simply will not exist. Use font-medium.",
+      "Don't make a button a pill; the pill silhouette is reserved for status objects you read, not controls you press.",
+      "Don't give a scrollbar a visible track, and don't let a scroller draw a line down the edge of the paper.",
+      "Don't clamp type to the viewport or introduce fluid sizing; the ramp is fixed rem.",
+      "Don't let a hardcoded background reach a CodeMirror instance — the paper's value comes from --color-paper only."
+    ]
+  }
+}

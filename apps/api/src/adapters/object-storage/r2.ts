@@ -13,10 +13,6 @@ export interface PutObjectInput {
   size: number;
 }
 
-/**
- * 窄对象存储边界：只封装真实的外部差异（写、删），
- * 不解释载荷、权限或业务流程。
- */
 export interface ObjectStorage {
   deleteObject(key: string): Promise<void>;
   putObject(input: PutObjectInput): Promise<void>;
