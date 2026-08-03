@@ -19,7 +19,8 @@ import {
 import { Button, Modal, ModalOverlay } from 'react-aria-components';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 
-import { apiClient } from '../../app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+
 import { CodeMirrorPane } from './editor/code-mirror-pane.js';
 import { InspectorPane } from './editor/inspector-pane.js';
 import { useArticleEditor } from './editor/use-article-editor.js';

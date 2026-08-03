@@ -4,7 +4,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 
-import type { ApiEnvironment } from '../../env.js';
+import type { ApiEnvironment } from '@/env.js';
 
 export interface PutObjectInput {
   body: Uint8Array;

@@ -22,7 +22,8 @@ import {
   TooltipTrigger,
 } from 'react-aria-components';
 
-import { router } from '../../routes/route-tree.js';
+import { router } from '@/routes/route-tree.js';
+
 import { useAuth } from '../providers.js';
 
 /** 圆形状态标记：waiting 用品牌蓝 + 长转，warning/error 用对应语义色。 */

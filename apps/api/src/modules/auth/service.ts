@@ -10,9 +10,10 @@ import type { createPrismaClient } from '@grey-flowers/db';
 import bcrypt from 'bcryptjs';
 import { createHash } from 'node:crypto';
 
-import type { ApiEnvironment } from '../../env.js';
+import type { ApiEnvironment } from '@/env.js';
 
-import { ApiError } from '../../http/errors.js';
+import { ApiError } from '@/http/errors.js';
+
 import { toPrincipal } from './principal.js';
 import {
   ACCESS_TOKEN_TTL_SECONDS,

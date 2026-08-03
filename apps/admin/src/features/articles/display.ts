@@ -1,4 +1,4 @@
-import { isApiRequestError } from '../../app/api/errors.js';
+import { isApiRequestError } from '@/app/api/errors.js';
 
 export const formatDateTime = (iso: string) => {
   return new Intl.DateTimeFormat('zh-CN', {

@@ -4,7 +4,7 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { isApiRequestError } from '../../app/api/errors.js';
+import { isApiRequestError } from '@/app/api/errors.js';
 
 export const purposeLabels: Record<AssetPurpose, string> = {
   ACTIVITY_IMAGE: '动态图片',

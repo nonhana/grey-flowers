@@ -1,6 +1,7 @@
 import type { MiddlewareHandler } from 'hono';
 
-import type { ApiEnvironment as Environment } from '../../env.js';
+import type { ApiEnvironment as Environment } from '@/env.js';
+
 import type { ApiEnvironment } from '../context.js';
 
 import { ApiError } from '../errors.js';

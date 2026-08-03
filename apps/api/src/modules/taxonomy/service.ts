@@ -11,9 +11,10 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import type { ApiEnvironment } from '../../env.js';
+import type { ApiEnvironment } from '@/env.js';
 
-import { ApiError } from '../../http/errors.js';
+import { ApiError } from '@/http/errors.js';
+
 import {
   categoryProjection,
   tagProjection,

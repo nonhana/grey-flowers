@@ -176,6 +176,23 @@ export default defineConfig({
         'unicorn/prefer-import-meta-properties': 'error',
       },
     },
+    {
+      files: ['apps/admin/src/**/*.{ts,tsx}', 'apps/api/src/**/*.ts'],
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            patterns: [
+              {
+                group: ['../../**'],
+                message:
+                  'Use the @/ alias for non-adjacent imports (keep ./ and ../ only).',
+              },
+            ],
+          },
+        ],
+      },
+    },
   ],
   ignorePatterns: [
     'apps/main/**',

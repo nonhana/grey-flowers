@@ -12,10 +12,11 @@ import { parseBuffer } from 'music-metadata';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 
-import type { ObjectStorage } from '../../adapters/object-storage/r2.js';
-import type { ApiEnvironment } from '../../env.js';
+import type { ObjectStorage } from '@/adapters/object-storage/r2.js';
+import type { ApiEnvironment } from '@/env.js';
 
-import { ApiError } from '../../http/errors.js';
+import { ApiError } from '@/http/errors.js';
+
 import {
   assetProjection,
   assetPurposeDirectory,

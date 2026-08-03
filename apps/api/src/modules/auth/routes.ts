@@ -9,13 +9,14 @@ import { Hono } from 'hono';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import process from 'node:process';
 
-import type { AppDependencies } from '../../bootstrap/dependencies.js';
-import type { ApiEnvironment } from '../../http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies.js';
+import type { ApiEnvironment } from '@/http/context.js';
 
-import { ApiError, createSuccess } from '../../http/errors.js';
-import { requireAllowedOrigin } from '../../http/middleware/require-allowed-origin.js';
-import { requirePrincipal } from '../../http/middleware/require-principal.js';
-import { parseBody } from '../../lib/parse-body.js';
+import { ApiError, createSuccess } from '@/http/errors.js';
+import { requireAllowedOrigin } from '@/http/middleware/require-allowed-origin.js';
+import { requirePrincipal } from '@/http/middleware/require-principal.js';
+import { parseBody } from '@/lib/parse-body.js';
+
 import {
   ACCESS_TOKEN_TTL_SECONDS,
   REFRESH_COOKIE_NAME,

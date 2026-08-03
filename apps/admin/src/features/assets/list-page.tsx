@@ -20,7 +20,8 @@ import {
   Text,
 } from 'react-aria-components';
 
-import { apiClient } from '../../app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+
 import {
   formatBytes,
   formatDateTime,
