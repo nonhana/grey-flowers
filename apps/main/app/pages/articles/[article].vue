@@ -18,7 +18,11 @@ const requestUrl = useRequestURL()
 // 从数据库获取文章详情
 const { data: articleResponse } = await useFetch('/api/articles/detail', {
   key: () => `article-${route.path}`,
-  query: { path: route.path },
+  query: {
+    path: route.path,
+    // 草稿预览：把 URL 上的一次性 preview token 转发给详情端点
+    preview: route.query.preview as string | undefined,
+  },
 })
 
 const article = computed(() => (articleResponse.value?.payload as ArticleMarkdownPayload | null) ?? null)

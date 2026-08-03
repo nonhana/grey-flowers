@@ -11,6 +11,7 @@
 export type * from './models/Article.ts'
 export type * from './models/Tag.ts'
 export type * from './models/Category.ts'
+export type * from './models/ArticleSnapshot.ts'
 export type * from './models/User.ts'
 export type * from './models/Session.ts'
 export type * from './models/Comment.ts'

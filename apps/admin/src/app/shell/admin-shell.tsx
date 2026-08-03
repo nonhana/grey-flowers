@@ -279,7 +279,11 @@ function AuthenticatedShell({
   const { isSigningOut, signOut } = useAuth();
 
   return (
-    <main className="grid min-h-screen grid-rows-[auto_1fr]">
+    <main
+      className="
+        grid min-h-screen grid-cols-[minmax(0,1fr)] grid-rows-[auto_1fr]
+      "
+    >
       <header
         className="
           flex min-h-15 items-center justify-between border-b border-edge
@@ -344,7 +348,7 @@ function AuthenticatedShell({
           </TooltipTrigger>
         </div>
       </header>
-      <section className="min-h-0">
+      <section className="h-full min-h-0 min-w-0">
         {logoutError ? (
           <p
             className="

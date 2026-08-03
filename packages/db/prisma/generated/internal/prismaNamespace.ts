@@ -400,6 +400,7 @@ export const ModelName = {
   Article: 'Article',
   Tag: 'Tag',
   Category: 'Category',
+  ArticleSnapshot: 'ArticleSnapshot',
   User: 'User',
   Session: 'Session',
   Comment: 'Comment',
@@ -424,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "article" | "tag" | "category" | "user" | "session" | "comment" | "userMessage" | "activity" | "music" | "asset" | "articleInlineAsset" | "activityImageAsset"
+    modelProps: "article" | "tag" | "category" | "articleSnapshot" | "user" | "session" | "comment" | "userMessage" | "activity" | "music" | "asset" | "articleInlineAsset" | "activityImageAsset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -647,6 +648,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CategoryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    ArticleSnapshot: {
+      payload: Prisma.$ArticleSnapshotPayload<ExtArgs>
+      fields: Prisma.ArticleSnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArticleSnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArticleSnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.ArticleSnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArticleSnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.ArticleSnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.ArticleSnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.ArticleSnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArticleSnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.ArticleSnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>
+        }
+        update: {
+          args: Prisma.ArticleSnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.ArticleSnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArticleSnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArticleSnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.ArticleSnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArticleSnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.ArticleSnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArticleSnapshot>
+        }
+        groupBy: {
+          args: Prisma.ArticleSnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArticleSnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArticleSnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArticleSnapshotCountAggregateOutputType> | number
         }
       }
     }
@@ -1367,6 +1442,7 @@ export const ArticleScalarFieldEnum = {
   editedAt: 'editedAt',
   published: 'published',
   wordCount: 'wordCount',
+  revision: 'revision',
   categoryId: 'categoryId',
   content: 'content'
 } as const
@@ -1392,6 +1468,21 @@ export const CategoryScalarFieldEnum = {
 } as const
 
 export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const ArticleSnapshotScalarFieldEnum = {
+  id: 'id',
+  articleId: 'articleId',
+  revision: 'revision',
+  title: 'title',
+  description: 'description',
+  content: 'content',
+  wordCount: 'wordCount',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type ArticleSnapshotScalarFieldEnum = (typeof ArticleSnapshotScalarFieldEnum)[keyof typeof ArticleSnapshotScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -1874,6 +1965,7 @@ export type GlobalOmitConfig = {
   article?: Prisma.ArticleOmit
   tag?: Prisma.TagOmit
   category?: Prisma.CategoryOmit
+  articleSnapshot?: Prisma.ArticleSnapshotOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   comment?: Prisma.CommentOmit

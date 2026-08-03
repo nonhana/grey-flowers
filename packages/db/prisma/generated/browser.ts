@@ -33,6 +33,11 @@ export type Tag = Prisma.TagModel
  */
 export type Category = Prisma.CategoryModel
 /**
+ * Model ArticleSnapshot
+ * 
+ */
+export type ArticleSnapshot = Prisma.ArticleSnapshotModel
+/**
  * Model User
  * 
  */

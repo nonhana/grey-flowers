@@ -1,28 +1,8 @@
-import prisma from '#server/utils/prisma'
+import type { ArticleDates } from '@grey-flowers/contracts'
+import { apiGet } from '#server/utils/api-gateway'
 
-// 获取发布文章的 { 年: [月份] } 映射
-async function getDates(): Promise<Record<string, string[]>> {
-  const articles = await prisma.article.findMany({
-    where: { published: true },
-    select: { publishedAt: true },
-  })
-  const dateMap = new Map<string, Set<string>>()
-  articles.forEach((article) => {
-    const year = article.publishedAt.getFullYear().toString()
-    const month = (article.publishedAt.getMonth() + 1).toString().padStart(2, '0')
-    if (!dateMap.has(year)) {
-      dateMap.set(year, new Set())
-    }
-    dateMap.get(year)!.add(month)
-  })
-  const result: Record<string, string[]> = {}
-  dateMap.forEach((monthsSet, year) => {
-    result[year] = [...monthsSet]
-  })
-  return result
-}
-
+// 发布文章的 { 年: [月份] } 映射（月份为 "MM"）
 export default formattedEventHandler(async () => {
-  const dates = await getDates()
-  return { payload: dates }
+  const payload = await apiGet<ArticleDates>('/public/articles/dates')
+  return { payload }
 })

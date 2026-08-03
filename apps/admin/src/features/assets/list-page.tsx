@@ -242,8 +242,6 @@ export function AssetsListPage() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError('');
 
     const query: AssetListQuery = { page, pageSize, ...filters };
 
@@ -312,6 +310,8 @@ export function AssetsListPage() {
             onChange={(value) => {
               setFilters((current) => ({ ...current, purpose: value }));
               setPage(1);
+              setLoading(true);
+              setError('');
             }}
             optionLabels={purposeLabels}
             options={purposeOptions}
@@ -322,6 +322,8 @@ export function AssetsListPage() {
             onChange={(value) => {
               setFilters((current) => ({ ...current, mediaType: value }));
               setPage(1);
+              setLoading(true);
+              setError('');
             }}
             optionLabels={mediaTypeLabels}
             options={['IMAGE', 'AUDIO']}
@@ -332,6 +334,8 @@ export function AssetsListPage() {
             onChange={(value) => {
               setFilters((current) => ({ ...current, status: value }));
               setPage(1);
+              setLoading(true);
+              setError('');
             }}
             optionLabels={statusLabels}
             options={STATUS_OPTIONS}
@@ -356,6 +360,8 @@ export function AssetsListPage() {
             onPress={() => {
               setFilters(EMPTY_FILTER);
               setPage(1);
+              setLoading(true);
+              setError('');
             }}
           >
             <X aria-hidden="true" />
@@ -445,7 +451,11 @@ export function AssetsListPage() {
                 focus-visible:outline-focus-outline
               "
               isDisabled={page <= 1}
-              onPress={() => setPage((current) => Math.max(1, current - 1))}
+              onPress={() => {
+                setPage((current) => Math.max(1, current - 1));
+                setLoading(true);
+                setError('');
+              }}
             >
               上一页
             </Button>
@@ -458,7 +468,11 @@ export function AssetsListPage() {
                 focus-visible:outline-focus-outline
               "
               isDisabled={page >= totalPages}
-              onPress={() => setPage((current) => current + 1)}
+              onPress={() => {
+                setPage((current) => current + 1);
+                setLoading(true);
+                setError('');
+              }}
             >
               下一页
             </Button>
@@ -470,6 +484,8 @@ export function AssetsListPage() {
         onUploaded={() => {
           setFilters(EMPTY_FILTER);
           setPage(1);
+          setLoading(true);
+          setError('');
           setReloadKey((current) => current + 1);
         }}
         open={uploadOpen}

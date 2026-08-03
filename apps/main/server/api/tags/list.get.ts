@@ -1,11 +1,7 @@
-import prisma from '#server/utils/prisma'
-
-async function getTags() {
-  const tags = await prisma.tag.findMany()
-  return tags.map(({ name, articleCount }) => ({ name, count: articleCount }))
-}
+import type { PublicTag } from '@grey-flowers/contracts'
+import { apiGet } from '#server/utils/api-gateway'
 
 export default formattedEventHandler(async () => {
-  const tags = await getTags()
-  return { payload: tags }
+  const data = await apiGet<{ items: PublicTag[] }>('/public/tags')
+  return { payload: data.items }
 })

@@ -1,5 +1,6 @@
-import type { Neighbors } from '#shared/types/markdown'
-import prisma from '#server/utils/prisma'
+import type { Neighbors } from '@grey-flowers/contracts'
+import type { Neighbors as MainNeighbors } from '#shared/types/markdown'
+import { apiGet } from '#server/utils/api-gateway'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)
@@ -13,51 +14,13 @@ export default formattedEventHandler(async (event) => {
     }
   }
 
-  // 获取当前文章
-  const currentArticle = await prisma.article.findUnique({
-    where: { to: path, published: true },
-    select: {
-      publishedAt: true,
-      title: true,
-    },
+  const neighbors = await apiGet<Neighbors>('/public/articles/neighbors', {
+    path,
   })
 
-  if (!currentArticle) {
-    return { payload: [null, null] as Neighbors }
-  }
-
-  // 获取前一篇文章（发布时间早于当前文章）
-  const prevArticle = await prisma.article.findFirst({
-    where: {
-      published: true,
-      publishedAt: { lt: currentArticle.publishedAt },
-      title: { notIn: ['About', 'Friends'] },
-    },
-    orderBy: { publishedAt: 'desc' },
-    select: {
-      to: true,
-      title: true,
-    },
-  })
-
-  // 获取后一篇文章（发布时间晚于当前文章）
-  const nextArticle = await prisma.article.findFirst({
-    where: {
-      published: true,
-      publishedAt: { gt: currentArticle.publishedAt },
-      title: { notIn: ['About', 'Friends'] },
-    },
-    orderBy: { publishedAt: 'asc' },
-    select: {
-      to: true,
-      title: true,
-    },
-  })
-
-  const payload: Neighbors = [
-    prevArticle ? { title: prevArticle.title, path: prevArticle.to } : null,
-    nextArticle ? { title: nextArticle.title, path: nextArticle.to } : null,
-  ]
+  const payload: MainNeighbors = neighbors.map(neighbor =>
+    neighbor ? { title: neighbor.title, path: neighbor.to } : null,
+  ) as MainNeighbors
 
   return { payload }
 })
