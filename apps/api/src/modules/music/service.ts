@@ -18,6 +18,7 @@ import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
 import { concatUrl } from '@/lib/concat-url.js';
+import { pagination } from '@/lib/pagination.js';
 
 import type { AssetService } from '../assets/service.js';
 
@@ -249,8 +250,7 @@ export class MusicService {
       this.prisma.music.findMany({
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         select: musicAdminSelect,
-        skip: (input.page - 1) * input.pageSize,
-        take: input.pageSize,
+        ...pagination(input.page, input.pageSize),
         where,
       }),
       this.prisma.music.count({ where }),
@@ -282,8 +282,7 @@ export class MusicService {
       this.prisma.music.findMany({
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         select: musicTrackSelect,
-        skip: (query.page - 1) * query.pageSize,
-        take: query.pageSize,
+        ...pagination(query.page, query.pageSize),
         where,
       }),
       this.prisma.music.count({ where }),

@@ -9,16 +9,14 @@ import { Hono } from 'hono';
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
 import type { ApiEnvironment } from '@/http/context.js';
 
-import { createSuccess, validationError } from '@/http/errors.js';
-import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { requireRole } from '@/http/middleware/require-role.js';
-import { parseBody, parseId } from '@/lib/parser.js';
+import { createSuccess } from '@/http/errors.js';
+import { adminGuard } from '@/http/middleware/admin-guard.js';
+import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
 
 /** 管理接口：挂载于 /music */
 export const createMusicRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
-  const principal = requirePrincipal(dependencies.environment);
-  const admin = requireRole('ADMIN');
+  const { admin, principal } = adminGuard(dependencies.environment);
 
   routes.post('/parse', principal, admin, async (context) => {
     const input = await parseBody(context.req.raw, musicParseInputSchema);
@@ -36,10 +34,8 @@ export const createMusicRoutes = (dependencies: AppDependencies) => {
   });
 
   routes.get('/', principal, admin, async (context) => {
-    const queryParsed = musicListQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.music.list(queryParsed.data);
+    const query = parseQuery(context.req.query(), musicListQuerySchema);
+    const data = await dependencies.music.list(query);
     return createSuccess(context, data);
   });
 
@@ -74,10 +70,8 @@ export const createMusicPublicRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
 
   routes.get('/', async (context) => {
-    const queryParsed = musicListQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.music.listPublic(queryParsed.data);
+    const query = parseQuery(context.req.query(), musicListQuerySchema);
+    const data = await dependencies.music.listPublic(query);
     return createSuccess(context, data);
   });
 

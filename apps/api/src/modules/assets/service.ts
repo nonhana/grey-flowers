@@ -16,6 +16,7 @@ import type { ObjectStorage } from '@/adapters/object-storage/r2.js';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
+import { pagination } from '@/lib/pagination.js';
 
 import {
   assetProjection,
@@ -275,8 +276,7 @@ export class AssetService {
       this.prisma.asset.findMany({
         orderBy: { createdAt: 'desc' },
         select: assetProjection,
-        skip: (input.page - 1) * input.pageSize,
-        take: input.pageSize,
+        ...pagination(input.page, input.pageSize),
         where,
       }),
       this.prisma.asset.count({ where }),

@@ -14,7 +14,9 @@ import type { Prisma, PrismaClient } from '@grey-flowers/db';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
+import { isUniqueConstraint } from '@/lib/prisma.js';
 
+import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset.js';
 import {
   categoryProjection,
   tagProjection,
@@ -24,15 +26,6 @@ import {
   toTagAdmin,
 } from './contracts.js';
 
-const isUniqueConstraint = (error: unknown) => {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    error.code === 'P2002'
-  );
-};
-
 /** 分类封面归一：置 asset 则 cover=deliveryUrl；仅外部 URL 则 coverAssetId=null。 */
 const normalizeCategoryCover = async (
   prisma: PrismaClient,
@@ -40,23 +33,17 @@ const normalizeCategoryCover = async (
   cover: string,
   coverAssetId: number | null | undefined,
 ): Promise<{ cover: string; coverAssetId: number | null }> => {
-  if (coverAssetId !== undefined && coverAssetId !== null) {
-    const asset = await prisma.asset.findUnique({
-      select: { status: true, storageKey: true },
-      where: { id: coverAssetId },
-    });
-    if (!asset || asset.status !== 'AVAILABLE') {
-      throw new ApiError('VALIDATION_FAILED', {
-        fields: { assets: ['Selected cover asset is not available'] },
-      });
-    }
-    return {
-      cover: `${assetPublicUrl.replace(/\/+$/, '')}/${asset.storageKey}`,
-      coverAssetId,
-    };
+  if (coverAssetId === undefined || coverAssetId === null) {
+    return { cover, coverAssetId: null };
   }
-
-  return { cover, coverAssetId: null };
+  return {
+    cover: await assertAvailableAssetDeliveryUrl(
+      prisma,
+      assetPublicUrl,
+      coverAssetId,
+    ),
+    coverAssetId,
+  };
 };
 
 export class TaxonomyService {

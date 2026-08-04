@@ -1,3 +1,5 @@
+import { stripMarkdownToPlainText } from '@/lib/markdown.js';
+
 const CJK_PATTERN = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
 
 /**
@@ -9,11 +11,7 @@ const CJK_PATTERN = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
  * 存量行保留原值、仅在重新保存时按本口径增量校正（详见切片计划 §十一）。
  */
 export const countArticleWordCount = (markdown: string): number => {
-  let text = markdown.replace(/```[\s\S]*?```/g, ' ');
-  text = text.replace(/`([^`]*)`/g, '$1');
-  text = text.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1');
-  text = text.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1');
-  text = text.replace(/<[^>]+>/g, ' ');
+  let text = stripMarkdownToPlainText(markdown);
   text = text.replace(/^[#]+\s*/gm, '');
   text = text.replace(/[*_~|]/g, ' ');
 
