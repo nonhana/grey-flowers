@@ -1,6 +1,6 @@
 import type { CategoryAdmin, TagAdmin } from '@grey-flowers/contracts';
 
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import {
   AlertTriangle,
@@ -188,7 +188,8 @@ const ConflictDialog = ({
   </AppDialog>
 );
 
-export const ArticleWorkspacePage = ({ articleId }: { articleId: string }) => {
+export const ArticleWorkspacePage = () => {
+  const { articleId } = useParams({ strict: false }) as { articleId: string };
   const numericId = Number.parseInt(articleId, 10) || null;
   const editor = useArticleEditor(numericId);
   const isDesktop = useIsDesktop();

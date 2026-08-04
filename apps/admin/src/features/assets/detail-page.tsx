@@ -1,6 +1,6 @@
 import type { AssetDetailData } from '@grey-flowers/contracts';
 
-import { Link } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ArrowLeft, Check, Copy, Music2, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -63,7 +63,8 @@ const ReferenceRow = ({ count, label }: { count: number; label: string }) => (
   </div>
 );
 
-export const AssetsDetailPage = ({ assetId }: { assetId: string }) => {
+export const AssetsDetailPage = () => {
+  const { assetId } = useParams({ strict: false }) as { assetId: string };
   const id = Number(assetId);
   const [state, setState] = useState<DetailState>({ kind: 'loading' });
   const [version, setVersion] = useState(0);
