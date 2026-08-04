@@ -1,17 +1,24 @@
 import { Disc3, Loader2, Pause, Play, SkipForward } from 'lucide-react';
 
+import { usePlayerStore } from '@/store/player.js';
 import { AssetImage, IconButton } from '@/ui/index.js';
-
-import { audioPlayer, useAudioPlayer } from './audio-player-store.js';
 
 /** 移动端悬浮 mini-card：悬于底部 tab 之上，点主体展开全屏「正在播放」。 */
 export const MiniPlayer = ({ onOpen }: { onOpen: () => void }) => {
-  const player = useAudioPlayer();
-  const track = player.currentTrack;
+  const track = usePlayerStore((s) => s.currentTrack);
+  const status = usePlayerStore((s) => s.status);
+  const hasNext = usePlayerStore(
+    (s) =>
+      s.playlist.length > 0 &&
+      (s.loopMode !== 'off' || s.currentIndex < s.playlist.length - 1),
+  );
+  const toggle = usePlayerStore((s) => s.toggle);
+  const next = usePlayerStore((s) => s.next);
+
   if (track === null) return null;
 
-  const isPlaying = player.status === 'playing';
-  const isLoading = player.status === 'loading';
+  const isPlaying = status === 'playing';
+  const isLoading = status === 'loading';
 
   return (
     <div
@@ -63,7 +70,7 @@ export const MiniPlayer = ({ onOpen }: { onOpen: () => void }) => {
         </button>
         <IconButton
           label={isPlaying ? '暂停' : '播放'}
-          onPress={audioPlayer.toggle}
+          onPress={toggle}
           tone="quiet"
         >
           {isLoading ? (
@@ -76,8 +83,8 @@ export const MiniPlayer = ({ onOpen }: { onOpen: () => void }) => {
         </IconButton>
         <IconButton
           label="下一首"
-          isDisabled={!player.hasNext}
-          onPress={audioPlayer.next}
+          isDisabled={!hasNext}
+          onPress={next}
           tone="quiet"
         >
           <SkipForward aria-hidden="true" />

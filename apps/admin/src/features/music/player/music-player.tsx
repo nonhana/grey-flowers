@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { useAudioPlayer } from './audio-player-store.js';
+import { usePlayerStore } from '@/store/player.js';
+
 import { MiniPlayer } from './mini-player.js';
 import { NowPlayingSheet } from './now-playing-sheet.js';
 import { PlayerBar } from './player-bar.js';
@@ -10,10 +11,10 @@ import { PlayerBar } from './player-bar.js';
  * 挂在 ConsoleShell 根部，跨路由播放不中断；无曲目时不占任何空间。
  */
 export const MusicPlayer = () => {
-  const player = useAudioPlayer();
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const [nowPlayingOpen, setNowPlayingOpen] = useState(false);
 
-  if (player.currentTrack === null) return null;
+  if (currentTrack === null) return null;
 
   return (
     <>

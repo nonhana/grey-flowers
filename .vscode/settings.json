@@ -21,6 +21,9 @@
   "[markdown]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
+  "[html]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "oxc.enable.oxfmt": true,

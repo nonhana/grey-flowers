@@ -9,6 +9,7 @@ import { ChevronDown, Eye, ImagePlus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 
 import { formatDateTime } from '@/lib/format.js';
+import type { useArticleEditor } from '@/store/article-editor.js';
 import {
   AssetImage,
   Button,
@@ -22,8 +23,6 @@ import {
   TextAreaField,
   TextField,
 } from '@/ui/index.js';
-
-import type { useArticleEditor } from './use-article-editor.js';
 
 import { slugFromTo } from '../display.js';
 import { AssetPickerDialog } from './asset-picker.js';

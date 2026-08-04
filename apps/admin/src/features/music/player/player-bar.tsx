@@ -14,14 +14,10 @@ import {
   VolumeX,
 } from 'lucide-react';
 
-import { formatDuration } from '@/lib/format.js';
+import { usePlayerStore, type LoopMode } from '@/store/player.js';
 import { AssetImage, IconButton } from '@/ui/index.js';
 
-import {
-  audioPlayer,
-  type LoopMode,
-  useAudioPlayer,
-} from './audio-player-store.js';
+import { SeekRow } from './seek-row.js';
 import { TrackSlider } from './track-slider.js';
 
 const LOOP_LABEL: Record<LoopMode, string> = {
@@ -47,14 +43,36 @@ const VolumeIcon = ({ muted, volume }: { muted: boolean; volume: number }) => {
 
 /** 桌面 docked 播放条：跨路由常驻，挂在 ConsoleShell 底部。 */
 export const PlayerBar = () => {
-  const player = useAudioPlayer();
-  const track = player.currentTrack;
+  const track = usePlayerStore((s) => s.currentTrack);
+  const status = usePlayerStore((s) => s.status);
+  const loopMode = usePlayerStore((s) => s.loopMode);
+  const muted = usePlayerStore((s) => s.muted);
+  const volume = usePlayerStore((s) => s.volume);
+  const hasPrev = usePlayerStore(
+    (s) =>
+      s.playlist.length > 0 &&
+      (s.loopMode !== 'shuffle' ||
+        s.shuffleHistory.length > 0 ||
+        s.currentTime > 3),
+  );
+  const hasNext = usePlayerStore(
+    (s) =>
+      s.playlist.length > 0 &&
+      (s.loopMode !== 'off' || s.currentIndex < s.playlist.length - 1),
+  );
+  const prev = usePlayerStore((s) => s.prev);
+  const toggle = usePlayerStore((s) => s.toggle);
+  const next = usePlayerStore((s) => s.next);
+  const cycleLoopMode = usePlayerStore((s) => s.cycleLoopMode);
+  const toggleMute = usePlayerStore((s) => s.toggleMute);
+  const setVolume = usePlayerStore((s) => s.setVolume);
+
   if (track === null) return null;
 
-  const LoopIcon = LOOP_ICON[player.loopMode];
-  const loopActive = player.loopMode !== 'off';
-  const isPlaying = player.status === 'playing';
-  const isLoading = player.status === 'loading';
+  const LoopIcon = LOOP_ICON[loopMode];
+  const loopActive = loopMode !== 'off';
+  const isPlaying = status === 'playing';
+  const isLoading = status === 'loading';
 
   return (
     <div
@@ -95,15 +113,15 @@ export const PlayerBar = () => {
       <span className="flex items-center gap-1">
         <IconButton
           label="上一首"
-          isDisabled={!player.hasPrev}
-          onPress={audioPlayer.prev}
+          isDisabled={!hasPrev}
+          onPress={prev}
           size="sm"
         >
           <SkipBack aria-hidden="true" />
         </IconButton>
         <IconButton
           label={isPlaying ? '暂停' : '播放'}
-          onPress={audioPlayer.toggle}
+          onPress={toggle}
           tone="solid"
         >
           {isLoading ? (
@@ -116,39 +134,20 @@ export const PlayerBar = () => {
         </IconButton>
         <IconButton
           label="下一首"
-          isDisabled={!player.hasNext}
-          onPress={audioPlayer.next}
+          isDisabled={!hasNext}
+          onPress={next}
           size="sm"
         >
           <SkipForward aria-hidden="true" />
         </IconButton>
       </span>
 
-      <span
+      <SeekRow
         className="
-          hidden min-w-0 flex-1 items-center gap-2
+          hidden
           xl:flex
         "
-      >
-        <span
-          className="
-            w-10 shrink-0 text-right font-mono text-2xs text-ink-dim
-            tabular-nums
-          "
-        >
-          {formatDuration(player.currentTime)}
-        </span>
-        <TrackSlider
-          className="flex-1"
-          label="播放进度"
-          maxValue={player.duration}
-          onChange={audioPlayer.seek}
-          value={Math.min(player.currentTime, player.duration)}
-        />
-        <span className="w-10 shrink-0 font-mono text-2xs text-ink-dim tabular-nums">
-          {formatDuration(player.duration)}
-        </span>
-      </span>
+      />
 
       <span
         className="
@@ -158,26 +157,26 @@ export const PlayerBar = () => {
       >
         <IconButton
           className={cn(loopActive && 'text-accent-text')}
-          label={LOOP_LABEL[player.loopMode]}
-          onPress={audioPlayer.cycleLoopMode}
+          label={LOOP_LABEL[loopMode]}
+          onPress={cycleLoopMode}
           size="sm"
         >
           <LoopIcon aria-hidden="true" />
         </IconButton>
         <span className="flex items-center gap-1">
           <IconButton
-            label={player.muted ? '取消静音' : '静音'}
-            onPress={audioPlayer.toggleMute}
+            label={muted ? '取消静音' : '静音'}
+            onPress={toggleMute}
             size="sm"
           >
-            <VolumeIcon muted={player.muted} volume={player.volume} />
+            <VolumeIcon muted={muted} volume={volume} />
           </IconButton>
           <TrackSlider
             className="w-24"
             label="音量"
             maxValue={1}
-            onChange={audioPlayer.setVolume}
-            value={player.muted ? 0 : player.volume}
+            onChange={setVolume}
+            value={muted ? 0 : volume}
           />
         </span>
       </span>

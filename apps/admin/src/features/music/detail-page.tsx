@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/app/api/index.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDateTime, formatDuration } from '@/lib/format.js';
+import { usePlayerStore } from '@/store/player.js';
 import {
   Alert,
   AssetImage,
@@ -23,7 +24,6 @@ import {
 } from '@/ui/index.js';
 
 import { EditMusicDialog } from './edit-dialog.js';
-import { audioPlayer, useAudioPlayer } from './player/audio-player-store.js';
 
 type DetailState =
   | { data: MusicAdmin; kind: 'ready' }
@@ -47,7 +47,12 @@ export const MusicDetailPage = () => {
   const { musicId } = useParams({ strict: false }) as { musicId: string };
   const id = Number(musicId);
   const navigate = useNavigate();
-  const player = useAudioPlayer();
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
+  const status = usePlayerStore((s) => s.status);
+  const playlist = usePlayerStore((s) => s.playlist);
+  const toggle = usePlayerStore((s) => s.toggle);
+  const play = usePlayerStore((s) => s.play);
+  const removeTrack = usePlayerStore((s) => s.removeTrack);
   const [state, setState] = useState<DetailState>({ kind: 'loading' });
   const [version, setVersion] = useState(0);
   const [editingOpen, setEditingOpen] = useState(false);
@@ -100,16 +105,16 @@ export const MusicDetailPage = () => {
   }
 
   const music = state.data;
-  const isCurrent = player.currentTrack?.id === music.id;
-  const isPlaying = isCurrent && player.status === 'playing';
+  const isCurrent = currentTrack?.id === music.id;
+  const isPlaying = isCurrent && status === 'playing';
 
   const togglePlayback = () => {
     if (isCurrent) {
-      audioPlayer.toggle();
+      toggle();
       return;
     }
-    const queue = player.playlist.length > 0 ? player.playlist : [music];
-    audioPlayer.play(
+    const queue = playlist.length > 0 ? playlist : [music];
+    play(
       queue,
       queue.findIndex((track) => track.id === music.id),
     );
@@ -120,7 +125,7 @@ export const MusicDetailPage = () => {
     setActionError('');
     try {
       await apiClient.music.remove(id);
-      audioPlayer.removeTrack(id);
+      removeTrack(id);
       await navigate({ to: '/music' });
     } catch (removeError) {
       setActionError(apiErrorMessage(removeError));

@@ -22,6 +22,7 @@ import {
 import { apiClient } from '@/app/api/index.js';
 import { useIsDesktop } from '@/hooks/use-media-query.js';
 import { formatDateTime } from '@/lib/format.js';
+import { useArticleEditor } from '@/store/article-editor.js';
 import {
   Alert,
   AppDialog,
@@ -36,7 +37,6 @@ import {
 
 import { CodeMirrorPane } from './editor/code-mirror-pane.js';
 import { InspectorPane } from './editor/inspector-pane.js';
-import { useArticleEditor } from './editor/use-article-editor.js';
 
 type Editor = ReturnType<typeof useArticleEditor>;
 

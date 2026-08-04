@@ -55,7 +55,7 @@
 | 旧行为 / 主站行为 | 处置 | 结论 |
 | --- | --- | --- |
 | 上传页「拖拽 → 客户端 music-metadata-browser 解析 → 并行上传 MP3+封面 → 发布」 | 调整 | 保留「自动填充」体验；解析移服务端；音频与封面均走切片 1 `POST /assets/upload` 两笔受管资产，不并行偷传 |
-| Pinia 单例 AudioElement + 播放列表 + 循环 off/all/one/shuffle + Media Session | 采纳 | 逻辑原样移植为 React 模块级外部 store（`useSyncExternalStore`），零状态库依赖 |
+| Pinia 单例 AudioElement + 播放列表 + 循环 off/all/one/shuffle + Media Session | 采纳 | 逻辑原样移植为 React 模块级外部 store；后续状态层迁移为 zustand（见 `2026-08-04-admin-zustand-store-refactor.md`）|
 | 底部固定全宽播放条 | 调整 | 桌面保留 docked 条；移动改为底部 tab 之上的悬浮 mini + 全屏「正在播放」面板（不再叠一条全宽 bar，贴合本仓移动设计语言）|
 | `/music/index.vue` 卡片网格 + 搜索 + 分页 + 编辑/删除弹窗 | 采纳 | 以 `features/assets/list-page.tsx` 的设计语言重实现，新增 `createdAt` 排序与新导航 |
 | `MusicUploader` 封面「内嵌封面 / 手动上传封面 / 移除恢复」三态 | 调整 | 内嵌封面由服务端提取为资产；「更换封面」走资产选择器（`AssetPickerDialog`，MUSIC_COVER）；封面必填 |
@@ -211,7 +211,8 @@ export const musicPublicDetailResponseSchema = apiSuccessSchema(musicTrackSchema
 
 ### 7.1 依赖准入（阶段 0 验证）
 
-- **零新增运行时依赖**；播放器 store 用 React 内置 `useSyncExternalStore`；移动「正在播放」用既有 `react-modal-sheet`（`BottomSheet` 已封装）；图标用既有 `lucide-react`。不引入状态库、无 music-metadata-browser。
+- 本切片阶段 0 **零新增运行时依赖**；移动「正在播放」用既有 `react-modal-sheet`（`BottomSheet` 已封装）；图标用既有 `lucide-react`。无 music-metadata-browser。
+- 「不引入状态库」已随状态层迁移推翻：播放器 store 现为 zustand 全局单例（重渲染隔离见 `2026-08-04-admin-zustand-store-refactor.md`）。
 
 ### 7.2 路由（`apps/admin/src/routes/route-tree.tsx`）
 
@@ -239,7 +240,7 @@ export const musicPublicDetailResponseSchema = apiSuccessSchema(musicTrackSchema
 
 ### 7.5 全局播放器（`features/music/player/`）
 
-- `audio-player-store.ts` — **模块级单例**外部 store：单例 `AudioElement`、`currentTrack/status(idle|loading|playing|paused|error)/currentTime/duration/volume/muted/progress/playlist/currentIndex/loopMode/shuffleHistory/hasPrev/hasNext` + 方法 `play(tracks, index)/playById/toggle/pause/seek/next/prev/stop/setVolume/toggleMute/cycleLoopMode/removeTrack`。Media Session（metadata + `setPositionState` + play/pause/previoustrack/nexttrack/seekto 处理器）按旧 Pinia 版照搬；音量持久化 localStorage；暴露 `useAudioPlayer()`（`useSyncExternalStore(subscribe, getSnapshot)`）。
+- `store/player.ts` — 播放器 store 为 zustand 全局单例（见 `2026-08-04-admin-zustand-store-refactor.md`）：单例 `AudioElement`、`currentTrack/status(idle|loading|playing|paused|error)/currentTime/duration/volume/muted/playlist/currentIndex/loopMode/shuffleHistory` + 方法 `play(tracks, index)/playById/toggle/pause/seek/next/prev/stop/setVolume/toggleMute/cycleLoopMode/removeTrack`。Media Session（metadata + `setPositionState` + play/pause/previoustrack/nexttrack/seekto 处理器）逐字保留；音量持久化 localStorage；`hasPrev/hasNext/progress` 为消费方选择器派生，`currentTime/duration` 由 `SeekRow` 独占订阅（高频 tick 隔离）。
 - `player-bar.tsx` — 桌面 docked 条（`hidden lg:flex`）：封面 40px、标题/艺术家、上一首/播放暂停/下一首、可拖拽 seek（`Slider`）、时间、音量+静音、循环（off/all/one/shuffle 图标切换）；`currentTrack !== null` 时渲染。
 - `mini-player.tsx` — 移动悬浮 card（`lg:hidden`，`fixed` 置于底部 tab 之上）：封面缩略、标题、播放暂停、下一首；点按展开全屏面板。
 - `now-playing-sheet.tsx` — 移动全屏「正在播放」（`BottomSheet`）：大封面、title/artist/album、seek + 时间、prev/play/next、音量、循环、关闭。
