@@ -33,12 +33,14 @@
     "ky": "catalog:admin",
     "lucide-react": "catalog:admin",
     "motion": "catalog:admin",
+    "next-themes": "catalog:admin",
     "react": "catalog:admin",
     "react-aria": "catalog:admin",
     "react-aria-components": "catalog:admin",
     "react-dom": "catalog:admin",
     "react-modal-sheet": "catalog:admin",
-    "react-stately": "catalog:admin"
+    "react-stately": "catalog:admin",
+    "zustand": "catalog:admin"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "catalog:admin",

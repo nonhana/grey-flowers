@@ -4,6 +4,8 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 
+import { themeInitScript } from './vite/theme-script-plugin.js';
+
 const envPath = path.join(process.cwd(), '../../');
 
 export default defineConfig(({ mode }) => {
@@ -27,6 +29,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
+      themeInitScript(),
       tailwindcss(),
       babel({
         presets: [reactCompilerPreset()],

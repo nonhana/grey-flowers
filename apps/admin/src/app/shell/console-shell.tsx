@@ -15,9 +15,9 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { useAuth } from '@/app/providers.js';
 import { ThemeToggle } from '@/app/theme/theme-toggle.js';
 import { MusicPlayer } from '@/features/music/player/music-player.js';
+import { useAuth } from '@/store/auth.js';
 import { BottomSheet, buttonClass, Hint, IconButton } from '@/ui/index.js';
 
 interface NavItem {

@@ -1,12 +1,9 @@
 import { cn } from 'cnfast';
 import { Monitor, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { Button } from 'react-aria-components';
 
-import type { ThemeMode } from './theme-store.js';
-
-import { setThemeMode, useThemeMode } from './theme-store.js';
-
-const MODES: Array<{ icon: typeof Sun; label: string; mode: ThemeMode }> = [
+const MODES: Array<{ icon: typeof Sun; label: string; mode: 'system' | 'light' | 'dark' }> = [
   { icon: Monitor, label: '跟随系统', mode: 'system' },
   { icon: Sun, label: '浅色', mode: 'light' },
   { icon: Moon, label: '深色', mode: 'dark' },
@@ -14,7 +11,8 @@ const MODES: Array<{ icon: typeof Sun; label: string; mode: ThemeMode }> = [
 
 /** 三态分段控件：当前模式一眼可见，不需要展开菜单才知道自己在哪一档。 */
 export const ThemeToggle = ({ className }: { className?: string }) => {
-  const current = useThemeMode();
+  const { setTheme, theme } = useTheme();
+  const current = theme;
 
   return (
     <div
@@ -43,7 +41,7 @@ export const ThemeToggle = ({ className }: { className?: string }) => {
               `,
           )}
           key={mode}
-          onPress={() => setThemeMode(mode)}
+          onPress={() => setTheme(mode)}
         >
           <Icon aria-hidden="true" />
         </Button>

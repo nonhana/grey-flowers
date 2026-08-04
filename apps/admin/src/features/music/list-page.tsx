@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
+import { usePlayerStore } from '@/store/player.js';
 import {
   Button,
   ConfirmDialog,
@@ -18,7 +19,6 @@ import {
 
 import { EditMusicDialog } from './edit-dialog.js';
 import { MusicCard } from './music-card.js';
-import { audioPlayer, useAudioPlayer } from './player/audio-player-store.js';
 
 const PAGE_SIZE = 12;
 const GRID_CLASS = 'grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3';
@@ -39,7 +39,10 @@ const CardSkeleton = () => (
 
 export const MusicLibraryPage = () => {
   const navigate = useNavigate();
-  const player = useAudioPlayer();
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
+  const status = usePlayerStore((s) => s.status);
+  const toggle = usePlayerStore((s) => s.toggle);
+  const play = usePlayerStore((s) => s.play);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -100,11 +103,11 @@ export const MusicLibraryPage = () => {
     if (!data) return;
     const track = data.items[index];
     if (!track) return;
-    if (player.currentTrack?.id === track.id) {
-      audioPlayer.toggle();
+    if (currentTrack?.id === track.id) {
+      toggle();
     } else {
       // 把当前筛选结果整页作为播放列表入队。
-      audioPlayer.play(data.items, index);
+      play(data.items, index);
     }
   };
 
@@ -115,7 +118,7 @@ export const MusicLibraryPage = () => {
     setActionError('');
     try {
       await apiClient.music.remove(target.id);
-      audioPlayer.removeTrack(target.id);
+      usePlayerStore.getState().removeTrack(target.id);
       setReloadKey((current) => current + 1);
     } catch (removeError) {
       setActionError(apiErrorMessage(removeError));
@@ -218,8 +221,8 @@ export const MusicLibraryPage = () => {
           <div className={GRID_CLASS}>
             {data?.items.map((music, index) => (
               <MusicCard
-                isCurrent={player.currentTrack?.id === music.id}
-                isPlaying={player.status === 'playing'}
+                isCurrent={currentTrack?.id === music.id}
+                isPlaying={status === 'playing'}
                 key={music.id}
                 music={music}
                 onDelete={() => setPendingDelete(music)}
