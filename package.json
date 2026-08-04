@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r --workspace-concurrency=1 run build",
+    "build:admin": "pnpm -F @grey-flowers/admin run build",
+    "build:api": "pnpm -F @grey-flowers/api run build",
     "build:main": "pnpm -F @grey-flowers/main run build",
     "dev:admin": "pnpm -F @grey-flowers/admin run dev",
     "dev:api": "pnpm -F @grey-flowers/api run dev",
