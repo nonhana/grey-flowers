@@ -14,9 +14,9 @@ import {
   VolumeX,
 } from 'lucide-react';
 
+import { formatDuration } from '@/lib/format.js';
 import { AssetImage, BottomSheet, IconButton } from '@/ui/index.js';
 
-import { formatDuration } from '../display.js';
 import {
   audioPlayer,
   type LoopMode,

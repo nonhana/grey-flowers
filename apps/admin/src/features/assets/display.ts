@@ -4,7 +4,7 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { isApiRequestError } from '@/app/api/errors.js';
+import { apiErrorMessage } from '@/lib/error-message.js';
 
 export const purposeLabels: Record<AssetPurpose, string> = {
   ACTIVITY_IMAGE: '动态图片',
@@ -35,52 +35,10 @@ export const statusLabels: Record<AssetStatus, string> = {
   PENDING_CLEANUP: '待清理',
 };
 
-export const formatBytes = (bytes: number) => {
-  if (bytes < 1024) return `${bytes} B`;
-
-  const units = ['KB', 'MB', 'GB'] as const;
-  let value = bytes;
-  let unit = 'B';
-
-  for (const candidate of units) {
-    if (value < 1024) break;
-    value /= 1024;
-    unit = candidate;
-  }
-
-  return `${value >= 100 ? Math.round(value) : value.toFixed(1)} ${unit}`;
-};
-
-export const formatDateTime = (iso: string) => {
-  return new Intl.DateTimeFormat('zh-CN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(iso));
-};
-
-export const formatDurationMs = (durationMs: number) => {
-  const seconds = Math.round(durationMs / 1000);
-  const minutes = Math.floor(seconds / 60);
-  return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
-};
-
-export const assetErrorMessage = (error: unknown) => {
-  if (isApiRequestError(error)) {
-    switch (error.code) {
-      case 'ASSET_PAYLOAD_TOO_LARGE':
-        return '文件超过该用途的大小上限。';
-      case 'ASSET_REFERENCED':
-        return '该资产仍被引用，不能在当前状态执行此操作。';
-      case 'UNSUPPORTED_MEDIA_TYPE':
-        return '文件类型不受支持，或与声明的类型不一致。';
-      case 'UPLOAD_FAILED':
-        return '上传失败，请重试。';
-      case 'AUTH_FORBIDDEN':
-        return '当前账户没有执行该操作的权限。';
-      default:
-        return error.message;
-    }
-  }
-
-  return '暂时无法完成此操作。';
-};
+export const assetErrorMessage = (error: unknown) =>
+  apiErrorMessage(error, {
+    ASSET_PAYLOAD_TOO_LARGE: '文件超过该用途的大小上限。',
+    ASSET_REFERENCED: '该资产仍被引用，不能在当前状态执行此操作。',
+    UNSUPPORTED_MEDIA_TYPE: '文件类型不受支持，或与声明的类型不一致。',
+    UPLOAD_FAILED: '上传失败，请重试。',
+  });

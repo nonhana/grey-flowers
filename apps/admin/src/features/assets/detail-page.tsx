@@ -6,6 +6,7 @@ import { ArrowLeft, Check, Copy, Music2, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format.js';
 import {
   Alert,
   AssetImage,
@@ -23,9 +24,6 @@ import {
 
 import {
   assetErrorMessage,
-  formatBytes,
-  formatDateTime,
-  formatDurationMs,
   mediaTypeLabels,
   purposeLabels,
   statusLabels,

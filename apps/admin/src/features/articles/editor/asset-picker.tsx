@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
-import { formatBytes } from '@/features/assets/display.js';
+import { formatBytes } from '@/lib/format.js';
 import {
   Alert,
   AppDialog,

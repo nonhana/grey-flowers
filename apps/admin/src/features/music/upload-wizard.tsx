@@ -9,6 +9,9 @@ import { Form, ProgressBar } from 'react-aria-components';
 import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { assetErrorMessage } from '@/features/assets/display.js';
+import { apiErrorMessage } from '@/lib/error-message.js';
+import { formatDuration } from '@/lib/format.js';
+import { AUDIO_ACCEPT } from '@/lib/media-accept.js';
 import {
   Alert,
   AssetImage,
@@ -18,10 +21,6 @@ import {
   Panel,
   TextField,
 } from '@/ui/index.js';
-
-import { formatDuration, musicErrorMessage } from './display.js';
-
-const AUDIO_ACCEPT = 'audio/mpeg,audio/wav,audio/ogg,audio/flac,audio/aac';
 
 type Phase = 'idle' | 'uploading' | 'parsing' | 'ready';
 
@@ -118,7 +117,7 @@ export const UploadWizard = () => {
       });
       await navigate({ to: '/music' });
     } catch (cause) {
-      setSaveError(musicErrorMessage(cause));
+      setSaveError(apiErrorMessage(cause));
       setSaving(false);
     }
   };

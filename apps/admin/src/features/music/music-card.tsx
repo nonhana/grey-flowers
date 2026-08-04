@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { Disc3, Info, Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
+import { formatDuration } from '@/lib/format.js';
 import {
   AssetImage,
   buttonClass,
@@ -11,8 +12,6 @@ import {
   MetaLine,
   StatusReadout,
 } from '@/ui/index.js';
-
-import { formatDuration } from './display.js';
 
 export const MusicCard = ({
   isCurrent,
