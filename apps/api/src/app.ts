@@ -14,6 +14,10 @@ import {
 import { createAssetRoutes } from './modules/assets/routes.js';
 import { createAuthRoutes } from './modules/auth/routes.js';
 import {
+  createMusicPublicRoutes,
+  createMusicRoutes,
+} from './modules/music/routes.js';
+import {
   createCategoryRoutes,
   createPublicTaxonomyRoutes,
   createTagRoutes,
@@ -50,8 +54,10 @@ export const createApp = (dependencies: AppDependencies) => {
   app.route('/articles', createArticleAdminRoutes(dependencies));
   app.route('/categories', createCategoryRoutes(dependencies));
   app.route('/tags', createTagRoutes(dependencies));
+  app.route('/music', createMusicRoutes(dependencies));
   app.route('/public', createPublicTaxonomyRoutes(dependencies));
   app.route('/public/articles', createArticlePublicRoutes(dependencies));
+  app.route('/public/music', createMusicPublicRoutes(dependencies));
   app.notFound((c) => createFailure(c, 'NOT_FOUND'));
 
   return app;

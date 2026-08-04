@@ -154,6 +154,7 @@ model Music {
   artist        String
   cover         String
   coverAssetId  Int?
+  createdAt     DateTime  @default(now()) // 入库时间，供库排序与展示
   activity      Activity? @relation(fields: [activityId], references: [id])
   sourceAsset   Asset?    @relation("MusicSourceAsset", fields: [sourceAssetId], references: [id], onDelete: Restrict)
   coverAsset    Asset?    @relation("MusicCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)

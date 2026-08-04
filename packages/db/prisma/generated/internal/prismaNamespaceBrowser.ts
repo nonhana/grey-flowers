@@ -214,7 +214,8 @@ export const MusicScalarFieldEnum = {
   album: 'album',
   artist: 'artist',
   cover: 'cover',
-  coverAssetId: 'coverAssetId'
+  coverAssetId: 'coverAssetId',
+  createdAt: 'createdAt'
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]

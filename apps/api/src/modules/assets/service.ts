@@ -161,17 +161,70 @@ export class AssetService {
       throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
     }
 
+    return await this.persistBuffer(
+      createdById,
+      purpose,
+      buffer,
+      declared,
+      detected.ext,
+    );
+  }
+
+  /**
+   * 受管媒体提取用的写入路径（音乐模块封面提取调用）：复跑 purpose 校验与
+   * 媒体元数据抽取后走同一单写入尾段。对象写入、key 命名与孤儿补偿全部
+   * 收敛在资产用例内，不泄露给业务模块。
+   */
+  async createFromBuffer(
+    purpose: AssetPurpose,
+    buffer: Uint8Array,
+    contentType: string,
+    createdById: number,
+  ): Promise<AssetDto> {
+    const profile = purposeProfiles[purpose];
+    if (buffer.byteLength > profile.maxBytes)
+      throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
+
+    const detected = await fileTypeFromBuffer(buffer);
+    const declared = normalizeDeclaredMime(contentType);
+
+    if (
+      !detected ||
+      !profile.mimeTypes.has(detected.mime) ||
+      !profile.mimeTypes.has(declared)
+    ) {
+      throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
+    }
+
+    return await this.persistBuffer(
+      createdById,
+      purpose,
+      buffer,
+      declared,
+      detected.ext,
+    );
+  }
+
+  /** 单写入尾段：媒体元数据抽取 → key 命名 → putObject → asset.create → 孤儿补偿。 */
+  private async persistBuffer(
+    createdById: number,
+    purpose: AssetPurpose,
+    buffer: Uint8Array,
+    contentType: string,
+    ext: string,
+  ): Promise<AssetDto> {
+    const profile = purposeProfiles[purpose];
     const metadata =
       profile.mediaType === 'IMAGE'
         ? await readImageDimensions(buffer)
         : await readAudioDuration(buffer);
 
-    const key = `${assetPurposeDirectory[purpose]}/${currentMonthPrefix()}/${randomUUID()}.${detected.ext}`;
+    const key = `${assetPurposeDirectory[purpose]}/${currentMonthPrefix()}/${randomUUID()}.${ext}`;
 
     try {
       await this.objectStorage.putObject({
         body: buffer,
-        contentType: declared,
+        contentType,
         key,
         size: buffer.byteLength,
       });
@@ -187,7 +240,7 @@ export class AssetService {
           durationMs: metadata.durationMs,
           height: metadata.height,
           mediaType: profile.mediaType,
-          mimeType: declared,
+          mimeType: contentType,
           status: 'AVAILABLE',
           storageKey: key,
           width: metadata.width,

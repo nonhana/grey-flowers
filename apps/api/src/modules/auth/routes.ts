@@ -15,7 +15,7 @@ import type { ApiEnvironment } from '@/http/context.js';
 import { ApiError, createSuccess } from '@/http/errors.js';
 import { requireAllowedOrigin } from '@/http/middleware/require-allowed-origin.js';
 import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { parseBody } from '@/lib/parse-body.js';
+import { parseBody } from '@/lib/parser.js';
 
 import {
   ACCESS_TOKEN_TTL_SECONDS,

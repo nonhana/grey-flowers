@@ -12,7 +12,7 @@ import type { ApiEnvironment } from '@/http/context.js';
 import { ApiError, createSuccess, validationError } from '@/http/errors.js';
 import { requirePrincipal } from '@/http/middleware/require-principal.js';
 import { requireRole } from '@/http/middleware/require-role.js';
-import { parseBody } from '@/lib/parse-body.js';
+import { parseBody } from '@/lib/parser.js';
 
 const idSchema = z.coerce.number().int().positive();
 

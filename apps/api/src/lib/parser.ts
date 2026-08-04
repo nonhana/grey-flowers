@@ -1,5 +1,7 @@
 import type { ZodType } from 'zod';
 
+import z from 'zod';
+
 import { ApiError } from '../http/errors.js';
 import { validationError } from '../http/errors.js';
 
@@ -17,5 +19,11 @@ export const parseBody = async <TInput>(
   const parsed = schema.safeParse(body);
   if (!parsed.success) throw validationError(parsed.error);
 
+  return parsed.data;
+};
+
+export const parseId = (value: string | undefined) => {
+  const parsed = z.coerce.number().int().positive().safeParse(value);
+  if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
   return parsed.data;
 };

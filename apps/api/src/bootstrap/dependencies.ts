@@ -11,6 +11,7 @@ import {
 import { ArticleService } from '../modules/articles/service.js';
 import { AssetService } from '../modules/assets/service.js';
 import { AuthService } from '../modules/auth/service.js';
+import { MusicService } from '../modules/music/service.js';
 import { TaxonomyService } from '../modules/taxonomy/service.js';
 import { createLogger, type ApiLogger } from './logger.js';
 
@@ -20,6 +21,7 @@ export interface AppDependencies {
   auth: AuthService;
   environment: ApiEnvironment;
   logger: ApiLogger;
+  music: MusicService;
   objectStorage: ObjectStorage;
   prisma: PrismaClient;
   taxonomy: TaxonomyService;
@@ -32,6 +34,7 @@ export const createDependencies = (
   const logger = createLogger(environment);
   const objectStorage = new R2ObjectStorage(environment);
   const taxonomy = new TaxonomyService(prisma, environment);
+  const assets = new AssetService(prisma, environment, objectStorage);
 
   return {
     environment,
@@ -39,8 +42,9 @@ export const createDependencies = (
     objectStorage,
     prisma,
     articles: new ArticleService(prisma, environment, taxonomy),
-    assets: new AssetService(prisma, environment, objectStorage),
+    assets,
     auth: new AuthService(prisma, environment),
+    music: new MusicService(prisma, environment, objectStorage, assets),
     taxonomy,
   };
 };
