@@ -1,4 +1,4 @@
-import { isApiRequestError } from '@/app/api/errors.js';
+import { apiErrorMessage } from '@/lib/error-message.js';
 
 export type ArticleStatusFilter = 'all' | 'draft' | 'published';
 
@@ -6,37 +6,14 @@ export type ArticleStatusFilter = 'all' | 'draft' | 'published';
 export const parseStatusFilter = (value: unknown): ArticleStatusFilter =>
   value === 'draft' || value === 'published' ? value : 'all';
 
-export const formatDateTime = (iso: string) => {
-  return new Intl.DateTimeFormat('zh-CN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(iso));
-};
-
-export const articleErrorMessage = (error: unknown) => {
-  if (isApiRequestError(error)) {
-    switch (error.code) {
-      case 'ARTICLE_STALE':
-        return '这篇文章已在其他窗口被修改，请选择保留哪一份。';
-      case 'AUTH_FORBIDDEN':
-        return '当前账户没有执行该操作的权限。';
-      case 'CONFLICT':
-        return error.message;
-      case 'VALIDATION_FAILED': {
-        const fields = Object.values(error.fields ?? {}).flat();
-        return fields.length > 0 ? fields[0] : error.message;
-      }
-      default:
-        return error.message;
-    }
-  }
-
-  return '暂时无法完成此操作。';
-};
-
-export const publishedLabel = (published: boolean) => {
-  return published ? '已发布' : '草稿';
-};
+export const articleErrorMessage = (error: unknown) =>
+  apiErrorMessage(error, {
+    ARTICLE_STALE: '这篇文章已在其他窗口被修改，请选择保留哪一份。',
+    VALIDATION_FAILED: (e) => {
+      const fields = Object.values(e.fields ?? {}).flat();
+      return fields.length > 0 ? fields[0] : e.message;
+    },
+  });
 
 export const slugFromTo = (to: string) => {
   return to.replace(/^\/articles\//, '');

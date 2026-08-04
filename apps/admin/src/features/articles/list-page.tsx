@@ -5,6 +5,7 @@ import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { formatDateTime } from '@/lib/format.js';
 import {
   Alert,
   Button,
@@ -22,7 +23,7 @@ import {
 
 import type { ArticleStatusFilter } from './display.js';
 
-import { formatDateTime, parseStatusFilter } from './display.js';
+import { parseStatusFilter } from './display.js';
 
 const PAGE_SIZE = 20;
 

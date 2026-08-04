@@ -10,6 +10,8 @@ import { Form } from 'react-aria-components';
 
 import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { apiErrorMessage } from '@/lib/error-message.js';
+import { formatDuration } from '@/lib/format.js';
 import {
   Alert,
   AppDialog,
@@ -19,8 +21,6 @@ import {
   MetaLine,
   TextField,
 } from '@/ui/index.js';
-
-import { formatDuration, musicErrorMessage } from './display.js';
 
 interface EditForm {
   album: string;
@@ -92,7 +92,7 @@ export const EditMusicDialog = ({
       onSaved();
       onClose();
     } catch (saveError) {
-      setError(musicErrorMessage(saveError));
+      setError(apiErrorMessage(saveError));
     } finally {
       setSaving(false);
     }

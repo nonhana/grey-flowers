@@ -5,6 +5,8 @@ import { ArrowLeft, Disc3, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { apiErrorMessage } from '@/lib/error-message.js';
+import { formatDateTime, formatDuration } from '@/lib/format.js';
 import {
   Alert,
   AssetImage,
@@ -20,11 +22,6 @@ import {
   StatusReadout,
 } from '@/ui/index.js';
 
-import {
-  formatDateTime,
-  formatDuration,
-  musicErrorMessage,
-} from './display.js';
 import { EditMusicDialog } from './edit-dialog.js';
 import { audioPlayer, useAudioPlayer } from './player/audio-player-store.js';
 
@@ -125,7 +122,7 @@ export const MusicDetailPage = ({ musicId }: { musicId: string }) => {
       audioPlayer.removeTrack(id);
       await navigate({ to: '/music' });
     } catch (removeError) {
-      setActionError(musicErrorMessage(removeError));
+      setActionError(apiErrorMessage(removeError));
       setConfirmDelete(false);
     } finally {
       setBusy(false);

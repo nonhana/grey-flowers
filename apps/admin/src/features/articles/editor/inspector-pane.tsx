@@ -8,6 +8,7 @@ import { cn } from 'cnfast';
 import { ChevronDown, Eye, ImagePlus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 
+import { formatDateTime } from '@/lib/format.js';
 import {
   AssetImage,
   Button,
@@ -24,7 +25,7 @@ import {
 
 import type { useArticleEditor } from './use-article-editor.js';
 
-import { formatDateTime, slugFromTo } from '../display.js';
+import { slugFromTo } from '../display.js';
 import { AssetPickerDialog } from './asset-picker.js';
 
 type Editor = ReturnType<typeof useArticleEditor>;

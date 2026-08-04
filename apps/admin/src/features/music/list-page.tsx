@@ -5,6 +5,7 @@ import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { apiErrorMessage } from '@/lib/error-message.js';
 import {
   Button,
   ConfirmDialog,
@@ -15,7 +16,6 @@ import {
   Skeleton,
 } from '@/ui/index.js';
 
-import { musicErrorMessage } from './display.js';
 import { EditMusicDialog } from './edit-dialog.js';
 import { MusicCard } from './music-card.js';
 import { audioPlayer, useAudioPlayer } from './player/audio-player-store.js';
@@ -118,7 +118,7 @@ export const MusicLibraryPage = () => {
       audioPlayer.removeTrack(target.id);
       setReloadKey((current) => current + 1);
     } catch (removeError) {
-      setActionError(musicErrorMessage(removeError));
+      setActionError(apiErrorMessage(removeError));
     }
   };
 

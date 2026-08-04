@@ -10,6 +10,7 @@ import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { formatBytes, formatDateTime } from '@/lib/format.js';
 import {
   AssetImage,
   Button,
@@ -23,8 +24,6 @@ import {
 } from '@/ui/index.js';
 
 import {
-  formatBytes,
-  formatDateTime,
   mediaTypeLabels,
   purposeLabels,
   purposeOptions,

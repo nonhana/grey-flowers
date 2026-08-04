@@ -21,6 +21,7 @@ import {
 
 import { apiClient } from '@/app/api/index.js';
 import { useIsDesktop } from '@/hooks/use-media-query.js';
+import { formatDateTime } from '@/lib/format.js';
 import {
   Alert,
   AppDialog,
@@ -327,10 +328,7 @@ export const ArticleWorkspacePage = ({ articleId }: { articleId: string }) => {
           tone="warn"
         >
           本机存着一份更新的未保存草稿（
-          {new Intl.DateTimeFormat('zh-CN', {
-            dateStyle: 'medium',
-            timeStyle: 'short',
-          }).format(restoreCandidate.savedAt)}
+          {formatDateTime(restoreCandidate.savedAt)}
           ）。
         </Alert>
       ) : null}

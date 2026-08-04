@@ -11,12 +11,10 @@ import {
 } from 'react-aria-components';
 
 import { apiClient } from '@/app/api/index.js';
+import { AUDIO_ACCEPT, IMAGE_ACCEPT } from '@/lib/media-accept.js';
 import { Alert, AppDialog, Button, FieldLabel } from '@/ui/index.js';
 
 import { assetErrorMessage, purposeLabels, purposeOptions } from './display.js';
-
-const IMAGE_ACCEPT = 'image/jpeg,image/png,image/gif,image/webp';
-const AUDIO_ACCEPT = 'audio/mpeg,audio/wav,audio/ogg,audio/flac,audio/aac';
 
 type Phase = 'idle' | 'uploading' | 'error';
 
