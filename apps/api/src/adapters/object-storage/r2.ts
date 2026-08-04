@@ -1,5 +1,6 @@
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -15,6 +16,7 @@ export interface PutObjectInput {
 
 export interface ObjectStorage {
   deleteObject(key: string): Promise<void>;
+  getObject(key: string): Promise<Uint8Array>;
   putObject(input: PutObjectInput): Promise<void>;
 }
 
@@ -43,6 +45,18 @@ export class R2ObjectStorage implements ObjectStorage {
         Key: input.key,
       }),
     );
+  }
+
+  async getObject(key: string): Promise<Uint8Array> {
+    const response = await this.client.send(
+      new GetObjectCommand({
+        Bucket: this.environment.R2_BUCKET_NAME,
+        Key: key,
+      }),
+    );
+    const body = response.Body;
+    if (!body) return new Uint8Array(0);
+    return await body.transformToByteArray();
   }
 
   async deleteObject(key: string): Promise<void> {

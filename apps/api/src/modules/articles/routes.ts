@@ -10,23 +10,14 @@ import {
   articleSearchQuerySchema,
 } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
-import { z } from 'zod';
 
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
 import type { ApiEnvironment } from '@/http/context.js';
 
-import { ApiError, createSuccess, validationError } from '@/http/errors.js';
+import { createSuccess, validationError } from '@/http/errors.js';
 import { requirePrincipal } from '@/http/middleware/require-principal.js';
 import { requireRole } from '@/http/middleware/require-role.js';
-import { parseBody } from '@/lib/parse-body.js';
-
-const articleIdSchema = z.coerce.number().int().positive();
-
-const parseArticleId = (value: string | undefined) => {
-  const parsed = articleIdSchema.safeParse(value);
-  if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
-  return parsed.data;
-};
+import { parseBody, parseId } from '@/lib/parser.js';
 
 /** 管理接口：挂载于 /articles */
 export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
@@ -55,7 +46,7 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
 
   routes.get('/:id', principal, admin, async (context) => {
     const article = await dependencies.articles.getAdmin(
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, article);
   });
@@ -64,7 +55,7 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
     const input = await parseBody(context.req.raw, articleSaveInputSchema);
     const article = await dependencies.articles.save(
       context.get('principal'),
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
       input,
     );
     return createSuccess(context, article);
@@ -73,7 +64,7 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
   routes.post('/:id/publish', principal, admin, async (context) => {
     const article = await dependencies.articles.publish(
       context.get('principal'),
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, article);
   });
@@ -81,7 +72,7 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
   routes.post('/:id/unpublish', principal, admin, async (context) => {
     const article = await dependencies.articles.unpublish(
       context.get('principal'),
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, article);
   });
@@ -89,21 +80,21 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
   routes.delete('/:id', principal, admin, async (context) => {
     const article = await dependencies.articles.remove(
       context.get('principal'),
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, article);
   });
 
   routes.get('/:id/snapshots', principal, admin, async (context) => {
     const data = await dependencies.articles.listSnapshots(
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, data);
   });
 
   routes.post('/:id/preview-token', principal, admin, async (context) => {
     const data = await dependencies.articles.createPreviewToken(
-      parseArticleId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, data);
   });

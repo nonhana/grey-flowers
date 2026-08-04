@@ -18,6 +18,26 @@ pnpm typecheck && pnpm lint && pnpm build
 
 `pnpm build` and `pnpm dev` import application environments and need the complete root `.env` described in [BUILD.md](./BUILD.md) (`HANA_DATABASE_URL`, API/auth/R2 secrets, mail). The API process exits at startup if the environment is invalid.
 
+## Agent test accounts
+
+Fixed local-dev accounts for agent/browser smoke tests — reuse these instead of
+registering a fresh account per run. They exist only in the local dev database
+and are not valid in production. Both log in with email as the account name on
+the admin login screen.
+
+| Role | Username | Email | Password |
+| --- | --- | --- | --- |
+| Admin | `agent-admin` | `agent.admin@test.dev` | `agent-admin-2026` |
+| User | `agent-user` | `agent.user@test.dev` | `agent-user-2026` |
+
+Recreate or reconcile them from scratch with the API CLIs (see [BUILD.md](./BUILD.md)):
+
+```sh
+cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/register-user.ts -- --username agent-admin --email agent.admin@test.dev --password agent-admin-2026
+cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/register-user.ts -- --username agent-user --email agent.user@test.dev --password agent-user-2026
+cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/promote-admin.ts --email agent.admin@test.dev
+```
+
 ## Change-specific smoke checks
 
 - **API change** — run `pnpm dev:api`, then verify the envelope: `{ success: true, data, requestId }` on success, `{ success: false, error: { code, message, fields? }, requestId }` on failure, with the correct HTTP status for the code (see [API_CONVENTIONS.md](./API_CONVENTIONS.md)). Admin calls additionally need a valid bearer token and an allowed origin.

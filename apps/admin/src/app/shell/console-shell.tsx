@@ -9,6 +9,7 @@ import {
   Images,
   LogOut,
   MoreHorizontal,
+  Music2,
   SquarePen,
   Tags,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ import { useState } from 'react';
 
 import { useAuth } from '@/app/providers.js';
 import { ThemeToggle } from '@/app/theme/theme-toggle.js';
+import { MusicPlayer } from '@/features/music/player/music-player.js';
 import { BottomSheet, buttonClass, Hint, IconButton } from '@/ui/index.js';
 
 interface NavItem {
@@ -49,7 +51,10 @@ const SECTIONS: NavSection[] = [
   },
   {
     title: '素材',
-    items: [{ icon: Images, label: '资产库', path: '/assets' }],
+    items: [
+      { icon: Images, label: '资产库', path: '/assets' },
+      { icon: Music2, label: '音乐库', path: '/music' },
+    ],
   },
 ];
 
@@ -214,6 +219,10 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
       <Images aria-hidden="true" />
       资产
     </Link>
+    <Link className={tabClass} to="/music">
+      <Music2 aria-hidden="true" />
+      音乐
+    </Link>
     <button className={tabClass} onClick={onMore} type="button">
       <MoreHorizontal aria-hidden="true" />
       更多
@@ -307,6 +316,7 @@ export const ConsoleShell = () => {
         </main>
         {isFullBleed ? null : (
           <>
+            <MusicPlayer />
             <MobileCreateArticle />
             <MobileTabBar onMore={() => setMoreOpen(true)} />
           </>

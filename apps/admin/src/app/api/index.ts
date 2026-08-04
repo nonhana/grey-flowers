@@ -2,6 +2,7 @@ import { createArticlesApi, type ArticlesApi } from './articles.js';
 import { createAssetsApi, type AssetsApi } from './assets.js';
 import { createAuthApi, type AuthApi } from './auth.js';
 import { createHttp } from './http.js';
+import { createMusicApi, type MusicApi } from './music.js';
 import { createTaxonomyApi, type TaxonomyApi } from './taxonomy.js';
 
 export {
@@ -41,6 +42,7 @@ export class ApiClient {
   readonly articles: ArticlesApi;
   readonly assets: AssetsApi;
   readonly auth: AuthApi;
+  readonly music: MusicApi;
   readonly taxonomy: TaxonomyApi;
 
   private readonly http = createHttp({
@@ -53,6 +55,7 @@ export class ApiClient {
     this.articles = createArticlesApi(this.http);
     this.assets = createAssetsApi(this.http);
     this.auth = createAuthApi(this.http);
+    this.music = createMusicApi(this.http);
     this.taxonomy = createTaxonomyApi(this.http);
   }
 
