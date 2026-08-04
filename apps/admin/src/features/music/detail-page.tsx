@@ -1,6 +1,6 @@
 import type { MusicAdmin } from '@grey-flowers/contracts';
 
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { ArrowLeft, Disc3, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -43,7 +43,8 @@ const Row = ({
   </div>
 );
 
-export const MusicDetailPage = ({ musicId }: { musicId: string }) => {
+export const MusicDetailPage = () => {
+  const { musicId } = useParams({ strict: false }) as { musicId: string };
   const id = Number(musicId);
   const navigate = useNavigate();
   const player = useAudioPlayer();
