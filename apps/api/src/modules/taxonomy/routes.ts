@@ -4,29 +4,18 @@ import {
   tagListQuerySchema,
 } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
-import { z } from 'zod';
 
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
 import type { ApiEnvironment } from '@/http/context.js';
 
-import { ApiError, createSuccess, validationError } from '@/http/errors.js';
-import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { requireRole } from '@/http/middleware/require-role.js';
-import { parseBody } from '@/lib/parser.js';
-
-const idSchema = z.coerce.number().int().positive();
-
-const parseId = (value: string | undefined) => {
-  const parsed = idSchema.safeParse(value);
-  if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
-  return parsed.data;
-};
+import { createSuccess } from '@/http/errors.js';
+import { adminGuard } from '@/http/middleware/admin-guard.js';
+import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
 
 /** 管理接口：/categories */
 export const createCategoryRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
-  const principal = requirePrincipal(dependencies.environment);
-  const admin = requireRole('ADMIN');
+  const { admin, principal } = adminGuard(dependencies.environment);
 
   routes.get('/', principal, admin, async (context) => {
     return createSuccess(context, await dependencies.taxonomy.listCategories());
@@ -60,14 +49,11 @@ export const createCategoryRoutes = (dependencies: AppDependencies) => {
 /** 管理接口：/tags */
 export const createTagRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
-  const principal = requirePrincipal(dependencies.environment);
-  const admin = requireRole('ADMIN');
+  const { admin, principal } = adminGuard(dependencies.environment);
 
   routes.get('/', principal, admin, async (context) => {
-    const queryParsed = tagListQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const result = await dependencies.taxonomy.listTags(queryParsed.data);
+    const query = parseQuery(context.req.query(), tagListQuerySchema);
+    const result = await dependencies.taxonomy.listTags(query);
     return createSuccess(context, result);
   });
 

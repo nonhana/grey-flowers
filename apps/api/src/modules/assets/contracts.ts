@@ -5,6 +5,8 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
+import { concatUrl } from '@/lib/concat-url.js';
+
 /**
  * 六个消费 role 即存储目录（上传即定址，storage key 永不 re-key）。
  * purpose 未持久化为独立列（无迁移），由 storage key 前缀稳定推导。
@@ -74,7 +76,7 @@ export const toAssetDto = (
   return {
     byteSize: Number(record.byteSize),
     createdAt: record.createdAt.toISOString(),
-    deliveryUrl: `${assetPublicUrl.replace(/\/+$/, '')}/${record.storageKey}`,
+    deliveryUrl: concatUrl(assetPublicUrl, record.storageKey),
     durationMs: record.durationMs ?? undefined,
     height: record.height ?? undefined,
     id: record.id,

@@ -14,16 +14,14 @@ import { Hono } from 'hono';
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
 import type { ApiEnvironment } from '@/http/context.js';
 
-import { createSuccess, validationError } from '@/http/errors.js';
-import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { requireRole } from '@/http/middleware/require-role.js';
-import { parseBody, parseId } from '@/lib/parser.js';
+import { createSuccess } from '@/http/errors.js';
+import { adminGuard } from '@/http/middleware/admin-guard.js';
+import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
 
 /** 管理接口：挂载于 /articles */
 export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
-  const principal = requirePrincipal(dependencies.environment);
-  const admin = requireRole('ADMIN');
+  const { admin, principal } = adminGuard(dependencies.environment);
 
   routes.post('/', principal, admin, async (context) => {
     const input = await parseBody(context.req.raw, articleCreateInputSchema);
@@ -35,12 +33,8 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
   });
 
   routes.get('/', principal, admin, async (context) => {
-    const queryParsed = articleListAdminQuerySchema.safeParse(
-      context.req.query(),
-    );
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.listAdmin(queryParsed.data);
+    const query = parseQuery(context.req.query(), articleListAdminQuerySchema);
+    const data = await dependencies.articles.listAdmin(query);
     return createSuccess(context, data);
   });
 
@@ -107,44 +101,32 @@ export const createArticlePublicRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
 
   routes.get('/list', async (context) => {
-    const queryParsed = articleListQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.list(queryParsed.data);
+    const query = parseQuery(context.req.query(), articleListQuerySchema);
+    const data = await dependencies.articles.list(query);
     return createSuccess(context, data);
   });
 
   routes.get('/detail', async (context) => {
-    const queryParsed = articleDetailQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.detail(queryParsed.data.path);
+    const query = parseQuery(context.req.query(), articleDetailQuerySchema);
+    const data = await dependencies.articles.detail(query.path);
     return createSuccess(context, data);
   });
 
   routes.get('/count', async (context) => {
-    const queryParsed = articleFilterQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.count(queryParsed.data);
+    const query = parseQuery(context.req.query(), articleFilterQuerySchema);
+    const data = await dependencies.articles.count(query);
     return createSuccess(context, data);
   });
 
   routes.get('/search', async (context) => {
-    const queryParsed = articleSearchQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.search(queryParsed.data);
+    const query = parseQuery(context.req.query(), articleSearchQuerySchema);
+    const data = await dependencies.articles.search(query);
     return createSuccess(context, data);
   });
 
   routes.get('/neighbors', async (context) => {
-    const queryParsed = articleNeighborsQuerySchema.safeParse(
-      context.req.query(),
-    );
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.neighbors(queryParsed.data.path);
+    const query = parseQuery(context.req.query(), articleNeighborsQuerySchema);
+    const data = await dependencies.articles.neighbors(query.path);
     return createSuccess(context, data);
   });
 
@@ -154,15 +136,8 @@ export const createArticlePublicRoutes = (dependencies: AppDependencies) => {
   });
 
   routes.get('/preview', async (context) => {
-    const queryParsed = articlePreviewQuerySchema.safeParse(
-      context.req.query(),
-    );
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.articles.preview(
-      queryParsed.data.path,
-      queryParsed.data.token,
-    );
+    const query = parseQuery(context.req.query(), articlePreviewQuerySchema);
+    const data = await dependencies.articles.preview(query.path, query.token);
     return createSuccess(context, data);
   });
 

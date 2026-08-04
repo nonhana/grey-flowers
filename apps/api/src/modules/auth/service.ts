@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
+import { isUniqueConstraint } from '@/lib/prisma.js';
 
 import { toPrincipal } from './principal.js';
 import {
@@ -76,15 +77,6 @@ const avatarUrl = (email: string) => {
     .update(email.trim().toLowerCase())
     .digest('hex');
   return `https://weavatar.com/avatar/${hash}`;
-};
-
-const isUniqueConstraint = (error: unknown) => {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    error.code === 'P2002'
-  );
 };
 
 export class AuthService {

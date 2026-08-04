@@ -20,9 +20,13 @@ import type { Prisma, PrismaClient } from '@grey-flowers/db';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
+import { concatUrl } from '@/lib/concat-url.js';
+import { stripMarkdownToPlainText } from '@/lib/markdown.js';
+import { pagination } from '@/lib/pagination.js';
 
 import type { TaxonomyService } from '../taxonomy/service.js';
 
+import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset.js';
 import {
   articleListAdminProjection,
   toArticleAdmin,
@@ -60,12 +64,7 @@ const normalizeSearchQuery = (value: string) => {
 
 const toPlainSearchText = (value: string | null | undefined) => {
   if (!value) return '';
-  return value
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]*)`/g, '$1')
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/<[^>]+>/g, ' ')
+  return stripMarkdownToPlainText(value)
     .replace(/[>*_~#]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -131,22 +130,15 @@ const resolveCover = async (
   cover: string,
   coverAssetId: number | null,
 ): Promise<{ cover: string; coverAssetId: number | null }> => {
-  if (coverAssetId !== null) {
-    const asset = await client.asset.findUnique({
-      select: { status: true, storageKey: true },
-      where: { id: coverAssetId },
-    });
-    if (!asset || asset.status !== 'AVAILABLE') {
-      throw new ApiError('VALIDATION_FAILED', {
-        fields: { assets: ['Selected cover asset is not available'] },
-      });
-    }
-    return {
-      cover: `${assetPublicUrl.replace(/\/+$/, '')}/${asset.storageKey}`,
+  if (coverAssetId === null) return { cover, coverAssetId: null };
+  return {
+    cover: await assertAvailableAssetDeliveryUrl(
+      client,
+      assetPublicUrl,
       coverAssetId,
-    };
-  }
-  return { cover, coverAssetId: null };
+    ),
+    coverAssetId,
+  };
 };
 
 const assertCategoryExists = async (
@@ -181,7 +173,7 @@ const assertContentAssets = async (
         where: { id: ref.assetId },
       });
       const deliveryUrl = asset
-        ? `${assetPublicUrl.replace(/\/+$/, '')}/${asset.storageKey}`
+        ? concatUrl(assetPublicUrl, asset.storageKey)
         : undefined;
       const matches =
         asset !== null &&
@@ -562,8 +554,7 @@ export class ArticleService {
       this.prisma.article.findMany({
         orderBy: { editedAt: 'desc' },
         select: articleListAdminProjection,
-        skip: (query.page - 1) * query.pageSize,
-        take: query.pageSize,
+        ...pagination(query.page, query.pageSize),
         where,
       }),
       this.prisma.article.count({ where }),
@@ -660,8 +651,7 @@ export class ArticleService {
           to: true,
           wordCount: true,
         },
-        skip: (query.page - 1) * query.pageSize,
-        take: query.pageSize,
+        ...pagination(query.page, query.pageSize),
         where,
       }),
       this.prisma.article.count({ where }),

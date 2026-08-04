@@ -4,33 +4,22 @@ import {
   assetSetStatusInputSchema,
 } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
-import { z } from 'zod';
 
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
 import type { ApiEnvironment } from '@/http/context.js';
 
-import { ApiError, createSuccess, validationError } from '@/http/errors.js';
-import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { requireRole } from '@/http/middleware/require-role.js';
-import { parseBody } from '@/lib/parser.js';
+import { ApiError, createSuccess } from '@/http/errors.js';
+import { adminGuard } from '@/http/middleware/admin-guard.js';
+import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
 
 import { MAX_UPLOAD_BYTES } from './service.js';
 
 /** multipart 边界等开销，只为避免 Content-Length 预检误伤。 */
 const MULTIPART_OVERHEAD = 64 * 1024;
 
-const assetIdSchema = z.coerce.number().int().positive();
-
-const parseAssetId = (value: string) => {
-  const parsed = assetIdSchema.safeParse(value);
-  if (!parsed.success) throw new ApiError('VALIDATION_FAILED');
-  return parsed.data;
-};
-
 export const createAssetRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
-  const principal = requirePrincipal(dependencies.environment);
-  const admin = requireRole('ADMIN');
+  const { admin, principal } = adminGuard(dependencies.environment);
 
   routes.post('/upload', principal, admin, async (context) => {
     const contentLength = Number(context.req.header('content-length'));
@@ -64,16 +53,14 @@ export const createAssetRoutes = (dependencies: AppDependencies) => {
   });
 
   routes.get('/', principal, admin, async (context) => {
-    const queryParsed = assetListQuerySchema.safeParse(context.req.query());
-    if (!queryParsed.success) throw validationError(queryParsed.error);
-
-    const data = await dependencies.assets.list(queryParsed.data);
+    const query = parseQuery(context.req.query(), assetListQuerySchema);
+    const data = await dependencies.assets.list(query);
     return createSuccess(context, data);
   });
 
   routes.get('/:id', principal, admin, async (context) => {
     const data = await dependencies.assets.detail(
-      parseAssetId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, data);
   });
@@ -81,7 +68,7 @@ export const createAssetRoutes = (dependencies: AppDependencies) => {
   routes.patch('/:id', principal, admin, async (context) => {
     const input = await parseBody(context.req.raw, assetSetStatusInputSchema);
     const asset = await dependencies.assets.setStatus(
-      parseAssetId(context.req.param('id')),
+      parseId(context.req.param('id')),
       input.status,
     );
     return createSuccess(context, asset);
@@ -89,7 +76,7 @@ export const createAssetRoutes = (dependencies: AppDependencies) => {
 
   routes.delete('/:id', principal, admin, async (context) => {
     const asset = await dependencies.assets.remove(
-      parseAssetId(context.req.param('id')),
+      parseId(context.req.param('id')),
     );
     return createSuccess(context, asset);
   });
