@@ -71,7 +71,6 @@ const TYPESCRIPT_RULES: DummyRuleMap = {
   'typescript/no-unsafe-call': 'error',
   'typescript/no-unsafe-member-access': 'error',
   'typescript/no-unsafe-return': 'error',
-  'typescript/no-unused-vars': 'off',
   'typescript/only-throw-error': 'error',
   'typescript/require-await': 'error',
 };

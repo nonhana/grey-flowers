@@ -1,5 +1,3 @@
-import type { z } from 'zod';
-
 import {
   authLoginInputSchema,
   authRegisterInputSchema,

@@ -5,7 +5,8 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2024",
-    "types": ["node"]
+    "types": ["node"],
+    "noUnusedLocals": true
   },
   "include": ["*.ts", "*.tsx"]
 }

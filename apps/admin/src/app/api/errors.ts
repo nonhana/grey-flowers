@@ -1,8 +1,4 @@
-import {
-  apiFailureSchema,
-  type ApiErrorCode,
-  type ApiFailure,
-} from '@grey-flowers/contracts';
+import { type ApiErrorCode, type ApiFailure } from '@grey-flowers/contracts';
 
 export class ApiRequestError extends Error {
   readonly code: ApiErrorCode;

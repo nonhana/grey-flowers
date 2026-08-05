@@ -17,7 +17,6 @@ import { isUniqueConstraint } from '@/lib/prisma.js';
 
 import { toPrincipal } from './principal.js';
 import {
-  ACCESS_TOKEN_TTL_SECONDS,
   createRefreshSecret,
   formatRefreshCredential,
   hashRefreshSecret,
