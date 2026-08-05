@@ -261,6 +261,38 @@ html[data-theme='dark'] {
   --gf-shadow-far: oklch(0 0 0 / 45%);
 }
 
+/* ── 通知（Sonner）牌面 ──────────────────────────────────────────────────
+   Sonner 的样式变量按 data-sonner-theme 分两套默认值；我们用 #root 定位
+   （ID 特异性稳定胜过库自身的类选择器，不依赖脚本注入顺序），并直接引用
+   上面的 --gf-* token —— 变量在用时才代换，因此一张牌面天然跟随 data-theme
+   切换，不用为每个主题各写一份。
+
+   One Accent Rule：成功是 petal-blue（wash/rule/text），不是绿色。
+   Declared Once Rule：toast 保留 hairline 描边，去掉 Sonner 自带的投影。 */
+
+#root [data-sonner-toaster] {
+  --normal-bg: var(--gf-case-raised);
+  --normal-border: var(--gf-rule);
+  --normal-text: var(--gf-ink);
+  --success-bg: var(--gf-accent-wash);
+  --success-border: var(--gf-accent-rule);
+  --success-text: var(--gf-accent-text);
+  --info-bg: var(--gf-accent-wash);
+  --info-border: var(--gf-accent-rule);
+  --info-text: var(--gf-accent-text);
+  --warning-bg: var(--gf-warn-wash);
+  --warning-border: var(--gf-warn-rule);
+  --warning-text: var(--gf-warn-text);
+  --error-bg: var(--gf-danger-wash);
+  --error-border: var(--gf-danger-rule);
+  --error-text: var(--gf-danger-text);
+  font-family: var(--font-sans);
+}
+
+#root [data-sonner-toast][data-styled='true'] {
+  box-shadow: none;
+}
+
 /* ── 3. base ─────────────────────────────────────────────────────────────── */
 
 @layer base {

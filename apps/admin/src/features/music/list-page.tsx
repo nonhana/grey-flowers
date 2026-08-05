@@ -3,9 +3,10 @@ import type { MusicAdmin, MusicListData } from '@grey-flowers/contracts';
 import { useNavigate } from '@tanstack/react-router';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
+import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
 import {
   Button,
@@ -52,7 +53,6 @@ export const MusicLibraryPage = () => {
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<MusicAdmin | null>(null);
   const [pendingDelete, setPendingDelete] = useState<MusicAdmin | null>(null);
-  const [actionError, setActionError] = useState('');
 
   // 搜索防抖 300ms
   useEffect(() => {
@@ -115,13 +115,13 @@ export const MusicLibraryPage = () => {
     if (!pendingDelete) return;
     const target = pendingDelete;
     setPendingDelete(null);
-    setActionError('');
     try {
       await apiClient.music.remove(target.id);
       usePlayerStore.getState().removeTrack(target.id);
       setReloadKey((current) => current + 1);
+      toast.success('已从音乐库删除。');
     } catch (removeError) {
-      setActionError(apiErrorMessage(removeError));
+      toastError(removeError);
     }
   };
 
@@ -163,12 +163,6 @@ export const MusicLibraryPage = () => {
           value={query}
         />
       </div>
-
-      {actionError ? (
-        <p className="mt-4 text-base text-danger-text" role="alert">
-          {actionError}
-        </p>
-      ) : null}
 
       <section aria-busy={loading} className="mt-5">
         {loading ? (

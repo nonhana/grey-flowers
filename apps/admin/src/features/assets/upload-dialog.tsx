@@ -9,6 +9,7 @@ import {
   RadioField,
   RadioGroup,
 } from 'react-aria-components';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { AUDIO_ACCEPT, IMAGE_ACCEPT } from '@/lib/media-accept.js';
@@ -58,6 +59,9 @@ export const UploadDialog = ({
 
     try {
       await apiClient.assets.upload({ file, purpose }, setProgress);
+      toast.success(
+        purpose === 'MUSIC_SOURCE' ? '音源已上传。' : '图片已上传。',
+      );
       onUploaded();
       setOpen(false);
     } catch (cause) {

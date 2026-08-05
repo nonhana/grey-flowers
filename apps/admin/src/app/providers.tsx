@@ -2,6 +2,7 @@ import type { PropsWithChildren } from 'react';
 
 import { ThemeProvider } from 'next-themes';
 import { useEffect, useRef } from 'react';
+import { Toaster } from 'sonner';
 
 import { useAuthStore } from '@/store/auth.js';
 
@@ -22,6 +23,7 @@ export const AppProviders = ({ children }: PropsWithChildren) => {
   return (
     <ThemeProvider attribute="data-theme" storageKey="gf-admin-theme">
       {children}
+      <Toaster closeButton duration={3000} position="top-center" richColors />
     </ThemeProvider>
   );
 };

@@ -5,6 +5,7 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { cn } from 'cnfast';
+import { useNavigate } from '@tanstack/react-router';
 import { ChevronDown, Eye, ImagePlus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 
@@ -172,6 +173,7 @@ export const InspectorPane = ({
 }) => {
   const [coverPickerOpen, setCoverPickerOpen] = useState(false);
   const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
+  const navigate = useNavigate();
 
   const draft = editor.draft;
   if (!draft || !editor.article) return null;
@@ -185,9 +187,12 @@ export const InspectorPane = ({
     if (!pending) return;
     if (pending.kind === 'publish') void editor.publish();
     if (pending.kind === 'unpublish') void editor.unpublish();
-    if (pending.kind === 'delete') void editor.removeArticle();
     if (pending.kind === 'restore')
       void editor.restoreVersion(pending.snapshot);
+    if (pending.kind === 'delete')
+      void editor.removeArticle().then((removed) => {
+        if (removed) void navigate({ to: '/articles' });
+      });
   };
 
   return (

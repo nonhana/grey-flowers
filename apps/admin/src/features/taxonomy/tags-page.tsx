@@ -2,8 +2,10 @@ import type { TagAdmin } from '@grey-flowers/contracts';
 
 import { Plus, Tags as TagsIcon, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index.js';
+import { toastError } from '@/lib/toast.js';
 import {
   Alert,
   Button,
@@ -66,12 +68,11 @@ export const TagsPage = () => {
       await apiClient.taxonomy.createTag(name);
       setNewName('');
       setReloadKey((current) => current + 1);
+      toast.success(`已创建标签「${name}」。`);
     } catch (createError) {
-      setError(
-        isApiRequestError(createError, 'CONFLICT')
-          ? `已经有一个叫「${name}」的标签了。`
-          : '创建失败，请重试。',
-      );
+      toastError(createError, {
+        CONFLICT: `已经有一个叫「${name}」的标签了。`,
+      });
     } finally {
       setCreating(false);
     }
@@ -84,10 +85,9 @@ export const TagsPage = () => {
     try {
       await apiClient.taxonomy.deleteTag(target.id);
       setReloadKey((current) => current + 1);
+      toast.success(`已删除标签「${target.name}」。`);
     } catch (deleteError) {
-      setError(
-        isApiRequestError(deleteError) ? deleteError.message : '删除失败。',
-      );
+      toastError(deleteError);
     }
   };
 

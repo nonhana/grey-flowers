@@ -4,11 +4,11 @@ import { Link, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ArrowLeft, Check, Copy, Music2, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format.js';
 import {
-  Alert,
   AssetImage,
   Button,
   buttonClass,
@@ -70,7 +70,6 @@ export const AssetsDetailPage = () => {
   const [version, setVersion] = useState(0);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [actionError, setActionError] = useState('');
   const [confirm, setConfirm] = useState<ConfirmAction>(null);
 
   useEffect(() => {
@@ -93,21 +92,23 @@ export const AssetsDetailPage = () => {
 
   const runAction = async (action: 'cleanup' | 'delete' | 'restore') => {
     setBusy(true);
-    setActionError('');
 
     try {
       if (action === 'cleanup') {
         await apiClient.assets.setStatus(id, 'PENDING_CLEANUP');
+        toast.success('已标记为待清理。');
       } else if (action === 'restore') {
         await apiClient.assets.setStatus(id, 'AVAILABLE');
+        toast.success('已恢复为可用。');
       } else {
         await apiClient.assets.remove(id);
+        toast.success('资产已删除。');
       }
       setConfirm(null);
       setState({ kind: 'loading' });
       setVersion((current) => current + 1);
     } catch (cause) {
-      setActionError(assetErrorMessage(cause));
+      toast.error(assetErrorMessage(cause));
       setConfirm(null);
     } finally {
       setBusy(false);
@@ -285,7 +286,6 @@ export const AssetsDetailPage = () => {
         ) : (
           <Panel className="grid gap-3 p-4">
             <SectionLabel>危险操作</SectionLabel>
-            {actionError ? <Alert>{actionError}</Alert> : null}
             <div className="flex flex-wrap items-center gap-2">
               {asset.status === 'AVAILABLE' ? (
                 <Button

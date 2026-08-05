@@ -3,13 +3,13 @@ import type { MusicAdmin } from '@grey-flowers/contracts';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { ArrowLeft, Disc3, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDateTime, formatDuration } from '@/lib/format.js';
+import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
 import {
-  Alert,
   AssetImage,
   Button,
   buttonClass,
@@ -58,7 +58,6 @@ export const MusicDetailPage = () => {
   const [editingOpen, setEditingOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [actionError, setActionError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -122,13 +121,13 @@ export const MusicDetailPage = () => {
 
   const remove = async () => {
     setBusy(true);
-    setActionError('');
     try {
       await apiClient.music.remove(id);
       removeTrack(id);
+      toast.success('已从音乐库删除。');
       await navigate({ to: '/music' });
     } catch (removeError) {
-      setActionError(apiErrorMessage(removeError));
+      toastError(removeError);
       setConfirmDelete(false);
     } finally {
       setBusy(false);
@@ -255,12 +254,10 @@ export const MusicDetailPage = () => {
 
         <Panel className="grid gap-3 p-4">
           <SectionLabel>操作</SectionLabel>
-          {actionError ? <Alert>{actionError}</Alert> : null}
           <div className="flex flex-wrap items-center gap-2">
             <Button
               icon={<Pencil aria-hidden="true" />}
               onPress={() => {
-                setActionError('');
                 setEditingOpen(true);
               }}
               tone="quiet"
@@ -271,7 +268,6 @@ export const MusicDetailPage = () => {
               icon={<Trash2 aria-hidden="true" />}
               isDisabled={busy}
               onPress={() => {
-                setActionError('');
                 setConfirmDelete(true);
               }}
               tone="warnish"

@@ -7,6 +7,7 @@ import type {
 import { ImagePlus } from 'lucide-react';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
@@ -91,6 +92,7 @@ export const EditMusicDialog = ({
       await apiClient.music.update(music.id, input);
       onSaved();
       onClose();
+      toast.success('已保存修改。');
     } catch (saveError) {
       setError(apiErrorMessage(saveError));
     } finally {
