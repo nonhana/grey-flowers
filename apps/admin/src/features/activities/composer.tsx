@@ -214,7 +214,6 @@ export const ActivityComposer = ({
     }
   };
 
-  const contentOverflow = content.length > CONTENT_LIMIT;
   const contentNearLimit = content.length >= CONTENT_WARN_AT;
 
   return (

@@ -213,10 +213,7 @@ export class ArticleService {
 
   // ==================== 管理写 ====================
 
-  async create(
-    principal: Principal,
-    input: ArticleCreateInput,
-  ): Promise<ArticleAdmin> {
+  async create(input: ArticleCreateInput): Promise<ArticleAdmin> {
     return await this.prisma.$transaction(async (tx) => {
       const title = input.title.trim();
       const to = normalizeArticleTo(input.slug ?? slugifyTitle(title));
@@ -503,7 +500,7 @@ export class ArticleService {
     });
   }
 
-  async remove(principal: Principal, id: number): Promise<ArticleAdmin> {
+  async remove(id: number): Promise<ArticleAdmin> {
     return await this.prisma.$transaction(async (tx) => {
       const existing = await tx.article.findUnique({
         select: {

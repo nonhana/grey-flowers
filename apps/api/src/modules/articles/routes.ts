@@ -25,10 +25,7 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
 
   routes.post('/', principal, admin, async (context) => {
     const input = await parseBody(context.req.raw, articleCreateInputSchema);
-    const article = await dependencies.articles.create(
-      context.get('principal'),
-      input,
-    );
+    const article = await dependencies.articles.create(input);
     return createSuccess(context, article, 201);
   });
 
@@ -73,7 +70,6 @@ export const createArticleAdminRoutes = (dependencies: AppDependencies) => {
 
   routes.delete('/:id', principal, admin, async (context) => {
     const article = await dependencies.articles.remove(
-      context.get('principal'),
       parseId(context.req.param('id')),
     );
     return createSuccess(context, article);

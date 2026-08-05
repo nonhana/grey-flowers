@@ -1,17 +1,3 @@
-/**
- * 首帧主题初始化脚本（Grey Flowers Admin）。
- *
- * 逻辑与 next-themes 官方脚本同源（参考自 next-themes@0.4.6 的
- * src/script.ts；npm 发布包 files:["dist"] 不含 src，无法直接引用，
- * 只能按契约在此保留一份）。升级 next-themes 时请对照上游 diff 同步。
- * 组件侧（src/app/providers.tsx 的 <ThemeProvider>）断言的是同一个
- * 契约，两边的参数必须保持一致。
- *
- * 本文件不参与 React 依赖图，由 vite/theme-script-plugin.ts 在 dev / build 时用
- * esbuild 剥掉类型后内联进 index.html 的 <head> —— 让深色用户在 JS bundle 执行
- * 之前就拿到正确的主题，不会先吃一帧白闪。
- */
-
 (function (
   attribute: string | string[],
   storageKey: string,

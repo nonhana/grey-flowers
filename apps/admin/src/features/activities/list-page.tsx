@@ -9,7 +9,6 @@ import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
 import {
   Button,
-  buttonClass,
   ConfirmDialog,
   EmptyState,
   PageBody,
