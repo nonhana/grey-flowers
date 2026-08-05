@@ -70,6 +70,15 @@ const categoriesRoute = createRoute({
   path: '/categories',
 });
 
+const activitiesRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/activities/list-page.js'),
+    'ActivitiesPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/activities',
+});
+
 const assetsListRoute = createRoute({
   ...lazyPage(() => import('@/features/assets/list-page.js'), 'AssetsListPage'),
   getParentRoute: () => rootRoute,
@@ -113,6 +122,7 @@ const musicUploadRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
+  activitiesRoute,
   articleWorkspaceRoute,
   articlesListRoute,
   assetsDetailRoute,

@@ -407,6 +407,7 @@ export const ModelName = {
   UserMessage: 'UserMessage',
   Activity: 'Activity',
   Music: 'Music',
+  ActivityMusic: 'ActivityMusic',
   Asset: 'Asset',
   ArticleInlineAsset: 'ArticleInlineAsset',
   ActivityImageAsset: 'ActivityImageAsset'
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "article" | "tag" | "category" | "articleSnapshot" | "user" | "session" | "comment" | "userMessage" | "activity" | "music" | "asset" | "articleInlineAsset" | "activityImageAsset"
+    modelProps: "article" | "tag" | "category" | "articleSnapshot" | "user" | "session" | "comment" | "userMessage" | "activity" | "music" | "activityMusic" | "asset" | "articleInlineAsset" | "activityImageAsset"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1169,6 +1170,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ActivityMusic: {
+      payload: Prisma.$ActivityMusicPayload<ExtArgs>
+      fields: Prisma.ActivityMusicFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ActivityMusicFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ActivityMusicFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>
+        }
+        findFirst: {
+          args: Prisma.ActivityMusicFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ActivityMusicFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>
+        }
+        findMany: {
+          args: Prisma.ActivityMusicFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>[]
+        }
+        create: {
+          args: Prisma.ActivityMusicCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>
+        }
+        createMany: {
+          args: Prisma.ActivityMusicCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ActivityMusicCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>[]
+        }
+        delete: {
+          args: Prisma.ActivityMusicDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>
+        }
+        update: {
+          args: Prisma.ActivityMusicUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>
+        }
+        deleteMany: {
+          args: Prisma.ActivityMusicDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ActivityMusicUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ActivityMusicUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>[]
+        }
+        upsert: {
+          args: Prisma.ActivityMusicUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityMusicPayload>
+        }
+        aggregate: {
+          args: Prisma.ActivityMusicAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateActivityMusic>
+        }
+        groupBy: {
+          args: Prisma.ActivityMusicGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityMusicGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ActivityMusicCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityMusicCountAggregateOutputType> | number
+        }
+      }
+    }
     Asset: {
       payload: Prisma.$AssetPayload<ExtArgs>
       fields: Prisma.AssetFieldRefs
@@ -1558,7 +1633,6 @@ export const MusicScalarFieldEnum = {
   src: 'src',
   sourceAssetId: 'sourceAssetId',
   seconds: 'seconds',
-  activityId: 'activityId',
   album: 'album',
   artist: 'artist',
   cover: 'cover',
@@ -1567,6 +1641,14 @@ export const MusicScalarFieldEnum = {
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
+
+
+export const ActivityMusicScalarFieldEnum = {
+  activityId: 'activityId',
+  musicId: 'musicId'
+} as const
+
+export type ActivityMusicScalarFieldEnum = (typeof ActivityMusicScalarFieldEnum)[keyof typeof ActivityMusicScalarFieldEnum]
 
 
 export const AssetScalarFieldEnum = {
@@ -1973,6 +2055,7 @@ export type GlobalOmitConfig = {
   userMessage?: Prisma.UserMessageOmit
   activity?: Prisma.ActivityOmit
   music?: Prisma.MusicOmit
+  activityMusic?: Prisma.ActivityMusicOmit
   asset?: Prisma.AssetOmit
   articleInlineAsset?: Prisma.ArticleInlineAssetOmit
   activityImageAsset?: Prisma.ActivityImageAssetOmit

@@ -88,6 +88,7 @@ catalogs:
     pinyin-pro: ^3.28.2
     tsdown: ^0.22.14
     tsx: ^4.23.5
+    rehype-sanitize: 6.0.0
     zod: ^4.4.3
   main:
     '@golar/vue': ^0.1.10

@@ -1,11 +1,6 @@
-import prisma from '#server/utils/prisma'
-
-async function selectSingleActivity(id: number) {
-  return await prisma.activity.findUnique({
-    where: { id },
-    ...activityWithMusicArgs,
-  })
-}
+import type { ActivityPublic } from '@grey-flowers/contracts'
+import { apiGet, isApiNotFound } from '#server/utils/api-gateway'
+import { formatDateTimeYmdHms } from '#shared/utils/date'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event) as { id: string }
@@ -18,14 +13,26 @@ export default formattedEventHandler(async (event) => {
     }
   }
 
-  const activity = await selectSingleActivity(id)
-  if (!activity) {
-    return {
-      statusCode: 404,
-      statusMessage: 'Activity not found',
-      success: false,
+  let activity: ActivityPublic
+  try {
+    activity = await apiGet<ActivityPublic>(`/public/activities/${id}`)
+  }
+  catch (error) {
+    if (isApiNotFound(error)) {
+      return {
+        statusCode: 404,
+        statusMessage: 'Activity not found',
+        success: false,
+      }
     }
+    throw error
   }
 
-  return { payload: serializeActivity(activity, 0) }
+  return {
+    payload: {
+      ...activity,
+      publishedAt: formatDateTimeYmdHms(activity.publishedAt),
+      editedAt: formatDateTimeYmdHms(activity.editedAt),
+    },
+  }
 })

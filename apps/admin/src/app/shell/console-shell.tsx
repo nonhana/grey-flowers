@@ -10,6 +10,8 @@ import {
   LogOut,
   MoreHorizontal,
   Music2,
+  PenLine,
+  Send,
   SquarePen,
   Tags,
 } from 'lucide-react';
@@ -40,7 +42,10 @@ const ARTICLE_FILTERS = [
 const SECTIONS: NavSection[] = [
   {
     title: '内容',
-    items: [{ icon: FileText, label: '文章', path: '/articles' }],
+    items: [
+      { icon: FileText, label: '文章', path: '/articles' },
+      { icon: Send, label: '动态', path: '/activities' },
+    ],
   },
   {
     title: '组织',
@@ -215,13 +220,13 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
       <FileText aria-hidden="true" />
       文章
     </Link>
+    <Link className={tabClass} to="/activities">
+      <PenLine aria-hidden="true" />
+      动态
+    </Link>
     <Link className={tabClass} to="/assets">
       <Images aria-hidden="true" />
       资产
-    </Link>
-    <Link className={tabClass} to="/music">
-      <Music2 aria-hidden="true" />
-      音乐
     </Link>
     <button className={tabClass} onClick={onMore} type="button">
       <MoreHorizontal aria-hidden="true" />
@@ -255,6 +260,14 @@ const MoreSheet = ({
 }) => (
   <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange} title="更多">
     <div className="grid gap-1 px-4 pt-1 pb-4">
+      <Link
+        className={navRowClass}
+        onClick={() => onOpenChange(false)}
+        to="/music"
+      >
+        <Music2 aria-hidden="true" />
+        音乐库
+      </Link>
       <Link
         className={navRowClass}
         onClick={() => onOpenChange(false)}

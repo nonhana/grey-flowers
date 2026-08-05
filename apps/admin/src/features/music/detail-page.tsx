@@ -203,7 +203,7 @@ export const MusicDetailPage = () => {
             <Row label="上传于">{formatDateTime(music.createdAt)}</Row>
             <Row label="被动态引用">
               {music.inActivity
-                ? `是（动态 #${String(music.activityId)}）`
+                ? `是（${String(music.activityCount)} 条动态）`
                 : '否'}
             </Row>
           </dl>

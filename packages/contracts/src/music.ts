@@ -40,10 +40,10 @@ export const musicAdminSchema = musicTrackSchema
   .extend({
     sourceAssetId: z.number().int().positive().nullable(),
     coverAssetId: z.number().int().positive().nullable(),
-    /** 只读；关联 UI 在切片 4。 */
-    activityId: z.number().int().positive().nullable(),
+    /** 被多少条动态引用（多对多 ActivityMusic）。 */
+    activityCount: z.number().int().min(0),
     createdAt: z.iso.datetime(),
-    /** activityId 非空的派生。 */
+    /** activityCount > 0 的派生。 */
     inActivity: z.boolean(),
     sourceAsset: musicAssetSummarySchema.nullable(),
     coverAsset: musicAssetSummarySchema.nullable(),

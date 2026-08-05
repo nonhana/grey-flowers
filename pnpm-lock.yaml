@@ -148,6 +148,9 @@ catalogs:
     pinyin-pro:
       specifier: ^3.28.2
       version: 3.28.2
+    rehype-sanitize:
+      specifier: 6.0.0
+      version: 6.0.0
     sharp:
       specifier: ^0.35.3
       version: 0.35.3
@@ -490,6 +493,9 @@ importers:
       pinyin-pro:
         specifier: catalog:api
         version: 3.28.2
+      rehype-sanitize:
+        specifier: catalog:api
+        version: 6.0.0
       sharp:
         specifier: catalog:api
         version: 0.35.3(@types/node@24.13.3)

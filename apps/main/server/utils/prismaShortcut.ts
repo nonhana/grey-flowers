@@ -1,27 +1,5 @@
 import type { Prisma } from '@grey-flowers/db'
 
-const activityMusicSelect = {
-  id: true,
-  title: true,
-  artist: true,
-  album: true,
-  src: true,
-  seconds: true,
-  cover: true,
-} satisfies Prisma.MusicSelect
-
-export const activityWithMusicArgs = {
-  select: {
-    id: true,
-    content: true,
-    contentMarkdown: true,
-    images: true,
-    publishedAt: true,
-    editedAt: true,
-    music: { select: activityMusicSelect },
-  },
-} satisfies Prisma.ActivityDefaultArgs
-
 export const commentSelectObj = {
   id: true,
   path: true,

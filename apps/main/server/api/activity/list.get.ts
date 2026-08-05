@@ -1,21 +1,13 @@
-import prisma from '#server/utils/prisma'
+import type { ActivityPublic, ActivityPublicListData } from '@grey-flowers/contracts'
+import { apiGet } from '#server/utils/api-gateway'
+import { formatDateTimeYmdHms } from '#shared/utils/date'
 
-interface Options {
-  page: number
-  pageSize: number
-}
-
-async function selectActivityList(options: Options) {
-  const { page, pageSize } = options
-
-  const retrievedRes = await prisma.activity.findMany({
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    orderBy: { publishedAt: 'desc' },
-    ...activityWithMusicArgs,
-  })
-
-  return await serializeActivitiesWithCounts(retrievedRes)
+function localizeTimes(activity: ActivityPublic): ActivityPublic {
+  return {
+    ...activity,
+    publishedAt: formatDateTimeYmdHms(activity.publishedAt),
+    editedAt: formatDateTimeYmdHms(activity.editedAt),
+  }
 }
 
 export default formattedEventHandler(async (event) => {
@@ -26,6 +18,10 @@ export default formattedEventHandler(async (event) => {
   const page = Number.isNaN(rawPage) || rawPage < 1 ? 1 : rawPage
   const pageSize = Number.isNaN(rawPageSize) || rawPageSize < 1 ? 20 : rawPageSize
 
-  const activities = await selectActivityList({ page, pageSize })
-  return { payload: activities }
+  const data = await apiGet<ActivityPublicListData>('/public/activities/list', {
+    page,
+    pageSize,
+  })
+
+  return { payload: data.items.map(localizeTimes) }
 })

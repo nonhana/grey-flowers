@@ -8,6 +8,10 @@ import { createFailure, createSuccess, handleError } from './http/errors.js';
 import { requestId } from './http/middleware/request-id.js';
 import { requestLogger } from './http/middleware/request-logger.js';
 import {
+  createActivityPublicRoutes,
+  createActivityRoutes,
+} from './modules/activities/routes.js';
+import {
   createArticleAdminRoutes,
   createArticlePublicRoutes,
 } from './modules/articles/routes.js';
@@ -51,12 +55,14 @@ export const createApp = (dependencies: AppDependencies) => {
   );
   app.route('/auth', createAuthRoutes(dependencies));
   app.route('/assets', createAssetRoutes(dependencies));
+  app.route('/activities', createActivityRoutes(dependencies));
   app.route('/articles', createArticleAdminRoutes(dependencies));
   app.route('/categories', createCategoryRoutes(dependencies));
   app.route('/tags', createTagRoutes(dependencies));
   app.route('/music', createMusicRoutes(dependencies));
   app.route('/public', createPublicTaxonomyRoutes(dependencies));
   app.route('/public/articles', createArticlePublicRoutes(dependencies));
+  app.route('/public/activities', createActivityPublicRoutes(dependencies));
   app.route('/public/music', createMusicPublicRoutes(dependencies));
   app.notFound((c) => createFailure(c, 'NOT_FOUND'));
 

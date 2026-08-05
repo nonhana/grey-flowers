@@ -1,7 +1,7 @@
-import { readFile } from 'node:fs/promises';
-
-import { transformWithEsbuild } from 'vite';
 import type { Plugin } from 'vite';
+
+import { readFile } from 'node:fs/promises';
+import { transformWithEsbuild } from 'vite';
 
 const SCRIPT_PATH = new URL('../scripts/theme-init.ts', import.meta.url);
 

@@ -140,27 +140,36 @@ model Activity {
   editedAt        DateTime             @updatedAt
   contentMarkdown Json?
   imageAssets     ActivityImageAsset[]
-  music           Music[]
+  music           ActivityMusic[]
 }
 
 model Music {
-  id            Int       @id @default(autoincrement())
+  id            Int               @id @default(autoincrement())
   title         String
   src           String
   sourceAssetId Int?
   seconds       Int
-  activityId    Int?
   album         String
   artist        String
   cover         String
   coverAssetId  Int?
-  createdAt     DateTime  @default(now()) // 入库时间，供库排序与展示
-  activity      Activity? @relation(fields: [activityId], references: [id])
-  sourceAsset   Asset?    @relation("MusicSourceAsset", fields: [sourceAssetId], references: [id], onDelete: Restrict)
-  coverAsset    Asset?    @relation("MusicCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
+  createdAt     DateTime          @default(now()) // 入库时间，供库排序与展示
+  activities    ActivityMusic[]
+  sourceAsset   Asset?            @relation("MusicSourceAsset", fields: [sourceAssetId], references: [id], onDelete: Restrict)
+  coverAsset    Asset?            @relation("MusicCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
 
   @@index([sourceAssetId])
   @@index([coverAssetId])
+}
+
+model ActivityMusic {
+  activityId Int
+  musicId    Int
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  music      Music    @relation(fields: [musicId], references: [id], onDelete: Cascade)
+
+  @@id([activityId, musicId])
+  @@index([musicId])
 }
 
 model Asset {

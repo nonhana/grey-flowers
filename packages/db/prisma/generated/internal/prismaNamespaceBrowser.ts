@@ -61,6 +61,7 @@ export const ModelName = {
   UserMessage: 'UserMessage',
   Activity: 'Activity',
   Music: 'Music',
+  ActivityMusic: 'ActivityMusic',
   Asset: 'Asset',
   ArticleInlineAsset: 'ArticleInlineAsset',
   ActivityImageAsset: 'ActivityImageAsset'
@@ -210,7 +211,6 @@ export const MusicScalarFieldEnum = {
   src: 'src',
   sourceAssetId: 'sourceAssetId',
   seconds: 'seconds',
-  activityId: 'activityId',
   album: 'album',
   artist: 'artist',
   cover: 'cover',
@@ -219,6 +219,14 @@ export const MusicScalarFieldEnum = {
 } as const
 
 export type MusicScalarFieldEnum = (typeof MusicScalarFieldEnum)[keyof typeof MusicScalarFieldEnum]
+
+
+export const ActivityMusicScalarFieldEnum = {
+  activityId: 'activityId',
+  musicId: 'musicId'
+} as const
+
+export type ActivityMusicScalarFieldEnum = (typeof ActivityMusicScalarFieldEnum)[keyof typeof ActivityMusicScalarFieldEnum]
 
 
 export const AssetScalarFieldEnum = {
