@@ -38,6 +38,7 @@
     "react-aria": "catalog:admin",
     "react-aria-components": "catalog:admin",
     "react-dom": "catalog:admin",
+    "react-dropzone": "catalog:admin",
     "react-modal-sheet": "catalog:admin",
     "react-stately": "catalog:admin",
     "sonner": "catalog:admin",

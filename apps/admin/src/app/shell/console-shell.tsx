@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { ComposeMenu } from '@/app/shell/compose-menu.js';
 import { ThemeToggle } from '@/app/theme/theme-toggle.js';
 import { MusicPlayer } from '@/features/music/player/music-player.js';
 import { useAuth } from '@/store/auth.js';
@@ -234,23 +235,6 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
     </button>
   </nav>
 );
-const MobileCreateArticle = () => (
-  <Link
-    aria-label="新建文章"
-    className="
-      fixed right-[max(1rem,env(safe-area-inset-right))]
-      bottom-[calc(6rem+env(safe-area-inset-bottom))] z-40 inline-flex min-h-11
-      items-center gap-2 rounded-full bg-accent px-3.5 font-mono text-sm
-      text-accent-on shadow-float transition-colors duration-150
-      hover:bg-accent-hover
-      md:hidden
-    "
-    to="/articles/new"
-  >
-    <SquarePen aria-hidden="true" className="size-4" />
-  </Link>
-);
-
 const MoreSheet = ({
   isOpen,
   onOpenChange,
@@ -330,7 +314,7 @@ export const ConsoleShell = () => {
         {isFullBleed ? null : (
           <>
             <MusicPlayer />
-            <MobileCreateArticle />
+            <ComposeMenu />
             <MobileTabBar onMore={() => setMoreOpen(true)} />
           </>
         )}

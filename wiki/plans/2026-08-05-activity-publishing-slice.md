@@ -361,3 +361,41 @@ export const activityPublicResponseSchema = apiSuccessSchema(activityPublicSchem
 ### 顺带修复（前序会话遗留，非本切片引入）
 
 - `apps/admin/index.html` 残留无 `<script>` 包裹的主题脚本碎片（构建产物页面顶部渲染出乱码文本），已按文档约定移除；`scripts/theme-init.ts`、`theme-toggle.tsx`、`inspector-pane.tsx`、`vite/theme-script-plugin.ts`、`apps/admin/tsconfig.json` 补齐 oxfmt 格式。
+
+## 十四、切片 4 主站发布体验重设计（2026-08-05 二期，实现完成）
+
+实机测试反馈：发布动态的 UI/UX 远未达到「类推特」的轻量自然标准。本切片 §一「Composer 形态：单组件 + AppDialog 统一」被推翻重做，动态发布是新上升的 UX 优先区，主体在 **apps/admin**。设计决策变更如下，其余（资产正确性、正文受限 Markdown、公开/管理分离、迁移、主站薄适配）保持 §一原定案：
+
+| 原定案（§一） | 二期重设计 | 理由 |
+| --- | --- | --- |
+| Composer：AppDialog 统一（移动端全屏 sheet） | **整页路由，全端一码**：`/activities/new` 与 `/activities/$activityId/edit`（`fullBleed`） | sheet/抽屉违背「像发推」；整页=移动端全屏、桌面端居中纸面，状态不丢、浏览器返回可用 |
+| 移动端发布入口：动态页内 FAB + 壳层文章 FAB 并存 | **统一圆形悬浮发布菜单**（`app/shell/compose-menu.tsx`）：右下角单一圆形 +，展开丝滑弹出两个纯图标圆形（发布动态 `PenLine` / 发布文章 `SquarePen`），仅移动端显示 | 入口收敛为一处，最频繁动作一级触达 |
+| 正文：auto-grow textarea | **沿用文章编辑 CodeMirror**（`activity-editor.tsx`）：同 `paperTheme`/`paperHighlight`，受限工具栏（加粗/斜体/链接/无序/有序/引用/代码），禁标题/表格/图片（schema 白名单一致）；Cmd/Ctrl+Enter 发布（DOM 层高优先级拦截——`Mod-Enter` keymap 在本构建产物不命中，见风险） | 编辑体验对齐文章 |
+| 图片：自研 onDrop / 原生 file input | **`react-dropzone@20`** 承接整页的图片投放（拖入任意位置即传 `ACTIVITY_IMAGE`，不再被浏览器接管）；投放遮罩用根元素 enter/leave 自追踪（dropzone 的 `isDragActive` 只在 dragleave 复位，drop 后会卡住） | 成熟组件库；CODE_STYLE 禁造轮子 |
+| 图片：仅直传 | **从资产库选 + 弹窗内直传**：复用 `AssetPickerDialog`（`purpose="ACTIVITY_IMAGE"`），新增可选 `onDone`/`selectionCount` 页脚（完成（已选 N））供多选 | 与音乐一致的资产选取体验，消除割裂 |
+| 动画实现 | `motion` 的挂载期初始动画在 React Compiler 下会被跳过（AnimatePresence 新挂载卡在 initial、退出卡住不卸载）。菜单改**常驻 DOM + animate 切换**（绝对定位，收起不占布局）；投放遮罩不用 AnimatePresence | 实测 A/B |
+
+### 验收证据（1440×900 与 375×780，本地 dev 库 + API）
+
+- 移动端 ComposeMenu：收起时仅主圆形 +；展开丝滑、间距均匀、无重叠，两枚 48px 子按钮纯 lucide 图标，点击导航到对应整页发布路由；Escape/点外收起；桌面隐藏。
+- 整页 compose：移动端全满屏纸面（顶部返回/计数/发布），桌面端 rail + 居中 768px 纸列；工具栏移动端吸底随键盘、桌面端纸面顶栏；`h-56 md:h-64` CodeMirror。
+- 拖放：将真实 PNG 拖入编辑器区/任意位置 → 不触发浏览器打开图片，上传 `ACTIVITY_IMAGE` 并落图库缩略图（进度→commit）；遮罩随 dragenter 出现、drop/leave 清除。
+- 资产选择：`从资产库` 打开 `选择动态图片`（ACTIVITY_IMAGE 列表 + 上传新图片 + 完成（已选 N）），选中追加图库、计数联动。
+- 发布闭环：写正文 → 发布 → toast「动态已发布。」→ 回到列表置顶；公开 API `GET /public/activities/:id` 一致（`contentMarkdown` 生成、图片在档）。编辑闭环：卡片编辑 → `/activities/:id/edit` 预填正文/图片/音乐 → 保存 → toast「动态已更新。」→ 卡片「已编辑」角标。删除闭环：确认框 → 删除成功、列表更新。
+- 明暗两主题纸面正常翻转；Cmd/Ctrl+Enter 发布生效。
+- 静态门禁：`pnpm typecheck`、`pnpm lint`、`pnpm fmt:check`、`pnpm build`（全 workspace）exit 0。
+
+### 风险与后顾
+
+- `Mod-Enter` keymap 绑定在 @uiw/react-codemirror 的当前构建产物里始终不命中（同数组内 `Meta+F` 搜索正常），改用 `Prec.high(EditorView.domEventHandlers({ keydown }))` 在 DOM 层拦截，跨 Mac/Windows 修饰键均覆盖。若未来升级 @codemirror/view 后 keymap 行为修复，可考虑回退为标准绑定。
+- 图库重排拖拽（缩略图间）与外层投放区隔离靠 `stopPropagation`；投放遮罩在重排拖拽期间由 `dragIndex` 抑制。
+- 二期在本地 dev 库做 UI 验证时上传过 2 枚 1×1 测试 PNG（`ACTIVITY_IMAGE`），已删除两条测试动态，测试资产留在 dev 资产库由切片 1 治理。
+
+### 抽屉统一迁移到 react-modal-sheet（2026-08-05 三期）
+
+实机反馈：移动端的「抽屉」（发布动态时选图/选音乐等）此前全都流经 `AppDialog`，它在 <640px 用 React Aria `ModalOverlay` + 手写 CSS sheet 动画自造抽屉，内容异步加载/高度变化时会闪。整改：
+
+- **`AppDialog` 重写**（`ui/overlay.tsx`）：<640px 渲染成标准 `react-modal-sheet`（`detent="content"`，拖拽柄、回弹、背板、键盘避让、聚焦圈定都用库的标准行为），≥640px 仍是 React Aria 居中对话框。一行变更让全后台所有拾取器/编辑弹窗/灯箱（图片资产选择、音乐选择、上传、编辑、灯箱）的移动端抽屉体验统一回到库组件。
+- 审计结论：其余抽屉类行为均已走 `BottomSheet`（`react-modal-sheet`）：控制台「更多」「正在播放」「元数据」；`ConfirmDialog` 是居中 alert 对话框、`SidePanel` 是桌面端布局列，二者非抽屉，保持不变。
+- 移动端 375px 实测：选图、选音乐、音乐编辑 → 封面选择（嵌套两层 sheet）均为标准底抽屉，背板点击/拖拽可关，顶层关闭不影响底层；桌面端 1440px 同一 `AppDialog` 保持居中对话框（max-w-md/lg/2xl + `animate-dialog-in/out`），明暗主题 token 正确。
+- 静态门禁：`pnpm typecheck` / `pnpm lint` / `pnpm fmt:check` / `pnpm build` 全 workspace exit 0。

@@ -79,6 +79,27 @@ const activitiesRoute = createRoute({
   path: '/activities',
 });
 
+const newActivityRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/activities/compose-page.js'),
+    'ActivityComposePage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/activities/new',
+  // 全文写作独占视口：收起移动端拇指栏，把滚动交还给纸面。
+  staticData: { fullBleed: true },
+});
+
+const editActivityRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/activities/compose-page.js'),
+    'ActivityComposePage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/activities/$activityId/edit',
+  staticData: { fullBleed: true },
+});
+
 const assetsListRoute = createRoute({
   ...lazyPage(() => import('@/features/assets/list-page.js'), 'AssetsListPage'),
   getParentRoute: () => rootRoute,
@@ -128,10 +149,12 @@ const routeTree = rootRoute.addChildren([
   assetsDetailRoute,
   assetsListRoute,
   categoriesRoute,
+  editActivityRoute,
   indexRoute,
   musicDetailRoute,
   musicListRoute,
   musicUploadRoute,
+  newActivityRoute,
   newArticleRoute,
   tagsRoute,
 ]);

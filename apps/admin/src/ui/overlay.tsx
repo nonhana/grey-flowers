@@ -19,6 +19,8 @@ import {
   useOverlayTriggerState,
 } from 'react-stately';
 
+import { useMediaQuery } from '@/hooks/use-media-query.js';
+
 import { Button, IconButton } from './button.js';
 
 const scrimClass = cn(
@@ -180,8 +182,118 @@ export const SidePanel = ({
 
 /* ─────────────────────────────── 对话框 ─────────────────────────────── */
 
+/**
+ * AppDialog 的移动端底抽屉本体：react-modal-sheet 的标准行为（拖拽柄、回弹、
+ * 背板、键盘避让、焦点圈定）都在这里。抽屉行为绝不手写 —— 旧的手写 CSS sheet
+ * 动画在内容异步加载/高度变化时会闪。
+ */
+const AppDialogSheetContents = ({
+  children,
+  footer,
+  isDismissable,
+  state,
+  title,
+}: {
+  children: ReactNode;
+  footer?: ReactNode;
+  isDismissable: boolean;
+  state: OverlayTriggerState;
+  title: string;
+}) => {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const { dialogProps, titleProps } = useDialog({}, panelRef);
+  const { modalProps } = useModalOverlay({ isDismissable }, state, panelRef);
+  const {
+    'aria-describedby': ariaDescribedBy,
+    'aria-labelledby': ariaLabelledBy,
+    onBlur,
+    onFocus,
+    onKeyDown,
+    role,
+    tabIndex,
+  } = mergeProps(dialogProps, modalProps);
+  return (
+    // eslint-disable-next-line jsx-a11y/no-autofocus -- React Aria must move focus into this modal scope.
+    <FocusScope autoFocus contain restoreFocus>
+      <Sheet.Container
+        aria-describedby={ariaDescribedBy}
+        aria-labelledby={ariaLabelledBy}
+        aria-modal
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
+        role={role}
+        tabIndex={tabIndex}
+        className={cn(
+          '[--gf-surface:var(--color-case-raised)]',
+          'max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised',
+          'shadow-float outline-none',
+        )}
+        ref={panelRef}
+        unstyled
+      >
+        <h2 {...titleProps} className="sr-only">
+          {title}
+        </h2>
+        <Sheet.Header
+          className="
+            grid cursor-grab justify-items-center pt-2.5 pb-1.5
+            active:cursor-grabbing
+          "
+          unstyled
+        >
+          <span aria-hidden="true" className="h-1 w-10 rounded-full bg-edge" />
+        </Sheet.Header>
+        <div
+          className="
+            flex items-center justify-between gap-3 border-b border-rule px-5
+            py-3
+          "
+        >
+          <span className="truncate text-md font-bold text-ink-strong">
+            {title}
+          </span>
+          {isDismissable ? (
+            <IconButton label="关闭" onPress={() => state.close()} size="sm">
+              <X aria-hidden="true" />
+            </IconButton>
+          ) : null}
+        </div>
+        <Sheet.Content
+          className="min-h-0"
+          scrollClassName="overscroll-contain"
+          scrollStyle={{
+            paddingBottom:
+              'max(env(safe-area-inset-bottom), env(keyboard-inset-height, var(--keyboard-inset-height, 0px)))',
+          }}
+          unstyled
+        >
+          <div
+            className="
+              min-h-0 px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]
+            "
+          >
+            {children}
+          </div>
+        </Sheet.Content>
+        {footer ? (
+          <div
+            className="
+              flex justify-end border-t border-rule px-5 py-3
+              pb-[max(1rem,env(safe-area-inset-bottom))]
+            "
+          >
+            {footer}
+          </div>
+        ) : null}
+      </Sheet.Container>
+    </FocusScope>
+  );
+};
+
 export const AppDialog = ({
   children,
+  footer,
   isDismissable = true,
   isOpen,
   onOpenChange,
@@ -189,81 +301,116 @@ export const AppDialog = ({
   title,
 }: {
   children: ReactNode;
+  footer?: ReactNode;
   /** 必须做出选择的对话框（例如内容冲突）设为 false，同时会隐藏关闭按钮。 */
   isDismissable?: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   size?: 'sm' | 'md' | 'lg';
   title: string;
-}) => (
-  <ModalOverlay
-    className={cn(
-      scrimClass,
-      `
-        grid place-items-end
-        sm:place-items-center sm:p-6
-      `,
-    )}
-    isDismissable={isDismissable}
-    isKeyboardDismissDisabled={!isDismissable}
-    isOpen={isOpen}
-    onOpenChange={onOpenChange}
-  >
-    <Modal
-      className={cn(
-        `
-          w-full overflow-hidden rounded-t-sheet bg-case-raised shadow-float
-          outline-none
-        `,
-        `
-          data-entering:animate-sheet-in
-          data-exiting:animate-sheet-out
-        `,
-        `
-          sm:rounded-sheet
-          sm:data-entering:animate-dialog-in
-          sm:data-exiting:animate-dialog-out
-        `,
-        size === 'sm' && 'sm:max-w-md',
-        size === 'md' && 'sm:max-w-lg',
-        size === 'lg' && 'sm:max-w-2xl',
-      )}
-    >
-      <Dialog className="grid max-h-[88dvh] grid-rows-[auto_1fr] outline-none">
-        <div
-          className="
-            flex items-center justify-between gap-3 border-b border-rule px-5
-            py-3.5
-          "
+}) => {
+  const prefersReducedMotion = useReducedMotion();
+  const state = useOverlayTriggerState({ isOpen, onOpenChange });
+  // 与旧实现一致：<640px 是抽屉，≥640px 是居中对话框。
+  const isDialog = useMediaQuery('(min-width: 40rem)');
+
+  if (isDialog) {
+    return (
+      <ModalOverlay
+        className={cn(scrimClass, 'grid place-items-center p-6')}
+        isDismissable={isDismissable}
+        isKeyboardDismissDisabled={!isDismissable}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
+        <Modal
+          className={cn(
+            'w-full overflow-hidden rounded-sheet bg-case-raised shadow-float',
+            'outline-none',
+            `
+              data-entering:animate-dialog-in
+              data-exiting:animate-dialog-out
+            `,
+            size === 'sm' && 'max-w-md',
+            size === 'md' && 'max-w-lg',
+            size === 'lg' && 'max-w-2xl',
+          )}
         >
-          <Heading
-            className="truncate text-md font-bold text-ink-strong"
-            slot="title"
+          <Dialog
+            className={cn(
+              'grid max-h-[88dvh] outline-none',
+              footer ? 'grid-rows-[auto_1fr_auto]' : 'grid-rows-[auto_1fr]',
+            )}
           >
-            {title}
-          </Heading>
-          {isDismissable ? (
-            <IconButton
-              label="关闭"
-              onPress={() => onOpenChange(false)}
-              size="sm"
+            <div
+              className="
+                flex items-center justify-between gap-3 border-b border-rule
+                px-5 py-3.5
+              "
             >
-              <X aria-hidden="true" />
-            </IconButton>
-          ) : null}
-        </div>
-        <div
-          className="
-            min-h-0 overflow-y-auto px-5 py-4
-            pb-[max(1rem,env(safe-area-inset-bottom))]
-          "
-        >
-          {children}
-        </div>
-      </Dialog>
-    </Modal>
-  </ModalOverlay>
-);
+              <Heading
+                className="truncate text-md font-bold text-ink-strong"
+                slot="title"
+              >
+                {title}
+              </Heading>
+              {isDismissable ? (
+                <IconButton
+                  label="关闭"
+                  onPress={() => onOpenChange(false)}
+                  size="sm"
+                >
+                  <X aria-hidden="true" />
+                </IconButton>
+              ) : null}
+            </div>
+            <div
+              className="
+                min-h-0 overflow-y-auto px-5 py-4
+                pb-[max(1rem,env(safe-area-inset-bottom))]
+              "
+            >
+              {children}
+            </div>
+            {footer ? (
+              <div
+                className="
+                  flex justify-end border-t border-rule px-5 py-3
+                  pb-[max(1rem,env(safe-area-inset-bottom))]
+                "
+              >
+                {footer}
+              </div>
+            ) : null}
+          </Dialog>
+        </Modal>
+      </ModalOverlay>
+    );
+  }
+
+  return (
+    <Sheet
+      detent="content"
+      isOpen={isOpen}
+      onClose={() => {
+        if (isDismissable) state.close();
+      }}
+      prefersReducedMotion={prefersReducedMotion ?? false}
+      style={{ zIndex: 50 }}
+      unstyled
+    >
+      <AppDialogSheetContents
+        footer={footer}
+        isDismissable={isDismissable}
+        state={state}
+        title={title}
+      >
+        {children}
+      </AppDialogSheetContents>
+      <Sheet.Backdrop className="bg-scrim" unstyled />
+    </Sheet>
+  );
+};
 
 /**
  * 确认框。破坏性动作必须先用操作者自己的话说清后果，再执行。

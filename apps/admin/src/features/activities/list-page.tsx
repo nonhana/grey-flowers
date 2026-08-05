@@ -1,5 +1,6 @@
 import type { ActivityAdmin, ActivityListData } from '@grey-flowers/contracts';
 
+import { useNavigate } from '@tanstack/react-router';
 import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -18,7 +19,6 @@ import {
 } from '@/ui/index.js';
 
 import { ActivityCard } from './activity-card.js';
-import { ActivityComposer } from './composer.js';
 
 const PAGE_SIZE = 10;
 
@@ -40,6 +40,7 @@ const FeedSkeleton = () => (
 );
 
 export const ActivitiesPage = () => {
+  const navigate = useNavigate();
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);
   const toggle = usePlayerStore((s) => s.toggle);
@@ -53,8 +54,6 @@ export const ActivitiesPage = () => {
   const [data, setData] = useState<ActivityListData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [composerOpen, setComposerOpen] = useState(false);
-  const [editing, setEditing] = useState<ActivityAdmin | null>(null);
   const [pendingDelete, setPendingDelete] = useState<ActivityAdmin | null>(
     null,
   );
@@ -116,18 +115,14 @@ export const ActivitiesPage = () => {
   };
 
   const openCreate = () => {
-    setEditing(null);
-    setComposerOpen(true);
+    void navigate({ to: '/activities/new' });
   };
 
   const openEdit = (activity: ActivityAdmin) => {
-    setEditing(activity);
-    setComposerOpen(true);
-  };
-
-  const onSaved = () => {
-    setPage(1);
-    setReloadKey((current) => current + 1);
+    void navigate({
+      params: { activityId: String(activity.id) },
+      to: '/activities/$activityId/edit',
+    });
   };
 
   const remove = async () => {
@@ -148,7 +143,7 @@ export const ActivitiesPage = () => {
     <PageBody width="narrow">
       <PageHeader
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center justify-between">
             <SearchInput
               className="
                 hidden w-64
@@ -160,6 +155,10 @@ export const ActivitiesPage = () => {
               value={query}
             />
             <Button
+              className="
+                hidden
+                md:flex
+              "
               icon={<PenLine aria-hidden="true" />}
               onPress={openCreate}
               tone="solid"
@@ -267,29 +266,6 @@ export const ActivitiesPage = () => {
           </div>
         </nav>
       ) : null}
-
-      <button
-        aria-label="发布动态"
-        className="
-          fixed right-[max(1rem,env(safe-area-inset-right))]
-          bottom-[calc(6rem+env(safe-area-inset-bottom))] z-40 inline-flex
-          min-h-11 items-center gap-2 rounded-full bg-accent px-3.5 font-mono
-          text-sm text-accent-on shadow-float transition-colors duration-150
-          hover:bg-accent-hover
-          md:hidden
-        "
-        onClick={openCreate}
-        type="button"
-      >
-        <PenLine aria-hidden="true" className="size-4" />
-      </button>
-
-      <ActivityComposer
-        editing={editing}
-        isOpen={composerOpen}
-        onOpenChange={setComposerOpen}
-        onSaved={onSaved}
-      />
 
       <ConfirmDialog
         confirmLabel="删除动态"

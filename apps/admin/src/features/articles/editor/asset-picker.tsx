@@ -1,6 +1,7 @@
 import type { AssetDto, AssetPurpose } from '@grey-flowers/contracts';
 
-import { ImageUp, Images } from 'lucide-react';
+import { cn } from 'cnfast';
+import { Check, ImageUp, Images } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
@@ -20,15 +21,22 @@ const ASSET_PAGE_SIZE = 12;
 
 export const AssetPickerDialog = ({
   onClose,
+  onDone,
   onSelect,
   open,
   purpose,
+  selectionCount,
+  selectedAssetIds,
   title,
 }: {
   onClose: () => void;
+  /** 提供后在底部渲染「完成（已选 N）」按钮，供多选场景关闭对话框。 */
+  onDone?: () => void;
   onSelect: (asset: AssetDto) => void;
   open: boolean;
   purpose: AssetPurpose;
+  selectionCount?: number;
+  selectedAssetIds?: ReadonlySet<number>;
   title: string;
 }) => {
   const [items, setItems] = useState<AssetDto[]>([]);
@@ -127,6 +135,13 @@ export const AssetPickerDialog = ({
 
   return (
     <AppDialog
+      footer={
+        onDone ? (
+          <Button onPress={onDone} tone="solid">
+            完成（已选 {selectionCount ?? 0}）
+          </Button>
+        ) : undefined
+      }
       isOpen={open}
       onOpenChange={(isOpen) => {
         if (!isOpen) onClose();
@@ -188,34 +203,56 @@ export const AssetPickerDialog = ({
               sm:grid-cols-4
             "
           >
-            {items.map((asset) => (
-              <li key={asset.id}>
-                <AriaButton
-                  className="
-                    group grid w-full gap-1.5 rounded-control border border-rule
-                    bg-well p-1.5 text-left transition-colors
-                    hover:border-accent-rule hover:bg-accent-wash
-                  "
-                  onPress={() => onSelect(asset)}
-                >
-                  <span
-                    className="
-                      grid aspect-square place-items-center overflow-hidden
-                      rounded-control bg-canvas
-                    "
+            {items.map((asset) => {
+              const isSelected = selectedAssetIds?.has(asset.id) ?? false;
+              return (
+                <li key={asset.id}>
+                  <AriaButton
+                    aria-pressed={isSelected}
+                    className={cn(
+                      `
+                        relative grid w-full gap-1.5 rounded-control border
+                        p-1.5 text-left transition-colors
+                      `,
+                      `
+                        border-rule bg-well
+                        hover:border-accent-rule hover:bg-accent-wash
+                      `,
+                      isSelected && 'border-accent bg-accent-wash',
+                    )}
+                    onPress={() => onSelect(asset)}
                   >
-                    <AssetImage
-                      alt=""
-                      className="size-full object-cover"
-                      src={asset.deliveryUrl}
-                    />
-                  </span>
-                  <span className="px-0.5 font-mono text-2xs text-ink-dim">
-                    {formatBytes(asset.byteSize)}
-                  </span>
-                </AriaButton>
-              </li>
-            ))}
+                    <span
+                      className="
+                        grid aspect-square place-items-center overflow-hidden
+                        rounded-control bg-canvas
+                      "
+                    >
+                      <AssetImage
+                        alt=""
+                        className="size-full object-cover"
+                        src={asset.deliveryUrl}
+                      />
+                    </span>
+                    {isSelected ? (
+                      <span
+                        aria-hidden="true"
+                        className="
+                          absolute top-2 right-2 grid size-6 place-items-center
+                          rounded-full border border-accent bg-accent
+                          text-accent-on shadow-sm
+                        "
+                      >
+                        <Check className="size-3.5" />
+                      </span>
+                    ) : null}
+                    <span className="px-0.5 font-mono text-2xs text-ink-dim">
+                      {formatBytes(asset.byteSize)}
+                    </span>
+                  </AriaButton>
+                </li>
+              );
+            })}
           </ul>
         )}
 
