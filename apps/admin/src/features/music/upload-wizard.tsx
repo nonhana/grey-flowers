@@ -114,7 +114,7 @@ export const UploadWizard = () => {
         // 选了受管封面则交资产；否则以外部 URL 为准。
         ...(form.coverAssetId === null
           ? { cover: form.cover.trim() }
-            : { coverAssetId: form.coverAssetId }),
+          : { coverAssetId: form.coverAssetId }),
       });
       toast.success('已加入音乐库。');
       await navigate({ to: '/music' });

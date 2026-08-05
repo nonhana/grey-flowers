@@ -153,24 +153,31 @@ export const MusicPickerDialog = ({
               className="
                 m-0 list-none divide-y divide-rule rounded-panel border
                 border-rule bg-case-raised p-1
+                md:grid md:grid-cols-2 md:gap-3 md:divide-y-0 md:rounded-none
+                md:border-0 md:bg-transparent md:p-0
               "
             >
               {data.items.map((music) => {
                 const isSelected = selection.has(music.id);
                 const cover = music.coverAsset?.deliveryUrl ?? music.cover;
                 return (
-                  <li key={music.id}>
+                  <li className="min-w-0" key={music.id}>
                     <button
                       className={cn(
                         `
                           flex w-full items-center gap-3 rounded-control p-2
-                          text-left
+                          text-left transition-colors
                         `,
                         `
-                          transition-colors
                           hover:bg-accent-wash
+                          md:h-full md:rounded-panel md:border md:border-rule
+                          md:bg-case-raised md:p-3
                         `,
-                        isSelected && 'bg-accent-wash',
+                        isSelected &&
+                          `
+                            bg-accent-wash
+                            md:border-accent-rule
+                          `,
                       )}
                       onClick={() => toggleTrack(music)}
                       type="button"
@@ -179,6 +186,7 @@ export const MusicPickerDialog = ({
                         className="
                           grid size-11 shrink-0 place-items-center
                           overflow-hidden rounded-control bg-well
+                          md:size-14
                         "
                       >
                         {cover ? (

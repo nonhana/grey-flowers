@@ -55,7 +55,11 @@ export const PageHeader = ({
   leading?: ReactNode;
   title: string;
 }) => (
-  <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+  <header
+    className="
+      flex w-full flex-wrap items-start justify-between gap-x-4 gap-y-3
+    "
+  >
     <div className="flex min-w-0 items-start gap-2">
       {leading ? <div className="-ml-2 shrink-0 pt-0.5">{leading}</div> : null}
       <div className="grid min-w-0 gap-1">
@@ -68,7 +72,7 @@ export const PageHeader = ({
       </div>
     </div>
     {actions ? (
-      <div className="flex shrink-0 items-center gap-2">{actions}</div>
+      <div className="flex w-full shrink-0 items-center gap-2">{actions}</div>
     ) : null}
   </header>
 );
