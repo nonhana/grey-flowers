@@ -217,7 +217,7 @@ export type ActivityWhereInput = {
   editedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Activity">
   imageAssets?: Prisma.ActivityImageAssetListRelationFilter
-  music?: Prisma.MusicListRelationFilter
+  music?: Prisma.ActivityMusicListRelationFilter
 }
 
 export type ActivityOrderByWithRelationInput = {
@@ -228,7 +228,7 @@ export type ActivityOrderByWithRelationInput = {
   editedAt?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   imageAssets?: Prisma.ActivityImageAssetOrderByRelationAggregateInput
-  music?: Prisma.MusicOrderByRelationAggregateInput
+  music?: Prisma.ActivityMusicOrderByRelationAggregateInput
 }
 
 export type ActivityWhereUniqueInput = Prisma.AtLeast<{
@@ -242,7 +242,7 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   editedAt?: Prisma.DateTimeFilter<"Activity"> | Date | string
   contentMarkdown?: Prisma.JsonNullableFilter<"Activity">
   imageAssets?: Prisma.ActivityImageAssetListRelationFilter
-  music?: Prisma.MusicListRelationFilter
+  music?: Prisma.ActivityMusicListRelationFilter
 }, "id">
 
 export type ActivityOrderByWithAggregationInput = {
@@ -278,7 +278,7 @@ export type ActivityCreateInput = {
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   imageAssets?: Prisma.ActivityImageAssetCreateNestedManyWithoutActivityInput
-  music?: Prisma.MusicCreateNestedManyWithoutActivityInput
+  music?: Prisma.ActivityMusicCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityUncheckedCreateInput = {
@@ -289,7 +289,7 @@ export type ActivityUncheckedCreateInput = {
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   imageAssets?: Prisma.ActivityImageAssetUncheckedCreateNestedManyWithoutActivityInput
-  music?: Prisma.MusicUncheckedCreateNestedManyWithoutActivityInput
+  music?: Prisma.ActivityMusicUncheckedCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityUpdateInput = {
@@ -299,7 +299,7 @@ export type ActivityUpdateInput = {
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   imageAssets?: Prisma.ActivityImageAssetUpdateManyWithoutActivityNestedInput
-  music?: Prisma.MusicUpdateManyWithoutActivityNestedInput
+  music?: Prisma.ActivityMusicUpdateManyWithoutActivityNestedInput
 }
 
 export type ActivityUncheckedUpdateInput = {
@@ -310,7 +310,7 @@ export type ActivityUncheckedUpdateInput = {
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   imageAssets?: Prisma.ActivityImageAssetUncheckedUpdateManyWithoutActivityNestedInput
-  music?: Prisma.MusicUncheckedUpdateManyWithoutActivityNestedInput
+  music?: Prisma.ActivityMusicUncheckedUpdateManyWithoutActivityNestedInput
 }
 
 export type ActivityCreateManyInput = {
@@ -378,11 +378,6 @@ export type ActivitySumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
-export type ActivityNullableScalarRelationFilter = {
-  is?: Prisma.ActivityWhereInput | null
-  isNot?: Prisma.ActivityWhereInput | null
-}
-
 export type ActivityScalarRelationFilter = {
   is?: Prisma.ActivityWhereInput
   isNot?: Prisma.ActivityWhereInput
@@ -403,12 +398,10 @@ export type ActivityCreateNestedOneWithoutMusicInput = {
   connect?: Prisma.ActivityWhereUniqueInput
 }
 
-export type ActivityUpdateOneWithoutMusicNestedInput = {
+export type ActivityUpdateOneRequiredWithoutMusicNestedInput = {
   create?: Prisma.XOR<Prisma.ActivityCreateWithoutMusicInput, Prisma.ActivityUncheckedCreateWithoutMusicInput>
   connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutMusicInput
   upsert?: Prisma.ActivityUpsertWithoutMusicInput
-  disconnect?: Prisma.ActivityWhereInput | boolean
-  delete?: Prisma.ActivityWhereInput | boolean
   connect?: Prisma.ActivityWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityUpdateToOneWithWhereWithoutMusicInput, Prisma.ActivityUpdateWithoutMusicInput>, Prisma.ActivityUncheckedUpdateWithoutMusicInput>
 }
@@ -487,7 +480,7 @@ export type ActivityCreateWithoutImageAssetsInput = {
   publishedAt?: Date | string
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  music?: Prisma.MusicCreateNestedManyWithoutActivityInput
+  music?: Prisma.ActivityMusicCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityUncheckedCreateWithoutImageAssetsInput = {
@@ -497,7 +490,7 @@ export type ActivityUncheckedCreateWithoutImageAssetsInput = {
   publishedAt?: Date | string
   editedAt?: Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  music?: Prisma.MusicUncheckedCreateNestedManyWithoutActivityInput
+  music?: Prisma.ActivityMusicUncheckedCreateNestedManyWithoutActivityInput
 }
 
 export type ActivityCreateOrConnectWithoutImageAssetsInput = {
@@ -522,7 +515,7 @@ export type ActivityUpdateWithoutImageAssetsInput = {
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  music?: Prisma.MusicUpdateManyWithoutActivityNestedInput
+  music?: Prisma.ActivityMusicUpdateManyWithoutActivityNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutImageAssetsInput = {
@@ -532,7 +525,7 @@ export type ActivityUncheckedUpdateWithoutImageAssetsInput = {
   publishedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contentMarkdown?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  music?: Prisma.MusicUncheckedUpdateManyWithoutActivityNestedInput
+  music?: Prisma.ActivityMusicUncheckedUpdateManyWithoutActivityNestedInput
 }
 
 
@@ -571,7 +564,7 @@ export type ActivityCountOutputTypeCountImageAssetsArgs<ExtArgs extends runtime.
  * ActivityCountOutputType without action
  */
 export type ActivityCountOutputTypeCountMusicArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MusicWhereInput
+  where?: Prisma.ActivityMusicWhereInput
 }
 
 
@@ -627,7 +620,7 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Activity"
   objects: {
     imageAssets: Prisma.$ActivityImageAssetPayload<ExtArgs>[]
-    music: Prisma.$MusicPayload<ExtArgs>[]
+    music: Prisma.$ActivityMusicPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1031,7 +1024,7 @@ readonly fields: ActivityFieldRefs;
 export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   imageAssets<T extends Prisma.Activity$imageAssetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$imageAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityImageAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  music<T extends Prisma.Activity$musicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$musicArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MusicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  music<T extends Prisma.Activity$musicArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$musicArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityMusicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1488,23 +1481,23 @@ export type Activity$imageAssetsArgs<ExtArgs extends runtime.Types.Extensions.In
  */
 export type Activity$musicArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Music
+   * Select specific fields to fetch from the ActivityMusic
    */
-  select?: Prisma.MusicSelect<ExtArgs> | null
+  select?: Prisma.ActivityMusicSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Music
+   * Omit specific fields from the ActivityMusic
    */
-  omit?: Prisma.MusicOmit<ExtArgs> | null
+  omit?: Prisma.ActivityMusicOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.MusicInclude<ExtArgs> | null
-  where?: Prisma.MusicWhereInput
-  orderBy?: Prisma.MusicOrderByWithRelationInput | Prisma.MusicOrderByWithRelationInput[]
-  cursor?: Prisma.MusicWhereUniqueInput
+  include?: Prisma.ActivityMusicInclude<ExtArgs> | null
+  where?: Prisma.ActivityMusicWhereInput
+  orderBy?: Prisma.ActivityMusicOrderByWithRelationInput | Prisma.ActivityMusicOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityMusicWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.MusicScalarFieldEnum | Prisma.MusicScalarFieldEnum[]
+  distinct?: Prisma.ActivityMusicScalarFieldEnum | Prisma.ActivityMusicScalarFieldEnum[]
 }
 
 /**

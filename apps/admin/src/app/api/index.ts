@@ -1,3 +1,4 @@
+import { createActivitiesApi, type ActivitiesApi } from './activities.js';
 import { createArticlesApi, type ArticlesApi } from './articles.js';
 import { createAssetsApi, type AssetsApi } from './assets.js';
 import { createAuthApi, type AuthApi } from './auth.js';
@@ -39,6 +40,7 @@ export const setAccessToken = (accessToken: string | null) => {
 };
 
 export class ApiClient {
+  readonly activities: ActivitiesApi;
   readonly articles: ArticlesApi;
   readonly assets: AssetsApi;
   readonly auth: AuthApi;
@@ -52,6 +54,7 @@ export class ApiClient {
   });
 
   constructor() {
+    this.activities = createActivitiesApi(this.http);
     this.articles = createArticlesApi(this.http);
     this.assets = createAssetsApi(this.http);
     this.auth = createAuthApi(this.http);

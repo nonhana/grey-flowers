@@ -38,6 +38,7 @@
     "music-metadata": "catalog:api",
     "pino": "catalog:api",
     "pinyin-pro": "catalog:api",
+    "rehype-sanitize": "catalog:api",
     "sharp": "catalog:api",
     "zod": "catalog:api"
   },

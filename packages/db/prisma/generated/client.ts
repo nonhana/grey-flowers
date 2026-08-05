@@ -92,6 +92,11 @@ export type Activity = Prisma.ActivityModel
  */
 export type Music = Prisma.MusicModel
 /**
+ * Model ActivityMusic
+ * 
+ */
+export type ActivityMusic = Prisma.ActivityMusicModel
+/**
  * Model Asset
  * 
  */

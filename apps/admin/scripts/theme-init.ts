@@ -67,4 +67,13 @@
   } catch {
     // localStorage 不可用（隐私模式等）时保持 :root 默认，不阻断首帧。
   }
-})('data-theme', 'gf-admin-theme', 'system', null, ['light', 'dark'], null, true, true);
+})(
+  'data-theme',
+  'gf-admin-theme',
+  'system',
+  null,
+  ['light', 'dark'],
+  null,
+  true,
+  true,
+);

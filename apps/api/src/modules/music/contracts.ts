@@ -7,9 +7,9 @@ import type { Prisma } from '@grey-flowers/db';
 
 import { concatUrl } from '@/lib/concat-url.js';
 
-/** 管理读：含 sourceAsset/coverAsset 摘要与 activityId（只读）。 */
+/** 管理读：含 sourceAsset/coverAsset 摘要与 activityCount（多对多引用计数）。 */
 export const musicAdminSelect = {
-  activityId: true,
+  _count: { select: { activities: true } },
   album: true,
   artist: true,
   cover: true,
@@ -57,7 +57,7 @@ export const toMusicAdmin = (
   record: MusicAdminRecord,
   assetPublicUrl: string,
 ): MusicAdmin => ({
-  activityId: record.activityId,
+  activityCount: record._count.activities,
   album: record.album,
   artist: record.artist,
   cover: record.cover,
@@ -67,7 +67,7 @@ export const toMusicAdmin = (
     : null,
   createdAt: record.createdAt.toISOString(),
   id: record.id,
-  inActivity: record.activityId !== null,
+  inActivity: record._count.activities > 0,
   seconds: record.seconds,
   sourceAsset: record.sourceAsset
     ? toMusicAssetSummary(record.sourceAsset, assetPublicUrl)

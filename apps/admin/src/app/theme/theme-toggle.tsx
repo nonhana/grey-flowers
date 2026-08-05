@@ -3,7 +3,11 @@ import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from 'react-aria-components';
 
-const MODES: Array<{ icon: typeof Sun; label: string; mode: 'system' | 'light' | 'dark' }> = [
+const MODES: Array<{
+  icon: typeof Sun;
+  label: string;
+  mode: 'system' | 'light' | 'dark';
+}> = [
   { icon: Monitor, label: '跟随系统', mode: 'system' },
   { icon: Sun, label: '浅色', mode: 'light' },
   { icon: Moon, label: '深色', mode: 'dark' },
