@@ -1,5 +1,6 @@
 import type { Principal } from '@grey-flowers/contracts';
 
+import { toast } from 'sonner';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -61,6 +62,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
   const decideSessionExpired = () => {
     setAccessToken(null);
     set({ state: { status: 'unauthenticated' } });
+    toast.error('登录已过期，请重新登录。');
   };
 
   const restoreSession = async () => {

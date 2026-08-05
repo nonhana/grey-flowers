@@ -3,6 +3,7 @@ import type { ArticleAdmin, ArticleSnapshot } from '@grey-flowers/contracts';
 import { debounce } from 'es-toolkit';
 import { del, get as idbGet, set as idbSet } from 'idb-keyval';
 import { useEffect, useMemo } from 'react';
+import { toast } from 'sonner';
 import { useStore } from 'zustand';
 import { createStore } from 'zustand/vanilla';
 
@@ -11,6 +12,7 @@ import {
   isApiNetworkError,
   isApiRequestError,
 } from '@/app/api/index.js';
+import { toastError } from '@/lib/toast.js';
 
 export interface ArticleDraft {
   alt: string;
@@ -63,7 +65,7 @@ export interface ArticleEditorActions {
   restoreVersion: (snapshot: ArticleSnapshot) => Promise<void>;
   publish: () => Promise<ArticleAdmin | null>;
   unpublish: () => Promise<ArticleAdmin | null>;
-  removeArticle: () => Promise<void>;
+  removeArticle: () => Promise<boolean>;
   requestPreview: () => Promise<string | null>;
 }
 
@@ -331,11 +333,17 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved) return null;
 
-        const result = await apiClient.articles.publish(articleId);
-        sync(result);
-        set({ phase: 'saved' });
-        await loadVersions();
-        return result;
+        try {
+          const result = await apiClient.articles.publish(articleId);
+          sync(result);
+          set({ phase: 'saved' });
+          await loadVersions();
+          toast.success('文章已发布。');
+          return result;
+        } catch (error) {
+          toastError(error);
+          return null;
+        }
       };
 
       const unpublish = async () => {
@@ -344,17 +352,31 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved) return null;
 
-        const result = await apiClient.articles.unpublish(articleId);
-        sync(result);
-        set({ phase: 'saved' });
-        await loadVersions();
-        return result;
+        try {
+          const result = await apiClient.articles.unpublish(articleId);
+          sync(result);
+          set({ phase: 'saved' });
+          await loadVersions();
+          toast.success('文章已下架。');
+          return result;
+        } catch (error) {
+          toastError(error);
+          return null;
+        }
       };
 
-      const removeArticle = async () => {
-        if (articleId === null) return;
-        await apiClient.articles.remove(articleId);
-        set({ article: null });
+      const removeArticle = async (): Promise<boolean> => {
+        if (articleId === null) return false;
+
+        try {
+          await apiClient.articles.remove(articleId);
+          set({ article: null });
+          toast.success('文章已删除。');
+          return true;
+        } catch (error) {
+          toastError(error);
+          return false;
+        }
       };
 
       const requestPreview = async (): Promise<string | null> => {

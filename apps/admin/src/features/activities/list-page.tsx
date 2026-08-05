@@ -2,9 +2,10 @@ import type { ActivityAdmin, ActivityListData } from '@grey-flowers/contracts';
 
 import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
+import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
 import {
   Button,
@@ -58,7 +59,6 @@ export const ActivitiesPage = () => {
   const [pendingDelete, setPendingDelete] = useState<ActivityAdmin | null>(
     null,
   );
-  const [actionError, setActionError] = useState('');
 
   // 搜索防抖 300ms
   useEffect(() => {
@@ -135,13 +135,13 @@ export const ActivitiesPage = () => {
     if (!pendingDelete) return;
     const target = pendingDelete;
     setPendingDelete(null);
-    setActionError('');
     try {
       await apiClient.activities.remove(target.id);
       for (const track of target.music) removeTrack(track.id);
       setReloadKey((current) => current + 1);
+      toast.success('动态已删除。');
     } catch (cause) {
-      setActionError(apiErrorMessage(cause));
+      toastError(cause);
     }
   };
 
@@ -186,12 +186,6 @@ export const ActivitiesPage = () => {
         />
       </div>
 
-      {actionError ? (
-        <p className="mt-4 text-base text-danger-text" role="alert">
-          {actionError}
-        </p>
-      ) : null}
-
       <section aria-busy={loading} className="mt-5">
         {loading ? (
           <FeedSkeleton />
@@ -205,6 +199,7 @@ export const ActivitiesPage = () => {
             icon={<CloudOff aria-hidden="true" />}
             title="没能连上动态"
           >
+            {' '}
             {error}
           </EmptyState>
         ) : data && data.items.length === 0 ? (

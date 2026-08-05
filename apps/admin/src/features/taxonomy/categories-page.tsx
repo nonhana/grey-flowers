@@ -3,9 +3,11 @@ import type { AssetDto, CategoryAdmin } from '@grey-flowers/contracts';
 import { cn } from 'cnfast';
 import { FolderTree, ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { toastError } from '@/lib/toast.js';
 import {
   Alert,
   AppDialog,
@@ -109,6 +111,7 @@ export const CategoriesPage = () => {
       else await apiClient.taxonomy.createCategory(input);
       setDialogOpen(false);
       setReloadKey((current) => current + 1);
+      toast.success(editing ? '已保存修改。' : '分类已创建。');
     } catch (saveError) {
       setError(
         isApiRequestError(saveError, 'CONFLICT')
@@ -129,14 +132,11 @@ export const CategoriesPage = () => {
     try {
       await apiClient.taxonomy.deleteCategory(target.id);
       setReloadKey((current) => current + 1);
+      toast.success(`已删除分类「${target.name}」。`);
     } catch (deleteError) {
-      setError(
-        isApiRequestError(deleteError, 'CONFLICT')
-          ? `分类「${target.name}」下还有文章，先把它们移到别处再删。`
-          : isApiRequestError(deleteError)
-            ? deleteError.message
-            : '删除失败。',
-      );
+      toastError(deleteError, {
+        CONFLICT: `分类「${target.name}」下还有文章，先把它们移到别处再删。`,
+      });
     }
   };
 
@@ -155,8 +155,6 @@ export const CategoriesPage = () => {
         description="一篇文章只属于一个分类。分类下还有文章时不能删除。"
         title="分类"
       />
-
-      {error && !dialogOpen ? <Alert className="mt-4">{error}</Alert> : null}
 
       <div className="mt-5">
         {loading ? (

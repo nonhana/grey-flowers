@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ProgressBar } from 'react-aria-components';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset.js';
@@ -198,6 +199,7 @@ export const ActivityComposer = ({
         : await apiClient.activities.create(input);
       onSaved(saved);
       onOpenChange(false);
+      toast.success(editing ? '动态已更新。' : '动态已发布。');
     } catch (cause) {
       setError(apiErrorMessage(cause));
     } finally {

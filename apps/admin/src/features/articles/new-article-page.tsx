@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
+import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import {
@@ -58,6 +59,7 @@ export const NewArticlePage = () => {
         ...(trimmedSlug ? { slug: trimmedSlug } : {}),
         ...(description.trim() ? { description: description.trim() } : {}),
       });
+      toast.success('草稿已创建。');
       await navigate({
         params: { articleId: String(article.id) },
         to: '/articles/$articleId',
