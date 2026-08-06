@@ -18,7 +18,9 @@
     "prisma:generate": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js generate",
     "prisma:migrate:deploy": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate deploy",
     "prisma:migrate:dev": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate dev",
+    "prisma:migrate:reset": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js migrate reset --force && node --env-file-if-exists=../../.env --import tsx prisma/seed.mts",
     "prisma:push": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js db push",
+    "prisma:seed": "node --env-file-if-exists=../../.env --import tsx prisma/seed.mts",
     "prisma:studio": "node --env-file-if-exists=../../.env ./node_modules/prisma/build/index.js studio",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
@@ -29,6 +31,8 @@
   },
   "devDependencies": {
     "@types/pg": "catalog:db",
-    "prisma": "catalog:db"
+    "bcryptjs": "catalog:",
+    "prisma": "catalog:db",
+    "tsx": "catalog:"
   }
 }

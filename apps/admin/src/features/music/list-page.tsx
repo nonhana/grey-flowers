@@ -127,7 +127,7 @@ export const MusicLibraryPage = () => {
   };
 
   return (
-    <PageBody width="wide">
+    <PageBody scroll="child" width="wide">
       <PageHeader
         actions={
           <SearchInput
@@ -165,7 +165,10 @@ export const MusicLibraryPage = () => {
         />
       </div>
 
-      <section aria-busy={loading} className="mt-5">
+      <section
+        aria-busy={loading}
+        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         {loading ? (
           <div className={GRID_CLASS}>
             {Array.from({ length: 6 }, (_, index) => (
@@ -276,9 +279,7 @@ export const MusicLibraryPage = () => {
         onCancel={deleteDialog.dismiss}
         onConfirm={() => void remove()}
         onExited={deleteDialog.clear}
-        title={
-          deleteDialog.data ? `删除「${deleteDialog.data.title}」？` : ''
-        }
+        title={deleteDialog.data ? `删除「${deleteDialog.data.title}」？` : ''}
       />
     </PageBody>
   );

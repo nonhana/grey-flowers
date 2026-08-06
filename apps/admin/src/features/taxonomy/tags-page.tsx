@@ -93,7 +93,7 @@ export const TagsPage = () => {
   };
 
   return (
-    <PageBody width="narrow">
+    <PageBody scroll="child" width="narrow">
       <PageHeader
         actions={
           <FilterChip
@@ -132,7 +132,7 @@ export const TagsPage = () => {
 
       {error ? <Alert className="mt-3">{error}</Alert> : null}
 
-      <div className="mt-5">
+      <div className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
           <RowSkeleton rows={4} />
         ) : items.length === 0 ? (

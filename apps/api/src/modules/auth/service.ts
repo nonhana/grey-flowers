@@ -5,7 +5,7 @@ import type {
   Principal,
   PublicUser,
 } from '@grey-flowers/contracts';
-import type { createPrismaClient } from '@grey-flowers/db';
+import type { Prisma, createPrismaClient } from '@grey-flowers/db';
 
 import bcrypt from 'bcryptjs';
 import { createHash } from 'node:crypto';
@@ -258,32 +258,70 @@ export class AuthService {
     }
   }
 
+  /**
+   * 更新角色并在同一事务内撤销该用户全部 active Session（ROLE_CHANGED）。
+   * tx 缺省时自建 $transaction；传入时可纳入外层事务（users.update 同事务原子）。
+   * 角色未变 → 'unchanged'（不撤销会话）。符合认证设计：角色变更必须归身份模块。
+   */
+  async applyRoleChange(
+    userId: number,
+    role: 'USER' | 'ADMIN',
+    tx?: Pick<Prisma.TransactionClient, 'session' | 'user'>,
+  ): Promise<'unchanged' | 'updated'> {
+    if (tx) return this.applyRoleChangeIn(tx, userId, role);
+    return this.prisma.$transaction((transaction) =>
+      this.applyRoleChangeIn(transaction, userId, role),
+    );
+  }
+
+  /** 单事务体内的角色变更：见 applyRoleChange。 */
+  private async applyRoleChangeIn(
+    store: Pick<Prisma.TransactionClient, 'session' | 'user'>,
+    userId: number,
+    role: 'USER' | 'ADMIN',
+  ): Promise<'unchanged' | 'updated'> {
+    const current = await store.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+    if (!current) throw new ApiError('NOT_FOUND');
+
+    if (current.role === role) return 'unchanged';
+
+    await store.user.update({
+      where: { id: userId },
+      data: { role },
+    });
+    await store.session.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      data: {
+        revokedAt: new Date(),
+        revokeReason: 'ROLE_CHANGED',
+      },
+    });
+    return 'updated';
+  }
+
   async promoteToAdmin(email: string) {
     return this.prisma.$transaction(async (transaction) => {
       const user = await transaction.user.findUnique({
         where: { email },
-        select: { id: true, role: true },
+        select: { id: true },
       });
       if (!user) return 'not_found' as const;
 
-      if (user.role === 'ADMIN') return 'already_admin' as const;
-
-      await transaction.user.update({
-        where: { id: user.id },
-        data: { role: 'ADMIN' },
-      });
-      await transaction.session.updateMany({
-        where: {
-          userId: user.id,
-          revokedAt: null,
-          expiresAt: { gt: new Date() },
-        },
-        data: {
-          revokedAt: new Date(),
-          revokeReason: 'ROLE_CHANGED',
-        },
-      });
-      return 'promoted' as const;
+      const outcome = await this.applyRoleChangeIn(
+        transaction,
+        user.id,
+        'ADMIN',
+      );
+      return outcome === 'updated'
+        ? ('promoted' as const)
+        : ('already_admin' as const);
     });
   }
 

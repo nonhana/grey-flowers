@@ -70,16 +70,23 @@ export const apiEnvelopeSchema = <TData extends z.ZodType>(
   return z.union([apiSuccessSchema(dataSchema), apiFailureSchema]);
 };
 
-const usernameSchema = z
+/** 角色枚举：users.ts 管理编辑复用（与 auth principal 角色对齐）。 */
+export const userRoleSchema = z.enum(['USER', 'ADMIN']);
+
+export type UserRole = z.infer<typeof userRoleSchema>;
+
+export const usernameSchema = z
   .string()
   .min(1, { message: 'Username must not be empty' })
   .max(16, { message: 'Username must not exceed 16 characters' });
 
-const emailInputSchema = z.email({ message: 'Invalid email format' }).trim();
+export const emailInputSchema = z
+  .email({ message: 'Invalid email format' })
+  .trim();
 
-const emailSchema = z.email();
+export const emailSchema = z.email();
 
-const siteSchema = z.url({ message: 'Invalid site URL' });
+export const siteSchema = z.url({ message: 'Invalid site URL' });
 
 const passwordSchema = z
   .string()

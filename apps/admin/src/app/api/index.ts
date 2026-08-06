@@ -6,6 +6,7 @@ import { createCommentsApi, type CommentsApi } from './comments.js';
 import { createHttp } from './http.js';
 import { createMusicApi, type MusicApi } from './music.js';
 import { createTaxonomyApi, type TaxonomyApi } from './taxonomy.js';
+import { createUsersApi, type UsersApi } from './users.js';
 
 export {
   ApiNetworkError,
@@ -48,6 +49,7 @@ export class ApiClient {
   readonly comments: CommentsApi;
   readonly music: MusicApi;
   readonly taxonomy: TaxonomyApi;
+  readonly users: UsersApi;
 
   private readonly http = createHttp({
     prefixUrl: getApiOrigin(),
@@ -63,6 +65,7 @@ export class ApiClient {
     this.comments = createCommentsApi(this.http);
     this.music = createMusicApi(this.http);
     this.taxonomy = createTaxonomyApi(this.http);
+    this.users = createUsersApi(this.http);
   }
 
   /** transport 凭据续期（refresh 属于 transport，见 D5） */

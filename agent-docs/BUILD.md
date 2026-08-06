@@ -51,11 +51,14 @@ Pushing `master` (or the `article_published` repository dispatch) invokes `.gith
 
 The workflow does not run `pnpm prisma:migrate:deploy`; apply a reviewed migration separately before relying on a schema change in production. The API and admin apps are built but not deployed by this workflow.
 
-## API CLI
-
-pnpm does not forward a `--` separator correctly to these scripts; call tsx directly instead:
+## 测试数据库种子
 
 ```sh
-cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/register-user.ts -- --username <name> --email <user> --password <pw> [--site <url>]
-cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/promote-admin.ts -- --email <user>
+pnpm prisma:reset   # 一键清空 + 重建迁移 + 自动灌入 seed 数据
+pnpm prisma:seed    # 在既有库上重灌（幂等，先逆序清空全表）
 ```
+
+seed 位于 `packages/db/prisma/seed.mts`，覆盖全部 13 张表并造出大规模、差异化的
+测试数据（文章标题 trgm 检索、评论内容/路径/作者/日期区间筛选、资产 purpose 目录/
+媒体类型/状态、音乐/用户/活动检索等）。唯一管理员：`nonhana / nonhana@outlook.com`
+密码 `20021209xiang`。`pnpm prisma:reset` 会先重放迁移再跑 seed，一条命令到位。

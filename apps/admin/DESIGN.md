@@ -269,9 +269,13 @@ The five surface tokens are the spine of the system. Every background in the con
 
 **Page rhythm.** Page bodies are centred with a width contract — narrow `42rem`, default `56rem`, wide `72rem` — and gutters of `16px` / `24px` (sm) / `32px` (lg). Vertical padding is safe-area-aware on both ends: the top clears a notch, the bottom reserves `6rem` plus the inset so the last row is never parked under the thumb bar. Internal rhythm sits on the 4px grid and lives almost entirely at `8px` (the default gap between siblings) and `12px` (between groups); `16px`–`24px` separate sections.
 
+**The viewport contract.** The authenticated console is exactly `100dvh`: `html`, `body`, `#root`, and the shell never own a scrollbar. Each route declares one interior scroll owner. Ordinary content pages use the centred `PageBody`; list pages delegate to their items region, which is `flex: 1`, `min-height: 0`, vertically scrollable, and overscroll-contained. Their header, filters, and pagination stay visible while the items fill every remaining pixel.
+
 **The workspace.** The manuscript pane and the inspector are siblings in a flex row. The inspector is a fixed-width `380px` column whose _outer_ width animates while its inner content stays pinned to full width — so opening it squeezes the paper's margins without reflowing a single line of prose. On mobile the same content is a bottom sheet capped at `88dvh` with a real drag-to-dismiss handle, and the editor toolbar pins to the bottom and rides the software keyboard, because a toolbar the thumb cannot reach is not a toolbar.
 
 ### Named Rules
+
+**The Single Scroll Owner Rule.** Never let overflow bubble from a route into the document or shell. A screen has exactly one scrolling region at a time. On a list screen it must be the items region, not the page container; on a writing workspace it is the paper; on a detail or form it is the centred content body. Every flex ancestor between the viewport and that region declares `min-height: 0`, so content never silently expands the viewport.
 
 **The Uncut Measure Rule.** Consulting metadata must never reflow the writing. Any panel that appears beside the paper takes its space from the margins, at a fixed inner width, never from the measure.
 

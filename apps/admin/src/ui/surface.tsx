@@ -3,6 +3,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { cn } from 'cnfast';
 
 type PageWidth = 'narrow' | 'default' | 'wide';
+type PageBodyScroll = 'body' | 'child';
 
 const WIDTH: Record<PageWidth, string> = {
   narrow: 'max-w-2xl',
@@ -11,27 +12,35 @@ const WIDTH: Record<PageWidth, string> = {
 };
 
 /**
- * 页面容器。底部在移动端预留拇指动作栏与安全区，
- * 否则最后一行内容会被永久压在栏下面。
+ * 页面容器。默认在内容区内滚动；列表页将滚动所有权移交给子级 items 区域。
+ * 底部在移动端预留拇指动作栏与安全区，否则最后一行内容会被永久压在栏下面。
  */
 export const PageBody = ({
   children,
   className,
+  scroll = 'body',
   width = 'default',
 }: {
   children: ReactNode;
   className?: string;
+  scroll?: PageBodyScroll;
   width?: PageWidth;
 }) => (
   <div
     className={cn(
-      'mx-auto w-full px-4 pb-[calc(6rem+env(safe-area-inset-bottom))]',
+      `
+        mx-auto flex size-full min-h-0 flex-col px-4
+        pb-[calc(6rem+env(safe-area-inset-bottom))]
+      `,
       'pt-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))]',
       `
         sm:px-6
         md:py-10
         lg:px-8
       `,
+      scroll === 'body'
+        ? 'overflow-y-auto overscroll-contain'
+        : 'overflow-hidden',
       WIDTH[width],
       className,
     )}
