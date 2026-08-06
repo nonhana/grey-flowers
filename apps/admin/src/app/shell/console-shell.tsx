@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 
 import { Link, Outlet, useMatches } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import cn from 'cnfast';
 import {
   FileText,
   Flower2,
@@ -15,6 +15,7 @@ import {
   Send,
   SquarePen,
   Tags,
+  Users,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -65,7 +66,10 @@ const SECTIONS: NavSection[] = [
   },
   {
     title: '互动',
-    items: [{ icon: MessagesSquare, label: '评论', path: '/comments' }],
+    items: [
+      { icon: MessagesSquare, label: '评论', path: '/comments' },
+      { icon: Users, label: '用户', path: '/users' },
+    ],
   },
 ];
 
@@ -276,6 +280,14 @@ const MoreSheet = ({
       <Link
         className={navRowClass}
         onClick={() => onOpenChange(false)}
+        to="/users"
+      >
+        <Users aria-hidden="true" />
+        用户
+      </Link>
+      <Link
+        className={navRowClass}
+        onClick={() => onOpenChange(false)}
         to="/tags"
       >
         <Tags aria-hidden="true" />
@@ -305,23 +317,13 @@ export const ConsoleShell = () => {
   return (
     <div
       className="
-        flex h-full min-h-0 flex-col
+        flex h-full min-h-0 flex-col overflow-hidden
         md:flex-row
       "
     >
       <ConsoleRail />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <main
-          className={cn(
-            'min-h-0 flex-1',
-            isFullBleed
-              ? 'overflow-hidden'
-              : `
-                overflow-y-auto pb-[calc(6rem+env(safe-area-inset-bottom))]
-                md:pb-0
-              `,
-          )}
-        >
+        <main className="min-h-0 flex-1 overflow-hidden">
           <Outlet />
         </main>
         {isFullBleed ? null : (

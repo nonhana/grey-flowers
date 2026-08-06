@@ -16,7 +16,10 @@
     "lint:fix": "pnpm -r --workspace-concurrency=1 run lint:fix",
     "prisma:generate": "pnpm -F @grey-flowers/db run prisma:generate",
     "prisma:migrate:deploy": "pnpm -F @grey-flowers/db run prisma:migrate:deploy",
+    "prisma:migrate:reset": "pnpm -F @grey-flowers/db run prisma:migrate:reset",
     "prisma:push": "pnpm -F @grey-flowers/db run prisma:push",
+    "prisma:reset": "pnpm -F @grey-flowers/db run prisma:migrate:reset",
+    "prisma:seed": "pnpm -F @grey-flowers/db run prisma:seed",
     "prisma:studio": "pnpm -F @grey-flowers/db run prisma:studio",
     "typecheck": "tsc -p tsconfig.json --noEmit && pnpm -r --workspace-concurrency=1 run typecheck"
   },

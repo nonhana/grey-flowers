@@ -16,6 +16,7 @@ import { CommentMailer } from '../modules/comments/mailer.js';
 import { CommentService } from '../modules/comments/service.js';
 import { MusicService } from '../modules/music/service.js';
 import { TaxonomyService } from '../modules/taxonomy/service.js';
+import { UserService } from '../modules/users/service.js';
 import { createLogger, type ApiLogger } from './logger.js';
 
 export interface AppDependencies {
@@ -30,6 +31,7 @@ export interface AppDependencies {
   objectStorage: ObjectStorage;
   prisma: PrismaClient;
   taxonomy: TaxonomyService;
+  users: UserService;
 }
 
 export const createDependencies = (
@@ -40,6 +42,8 @@ export const createDependencies = (
   const objectStorage = new R2ObjectStorage(environment);
   const taxonomy = new TaxonomyService(prisma, environment);
   const assets = new AssetService(prisma, environment, objectStorage);
+  const auth = new AuthService(prisma, environment);
+  const users = new UserService(prisma, auth);
 
   return {
     environment,
@@ -49,7 +53,7 @@ export const createDependencies = (
     activities: new ActivityService(prisma, environment),
     articles: new ArticleService(prisma, environment, taxonomy),
     assets,
-    auth: new AuthService(prisma, environment),
+    auth,
     comments: new CommentService(
       prisma,
       logger,
@@ -57,5 +61,6 @@ export const createDependencies = (
     ),
     music: new MusicService(prisma, environment, objectStorage, assets),
     taxonomy,
+    users,
   };
 };

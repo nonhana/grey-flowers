@@ -31,6 +31,7 @@ import {
   createPublicTaxonomyRoutes,
   createTagRoutes,
 } from './modules/taxonomy/routes.js';
+import { createUserRoutes } from './modules/users/routes.js';
 
 export const createApp = (dependencies: AppDependencies) => {
   const app = new Hono<ApiEnvironment>();
@@ -65,6 +66,7 @@ export const createApp = (dependencies: AppDependencies) => {
   app.route('/categories', createCategoryRoutes(dependencies));
   app.route('/comments', createCommentRoutes(dependencies));
   app.route('/tags', createTagRoutes(dependencies));
+  app.route('/users', createUserRoutes(dependencies));
   app.route('/music', createMusicRoutes(dependencies));
   app.route('/public', createPublicTaxonomyRoutes(dependencies));
   app.route('/public/articles', createArticlePublicRoutes(dependencies));

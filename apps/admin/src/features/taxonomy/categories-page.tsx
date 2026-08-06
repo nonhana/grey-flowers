@@ -140,7 +140,7 @@ export const CategoriesPage = () => {
   };
 
   return (
-    <PageBody width="narrow">
+    <PageBody scroll="child" width="narrow">
       <PageHeader
         actions={
           <Button
@@ -155,7 +155,7 @@ export const CategoriesPage = () => {
         title="分类"
       />
 
-      <div className="mt-5">
+      <div className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
           <RowSkeleton rows={3} />
         ) : items.length === 0 ? (

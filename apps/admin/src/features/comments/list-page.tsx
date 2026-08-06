@@ -415,7 +415,7 @@ export const CommentsPage = () => {
   };
 
   return (
-    <PageBody width="wide">
+    <PageBody scroll="child" width="wide">
       <PageHeader
         actions={
           <MetaLine>{data ? <span>共 {data.total} 条</span> : null}</MetaLine>
@@ -481,7 +481,10 @@ export const CommentsPage = () => {
         </div>
       ) : null}
 
-      <section aria-busy={loading} className="mt-5">
+      <section
+        aria-busy={loading}
+        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         {loading ? (
           <RowSkeleton rows={6} />
         ) : error ? (

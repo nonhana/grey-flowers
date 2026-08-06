@@ -1,5 +1,4 @@
-/** 访客站根地址（与 API mailer 的 SITE_URL 同源，便于「在访客页打开」外链）。 */
-const SITE_URL = 'https://caelum.moe';
+import { pageUrl } from '@/lib/page-url.js';
 
 /** 「打开页面」外链：评论归属 path 拼到访客站根。 */
-export const commentPageUrl = (path: string) => `${SITE_URL}${path}`;
+export const commentPageUrl = (path: string) => pageUrl(path);

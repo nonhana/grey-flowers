@@ -139,7 +139,7 @@ export const ActivitiesPage = () => {
   };
 
   return (
-    <PageBody width="narrow">
+    <PageBody scroll="child" width="narrow">
       <PageHeader
         actions={
           <div className="flex w-full items-center justify-between">
@@ -183,7 +183,10 @@ export const ActivitiesPage = () => {
         />
       </div>
 
-      <section aria-busy={loading} className="mt-5">
+      <section
+        aria-busy={loading}
+        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         {loading ? (
           <FeedSkeleton />
         ) : error ? (

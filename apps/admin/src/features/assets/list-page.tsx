@@ -164,7 +164,7 @@ export const AssetsListPage = () => {
   };
 
   return (
-    <PageBody width="wide">
+    <PageBody scroll="child" width="wide">
       <PageHeader
         actions={
           <Button
@@ -232,7 +232,10 @@ export const AssetsListPage = () => {
         ) : null}
       </div>
 
-      <section aria-busy={loading} className="mt-5">
+      <section
+        aria-busy={loading}
+        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+      >
         {loading ? (
           <div className={GRID_CLASS}>
             {Array.from({ length: 6 }, (_, index) => (

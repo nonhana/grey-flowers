@@ -18,25 +18,17 @@ pnpm typecheck && pnpm lint && pnpm build
 
 `pnpm build` and `pnpm dev` import application environments and need the complete root `.env` described in [BUILD.md](./BUILD.md) (`HANA_DATABASE_URL`, API/auth/R2 secrets, mail). The API process exits at startup if the environment is invalid.
 
-## Agent test accounts
+## 测试数据
 
-Fixed local-dev accounts for agent/browser smoke tests — reuse these instead of
-registering a fresh account per run. They exist only in the local dev database
-and are not valid in production. Both log in with email as the account name on
-the admin login screen.
+测试数据库数据由 `packages/db/prisma/seed.mts` 提供（见 [BUILD.md](./BUILD.md) 的
+「测试数据库种子」）。运行 `pnpm prisma:reset` 即可获得覆盖全部表的真实分页/检索
+数据。管理后台唯一管理员：
 
 | Role | Username | Email | Password |
 | --- | --- | --- | --- |
-| Admin | `agent-admin` | `agent.admin@test.dev` | `agent-admin-2026` |
-| User | `agent-user` | `agent.user@test.dev` | `agent-user-2026` |
+| Admin | `nonhana` | `nonhana@outlook.com` | `20021209xiang` |
 
-Recreate or reconcile them from scratch with the API CLIs (see [BUILD.md](./BUILD.md)):
-
-```sh
-cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/register-user.ts -- --username agent-admin --email agent.admin@test.dev --password agent-admin-2026
-cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/register-user.ts -- --username agent-user --email agent.user@test.dev --password agent-user-2026
-cd apps/api && node --env-file-if-exists=../../.env --import tsx src/cli/promote-admin.ts --email agent.admin@test.dev
-```
+用邮箱 `nonhana@outlook.com` 在管理后台登录界面登入。
 
 ## Change-specific smoke checks
 

@@ -169,7 +169,7 @@ export const ArticlesListPage = () => {
   const isSearching = debouncedQuery.trim().length > 0;
 
   return (
-    <PageBody>
+    <PageBody scroll="child">
       {/* 搜索是这一屏唯一的控件，跟标题同排；桌面端的状态筛选由侧栏子项承担。 */}
       <PageHeader
         actions={
@@ -216,7 +216,7 @@ export const ArticlesListPage = () => {
         />
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
           <RowSkeleton />
         ) : error ? (

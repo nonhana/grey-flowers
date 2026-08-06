@@ -130,9 +130,6 @@ catalogs:
     '@nuxtjs/mdc':
       specifier: ^0.22.2
       version: 0.22.2
-    bcryptjs:
-      specifier: ^3.0.3
-      version: 3.0.3
     es-toolkit:
       specifier: ^1.50.0
       version: 1.50.0
@@ -169,9 +166,6 @@ catalogs:
     tsdown:
       specifier: ^0.22.14
       version: 0.22.14
-    tsx:
-      specifier: ^4.23.5
-      version: 4.23.5
     zod:
       specifier: ^4.4.3
       version: 4.4.3
@@ -198,6 +192,9 @@ catalogs:
     '@vue/language-server':
       specifier: ^3.3.9
       version: 3.3.9
+    bcryptjs:
+      specifier: ^3.0.3
+      version: 3.0.3
     eslint-plugin-better-tailwindcss:
       specifier: ^4.7.0
       version: 4.7.0
@@ -210,6 +207,9 @@ catalogs:
     oxlint-tsgolint:
       specifier: ^7.0.2001
       version: 7.0.2001
+    tsx:
+      specifier: ^4.23.5
+      version: 4.23.5
     typescript:
       specifier: 6.0.3
       version: 6.0.3
@@ -491,7 +491,7 @@ importers:
         specifier: catalog:api
         version: 0.22.2(magic-string@1.1.0)(magicast@0.5.3)(oxc-parser@0.142.0)(rolldown@1.2.0)(supports-color@10.2.2)(unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(rollup@4.60.2)(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.5)(yaml@2.9.0))(webpack@5.103.0(esbuild@0.28.0)))
       bcryptjs:
-        specifier: catalog:api
+        specifier: 'catalog:'
         version: 3.0.3
       es-toolkit:
         specifier: catalog:api
@@ -534,7 +534,7 @@ importers:
         specifier: catalog:api
         version: 0.22.14(@volar/typescript@2.4.28(typescript@6.0.3))(tsx@4.23.5)(typescript@6.0.3)(vue-tsc@3.3.7(typescript@6.0.3))
       tsx:
-        specifier: catalog:api
+        specifier: 'catalog:'
         version: 4.23.5
 
   apps/main:
@@ -673,9 +673,15 @@ importers:
       '@types/pg':
         specifier: catalog:db
         version: 8.20.3
+      bcryptjs:
+        specifier: 'catalog:'
+        version: 3.0.3
       prisma:
         specifier: catalog:db
         version: 7.9.1(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(magicast@0.5.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
+      tsx:
+        specifier: 'catalog:'
+        version: 4.23.5
 
 packages:
 
