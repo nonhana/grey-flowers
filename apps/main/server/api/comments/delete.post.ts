@@ -1,27 +1,34 @@
-import prisma from '#server/utils/prisma'
+import type { CommentDeleteResult } from '@grey-flowers/contracts'
+import { ApiGatewayError, apiMutate } from '#server/utils/api-gateway'
 
 export default formattedEventHandler(async (event) => {
-  const id = event.context.principal.userId
-  const body = await readBody(event)
-  const { commentId } = body
-
-  const comment = await prisma.comment.findUnique({ where: { id: commentId } })
-
-  if (!comment) {
+  const body = await readBody(event) as { commentId?: number }
+  const commentId = Number(body.commentId)
+  if (!Number.isInteger(commentId) || commentId < 1) {
     return {
-      statusCode: 404,
-      statusMessage: 'Comment not found',
+      statusCode: 400,
+      statusMessage: 'Invalid comment id',
       success: false,
     }
   }
 
-  if (comment.authorId !== id) {
-    return {
-      statusCode: 403,
-      statusMessage: 'Unauthorized',
-      success: false,
-    }
+  try {
+    const result = await apiMutate<CommentDeleteResult>(
+      'DELETE',
+      `/public/comments/${commentId}`,
+      { event },
+    )
+    return { payload: result }
   }
-
-  await prisma.comment.delete({ where: { id: commentId } })
+  catch (error) {
+    if (error instanceof ApiGatewayError) {
+      // NOT_FOUND → 404 envelope；AUTH_FORBIDDEN → 403 envelope。
+      return {
+        statusCode: error.statusCode,
+        statusMessage: error.message,
+        success: false,
+      }
+    }
+    throw error
+  }
 })

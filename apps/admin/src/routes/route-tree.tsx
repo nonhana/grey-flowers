@@ -70,6 +70,12 @@ const categoriesRoute = createRoute({
   path: '/categories',
 });
 
+const commentsRoute = createRoute({
+  ...lazyPage(() => import('@/features/comments/list-page.js'), 'CommentsPage'),
+  getParentRoute: () => rootRoute,
+  path: '/comments',
+});
+
 const activitiesRoute = createRoute({
   ...lazyPage(
     () => import('@/features/activities/list-page.js'),
@@ -149,6 +155,7 @@ const routeTree = rootRoute.addChildren([
   assetsDetailRoute,
   assetsListRoute,
   categoriesRoute,
+  commentsRoute,
   editActivityRoute,
   indexRoute,
   musicDetailRoute,

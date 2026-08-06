@@ -1,28 +1,32 @@
-import type { MarkdownRenderPayload } from '#shared/types/markdown'
-import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
+import type { MDCParserResult } from '@nuxtjs/mdc';
 
-const MAX_LENGTH = 2048
+import { parseMarkdown } from '@nuxtjs/mdc/runtime';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+
 const UNSUPPORTED_MD_LABELS = {
   heading: '标题',
   html: 'HTML',
   image: '图片',
   table: '表格',
-} as const
+} as const;
 
-type UnsupportedMdType = keyof typeof UNSUPPORTED_MD_LABELS
+type UnsupportedMdType = keyof typeof UNSUPPORTED_MD_LABELS;
+
 interface MarkdownAstNode {
-  type?: string
-  children?: MarkdownAstNode[]
+  children?: MarkdownAstNode[];
+  type?: string;
 }
 
-export type commentMdParseRes = {
-  success: true
-  payload: MarkdownRenderPayload
-} | {
-  success: false
-  statusCode: number
-  statusMessage: string
+export interface CommentMarkdownPayload {
+  body: MDCParserResult['body'];
+  data: MDCParserResult['data'];
+  excerpt?: MDCParserResult['excerpt'];
+  toc?: MDCParserResult['toc'];
 }
+
+export type CommentMarkdownParseRes =
+  | { success: true; payload: CommentMarkdownPayload }
+  | { success: false; statusCode: number; statusMessage: string };
 
 const commentSchema: typeof defaultSchema = {
   ...defaultSchema,
@@ -44,16 +48,8 @@ const commentSchema: typeof defaultSchema = {
   ],
   attributes: {
     ...defaultSchema.attributes,
-    a: [
-      ['className'],
-      ['href'],
-      ['target', '_blank', '_self'],
-      ['rel'],
-    ],
-    code: [
-      '__ignoreMap',
-      'className',
-    ],
+    a: [['className'], ['href'], ['target', '_blank', '_self'], ['rel']],
+    code: ['__ignoreMap', 'className'],
     pre: [
       'code',
       'language',
@@ -74,46 +70,40 @@ const commentSchema: typeof defaultSchema = {
     href: ['http', 'https', 'mailto'],
   },
   clobberPrefix: 'comment-',
-}
+};
 
-function getUnsupportedCommentMdTypes(
+const getUnsupportedCommentMdTypes = (
   node: MarkdownAstNode,
   found: UnsupportedMdType[] = [],
-) {
-  const type = node.type as UnsupportedMdType | undefined
+) => {
+  const type = node.type as UnsupportedMdType | undefined;
   if (type && type in UNSUPPORTED_MD_LABELS && !found.includes(type)) {
-    found.push(type)
+    found.push(type);
   }
 
   for (const child of node.children ?? []) {
-    getUnsupportedCommentMdTypes(child, found)
+    getUnsupportedCommentMdTypes(child, found);
   }
 
-  return found
-}
+  return found;
+};
 
-function validateCommentMarkdownAst() {
+const validateCommentMarkdownAst = () => {
   return (tree: MarkdownAstNode) => {
-    const unsupportedTypes = getUnsupportedCommentMdTypes(tree)
-    if (!unsupportedTypes.length) {
-      return
-    }
+    const unsupportedTypes = getUnsupportedCommentMdTypes(tree);
+    if (!unsupportedTypes.length) return;
 
-    const labels = unsupportedTypes.map(type => UNSUPPORTED_MD_LABELS[type])
+    const labels = unsupportedTypes.map((type) => UNSUPPORTED_MD_LABELS[type]);
+    throw new Error(`发布失败：评论不支持${labels.join('、')}`, {
+      cause: validateCommentMarkdownAst.name,
+    });
+  };
+};
 
-    throw new Error(`发布失败：评论不支持${labels.join('、')}`, { cause: validateCommentMarkdownAst.name })
-  }
-}
-
-export async function parseCommentMarkdown(content: string): Promise<commentMdParseRes> {
-  if (content.length > MAX_LENGTH) {
-    return {
-      success: false,
-      statusCode: 413,
-      statusMessage: `Comment markdown exceeds ${MAX_LENGTH} characters`,
-    }
-  }
-
+/** 内容长度校验上移到契约 Zod（VALIDATION_FAILED），本函数不再返回 413 分支。 */
+export async function parseCommentMarkdown(
+  content: string,
+): Promise<CommentMarkdownParseRes> {
   try {
     const parsed = await parseMarkdown(content, {
       contentHeading: false,
@@ -143,31 +133,35 @@ export async function parseCommentMarkdown(content: string): Promise<commentMdPa
           'rehype-raw': false,
         },
       },
-    })
+    });
 
     return {
       success: true,
       payload: {
         body: parsed.body,
-        data: {},
+        data: parsed.data,
         excerpt: undefined,
         toc: undefined,
       },
-    }
-  }
-  catch (error) {
-    if (error instanceof Error && error.cause === validateCommentMarkdownAst.name) {
+    };
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.cause === validateCommentMarkdownAst.name
+    ) {
       return {
         success: false,
         statusCode: 400,
         statusMessage: error.message,
-      }
+      };
     }
-    console.error('[comment-markdown] parse failed:', error)
+
+    // eslint-disable-next-line no-console
+    console.error('[comment-markdown] parse failed:', error);
     return {
       success: false,
       statusCode: 500,
       statusMessage: '评论 Markdown 解析失败，请稍后重试',
-    }
+    };
   }
 }

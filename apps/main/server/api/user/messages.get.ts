@@ -1,20 +1,19 @@
-import prisma from '#server/utils/prisma'
+import type { CommentPublic } from '@grey-flowers/contracts'
+import { apiMutate } from '#server/utils/api-gateway'
+import { formatDateTimeYmdHms } from '#shared/utils/date'
 
-async function getUserMessages(userId: number) {
-  const messages = await prisma.userMessage.findMany({
-    where: { receiverId: userId },
-    select: {
-      comment: { select: commentSelectObj },
-    },
-    take: 10,
-    orderBy: { comment: { publishedAt: 'desc' } },
-  })
-  return messages.map(message => serializeChildComment(message.comment))
-}
-
+/** 认证自助读：仅看自己（不再接受 `?id=`，修复匿名可取任意用户数据的漏洞）。 */
 export default formattedEventHandler(async (event) => {
-  const query = getQuery(event) as { id: string }
-  const userId = Number.parseInt(query.id)
-  const messages = await getUserMessages(userId)
-  return { payload: messages }
+  const messages = await apiMutate<CommentPublic[]>(
+    'GET',
+    '/public/users/me/messages',
+    { event },
+  )
+  return {
+    payload: messages.map(comment => ({
+      ...comment,
+      editedAt: formatDateTimeYmdHms(comment.editedAt),
+      publishedAt: formatDateTimeYmdHms(comment.publishedAt),
+    })),
+  }
 })

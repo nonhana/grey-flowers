@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import type { CommentItem } from '#shared/types/comment'
-import { useStore } from '~/stores'
-
-const { userStore } = useStore()
-const { userInfo } = toRefs(userStore)
 
 const visible = defineModel<boolean>()
+
+const apiClient = useApiClient()
 
 const messages = ref<CommentItem[]>([])
 
@@ -13,9 +11,9 @@ const fetching = ref(false)
 
 async function fetchUserMessages() {
   fetching.value = true
-  const data = await $fetch('/api/user/messages', { query: { id: userInfo.value!.userId } })
+  const data = await apiClient.legacyBearerRequest<CommentItem[]>('/api/user/messages', {})
   if (data.success) {
-    messages.value = (data.payload as CommentItem[]) ?? []
+    messages.value = data.payload ?? []
   }
   fetching.value = false
 }

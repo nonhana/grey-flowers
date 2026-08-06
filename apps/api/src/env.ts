@@ -39,6 +39,11 @@ const r2SecretAccessKey = z.string().min(1);
 const r2BucketName = z.string().min(1);
 const r2PublicUrl = z.url();
 
+/** 评论回复邮件开关（= 主站 HANA_MAIL_ENABLE 语义）。 */
+const mailEnable = z.literal('true').or(z.literal('false')).default('false');
+const resendApiKey = z.string().optional();
+const resendFrom = z.string().optional();
+
 const environmentSchema = z
   .discriminatedUnion('NODE_ENV', [
     z.object({
@@ -48,12 +53,15 @@ const environmentSchema = z
       AUTH_REFRESH_TOKEN_PEPPER: base64urlSecret,
       HANA_DATABASE_URL: postgresUrl,
       MAIN_PORT: port,
+      MAIL_ENABLE: mailEnable,
       NODE_ENV: z.literal('development'),
       R2_ACCESS_KEY_ID: r2AccessKeyId,
       R2_ACCOUNT_ID: r2AccountId,
       R2_BUCKET_NAME: r2BucketName,
       R2_PUBLIC_URL: r2PublicUrl,
       R2_SECRET_ACCESS_KEY: r2SecretAccessKey,
+      RESEND_API_KEY: resendApiKey,
+      RESEND_FROM: resendFrom,
     }),
     z.object({
       ADMIN_PORT: port.optional(),
@@ -62,12 +70,15 @@ const environmentSchema = z
       AUTH_REFRESH_TOKEN_PEPPER: base64urlSecret,
       HANA_DATABASE_URL: postgresUrl,
       MAIN_PORT: port.optional(),
+      MAIL_ENABLE: mailEnable,
       NODE_ENV: z.literal('production'),
       R2_ACCESS_KEY_ID: r2AccessKeyId,
       R2_ACCOUNT_ID: r2AccountId,
       R2_BUCKET_NAME: r2BucketName,
       R2_PUBLIC_URL: r2PublicUrl,
       R2_SECRET_ACCESS_KEY: r2SecretAccessKey,
+      RESEND_API_KEY: resendApiKey,
+      RESEND_FROM: resendFrom,
     }),
   ])
   .superRefine((env, context) => {

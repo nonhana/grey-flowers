@@ -1,25 +1,40 @@
+import type { CommentPublicTree } from '@grey-flowers/contracts'
 import type { CommentListQuery } from '#shared/types/comments'
-import prisma from '#server/utils/prisma'
+import { apiGet } from '#server/utils/api-gateway'
+import { formatDateTimeYmdHms } from '#shared/utils/date'
 
-async function getComments(path: string, page: number, pageSize: number) {
-  const comments = await prisma.comment.findMany({
-    where: { path, level: 'PARENT' },
-    select: {
-      ...commentSelectObj,
-      children: { select: { ...commentSelectObj }, orderBy: { publishedAt: 'asc' } },
-    },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    orderBy: { publishedAt: 'desc' },
-  })
-  return comments.map(comment => serializeParentComment(comment))
+function localizeTimes(comment: CommentPublicTree): CommentPublicTree {
+  return {
+    ...comment,
+    editedAt: formatDateTimeYmdHms(comment.editedAt),
+    publishedAt: formatDateTimeYmdHms(comment.publishedAt),
+    children: comment.children.map(child => ({
+      ...child,
+      editedAt: formatDateTimeYmdHms(child.editedAt),
+      publishedAt: formatDateTimeYmdHms(child.publishedAt),
+    })),
+  }
 }
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event) as CommentListQuery
-  const page = Number.parseInt(query.page as string) || 1
-  const pageSize = Number.parseInt(query.pageSize as string) || 6
   const path = query.path as string
-  const comments = await getComments(path, page, pageSize)
-  return { payload: comments }
+  if (!path) {
+    return {
+      statusCode: 400,
+      statusMessage: 'Invalid path',
+      success: false,
+    }
+  }
+
+  const page = Number.parseInt(String(query.page ?? '1'), 10) || 1
+  const pageSize = Number.parseInt(String(query.pageSize ?? '10'), 10) || 10
+
+  const comments = await apiGet<CommentPublicTree[]>('/public/comments/list', {
+    path,
+    page,
+    pageSize,
+  })
+
+  return { payload: comments.map(localizeTimes) }
 })

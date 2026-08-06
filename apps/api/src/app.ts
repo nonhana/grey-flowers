@@ -18,6 +18,11 @@ import {
 import { createAssetRoutes } from './modules/assets/routes.js';
 import { createAuthRoutes } from './modules/auth/routes.js';
 import {
+  createCommentPublicRoutes,
+  createCommentRoutes,
+  createCommentUserRoutes,
+} from './modules/comments/routes.js';
+import {
   createMusicPublicRoutes,
   createMusicRoutes,
 } from './modules/music/routes.js';
@@ -58,12 +63,15 @@ export const createApp = (dependencies: AppDependencies) => {
   app.route('/activities', createActivityRoutes(dependencies));
   app.route('/articles', createArticleAdminRoutes(dependencies));
   app.route('/categories', createCategoryRoutes(dependencies));
+  app.route('/comments', createCommentRoutes(dependencies));
   app.route('/tags', createTagRoutes(dependencies));
   app.route('/music', createMusicRoutes(dependencies));
   app.route('/public', createPublicTaxonomyRoutes(dependencies));
   app.route('/public/articles', createArticlePublicRoutes(dependencies));
   app.route('/public/activities', createActivityPublicRoutes(dependencies));
+  app.route('/public/comments', createCommentPublicRoutes(dependencies));
   app.route('/public/music', createMusicPublicRoutes(dependencies));
+  app.route('/public/users', createCommentUserRoutes(dependencies));
   app.notFound((c) => createFailure(c, 'NOT_FOUND'));
 
   return app;

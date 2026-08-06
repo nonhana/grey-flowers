@@ -118,18 +118,20 @@ model Comment {
   author           User          @relation(fields: [authorId], references: [id])
   parent           Comment?      @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
   children         Comment[]     @relation("ParentChild")
-  replyToComment   Comment?      @relation("ReplyToComment", fields: [replyToCommentId], references: [id])
+  replyToComment   Comment?      @relation("ReplyToComment", fields: [replyToCommentId], references: [id], onDelete: SetNull)
   replies          Comment[]     @relation("ReplyToComment")
   replyToUser      User?         @relation("ReplyToUser", fields: [replyToUserId], references: [id])
   userMessage      UserMessage[]
 }
 
 model UserMessage {
-  id         Int     @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   receiverId Int
   commentId  Int
-  comment    Comment @relation(fields: [commentId], references: [id])
-  receiver   User    @relation(fields: [receiverId], references: [id])
+  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  receiver   User     @relation(fields: [receiverId], references: [id])
+
+  @@unique([receiverId, commentId])
 }
 
 model Activity {

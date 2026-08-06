@@ -39,6 +39,7 @@
     "pino": "catalog:api",
     "pinyin-pro": "catalog:api",
     "rehype-sanitize": "catalog:api",
+    "resend": "catalog:api",
     "sharp": "catalog:api",
     "zod": "catalog:api"
   },

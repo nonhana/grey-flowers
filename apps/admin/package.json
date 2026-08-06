@@ -22,6 +22,7 @@
     "@codemirror/view": "catalog:admin",
     "@fontsource/jetbrains-mono": "catalog:admin",
     "@grey-flowers/contracts": "workspace:*",
+    "@internationalized/date": "catalog:admin",
     "@lezer/common": "catalog:admin",
     "@lezer/highlight": "catalog:admin",
     "@tanstack/react-router": "catalog:admin",
