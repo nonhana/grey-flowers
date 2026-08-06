@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import type { CommentItem } from '#shared/types/comment'
-import { useStore } from '~/stores'
-
-const { userStore } = useStore()
-const { userInfo } = toRefs(userStore)
 
 const visible = defineModel<boolean>()
 
@@ -11,15 +7,17 @@ const route = useRoute()
 const { path } = toRefs(route)
 watch(path, () => visible.value = false)
 
+const apiClient = useApiClient()
+
 const comments = ref<CommentItem[]>([])
 
 const fetching = ref(false)
 
 async function fetchUserComments() {
   fetching.value = true
-  const data = await $fetch('/api/user/comments', { query: { id: userInfo.value!.userId } })
+  const data = await apiClient.legacyBearerRequest<CommentItem[]>('/api/user/comments', {})
   if (data.success) {
-    comments.value = (data.payload as CommentItem[]) ?? []
+    comments.value = data.payload ?? []
   }
   fetching.value = false
 }

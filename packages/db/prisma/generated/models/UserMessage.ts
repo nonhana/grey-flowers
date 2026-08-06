@@ -222,6 +222,7 @@ export type UserMessageOrderByWithRelationInput = {
 
 export type UserMessageWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  receiverId_commentId?: Prisma.UserMessageReceiverIdCommentIdCompoundUniqueInput
   AND?: Prisma.UserMessageWhereInput | Prisma.UserMessageWhereInput[]
   OR?: Prisma.UserMessageWhereInput[]
   NOT?: Prisma.UserMessageWhereInput | Prisma.UserMessageWhereInput[]
@@ -229,7 +230,7 @@ export type UserMessageWhereUniqueInput = Prisma.AtLeast<{
   commentId?: Prisma.IntFilter<"UserMessage"> | number
   comment?: Prisma.XOR<Prisma.CommentScalarRelationFilter, Prisma.CommentWhereInput>
   receiver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "receiverId_commentId">
 
 export type UserMessageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -297,6 +298,11 @@ export type UserMessageListRelationFilter = {
 
 export type UserMessageOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type UserMessageReceiverIdCommentIdCompoundUniqueInput = {
+  receiverId: number
+  commentId: number
 }
 
 export type UserMessageCountOrderByAggregateInput = {

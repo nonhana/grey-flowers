@@ -12,6 +12,8 @@ import { ActivityService } from '../modules/activities/service.js';
 import { ArticleService } from '../modules/articles/service.js';
 import { AssetService } from '../modules/assets/service.js';
 import { AuthService } from '../modules/auth/service.js';
+import { CommentMailer } from '../modules/comments/mailer.js';
+import { CommentService } from '../modules/comments/service.js';
 import { MusicService } from '../modules/music/service.js';
 import { TaxonomyService } from '../modules/taxonomy/service.js';
 import { createLogger, type ApiLogger } from './logger.js';
@@ -21,6 +23,7 @@ export interface AppDependencies {
   articles: ArticleService;
   assets: AssetService;
   auth: AuthService;
+  comments: CommentService;
   environment: ApiEnvironment;
   logger: ApiLogger;
   music: MusicService;
@@ -47,6 +50,11 @@ export const createDependencies = (
     articles: new ArticleService(prisma, environment, taxonomy),
     assets,
     auth: new AuthService(prisma, environment),
+    comments: new CommentService(
+      prisma,
+      logger,
+      new CommentMailer(environment),
+    ),
     music: new MusicService(prisma, environment, objectStorage, assets),
     taxonomy,
   };

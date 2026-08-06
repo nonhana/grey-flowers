@@ -1,5 +1,7 @@
 import type { ApiErrorCode } from '@grey-flowers/contracts'
 
+import type { H3Event } from 'h3'
+
 interface ApiSuccessBody<T> {
   success: true
   data: T
@@ -69,4 +71,50 @@ export async function apiGet<T>(
 
 export function isApiNotFound(error: unknown) {
   return error instanceof ApiGatewayError && error.code === 'NOT_FOUND'
+}
+
+/**
+ * 主站 → Hono API 的写/认证适配器。只改写路径与 Bearer 透传：
+ * 主站 auth middleware 已先校验 principal，这里把 `Authorization` 原样转发
+ * 给 API（API 侧自行二次校验），不承载任何业务规则。
+ */
+export async function apiMutate<T>(
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
+  path: string,
+  options: { body?: unknown, event: H3Event },
+): Promise<T> {
+  const { public: { apiOrigin } } = useRuntimeConfig()
+  const url = `${apiOrigin}${path}`
+
+  const headers: Record<string, string> = { accept: 'application/json' }
+  if (options.body !== undefined)
+    headers['content-type'] = 'application/json'
+
+  const authorization = options.event.headers.get('Authorization')
+  if (authorization)
+    headers.authorization = authorization
+
+  const response = await fetch(url, {
+    method,
+    headers,
+    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+  })
+
+  let body: ApiBody<T>
+  try {
+    body = await response.json() as ApiBody<T>
+  }
+  catch {
+    throw new ApiGatewayError(response.status, 'INTERNAL_ERROR', 'Malformed API response')
+  }
+
+  if (body.success) {
+    return body.data
+  }
+
+  throw new ApiGatewayError(
+    response.status,
+    body.error.code,
+    body.error.message,
+  )
 }

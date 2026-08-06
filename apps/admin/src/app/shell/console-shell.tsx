@@ -8,6 +8,7 @@ import {
   FolderTree,
   Images,
   LogOut,
+  MessagesSquare,
   MoreHorizontal,
   Music2,
   PenLine,
@@ -61,6 +62,10 @@ const SECTIONS: NavSection[] = [
       { icon: Images, label: '资产库', path: '/assets' },
       { icon: Music2, label: '音乐库', path: '/music' },
     ],
+  },
+  {
+    title: '互动',
+    items: [{ icon: MessagesSquare, label: '评论', path: '/comments' }],
   },
 ];
 
@@ -259,6 +264,14 @@ const MoreSheet = ({
       >
         <FolderTree aria-hidden="true" />
         分类
+      </Link>
+      <Link
+        className={navRowClass}
+        onClick={() => onOpenChange(false)}
+        to="/comments"
+      >
+        <MessagesSquare aria-hidden="true" />
+        评论
       </Link>
       <Link
         className={navRowClass}

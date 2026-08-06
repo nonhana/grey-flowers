@@ -73,22 +73,7 @@ async function publishComment(objData: IPostComment) {
       body: objData,
     })
     if (data.success && data.payload) {
-      const comment = data.payload
-      const receiverId = comment.parent
-        ? comment.replyToUser
-          ? comment.replyToUser.id
-          : comment.parent.authorId
-        : hanaInfo.id
-      if (userInfo.value!.userId !== receiverId) {
-        await apiClient.legacyBearerRequest('/api/user/send-message', {
-          method: 'POST',
-          body: {
-            receiverId,
-            commentId: comment.id,
-          },
-        })
-      }
-      emits('published', comment)
+      emits('published', data.payload)
       content.value = ''
       visible.value = false
       callHanaMessage({
