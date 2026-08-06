@@ -34,11 +34,13 @@ interface EditForm {
 export const EditMusicDialog = ({
   music,
   onClose,
+  onExited,
   onSaved,
   open,
 }: {
   music: MusicAdmin | null;
   onClose: () => void;
+  onExited?: () => void;
   onSaved: () => void;
   open: boolean;
 }) => {
@@ -104,6 +106,7 @@ export const EditMusicDialog = ({
     <>
       <AppDialog
         isOpen={open}
+        onExited={onExited}
         onOpenChange={(isOpen) => {
           if (!isOpen) onClose();
         }}

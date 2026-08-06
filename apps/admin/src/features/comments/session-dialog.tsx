@@ -22,13 +22,17 @@ export const SessionDialog = ({
   onChanged,
   onClose,
   onDelete,
+  onExited,
   onReply,
+  open,
 }: {
   comment: CommentAdminTree | null;
   onChanged: () => void;
   onClose: () => void;
   onDelete: (target: CommentAdmin) => void;
+  onExited?: () => void;
   onReply: (target: CommentAdmin) => void;
+  open: boolean;
 }) => {
   const [quickContent, setQuickContent] = useState('');
   const [sending, setSending] = useState(false);
@@ -92,7 +96,8 @@ export const SessionDialog = ({
           </Form>
         ) : undefined
       }
-      isOpen={comment !== null}
+      isOpen={open}
+      onExited={onExited}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) onClose();
       }}

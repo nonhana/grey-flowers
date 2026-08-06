@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import {
   Alert,
@@ -43,9 +44,7 @@ export const CategoriesPage = () => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
-  const [pendingDelete, setPendingDelete] = useState<CategoryAdmin | null>(
-    null,
-  );
+  const deleteDialog = useDialog<CategoryAdmin>();
 
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
   const [prevReloadKey, setPrevReloadKey] = useState(reloadKey);
@@ -126,9 +125,9 @@ export const CategoriesPage = () => {
   };
 
   const remove = async () => {
-    if (!pendingDelete) return;
-    const target = pendingDelete;
-    setPendingDelete(null);
+    const target = deleteDialog.data;
+    if (!target) return;
+    deleteDialog.dismiss();
     try {
       await apiClient.taxonomy.deleteCategory(target.id);
       setReloadKey((current) => current + 1);
@@ -220,7 +219,7 @@ export const CategoriesPage = () => {
                   </IconButton>
                   <IconButton
                     label={`删除分类 ${category.name}`}
-                    onPress={() => setPendingDelete(category)}
+                    onPress={() => deleteDialog.open(category)}
                     size="sm"
                     tone="warnish"
                   >
@@ -317,17 +316,20 @@ export const CategoriesPage = () => {
       <ConfirmDialog
         confirmLabel="删除分类"
         isDestructive
-        isOpen={pendingDelete !== null}
+        isOpen={deleteDialog.isOpen}
         message={
-          pendingDelete
-            ? pendingDelete.articleCount > 0
-              ? `「${pendingDelete.name}」下还有 ${String(pendingDelete.articleCount)} 篇文章，需要先把它们移到别的分类。`
-              : `「${pendingDelete.name}」下没有文章，可以安全删除。`
+          deleteDialog.data
+            ? deleteDialog.data.articleCount > 0
+              ? `「${deleteDialog.data.name}」下还有 ${String(deleteDialog.data.articleCount)} 篇文章，需要先把它们移到别的分类。`
+              : `「${deleteDialog.data.name}」下没有文章，可以安全删除。`
             : ''
         }
-        onCancel={() => setPendingDelete(null)}
+        onCancel={deleteDialog.dismiss}
         onConfirm={() => void remove()}
-        title={pendingDelete ? `删除分类「${pendingDelete.name}」？` : ''}
+        onExited={deleteDialog.clear}
+        title={
+          deleteDialog.data ? `删除分类「${deleteDialog.data.name}」？` : ''
+        }
       />
 
       <AssetPickerDialog

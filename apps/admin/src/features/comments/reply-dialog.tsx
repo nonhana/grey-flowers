@@ -17,11 +17,13 @@ export interface ReplyTarget {
 
 export const ReplyDialog = ({
   onClose,
+  onExited,
   onReplied,
   open,
   target,
 }: {
   onClose: () => void;
+  onExited?: () => void;
   onReplied: () => void;
   open: boolean;
   target: ReplyTarget | null;
@@ -65,6 +67,7 @@ export const ReplyDialog = ({
   return (
     <AppDialog
       isOpen={open}
+      onExited={onExited}
       onOpenChange={(nextOpen) => {
         if (!nextOpen) onClose();
       }}

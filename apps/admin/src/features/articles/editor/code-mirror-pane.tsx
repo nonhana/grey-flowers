@@ -16,6 +16,7 @@ import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset.js';
 import { isUrl } from '@/lib/url.js';
 import { Alert, Button } from '@/ui/index.js';
@@ -54,23 +55,22 @@ export const CodeMirrorPane = ({
   const viewRef = useRef<EditorView | null>(null);
   const [failedFiles, setFailedFiles] = useState<File[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [viewer, setViewer] = useState<{
+  const viewerDialog = useDialog<{
     src: string;
     alt: string;
     assetId: string | null;
-  } | null>(null);
-  const [editTarget, setEditTarget] = useState<{
-    src: string;
-    alt: string;
-  } | null>(null);
+  }>();
+  const altDialog = useDialog<{ src: string; alt: string }>();
   const [altDraft, setAltDraft] = useState('');
   const keyboardInset = useKeyboardInset();
 
+  // 把图片动作安装到模块级 imageActions 槽位；两个 dialog store 只在开/关时
+  // 变化，借此重装 handler，闭包始终最新（open 本身无状态，重装足够轻）。
   useEffect(() => {
     imageActions.current = {
-      open: (src, alt, assetId) => setViewer({ src, alt, assetId }),
+      open: (src, alt, assetId) => viewerDialog.open({ src, alt, assetId }),
       edit: (src, alt) => {
-        setEditTarget({ src, alt });
+        altDialog.open({ src, alt });
         setAltDraft(alt);
       },
       remove: (src, anchor) => {
@@ -81,7 +81,7 @@ export const CodeMirrorPane = ({
     return () => {
       imageActions.current = null;
     };
-  }, []);
+  }, [altDialog, viewerDialog]);
 
   /**
    * 上传不写进文档（幽灵占位是 UI-only，不参与自动保存），成功后才把
@@ -191,10 +191,11 @@ export const CodeMirrorPane = ({
   };
 
   const saveAlt = () => {
-    if (!editTarget) return;
+    const target = altDialog.data;
+    if (!target) return;
     const view = viewRef.current;
-    if (view) rewriteImageAlt(view, editTarget.src, altDraft);
-    setEditTarget(null);
+    if (view) rewriteImageAlt(view, target.src, altDraft);
+    altDialog.dismiss();
   };
 
   return (
@@ -255,14 +256,21 @@ export const CodeMirrorPane = ({
         title="选择正文图片"
       />
 
-      <ImageViewerDialog onClose={() => setViewer(null)} viewer={viewer} />
+      <ImageViewerDialog
+        onClose={viewerDialog.dismiss}
+        onExited={viewerDialog.clear}
+        open={viewerDialog.isOpen}
+        viewer={viewerDialog.data}
+      />
 
       <ImageAltDialog
         draft={altDraft}
-        onClose={() => setEditTarget(null)}
+        onClose={altDialog.dismiss}
         onDraftChange={setAltDraft}
+        onExited={altDialog.clear}
         onSave={saveAlt}
-        target={editTarget}
+        open={altDialog.isOpen}
+        target={altDialog.data}
       />
     </div>
   );

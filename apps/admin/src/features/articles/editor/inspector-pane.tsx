@@ -11,6 +11,7 @@ import { useState } from 'react';
 
 import type { useArticleEditor } from '@/store/article-editor.js';
 
+import { useDialog } from '@/hooks/use-dialog.js';
 import { formatDateTime } from '@/lib/format.js';
 import {
   AssetImage,
@@ -78,9 +79,7 @@ const Block = ({
 
 const VersionList = ({ editor }: { editor: Editor }) => {
   const [expanded, setExpanded] = useState<number | null>(null);
-  const [pendingRestore, setPendingRestore] = useState<ArticleSnapshot | null>(
-    null,
-  );
+  const restoreDialog = useDialog<ArticleSnapshot>();
 
   return (
     <>
@@ -118,7 +117,10 @@ const VersionList = ({ editor }: { editor: Editor }) => {
                   >
                     {expanded === snapshot.id ? '收起' : '查看'}
                   </Button>
-                  <Button onPress={() => setPendingRestore(snapshot)} size="sm">
+                  <Button
+                    onPress={() => restoreDialog.open(snapshot)}
+                    size="sm"
+                  >
                     恢复
                   </Button>
                 </div>
@@ -142,18 +144,19 @@ const VersionList = ({ editor }: { editor: Editor }) => {
       )}
       <ConfirmDialog
         confirmLabel="恢复"
-        isOpen={pendingRestore !== null}
+        isOpen={restoreDialog.isOpen}
         message={
-          pendingRestore
-            ? `恢复到 rev ${String(pendingRestore.revision)} 会产生一个新版本，且无法撤销。`
+          restoreDialog.data
+            ? `恢复到 rev ${String(restoreDialog.data.revision)} 会产生一个新版本，且无法撤销。`
             : ''
         }
-        onCancel={() => setPendingRestore(null)}
+        onCancel={restoreDialog.dismiss}
         onConfirm={() => {
-          const target = pendingRestore;
-          setPendingRestore(null);
+          const target = restoreDialog.data;
+          restoreDialog.dismiss();
           if (target) void editor.restoreVersion(target);
         }}
+        onExited={restoreDialog.clear}
         title="恢复到这个旧版本？"
       />
     </>
@@ -172,18 +175,20 @@ export const InspectorPane = ({
   tags: TagAdmin[];
 }) => {
   const [coverPickerOpen, setCoverPickerOpen] = useState(false);
-  const [confirm, setConfirm] = useState<PendingConfirm | null>(null);
+  const confirmDialog = useDialog<PendingConfirm>();
   const navigate = useNavigate();
 
   const draft = editor.draft;
   if (!draft || !editor.article) return null;
 
   const { article } = editor;
-  const confirmCopy = confirm ? CONFIRM_COPY[confirm.kind] : null;
+  const confirmCopy = confirmDialog.data
+    ? CONFIRM_COPY[confirmDialog.data.kind]
+    : null;
 
   const runConfirm = () => {
-    const pending = confirm;
-    setConfirm(null);
+    const pending = confirmDialog.data;
+    confirmDialog.dismiss();
     if (!pending) return;
     if (pending.kind === 'publish') void editor.publish();
     if (pending.kind === 'unpublish') void editor.unpublish();
@@ -389,7 +394,7 @@ export const InspectorPane = ({
         </p>
         <Button
           icon={<Trash2 aria-hidden="true" />}
-          onPress={() => setConfirm({ kind: 'delete' })}
+          onPress={() => confirmDialog.open({ kind: 'delete' })}
           tone="warnish"
         >
           删除文章
@@ -416,7 +421,9 @@ export const InspectorPane = ({
           icon={<Eye aria-hidden="true" />}
           isDisabled={!editor.canPublish}
           onPress={() =>
-            setConfirm({ kind: article.published ? 'unpublish' : 'publish' })
+            confirmDialog.open({
+              kind: article.published ? 'unpublish' : 'publish',
+            })
           }
           size="lg"
           tone="solid"
@@ -442,16 +449,17 @@ export const InspectorPane = ({
       <ConfirmDialog
         confirmLabel={confirmCopy?.confirmLabel ?? ''}
         isDestructive={confirmCopy?.destructive ?? false}
-        isOpen={confirm !== null && confirm.kind !== 'restore'}
+        isOpen={confirmDialog.isOpen}
         message={
-          confirm?.kind === 'publish'
+          confirmDialog.data?.kind === 'publish'
             ? '发布后这篇文章会立即对主站访客可见。'
-            : confirm?.kind === 'unpublish'
+            : confirmDialog.data?.kind === 'unpublish'
               ? '下架后主站会立即隐藏这篇文章，内容和版本都会保留。'
               : '文章会从主站和后台移除，封面与正文里用到的资产不受影响。此操作不可撤销。'
         }
-        onCancel={() => setConfirm(null)}
+        onCancel={confirmDialog.dismiss}
         onConfirm={runConfirm}
+        onExited={confirmDialog.clear}
         title={confirmCopy?.title ?? ''}
       />
     </div>

@@ -6,19 +6,24 @@ export const ImageAltDialog = ({
   draft,
   onClose,
   onDraftChange,
+  onExited,
   onSave,
+  open,
   target,
 }: {
   draft: string;
   onClose: () => void;
   onDraftChange: (value: string) => void;
+  onExited?: () => void;
   onSave: () => void;
+  open: boolean;
   target: { src: string; alt: string } | null;
 }) => (
   <AppDialog
-    isOpen={target !== null}
-    onOpenChange={(open) => {
-      if (!open) onClose();
+    isOpen={open}
+    onExited={onExited}
+    onOpenChange={(isOpen) => {
+      if (!isOpen) onClose();
     }}
     size="sm"
     title="编辑图片替代文字"
