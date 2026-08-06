@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
 import {
@@ -51,8 +52,8 @@ export const MusicLibraryPage = () => {
   const [data, setData] = useState<MusicListData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [editing, setEditing] = useState<MusicAdmin | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<MusicAdmin | null>(null);
+  const editDialog = useDialog<MusicAdmin>();
+  const deleteDialog = useDialog<MusicAdmin>();
 
   // 搜索防抖 300ms
   useEffect(() => {
@@ -112,9 +113,9 @@ export const MusicLibraryPage = () => {
   };
 
   const remove = async () => {
-    if (!pendingDelete) return;
-    const target = pendingDelete;
-    setPendingDelete(null);
+    const target = deleteDialog.data;
+    if (!target) return;
+    deleteDialog.dismiss();
     try {
       await apiClient.music.remove(target.id);
       usePlayerStore.getState().removeTrack(target.id);
@@ -219,8 +220,8 @@ export const MusicLibraryPage = () => {
                 isPlaying={status === 'playing'}
                 key={music.id}
                 music={music}
-                onDelete={() => setPendingDelete(music)}
-                onEdit={() => setEditing(music)}
+                onDelete={() => deleteDialog.open(music)}
+                onEdit={() => editDialog.open(music)}
                 onPlayToggle={() => handlePlayToggle(index)}
               />
             ))}
@@ -256,24 +257,28 @@ export const MusicLibraryPage = () => {
       ) : null}
 
       <EditMusicDialog
-        music={editing}
-        onClose={() => setEditing(null)}
+        music={editDialog.data}
+        onClose={editDialog.dismiss}
+        onExited={editDialog.clear}
         onSaved={() => setReloadKey((current) => current + 1)}
-        open={editing !== null}
+        open={editDialog.isOpen}
       />
 
       <ConfirmDialog
         confirmLabel="删除音乐"
         isDestructive
-        isOpen={pendingDelete !== null}
+        isOpen={deleteDialog.isOpen}
         message={
-          pendingDelete
-            ? `「${pendingDelete.title}」的记录会被删除；音源与封面资产会保留在资产库，可稍后到资产库清理。`
+          deleteDialog.data
+            ? `「${deleteDialog.data.title}」的记录会被删除；音源与封面资产会保留在资产库，可稍后到资产库清理。`
             : ''
         }
-        onCancel={() => setPendingDelete(null)}
+        onCancel={deleteDialog.dismiss}
         onConfirm={() => void remove()}
-        title={pendingDelete ? `删除「${pendingDelete.title}」？` : ''}
+        onExited={deleteDialog.clear}
+        title={
+          deleteDialog.data ? `删除「${deleteDialog.data.title}」？` : ''
+        }
       />
     </PageBody>
   );

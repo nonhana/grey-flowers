@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
 import {
@@ -54,9 +55,7 @@ export const ActivitiesPage = () => {
   const [data, setData] = useState<ActivityListData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [pendingDelete, setPendingDelete] = useState<ActivityAdmin | null>(
-    null,
-  );
+  const deleteDialog = useDialog<ActivityAdmin>();
 
   // 搜索防抖 300ms
   useEffect(() => {
@@ -126,9 +125,9 @@ export const ActivitiesPage = () => {
   };
 
   const remove = async () => {
-    if (!pendingDelete) return;
-    const target = pendingDelete;
-    setPendingDelete(null);
+    const target = deleteDialog.data;
+    if (!target) return;
+    deleteDialog.dismiss();
     try {
       await apiClient.activities.remove(target.id);
       for (const track of target.music) removeTrack(track.id);
@@ -228,7 +227,7 @@ export const ActivitiesPage = () => {
               <ActivityCard
                 activity={activity}
                 key={activity.id}
-                onDelete={() => setPendingDelete(activity)}
+                onDelete={() => deleteDialog.open(activity)}
                 onEdit={() => openEdit(activity)}
                 onPlayTrack={(index) => handlePlayTrack(activity, index)}
                 playingTrackId={
@@ -270,15 +269,18 @@ export const ActivitiesPage = () => {
       <ConfirmDialog
         confirmLabel="删除动态"
         isDestructive
-        isOpen={pendingDelete !== null}
+        isOpen={deleteDialog.isOpen}
         message={
-          pendingDelete
+          deleteDialog.data
             ? '这条动态会被删除；图片与音乐资产会保留在资产库，可稍后到资产库清理。'
             : ''
         }
-        onCancel={() => setPendingDelete(null)}
+        onCancel={deleteDialog.dismiss}
         onConfirm={() => void remove()}
-        title={pendingDelete ? `删除动态 #${String(pendingDelete.id)}？` : ''}
+        onExited={deleteDialog.clear}
+        title={
+          deleteDialog.data ? `删除动态 #${String(deleteDialog.data.id)}？` : ''
+        }
       />
     </PageBody>
   );

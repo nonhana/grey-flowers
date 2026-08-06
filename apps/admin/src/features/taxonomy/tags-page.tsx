@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import {
   Alert,
@@ -28,7 +29,7 @@ export const TagsPage = () => {
   const [reloadKey, setReloadKey] = useState(0);
   const [newName, setNewName] = useState('');
   const [creating, setCreating] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<TagAdmin | null>(null);
+  const deleteDialog = useDialog<TagAdmin>();
 
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
   const requestKey = `${String(unusedOnly)}|${String(reloadKey)}`;
@@ -79,9 +80,9 @@ export const TagsPage = () => {
   };
 
   const remove = async () => {
-    if (!pendingDelete) return;
-    const target = pendingDelete;
-    setPendingDelete(null);
+    const target = deleteDialog.data;
+    if (!target) return;
+    deleteDialog.dismiss();
     try {
       await apiClient.taxonomy.deleteTag(target.id);
       setReloadKey((current) => current + 1);
@@ -158,7 +159,7 @@ export const TagsPage = () => {
                 </div>
                 <IconButton
                   label={`删除标签 ${tag.name}`}
-                  onPress={() => setPendingDelete(tag)}
+                  onPress={() => deleteDialog.open(tag)}
                   size="sm"
                   tone="warnish"
                 >
@@ -173,15 +174,18 @@ export const TagsPage = () => {
       <ConfirmDialog
         confirmLabel="删除标签"
         isDestructive
-        isOpen={pendingDelete !== null}
+        isOpen={deleteDialog.isOpen}
         message={
-          pendingDelete
-            ? `引用「${pendingDelete.name}」的 ${String(pendingDelete.articleCount)} 篇文章会解除这个标签，文章本身不受影响。`
+          deleteDialog.data
+            ? `引用「${deleteDialog.data.name}」的 ${String(deleteDialog.data.articleCount)} 篇文章会解除这个标签，文章本身不受影响。`
             : ''
         }
-        onCancel={() => setPendingDelete(null)}
+        onCancel={deleteDialog.dismiss}
         onConfirm={() => void remove()}
-        title={pendingDelete ? `删除标签「${pendingDelete.name}」？` : ''}
+        onExited={deleteDialog.clear}
+        title={
+          deleteDialog.data ? `删除标签「${deleteDialog.data.name}」？` : ''
+        }
       />
     </PageBody>
   );

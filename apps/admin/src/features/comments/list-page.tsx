@@ -34,6 +34,7 @@ import {
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import {
   BottomSheet,
@@ -303,13 +304,13 @@ export const CommentsPage = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
-  const [session, setSession] = useState<CommentAdminTree | null>(null);
-  const [replyTarget, setReplyTarget] = useState<ReplyTarget | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<{
+  const sessionDialog = useDialog<CommentAdminTree>();
+  const replyDialog = useDialog<ReplyTarget>();
+  const deleteDialog = useDialog<{
     childrenCount: number;
     comment: CommentAdmin;
-  } | null>(null);
-  const [batchOpen, setBatchOpen] = useState(false);
+  }>();
+  const batchDialog = useDialog<number[]>();
 
   // 全部筛选输入统一防抖 300ms；任一变化回到第一页。
   useEffect(() => {
@@ -381,12 +382,13 @@ export const CommentsPage = () => {
   const reload = () => setReloadKey((current) => current + 1);
 
   const removeSingle = async () => {
-    if (!deleteTarget) return;
-    const { comment } = deleteTarget;
-    setDeleteTarget(null);
+    const target = deleteDialog.data;
+    if (!target) return;
+    const { comment } = target;
+    deleteDialog.dismiss();
+    if (sessionDialog.data?.id === comment.id) sessionDialog.dismiss();
     try {
       const result = await apiClient.comments.remove(comment.id);
-      if (session?.id === comment.id) setSession(null);
       toast.success(
         `已删除 ${result.deleted} 条评论${
           result.cascade > 0 ? `（含 ${result.cascade} 条回复）` : ''
@@ -399,9 +401,9 @@ export const CommentsPage = () => {
   };
 
   const removeBatch = async () => {
-    if (selectedIds.size === 0) return;
-    const ids = [...selectedIds];
-    setBatchOpen(false);
+    const ids = batchDialog.data;
+    if (!ids || ids.length === 0) return;
+    batchDialog.dismiss();
     setSelectedIds(new Set());
     try {
       const result = await apiClient.comments.removeBatch(ids);
@@ -468,7 +470,11 @@ export const CommentsPage = () => {
             >
               取消选择
             </Button>
-            <Button onPress={() => setBatchOpen(true)} size="sm" tone="warnish">
+            <Button
+              onPress={() => batchDialog.open([...selectedIds])}
+              size="sm"
+              tone="warnish"
+            >
               删除所选
             </Button>
           </div>
@@ -513,13 +519,13 @@ export const CommentsPage = () => {
               <CommentCard
                 actions={{
                   onDelete: (target) =>
-                    setDeleteTarget({
+                    deleteDialog.open({
                       childrenCount:
                         target.id === comment.id ? comment.childrenCount : 0,
                       comment: target,
                     }),
-                  onOpenSession: () => setSession(comment),
-                  onReply: (target) => setReplyTarget(toReplyTarget(target)),
+                  onOpenSession: () => sessionDialog.open(comment),
+                  onReply: (target) => replyDialog.open(toReplyTarget(target)),
                 }}
                 comment={comment}
                 key={comment.id}
@@ -572,53 +578,66 @@ export const CommentsPage = () => {
       </BottomSheet>
 
       <SessionDialog
-        comment={session}
+        comment={sessionDialog.data}
         onChanged={reload}
-        onClose={() => setSession(null)}
+        onClose={sessionDialog.dismiss}
+        open={sessionDialog.isOpen}
         onDelete={(target) =>
-          setDeleteTarget({
+          deleteDialog.open({
             childrenCount:
-              target.id === session?.id ? session.childrenCount : 0,
+              target.id === sessionDialog.data?.id
+                ? (sessionDialog.data?.childrenCount ?? 0)
+                : 0,
             comment: target,
           })
         }
-        onReply={(target) => setReplyTarget(toReplyTarget(target))}
+        onExited={sessionDialog.clear}
+        onReply={(target) => replyDialog.open(toReplyTarget(target))}
       />
 
       <ReplyDialog
-        onClose={() => setReplyTarget(null)}
+        onClose={replyDialog.dismiss}
+        onExited={replyDialog.clear}
         onReplied={reload}
-        open={replyTarget !== null}
-        target={replyTarget}
+        open={replyDialog.isOpen}
+        target={replyDialog.data}
       />
 
       <ConfirmDialog
         confirmLabel="删除评论"
         isDestructive
-        isOpen={deleteTarget !== null}
+        isOpen={deleteDialog.isOpen}
         message={
-          deleteTarget
+          deleteDialog.data
             ? `将删除该评论${
-                deleteTarget.childrenCount > 0
-                  ? `及其 ${deleteTarget.childrenCount} 条回复`
+                deleteDialog.data.childrenCount > 0
+                  ? `及其 ${deleteDialog.data.childrenCount} 条回复`
                   : ''
-              }（作者：${deleteTarget.comment.author.username}），不可恢复。`
+              }（作者：${deleteDialog.data.comment.author.username}），不可恢复。`
             : ''
         }
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={deleteDialog.dismiss}
         onConfirm={() => void removeSingle()}
+        onExited={deleteDialog.clear}
         title={
-          deleteTarget ? `删除评论 #${String(deleteTarget.comment.id)}？` : ''
+          deleteDialog.data
+            ? `删除评论 #${String(deleteDialog.data.comment.id)}？`
+            : ''
         }
       />
 
       <ConfirmDialog
         confirmLabel="删除所选"
         isDestructive
-        isOpen={batchOpen}
-        message={`将删除所选的 ${selectedIds.size} 条评论及其全部回复，不可恢复。`}
-        onCancel={() => setBatchOpen(false)}
+        isOpen={batchDialog.isOpen}
+        message={
+          batchDialog.data
+            ? `将删除所选的 ${batchDialog.data.length} 条评论及其全部回复，不可恢复。`
+            : ''
+        }
+        onCancel={batchDialog.dismiss}
         onConfirm={() => void removeBatch()}
+        onExited={batchDialog.clear}
         title="批量删除评论？"
       />
     </PageBody>

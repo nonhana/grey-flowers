@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDialog } from '@/hooks/use-dialog.js';
 import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format.js';
 import {
   AssetImage,
@@ -33,8 +34,6 @@ type DetailState =
   | { data: AssetDetailData; kind: 'ready' }
   | { kind: 'error'; message: string }
   | { kind: 'loading' };
-
-type ConfirmAction = 'cleanup' | 'delete' | null;
 
 const Row = ({
   children,
@@ -70,7 +69,8 @@ export const AssetsDetailPage = () => {
   const [version, setVersion] = useState(0);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [confirm, setConfirm] = useState<ConfirmAction>(null);
+  const cleanupDialog = useDialog<void>();
+  const deleteDialog = useDialog<void>();
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +92,10 @@ export const AssetsDetailPage = () => {
 
   const runAction = async (action: 'cleanup' | 'delete' | 'restore') => {
     setBusy(true);
+    const dismissConfirm = () => {
+      if (action === 'cleanup') cleanupDialog.dismiss();
+      if (action === 'delete') deleteDialog.dismiss();
+    };
 
     try {
       if (action === 'cleanup') {
@@ -104,12 +108,12 @@ export const AssetsDetailPage = () => {
         await apiClient.assets.remove(id);
         toast.success('资产已删除。');
       }
-      setConfirm(null);
+      dismissConfirm();
       setState({ kind: 'loading' });
       setVersion((current) => current + 1);
     } catch (cause) {
       toast.error(assetErrorMessage(cause));
-      setConfirm(null);
+      dismissConfirm();
     } finally {
       setBusy(false);
     }
@@ -290,7 +294,7 @@ export const AssetsDetailPage = () => {
               {asset.status === 'AVAILABLE' ? (
                 <Button
                   isDisabled={referenced || busy}
-                  onPress={() => setConfirm('cleanup')}
+                  onPress={() => cleanupDialog.open()}
                   tone="warnish"
                 >
                   标记为待清理
@@ -306,7 +310,7 @@ export const AssetsDetailPage = () => {
                   <Button
                     icon={<Trash2 aria-hidden="true" />}
                     isDisabled={referenced || busy}
-                    onPress={() => setConfirm('delete')}
+                    onPress={() => deleteDialog.open()}
                     tone="warnish"
                   >
                     彻底删除
@@ -320,19 +324,21 @@ export const AssetsDetailPage = () => {
 
       <ConfirmDialog
         confirmLabel="标记为待清理"
-        isOpen={confirm === 'cleanup'}
+        isOpen={cleanupDialog.isOpen}
         message="待清理的资产不能再被新的内容引用，但已有引用不受影响。随时可以恢复。"
-        onCancel={() => setConfirm(null)}
+        onCancel={cleanupDialog.dismiss}
         onConfirm={() => void runAction('cleanup')}
+        onExited={cleanupDialog.clear}
         title="标记为待清理？"
       />
       <ConfirmDialog
         confirmLabel="彻底删除"
         isDestructive
-        isOpen={confirm === 'delete'}
+        isOpen={deleteDialog.isOpen}
         message="R2 上的文件会立即移除，记录标记为已删除。此操作不可撤销。"
-        onCancel={() => setConfirm(null)}
+        onCancel={deleteDialog.dismiss}
         onConfirm={() => void runAction('delete')}
+        onExited={deleteDialog.clear}
         title="彻底删除这个资产？"
       />
     </PageBody>

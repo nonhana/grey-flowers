@@ -4,15 +4,20 @@ import { AppDialog, Button } from '@/ui/index.js';
 
 export const ImageViewerDialog = ({
   onClose,
+  onExited,
+  open,
   viewer,
 }: {
   onClose: () => void;
+  onExited?: () => void;
+  open: boolean;
   viewer: { src: string; alt: string; assetId: string | null } | null;
 }) => (
   <AppDialog
-    isOpen={viewer !== null}
-    onOpenChange={(open) => {
-      if (!open) onClose();
+    isOpen={open}
+    onExited={onExited}
+    onOpenChange={(isOpen) => {
+      if (!isOpen) onClose();
     }}
     size="lg"
     title={viewer?.alt || '正文图片'}

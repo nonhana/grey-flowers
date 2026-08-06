@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { cn } from 'cnfast';
 import { X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { FocusScope, mergeProps, useDialog, useModalOverlay } from 'react-aria';
 import {
   Dialog,
@@ -291,11 +291,26 @@ const AppDialogSheetContents = ({
   );
 };
 
+/**
+ * 在对话框树卸载（即退出动画结束后）触发一次 onExited 的哨兵。
+ * 它渲染 null，只负责把「动画真的结束了」这一信号交给使用者，
+ * 让内容数据可以在动画期间保留、动画结束后再清理。
+ */
+const ExitSignaler = ({ onExited }: { onExited?: () => void }) => {
+  const onExitedRef = useRef(onExited);
+  useEffect(() => {
+    onExitedRef.current = onExited;
+  });
+  useEffect(() => () => onExitedRef.current?.(), []);
+  return null;
+};
+
 export const AppDialog = ({
   children,
   footer,
   isDismissable = true,
   isOpen,
+  onExited,
   onOpenChange,
   size = 'md',
   title,
@@ -305,6 +320,8 @@ export const AppDialog = ({
   /** 必须做出选择的对话框（例如内容冲突）设为 false，同时会隐藏关闭按钮。 */
   isDismissable?: boolean;
   isOpen: boolean;
+  /** 退出动画结束后触发——对话框树真正卸载的那一刻。用于在动画期间保留内容数据。 */
+  onExited?: () => void;
   onOpenChange: (open: boolean) => void;
   size?: 'sm' | 'md' | 'lg';
   title: string;
@@ -336,6 +353,11 @@ export const AppDialog = ({
             size === 'lg' && 'max-w-2xl',
           )}
         >
+          {/*
+            退出动画进行时 React Aria 仍保持这个子树挂载；
+            动画结束、overlay 卸载时才触发 onExited。
+          */}
+          <ExitSignaler onExited={onExited} />
           <Dialog
             className={cn(
               'grid max-h-[88dvh] outline-none',
@@ -395,6 +417,8 @@ export const AppDialog = ({
       onClose={() => {
         if (isDismissable) state.close();
       }}
+      // react-modal-sheet 在关闭动画结束后触发。
+      onCloseEnd={onExited}
       prefersReducedMotion={prefersReducedMotion ?? false}
       style={{ zIndex: 50 }}
       unstyled
@@ -422,6 +446,7 @@ export const ConfirmDialog = ({
   message,
   onCancel,
   onConfirm,
+  onExited,
   title,
 }: {
   confirmLabel: string;
@@ -430,6 +455,8 @@ export const ConfirmDialog = ({
   message: string;
   onCancel: () => void;
   onConfirm: () => void;
+  /** 退出动画结束后触发（见 AppDialog）。用于在动画期间保留内容数据。 */
+  onExited?: () => void;
   title: string;
 }) => (
   <ModalOverlay
@@ -452,6 +479,7 @@ export const ConfirmDialog = ({
         `,
       )}
     >
+      <ExitSignaler onExited={onExited} />
       <Dialog className="outline-none" role="alertdialog">
         <Heading className="text-md font-bold text-ink-strong" slot="title">
           {title}
