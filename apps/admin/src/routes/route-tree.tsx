@@ -2,20 +2,21 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
-  Navigate,
 } from '@tanstack/react-router';
 
 import { ConsoleShell } from '@/app/shell/console-shell.js';
 import { parseStatusFilter } from '@/features/articles/display.js';
+import { parseAssetStatusFilter } from '@/features/assets/display.js';
 
 import { lazyPage } from './lazy-page.js';
 
 const rootRoute = createRootRoute({ component: ConsoleShell });
 
-const RedirectToArticles = () => <Navigate replace to="/articles" />;
-
 const indexRoute = createRoute({
-  component: RedirectToArticles,
+  ...lazyPage(
+    () => import('@/features/overview/overview-page.js'),
+    'OverviewPage',
+  ),
   getParentRoute: () => rootRoute,
   path: '/',
 });
@@ -116,6 +117,11 @@ const assetsListRoute = createRoute({
   ...lazyPage(() => import('@/features/assets/list-page.js'), 'AssetsListPage'),
   getParentRoute: () => rootRoute,
   path: '/assets',
+  // 待清理深链从概览进来后回到这一页，URL 进入可复位（沿用文章 status 模式）。
+  validateSearch: (search: Record<string, unknown>) => {
+    const status = parseAssetStatusFilter(search.status);
+    return status === 'all' ? {} : { status };
+  },
 });
 
 const assetsDetailRoute = createRoute({
@@ -134,6 +140,12 @@ const musicListRoute = createRoute({
   ),
   getParentRoute: () => rootRoute,
   path: '/music',
+  // 缺元数据深链：TanStack 默认 parseSearch 会把 ?incomplete=true JSON 解析成
+  // 布尔 true，这里统一归一为布尔 true（round-trip 稳定，不会 `"true"` 双重编码）。
+  validateSearch: (search: Record<string, unknown>) =>
+    search.incomplete === true || search.incomplete === 'true'
+      ? { incomplete: true }
+      : {},
 });
 
 const musicDetailRoute = createRoute({

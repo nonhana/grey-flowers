@@ -35,6 +35,12 @@ export const statusLabels: Record<AssetStatus, string> = {
   PENDING_CLEANUP: '待清理',
 };
 
+export type AssetStatusFilter = 'all' | 'AVAILABLE' | 'PENDING_CLEANUP';
+
+/** URL 是资产状态筛选的唯一真相，概览待清理深链可由此进入并复位。 */
+export const parseAssetStatusFilter = (value: unknown): AssetStatusFilter =>
+  value === 'PENDING_CLEANUP' || value === 'AVAILABLE' ? value : 'all';
+
 export const assetErrorMessage = (error: unknown) =>
   apiErrorMessage(error, {
     ASSET_PAYLOAD_TOO_LARGE: '文件超过该用途的大小上限。',

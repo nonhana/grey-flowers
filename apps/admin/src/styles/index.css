@@ -123,6 +123,10 @@
   --animate-dialog-in: gf-dialog-in 200ms var(--ease-out-quint);
   --animate-dialog-out: gf-dialog-out 140ms ease-in;
   --animate-pop-in: gf-pop-in 140ms var(--ease-out-quint);
+  /* 趋势柱自基线长起。这是 Report Don't Perform Rule 里唯一被许可的编排：
+     单根仍在 200ms 带内，错峰只是把同一个动作沿时间轴摊开，
+     错峰窗口由组件按天数封顶（见 charts.tsx 的 STAGGER_WINDOW）。 */
+  --animate-bar-rise: gf-bar-rise 200ms var(--ease-out-quint) backwards;
 }
 
 @keyframes gf-fade-in {
@@ -167,6 +171,14 @@
   from {
     opacity: 0;
     transform: translateY(-4px);
+  }
+}
+
+/* transform-origin 由柱子自己声明为 bottom —— 缩放必须钉在基线上，
+   否则柱子是从中心涨开而不是从零轴长出来的。 */
+@keyframes gf-bar-rise {
+  from {
+    transform: scaleY(0);
   }
 }
 
@@ -429,5 +441,8 @@ html[data-theme='dark'] .gf-stage-grid {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* 只压时长不压延迟，错峰入场会退化成「一串几乎瞬时的闪」——
+       比原动画更难受。延迟必须一起归零。 */
+    animation-delay: 0.01ms !important;
   }
 }

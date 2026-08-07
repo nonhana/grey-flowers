@@ -5,7 +5,7 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -26,6 +26,7 @@ import {
 
 import {
   mediaTypeLabels,
+  parseAssetStatusFilter,
   purposeLabels,
   purposeOptions,
   statusLabels,
@@ -33,13 +34,14 @@ import {
 import { UploadDialog } from './upload-dialog.js';
 
 const PAGE_SIZE = 12;
-const STATUS_OPTIONS: AssetStatus[] = ['AVAILABLE', 'PENDING_CLEANUP'];
+/** 状态筛选只在可选的两个状态上取值（DELETED 不参与筛选）。 */
+type AssetFilterStatus = 'AVAILABLE' | 'PENDING_CLEANUP';
+const STATUS_OPTIONS: AssetFilterStatus[] = ['AVAILABLE', 'PENDING_CLEANUP'];
 const MEDIA_OPTIONS: AssetMediaType[] = ['IMAGE', 'AUDIO'];
 
 interface FilterState {
   mediaType?: AssetMediaType;
   purpose?: AssetPurpose;
-  status?: AssetStatus;
 }
 
 const EMPTY_FILTER: FilterState = {};
@@ -119,6 +121,12 @@ const CardSkeleton = () => (
 );
 
 export const AssetsListPage = () => {
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as { status?: unknown };
+  const status = parseAssetStatusFilter(search.status);
+  const activeStatus: AssetFilterStatus | undefined =
+    status === 'all' ? undefined : status;
+
   const [filters, setFilters] = useState<FilterState>(EMPTY_FILTER);
   const [page, setPage] = useState(1);
   const [reloadKey, setReloadKey] = useState(0);
@@ -128,7 +136,7 @@ export const AssetsListPage = () => {
   const [uploadOpen, setUploadOpen] = useState(false);
 
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${JSON.stringify(filters)}|${String(page)}|${String(reloadKey)}`;
+  const requestKey = `${JSON.stringify(filters)}|${String(activeStatus)}|${String(page)}|${String(reloadKey)}`;
   const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
   if (prevRequestKey !== requestKey) {
     setPrevRequestKey(requestKey);
@@ -140,7 +148,12 @@ export const AssetsListPage = () => {
     let cancelled = false;
 
     apiClient.assets
-      .list({ page, pageSize: PAGE_SIZE, ...filters })
+      .list({
+        page,
+        pageSize: PAGE_SIZE,
+        ...filters,
+        ...(activeStatus ? { status: activeStatus } : {}),
+      })
       .then((result) => {
         if (!cancelled) setData(result);
       })
@@ -154,14 +167,22 @@ export const AssetsListPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [filters, page, reloadKey]);
+  }, [filters, page, reloadKey, activeStatus]);
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasFilter = Object.values(filters).some((value) => value !== undefined);
+  const hasFilter =
+    Object.values(filters).some((value) => value !== undefined) ||
+    activeStatus !== undefined;
 
   const applyFilter = (next: FilterState) => {
     setFilters((current) => ({ ...current, ...next }));
     setPage(1);
+  };
+
+  const clearFilters = () => {
+    setFilters(EMPTY_FILTER);
+    setPage(1);
+    void navigate({ search: {}, to: '/assets' });
   };
 
   return (
@@ -208,23 +229,26 @@ export const AssetsListPage = () => {
           placeholderLabel="全部类型"
           value={filters.mediaType}
         />
-        <SelectField<AssetStatus>
+        <SelectField<AssetFilterStatus>
           className="sm:w-32"
           hideLabel
           label="状态"
-          onChange={(value) => applyFilter({ status: value })}
+          onChange={(value) => {
+            setPage(1);
+            void navigate({
+              search: value ? { status: value } : {},
+              to: '/assets',
+            });
+          }}
           optionLabels={statusLabels}
           options={STATUS_OPTIONS}
           placeholderLabel="全部状态"
-          value={filters.status}
+          value={activeStatus}
         />
         {hasFilter ? (
           <Button
             icon={<X aria-hidden="true" />}
-            onPress={() => {
-              setFilters(EMPTY_FILTER);
-              setPage(1);
-            }}
+            onPress={clearFilters}
             size="lg"
             tone="ghost"
           >
@@ -259,14 +283,7 @@ export const AssetsListPage = () => {
           <EmptyState
             action={
               hasFilter ? (
-                <Button
-                  onPress={() => {
-                    setFilters(EMPTY_FILTER);
-                    setPage(1);
-                  }}
-                >
-                  清除筛选
-                </Button>
+                <Button onPress={clearFilters}>清除筛选</Button>
               ) : (
                 <Button
                   icon={<Upload aria-hidden="true" />}
@@ -306,8 +323,7 @@ export const AssetsListPage = () => {
 
       <UploadDialog
         onUploaded={() => {
-          setFilters(EMPTY_FILTER);
-          setPage(1);
+          clearFilters();
           setReloadKey((current) => current + 1);
         }}
         open={uploadOpen}

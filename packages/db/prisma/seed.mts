@@ -97,7 +97,9 @@ const run = async () => {
       for (let i = 0; i < COUNTS.users - 1; i += 1) {
         const n = i + 1;
         const email = `user${n}@example.com`;
-        const createdAt = spreadDate(i, 1800);
+        // 约每 13 名用户取 1 名落在近 30 天窗口（13 与 30 互质 → 逐日错开，
+        // 避免只落在少数几天；也让趋势图/joined30d 有数），其余保留历史分布。
+        const createdAt = i % 13 === 0 ? recentDate(i) : spreadDate(i, 1800);
         userRows.push({
           email,
           username: `user${n}`,
@@ -326,10 +328,17 @@ const run = async () => {
       }> = [];
 
       const totalArticles = COUNTS.articlesPublished + COUNTS.articlesDraft;
+      const categoryPicks = longTailPicks(categoryIds.length, 64);
       for (let i = 0; i < totalArticles; i += 1) {
         const published = i < COUNTS.articlesPublished;
-        const category = CATEGORY_NAMES[i % CATEGORY_NAMES.length];
+        const categoryIndex = categoryPicks[i % categoryPicks.length];
+        const category = CATEGORY_NAMES[categoryIndex];
         const coverAssetId = articleCoverIds[i % articleCoverIds.length];
+        const publishedAt = published
+          ? i % 7 === 0
+            ? recentDate(i)
+            : spreadDate(i, 365 * 6)
+          : futureDate(i);
         articleRows.push({
           to: `article-${i}`,
           title: articleTitle(i),
@@ -337,12 +346,13 @@ const run = async () => {
           cover: coverUrl(coverAssetId),
           coverAssetId,
           alt: `${category}-封面图 ${i}`,
-          publishedAt: published ? spreadDate(i, 365 * 6) : futureDate(i),
-          editedAt: spreadDate(i, 365 * 6),
+          publishedAt,
+          // 已发布文章 editedAt 与 publishedAt 一致（原含义）；草稿保留过去编辑日期。
+          editedAt: published ? publishedAt : spreadDate(i, 365 * 6),
           published,
           wordCount: WORD_COUNT_BASE + (i % 2000),
           revision: 1 + (i % 3),
-          categoryId: categoryIds[i % categoryIds.length],
+          categoryId: categoryIds[categoryIndex],
           content: articleBody(i),
         });
       }
@@ -355,15 +365,18 @@ const run = async () => {
       ).map((row) => row.id);
 
       // ---------- Article→Tag 多对多（隐式联接表，批量 raw 插入） ----------
-      const articleTagRows: string[] = [];
+      // 长尾抽样下同一篇的两个 k 可能撞上同一个标签，先去重再分块：
+      // 联接表主键挡得住，但重复行会让「每篇 2..5 个标签」这句话不成立。
+      const articleTagPairs = new Set<string>();
+      const tagPicks = longTailPicks(tagIds.length, 48);
       articleIds.forEach((articleId, i) => {
         const tagCount = 2 + (i % 4); // 2..5 个标签
         for (let k = 0; k < tagCount; k += 1) {
-          articleTagRows.push(
-            `${articleId},${tagIds[(i * 7 + k * 13) % tagIds.length]}`,
-          );
+          const tagIndex = tagPicks[(i * 7 + k * 13) % tagPicks.length];
+          articleTagPairs.add(`${articleId},${tagIds[tagIndex]}`);
         }
       });
+      const articleTagRows = [...articleTagPairs];
       const tagChunks: string[] = [];
       for (let offset = 0; offset < articleTagRows.length; offset += 2000) {
         const chunk = articleTagRows.slice(offset, offset + 2000);
@@ -374,6 +387,24 @@ const run = async () => {
       await Promise.all(
         tagChunks.map((statement) => tx.$executeRawUnsafe(statement)),
       );
+
+      // ---------- Category / Tag 的 articleCount 物化列 ----------
+      // 这一列由 taxonomy 事务按 count(articles) 维护，口径是「全部文章（含草稿）」。
+      // 造数走的是 createMany + raw insert，绕过了那条路径，不回填的话整库全是 0：
+      // 分类页每行都写「0 篇文章」、删除守卫失效、概览的内容构成排行是一排空条。
+      await tx.$executeRawUnsafe(`
+        UPDATE "Category" AS c
+        SET "articleCount" = COALESCE(a.n, 0)
+        FROM (SELECT "categoryId" AS id, COUNT(*) AS n FROM "Article"
+              WHERE "categoryId" IS NOT NULL GROUP BY "categoryId") AS a
+        WHERE c.id = a.id
+      `);
+      await tx.$executeRawUnsafe(`
+        UPDATE "Tag" AS t
+        SET "articleCount" = COALESCE(a.n, 0)
+        FROM (SELECT "B" AS id, COUNT(*) AS n FROM "_ArticleTags" GROUP BY "B") AS a
+        WHERE t.id = a.id
+      `);
 
       // ---------- ArticleSnapshot（每篇文章按 revision 生成快照） ----------
       const snapshotRows: Array<{
@@ -445,7 +476,8 @@ const run = async () => {
           images: Array.from({ length: 1 + (i % 3) }, (_, k) =>
             coverUrl(activityImageIds[(i * 3 + k) % activityImageIds.length]),
           ),
-          publishedAt: spreadDate(i, 900),
+          // 约每 4 条动态取 1 条落在近 30 天窗口（趋势图/动态 last30d 可见）。
+          publishedAt: i % 7 === 0 ? recentDate(i) : spreadDate(i, 900),
           contentMarkdown: { type: 'root', children: [] },
         }),
       );
@@ -517,7 +549,8 @@ const run = async () => {
           authorId,
           replyToUserId: null,
           replyToCommentId: null,
-          publishedAt: spreadDate(i, 365 * 4),
+          // 约每 11 条父评论取 1 条落在近 30 天窗口（11 与 30 互质 → 逐日错开）。
+          publishedAt: i % 11 === 0 ? recentDate(i) : spreadDate(i, 365 * 4),
           path: `/article/article-${articleId - 1}`,
           contentMarkdown: { type: 'root', children: [] },
         });
@@ -558,8 +591,11 @@ const run = async () => {
               ? regularUserIds[(i * 3 + 4) % regularUserIds.length]
               : replyToUserId,
           replyToCommentId,
+          // 与父评论同一节奏掺入近 30 天窗口（子评论紧随父评论之后）。
           publishedAt: new Date(
-            spreadDate(i, 365 * 4).getTime() + 3600_000 + (i % 3600_000),
+            (i % 11 === 0 ? recentDate(i) : spreadDate(i, 365 * 4)).getTime() +
+              3600_000 +
+              (i % 3600_000),
           ),
           path: `/article/article-${articleIndex}`,
           contentMarkdown: { type: 'root', children: [] },
@@ -674,8 +710,36 @@ const spreadDate = (index: number, rangeDays: number): Date => {
   return new Date(base + (index % 2000) * step);
 };
 
+/**
+ * 近 N 天窗口内的确定性时间戳（本地时区，逐日桶化）。
+ * spreadDate 锚定 2020 年前铺，灌库时近 30 天窗口必然为空，导致概览趋势图
+ * 与 last30d 恒 0 —— 这里的近期造数专门补齐该覆盖，让趋势可视化可验收。
+ * 与概览 service 的本地日桶化（getFullYear/getMonth/getDate）口径一致。
+ */
+const recentDate = (index: number, windowDays = 30): Date => {
+  const dayBack = index % windowDays;
+  const hour = (index * 7) % 24;
+  const minute = (index * 11) % 60;
+  const date = new Date();
+  date.setDate(date.getDate() - dayBack);
+  date.setHours(hour, minute, 0, 0);
+  return date;
+};
+
 const futureDate = (index: number): Date =>
   new Date(Date.now() + 86_400_000 * (1 + (index % 30)));
+
+/**
+ * 长尾抽样表：第 k 项权重 ≈ base/(k+1)，展开成可 `i % length` 取用的下标数组。
+ *
+ * 分类与标签均匀分配时，24 个分类各 33 篇、160 个标签各 17 篇，
+ * 「内容构成」排行会是一排等长的条 —— 读起来跟坏掉没有区别。
+ * 真实博客的分类/标签本来就是齐夫分布，造数照着来才验得动排序与排行。
+ */
+const longTailPicks = (size: number, base: number): number[] =>
+  Array.from({ length: size }, (_, k) => Math.ceil(base / (k + 1))).flatMap(
+    (weight, k) => Array.from({ length: weight }, () => k),
+  );
 
 const coverUrl = (assetId: number) =>
   `https://img.example.com/seed/${assetId}.jpg`;

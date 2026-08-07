@@ -20,6 +20,8 @@ const listSearchParams = (query: MusicListQuery) => {
   params.set('page', String(query.page));
   params.set('pageSize', String(query.pageSize));
   if (query.search !== undefined) params.set('search', query.search);
+  if (query.incomplete !== undefined)
+    params.set('incomplete', query.incomplete);
   return params;
 };
 

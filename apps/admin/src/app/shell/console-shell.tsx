@@ -7,6 +7,7 @@ import {
   Flower2,
   FolderTree,
   Images,
+  LayoutDashboard,
   LogOut,
   MessagesSquare,
   MoreHorizontal,
@@ -43,6 +44,10 @@ const ARTICLE_FILTERS = [
 ] as const;
 
 const SECTIONS: NavSection[] = [
+  {
+    title: '概览',
+    items: [{ icon: LayoutDashboard, label: '总览', path: '/' }],
+  },
   {
     title: '内容',
     items: [
@@ -253,6 +258,10 @@ const MoreSheet = ({
 }) => (
   <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange} title="更多">
     <div className="grid gap-1 px-4 pt-1 pb-4">
+      <Link className={navRowClass} onClick={() => onOpenChange(false)} to="/">
+        <LayoutDashboard aria-hidden="true" />
+        总览
+      </Link>
       <Link
         className={navRowClass}
         onClick={() => onOpenChange(false)}

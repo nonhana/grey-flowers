@@ -377,7 +377,9 @@ The one place the brand speaks. A centred `416px` `case-raised` card on `float`,
 
 ### Motion
 
-Durations run `140ms`–`240ms`. Entrances use `--ease-out-quint` (`cubic-bezier(0.22, 1, 0.36, 1)`), exits use `ease-in` and are always shorter than their entrance: scrim `180` / `140`, sheet `240` / `160`, dialog `200` / `140`, popover pop-in `140`. Colour transitions are a flat `150ms`; the inspector's width transition is `200ms ease-out`. `prefers-reduced-motion: reduce` collapses every transition and animation to `0.01ms` globally.
+Durations run `140ms`–`240ms`. Entrances use `--ease-out-quint` (`cubic-bezier(0.22, 1, 0.36, 1)`), exits use `ease-in` and are always shorter than their entrance: scrim `180` / `140`, sheet `240` / `160`, dialog `200` / `140`, popover pop-in `140`. Colour transitions are a flat `150ms`; the inspector's width transition is `200ms ease-out`. `prefers-reduced-motion: reduce` collapses every transition, animation, **and animation delay** to `0.01ms` globally — zeroing duration without zeroing delay turns a staggered entrance into a string of near-instant pops, which is worse than the animation it was meant to suppress.
+
+**The one staggered entrance.** The trend plot's bars rise from the zero axis left to right (`--animate-bar-rise`, `scaleY(0)` → `1`, `transform-origin: bottom`), replayed whenever the metric or the day window changes. Each bar stays inside the `200ms` band; only the start times are spread, and the spread is hard-capped at `160ms` across the whole series regardless of whether the window holds 7 days or 30 — so the last bar always settles by roughly `360ms`. This is the console's single sanctioned choreography and it is not a licence for a second one: it exists because a bar chart's shape is the fact being reported, and a series that assembles in reading order says "this is a sequence in time" in a way a simultaneous fade cannot. Anything else that wants to stagger must instead resolve in one gesture.
 
 ### Named Rules
 
@@ -385,7 +387,7 @@ Durations run `140ms`–`240ms`. Entrances use `--ease-out-quint` (`cubic-bezier
 
 **The One Value Rule.** A status area reports one value at a time. Several chips each answering a different question is not a status area, it is a legend the operator has to learn.
 
-**The Report Don't Perform Rule.** State transitions and enter/exit animations live in the `140`–`240ms` band and change opacity, colour, transform, or width only. This band governs _transitions_; indeterminate progress is exempt and continuous by nature — the button spinner (`1s`), the auth-stage waiting mark (`1.4s`), and skeleton pulses report ongoing work rather than a change of state.
+**The Report Don't Perform Rule.** State transitions and enter/exit animations live in the `140`–`240ms` band and change opacity, colour, transform, or width only. This band governs _transitions_; indeterminate progress is exempt and continuous by nature — the button spinner (`1s`), the auth-stage waiting mark (`1.4s`), and skeleton pulses report ongoing work rather than a change of state. The band binds each animated element, not the wall clock: the trend plot's staggered bar rise (see The One Staggered Entrance) keeps every bar at `200ms` and only offsets their starts, within a capped window.
 
 **The One Focus Ring Rule.** Focus is defined once, in the base layer, at zero specificity via `:where()`: `2px solid var(--color-focus)` at `2px` offset, on every anchor, button, input, textarea, select, summary, and `[tabindex]`. Components do not redefine it; at most they add to it, as inputs do.
 
