@@ -17,6 +17,7 @@ import {
   MetaLine,
   PageBody,
   PageHeader,
+  Paginator,
   RowSkeleton,
   SearchInput,
   SelectField,
@@ -235,31 +236,15 @@ export const UsersPage = () => {
         )}
       </section>
 
-      {data && data.total > PAGE_SIZE ? (
-        <nav
-          aria-label="分页"
-          className="mt-5 flex items-center justify-between gap-3"
-        >
-          <span className="font-mono text-xs text-ink-dim">
-            共 {data.total} 位 · 第 {page} / {totalPages} 页
-          </span>
-          <div className="flex gap-2">
-            <Button
-              isDisabled={page <= 1}
-              onPress={() => setPage((current) => Math.max(1, current - 1))}
-              size="sm"
-            >
-              上一页
-            </Button>
-            <Button
-              isDisabled={page >= totalPages}
-              onPress={() => setPage((current) => current + 1)}
-              size="sm"
-            >
-              下一页
-            </Button>
-          </div>
-        </nav>
+      {data ? (
+        <Paginator
+          className="mt-5"
+          onChange={setPage}
+          page={page}
+          total={data.total}
+          totalPages={totalPages}
+          unit="位"
+        />
       ) : null}
 
       <UserDetailDialog

@@ -1,5 +1,7 @@
 export { Button, buttonClass, IconButton } from './button.js';
 export type { ButtonSize, ButtonTone } from './button.js';
+export { Paginator } from './paginator.js';
+export type { PaginatorProps } from './paginator.js';
 export {
   Alert,
   EmptyState,
