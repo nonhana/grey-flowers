@@ -11,6 +11,7 @@ import {
   AssetImage,
   Button,
   EmptyState,
+  Paginator,
   SearchInput,
   Skeleton,
   StatusReadout,
@@ -249,22 +250,11 @@ export const MusicPickerDialog = ({
           </span>
           <div className="flex items-center gap-2">
             {data && data.total > PAGE_SIZE ? (
-              <div className="flex gap-1">
-                <Button
-                  isDisabled={page <= 1}
-                  onPress={() => setPage((current) => Math.max(1, current - 1))}
-                  size="sm"
-                >
-                  上一页
-                </Button>
-                <Button
-                  isDisabled={page >= totalPages}
-                  onPress={() => setPage((current) => current + 1)}
-                  size="sm"
-                >
-                  下一页
-                </Button>
-              </div>
+              <Paginator
+                onChange={setPage}
+                page={page}
+                totalPages={totalPages}
+              />
             ) : null}
             <Button onPress={() => onOpenChange(false)}>取消</Button>
             <Button

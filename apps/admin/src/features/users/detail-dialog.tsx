@@ -16,6 +16,7 @@ import {
   Button,
   EmptyState,
   MetaLine,
+  Paginator,
   RowSkeleton,
 } from '@/ui/index.js';
 
@@ -246,33 +247,14 @@ export const UserDetailDialog = ({
               </div>
             )}
 
-            {data && data.comments.total > COMMENT_PAGE_SIZE ? (
-              <nav
-                aria-label="评论历史分页"
-                className="flex items-center justify-between gap-3"
-              >
-                <span className="font-mono text-2xs text-ink-dim">
-                  共 {totalComments} 条 · 第 {commentPage} / {totalPages} 页
-                </span>
-                <div className="flex gap-2">
-                  <Button
-                    isDisabled={commentPage <= 1}
-                    onPress={() =>
-                      setCommentPage((current) => Math.max(1, current - 1))
-                    }
-                    size="sm"
-                  >
-                    上一页
-                  </Button>
-                  <Button
-                    isDisabled={commentPage >= totalPages}
-                    onPress={() => setCommentPage((current) => current + 1)}
-                    size="sm"
-                  >
-                    下一页
-                  </Button>
-                </div>
-              </nav>
+            {data ? (
+              <Paginator
+                onChange={setCommentPage}
+                page={commentPage}
+                total={totalComments}
+                totalPages={totalPages}
+                unit="条"
+              />
             ) : null}
           </section>
         </div>
