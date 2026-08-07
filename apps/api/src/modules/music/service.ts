@@ -245,7 +245,10 @@ export class MusicService {
   // ==================== 管理读 ====================
 
   async list(input: MusicListQuery): Promise<MusicListData> {
-    const where = this.buildListWhere(input.search);
+    const where = this.buildListWhere(
+      input.search,
+      input.incomplete !== undefined,
+    );
     const [items, total] = await Promise.all([
       this.prisma.music.findMany({
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
@@ -277,7 +280,8 @@ export class MusicService {
   // ==================== 公开读 ====================
 
   async listPublic(query: MusicListQuery): Promise<MusicPublicListData> {
-    const where = this.buildListWhere(query.search);
+    // 公开读忽略 incomplete（管理端筛选项）。
+    const where = this.buildListWhere(query.search, false);
     const [items, total] = await Promise.all([
       this.prisma.music.findMany({
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
@@ -393,14 +397,27 @@ export class MusicService {
     });
   }
 
-  private buildListWhere(search: string | undefined): Prisma.MusicWhereInput {
-    if (!search) return {};
-    return {
-      OR: [
-        { title: { contains: search, mode: 'insensitive' } },
-        { artist: { contains: search, mode: 'insensitive' } },
-        { album: { contains: search, mode: 'insensitive' } },
-      ],
-    };
+  private buildListWhere(
+    search: string | undefined,
+    incomplete: boolean,
+  ): Prisma.MusicWhereInput {
+    const clauses: Prisma.MusicWhereInput[] = [];
+    if (search) {
+      clauses.push({
+        OR: [
+          { title: { contains: search, mode: 'insensitive' } },
+          { artist: { contains: search, mode: 'insensitive' } },
+          { album: { contains: search, mode: 'insensitive' } },
+        ],
+      });
+    }
+    if (incomplete) {
+      clauses.push({ OR: [{ artist: '' }, { album: '' }] });
+    }
+    return clauses.length === 1
+      ? clauses[0]
+      : clauses.length > 1
+        ? { AND: clauses }
+        : {};
   }
 }

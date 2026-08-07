@@ -15,6 +15,7 @@ import { AuthService } from '../modules/auth/service.js';
 import { CommentMailer } from '../modules/comments/mailer.js';
 import { CommentService } from '../modules/comments/service.js';
 import { MusicService } from '../modules/music/service.js';
+import { OverviewService } from '../modules/overview/service.js';
 import { TaxonomyService } from '../modules/taxonomy/service.js';
 import { UserService } from '../modules/users/service.js';
 import { createLogger, type ApiLogger } from './logger.js';
@@ -29,6 +30,7 @@ export interface AppDependencies {
   logger: ApiLogger;
   music: MusicService;
   objectStorage: ObjectStorage;
+  overview: OverviewService;
   prisma: PrismaClient;
   taxonomy: TaxonomyService;
   users: UserService;
@@ -60,6 +62,7 @@ export const createDependencies = (
       new CommentMailer(environment),
     ),
     music: new MusicService(prisma, environment, objectStorage, assets),
+    overview: new OverviewService(prisma),
     taxonomy,
     users,
   };

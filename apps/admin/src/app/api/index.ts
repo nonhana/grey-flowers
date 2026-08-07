@@ -5,6 +5,7 @@ import { createAuthApi, type AuthApi } from './auth.js';
 import { createCommentsApi, type CommentsApi } from './comments.js';
 import { createHttp } from './http.js';
 import { createMusicApi, type MusicApi } from './music.js';
+import { createOverviewApi, type OverviewApi } from './overview.js';
 import { createTaxonomyApi, type TaxonomyApi } from './taxonomy.js';
 import { createUsersApi, type UsersApi } from './users.js';
 
@@ -48,6 +49,7 @@ export class ApiClient {
   readonly auth: AuthApi;
   readonly comments: CommentsApi;
   readonly music: MusicApi;
+  readonly overview: OverviewApi;
   readonly taxonomy: TaxonomyApi;
   readonly users: UsersApi;
 
@@ -64,6 +66,7 @@ export class ApiClient {
     this.auth = createAuthApi(this.http);
     this.comments = createCommentsApi(this.http);
     this.music = createMusicApi(this.http);
+    this.overview = createOverviewApi(this.http);
     this.taxonomy = createTaxonomyApi(this.http);
     this.users = createUsersApi(this.http);
   }

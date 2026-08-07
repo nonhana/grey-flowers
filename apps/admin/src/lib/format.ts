@@ -32,3 +32,17 @@ export const formatDurationMs = (ms: number) => {
 /** mm:ss，入参为秒（音频时长、播放进度）。 */
 export const formatDuration = (seconds: number) =>
   formatDurationMs(seconds * 1000);
+
+/** 大计数压到中文量级：9723 → 9723；972384 → 97.2 万。元数据行放得下才叫元数据。 */
+export const formatCount = (value: number) => {
+  if (value < 10000) return String(value);
+  const wan = value / 10000;
+  return `${wan >= 100 ? String(Math.round(wan)) : wan.toFixed(1)} 万`;
+};
+
+/** 累计时长按小时读。95100 秒写成 1585:00 不是时间，是一串数字。 */
+export const formatHours = (seconds: number) => {
+  if (seconds < 3600) return `${Math.round(seconds / 60)} 分钟`;
+  const hours = seconds / 3600;
+  return `${hours >= 100 ? String(Math.round(hours)) : hours.toFixed(1)} 小时`;
+};

@@ -26,6 +26,7 @@ import {
   createMusicPublicRoutes,
   createMusicRoutes,
 } from './modules/music/routes.js';
+import { createOverviewRoutes } from './modules/overview/routes.js';
 import {
   createCategoryRoutes,
   createPublicTaxonomyRoutes,
@@ -68,6 +69,7 @@ export const createApp = (dependencies: AppDependencies) => {
   app.route('/tags', createTagRoutes(dependencies));
   app.route('/users', createUserRoutes(dependencies));
   app.route('/music', createMusicRoutes(dependencies));
+  app.route('/overview', createOverviewRoutes(dependencies));
   app.route('/public', createPublicTaxonomyRoutes(dependencies));
   app.route('/public/articles', createArticlePublicRoutes(dependencies));
   app.route('/public/activities', createActivityPublicRoutes(dependencies));

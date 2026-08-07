@@ -1,6 +1,6 @@
 import type { MusicAdmin, MusicListData } from '@grey-flowers/contracts';
 
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ import {
   Button,
   ConfirmDialog,
   EmptyState,
+  FilterChip,
   PageBody,
   PageHeader,
   Paginator,
@@ -42,6 +43,8 @@ const CardSkeleton = () => (
 
 export const MusicLibraryPage = () => {
   const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as { incomplete?: unknown };
+  const incomplete = search.incomplete === true;
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);
   const toggle = usePlayerStore((s) => s.toggle);
@@ -66,7 +69,7 @@ export const MusicLibraryPage = () => {
   }, [query]);
 
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${debouncedQuery}|${String(page)}|${String(reloadKey)}`;
+  const requestKey = `${debouncedQuery}|${String(incomplete)}|${String(page)}|${String(reloadKey)}`;
   const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
   if (prevRequestKey !== requestKey) {
     setPrevRequestKey(requestKey);
@@ -82,6 +85,7 @@ export const MusicLibraryPage = () => {
         page,
         pageSize: PAGE_SIZE,
         ...(debouncedQuery ? { search: debouncedQuery } : {}),
+        ...(incomplete ? { incomplete: 'true' } : {}),
       })
       .then((result) => {
         if (!cancelled) setData(result);
@@ -96,7 +100,7 @@ export const MusicLibraryPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [debouncedQuery, page, reloadKey]);
+  }, [debouncedQuery, page, reloadKey, incomplete]);
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasQuery = debouncedQuery.length > 0;
@@ -154,6 +158,18 @@ export const MusicLibraryPage = () => {
         >
           上传音乐
         </Button>
+        <FilterChip
+          isSelected={incomplete}
+          onPress={() => {
+            setPage(1);
+            void navigate({
+              search: incomplete ? {} : { incomplete: true },
+              to: '/music',
+            });
+          }}
+        >
+          缺元数据
+        </FilterChip>
         <SearchInput
           className="
             min-w-0 flex-1
@@ -193,6 +209,12 @@ export const MusicLibraryPage = () => {
             action={
               hasQuery ? (
                 <Button onPress={() => setQuery('')}>清除搜索</Button>
+              ) : incomplete ? (
+                <Button
+                  onPress={() => void navigate({ search: {}, to: '/music' })}
+                >
+                  查看全部
+                </Button>
               ) : (
                 <Button
                   icon={<Upload aria-hidden="true" />}
@@ -204,17 +226,25 @@ export const MusicLibraryPage = () => {
               )
             }
             icon={
-              hasQuery ? (
+              hasQuery || incomplete ? (
                 <Music2 aria-hidden="true" />
               ) : (
                 <Disc3 aria-hidden="true" />
               )
             }
-            title={hasQuery ? '没有匹配的音乐' : '音乐库是空的'}
+            title={
+              hasQuery
+                ? '没有匹配的音乐'
+                : incomplete
+                  ? '没有缺元数据的音乐'
+                  : '音乐库是空的'
+            }
           >
             {hasQuery
               ? '换一个关键词，或清除搜索看看全部。'
-              : '上传音频时会自动解析标题、艺术家、专辑与内嵌封面。'}
+              : incomplete
+                ? '所有曲目都有艺术家与专辑信息。'
+                : '上传音频时会自动解析标题、艺术家、专辑与内嵌封面。'}
           </EmptyState>
         ) : (
           <div className={GRID_CLASS}>

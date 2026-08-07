@@ -1,5 +1,7 @@
 export { Button, buttonClass, IconButton } from './button.js';
 export type { ButtonSize, ButtonTone } from './button.js';
+export { CalendarHeatmap, RankBars, ShareBar, TrendPlot } from './charts.js';
+export type { ShareSegment } from './charts.js';
 export { Paginator } from './paginator.js';
 export type { PaginatorProps } from './paginator.js';
 export {

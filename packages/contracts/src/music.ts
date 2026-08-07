@@ -56,6 +56,8 @@ export const musicListQuerySchema = z
   .object({
     /** 匹配 title/artist/album，不区分大小写。 */
     search: z.string().max(100).optional(),
+    /** 管理端：仅返回 artist='' OR album='' 的曲目（缺元数据）；公开读忽略。 */
+    incomplete: z.enum(['true']).optional(),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
   })
