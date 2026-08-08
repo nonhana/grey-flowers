@@ -10,6 +10,7 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "preview": "vite preview",
+    "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -51,6 +52,7 @@
     "@types/react-dom": "catalog:admin",
     "@vitejs/plugin-react": "catalog:admin",
     "tailwindcss": "catalog:admin",
-    "vite": "catalog:admin"
+    "vite": "catalog:admin",
+    "vitest": "catalog:admin"
   }
 }

@@ -36,7 +36,10 @@ const toRankGroup = (
   totalItems: number,
   countSum: number,
 ): OverviewRankGroup => {
-  const items = rows.map((row) => ({ count: row.articleCount, name: row.name }));
+  const items = rows.map((row) => ({
+    count: row.articleCount,
+    name: row.name,
+  }));
   const shown = items.reduce((sum, item) => sum + item.count, 0);
   return {
     items,

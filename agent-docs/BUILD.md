@@ -10,6 +10,7 @@ Required environment groups (root `.env`):
 - `HANA_DATABASE_URL` — PostgreSQL URL; required by `packages/db` and `apps/api`.
 - Ports — `API_PORT` (default 2408), `ADMIN_PORT` (default 2409), `MAIN_PORT` (default 2410). Admin and main derive browser origins from `API_PORT`/`MAIN_PORT`; in production they are hardcoded to `https://api.caelum.moe` / `https://caelum.moe` and the admin/main ports become optional.
 - Auth (API) — `AUTH_ACCESS_TOKEN_SECRET`, `AUTH_REFRESH_TOKEN_PEPPER`: base64url, decode to ≥32 bytes, and must differ from each other.
+- `API_TRUSTED_PROXY_HOPS` — optional integer 0–8: how many trusted reverse proxies sit in front of `apps/api`. Defaults to 1 in production (nginx) and 0 in development (direct). Only affects which `X-Forwarded-For` segment the auth rate limiter treats as the client IP; set it explicitly when the chain changes (CDN + nginx → 2).
 - Object storage (API) — `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`.
 - Mail — `HANA_MAIL_ENABLE`, `RESEND_API_KEY`, `RESEND_FROM`. Consumed by `apps/api` (comment-reply mail); the main site no longer sends mail.
 - `NODE_ENV` — validated by `apps/api/src/env.ts`.
@@ -27,7 +28,7 @@ There is no separate `.env` inside the apps; run `pnpm dev:admin` from the repo 
 | Production build (whole workspace) | `pnpm build` |
 | Serve built main artifact | `pnpm -F @grey-flowers/main run preview` |
 | Type check | `pnpm typecheck` (root `tsc --noEmit` + per-package) |
-| Unit tests (API) | `pnpm test` (vitest, no DB / no network) |
+| Unit tests | `pnpm test` (vitest for `apps/api` + `apps/admin`, no DB / no network) |
 | Lint / fix | `pnpm lint` / `pnpm lint:fix` |
 | Format / check | `pnpm fmt` / `pnpm fmt:check` |
 | Prisma regeneration | `pnpm prisma:generate` |

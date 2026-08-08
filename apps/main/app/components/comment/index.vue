@@ -59,10 +59,13 @@ watch(page, () => {
 })
 
 // 同一路由内切换文章 / recent 参数变化时，回到第一页并整体刷新。
+// 不在第一页时改 page 会由上面的 watch 接手重取，这里就不再自己发一次。
 watch(queryPath, () => {
-  page.value = 1
   fetchTotal()
-  fetchComments()
+  if (page.value === 1)
+    fetchComments()
+  else
+    page.value = 1
 })
 
 const submitDialogVisible = ref(false)

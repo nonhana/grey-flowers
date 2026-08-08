@@ -107,7 +107,9 @@ const getUnsupportedMdTypes = (
  * 差别只有 clobberPrefix、报错资源名、是否保留 excerpt/toc ——
  * 全部收敛为这里的参数，避免两份 85 行近同实现继续各自漂移。
  */
-export const createRestrictedMarkdown = (options: RestrictedMarkdownOptions) => {
+export const createRestrictedMarkdown = (
+  options: RestrictedMarkdownOptions,
+) => {
   const schema = buildSchema(options.clobberPrefix);
   const validator = () => {
     return (tree: MarkdownAstNode) => {
@@ -128,7 +130,10 @@ export const createRestrictedMarkdown = (options: RestrictedMarkdownOptions) => 
   };
 
   const validatorKey = options.validatorKey;
-  const remarkPlugins: Record<string, false | { instance: () => (tree: MarkdownAstNode) => void }> = {
+  const remarkPlugins: Record<
+    string,
+    false | { instance: () => (tree: MarkdownAstNode) => void }
+  > = {
     'remark-mdc': false,
     [validatorKey]: { instance: validator },
   };

@@ -205,8 +205,7 @@ export const createHttp = (options: HttpOptions) => {
     }
 
     xhr.onerror = () => reject(new ApiNetworkError('Upload request failed'));
-    xhr.onabort = () =>
-      reject(new ApiNetworkError('Upload request aborted'));
+    xhr.onabort = () => reject(new ApiNetworkError('Upload request aborted'));
     xhr.onload = () => {
       // HTTP 层完全没收到响应（status 0：网络断开 / CORS 失败 / 被中断）：
       // 先于 JSON 解析判定，避免坠入 ApiResponseError 掩盖真实网络原因。

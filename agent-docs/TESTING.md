@@ -2,7 +2,14 @@
 
 ## Current automation
 
-Automated tests are minimal but present: `apps/api` runs a **vitest** suite (`src/**/*.test.ts`) covering the pure logic that static checks cannot (in-memory rate limiter window semantics, restricted-markdown sanitizer allow/reject matrix, preview token mint/verify/expiry). `apps/main`, `apps/admin`, `packages/contracts`, and `packages/db` have no unit-test framework yet.
+`apps/api` and `apps/admin` each run a **vitest** suite (`src/**/*.test.ts`, `environment: 'node'`, no DB / no network). `apps/main`, `packages/contracts`, and `packages/db` have no unit-test framework yet.
+
+What is covered today:
+
+- **`apps/api`** — env parsing and derivation (`env.test.ts`), rate limiter window + key-bound eviction, `resolveClientIp` trusted-proxy-hop matrix, restricted-markdown sanitizer allow/reject matrix, preview token mint/verify/expiry/cross-key, refresh reuse policy (`refresh-policy.test.ts`), refresh credential + access token round-trips (`tokens.test.ts`), the envelope/status-code contract and validation-field mapping (`http/errors.test.ts`), request parsers, slug/wordcount/markdown/pagination/prisma-error helpers.
+- **`apps/admin`** — the article editor store (`store/article-editor.test.ts`: autosave/`flushNow` drain semantics, conflict and offline gating, version restore), plus the display formatters and API error-message mapping.
+
+Test doubles are minimal on purpose: `apps/api` builds environments through the real `readApiEnvironment` factory (`src/testing/environment.ts`) instead of `as ApiEnvironment` casts, and the admin store test replaces only `apiClient`, keeping the real `instanceof`-based error predicates.
 
 Use the regression gate for every code change:
 
@@ -10,10 +17,17 @@ Use the regression gate for every code change:
 pnpm test && pnpm typecheck && pnpm lint && pnpm build
 ```
 
-- `pnpm test` = `vitest run` for `apps/api` (no DB / no network).
+- `pnpm test` = `vitest run` for `apps/api` and `apps/admin`.
 - `pnpm typecheck` = root `tsc -p tsconfig.json --noEmit` (root `*.ts` only) + per-package `typecheck`. Nuxt `nuxt typecheck` for `apps/main`, `tsc --noEmit` for the others.
 - `pnpm lint` = ESLint (Antfu) for `apps/main`; oxlint for `apps/api`, `apps/admin`, `packages/contracts`, `packages/db`. Generated Prisma code under `packages/db/prisma/generated/` is not linted.
+- `pnpm fmt:check` = oxfmt for every workspace except `apps/main` (ESLint owns formatting there); `pnpm fmt` rewrites in place.
 - Do not report a suite as passing when only static checks have run.
+
+## Writing tests here
+
+- Assert the behaviour, not that the call returned. A test whose assertions still pass after you delete the branch under test is hollow green — the `keepExcerpt` case in `restricted-markdown.test.ts` is the worked example of what that looks like and how it was fixed.
+- Verify a regression test actually fails against the old code before keeping it. `article-editor.test.ts` was written that way: reverting `article-editor.ts` to the pre-fix version turns three of its cases red.
+- Reset mocks with `vi.resetAllMocks()` in `beforeEach` when the suite uses `mockImplementationOnce`; `clearAllMocks` leaves the queued implementations behind and they leak into the next case.
 
 ## Prerequisites
 
