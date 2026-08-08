@@ -30,21 +30,32 @@ const parentCount = ref(0)
 const commentList = ref<ParentCommentItem[]>([])
 
 async function fetchTotal() {
-  const data = await $fetch('/api/comments/count', {
-    query: { path: queryPath.value },
-  })
-  if (data.success) {
-    totalCount.value = data.payload?.totalCount || 0
-    parentCount.value = data.payload?.parentCount || 0
+  try {
+    const data = await $fetch('/api/comments/count', {
+      query: { path: queryPath.value },
+    })
+    if (data.success) {
+      totalCount.value = data.payload?.totalCount || 0
+      parentCount.value = data.payload?.parentCount || 0
+    }
+  }
+  catch {
+    // 上游异常时评论计数保持 0 即可（S5 后非 2xx 会 reject，这里吞掉避免
+    // unhandled rejection；列表/计数空态本就是可接受降级）。
   }
 }
 
 async function fetchComments() {
-  const data = await $fetch('/api/comments/list', {
-    query: { path: queryPath.value, page: page.value, pageSize: pageSize.value },
-  })
-  if (data.success) {
-    commentList.value = (data.payload as ParentCommentItem[]) ?? []
+  try {
+    const data = await $fetch('/api/comments/list', {
+      query: { path: queryPath.value, page: page.value, pageSize: pageSize.value },
+    })
+    if (data.success) {
+      commentList.value = (data.payload as ParentCommentItem[]) ?? []
+    }
+  }
+  catch {
+    // 同上：上游异常时不更新列表（保持上一页/空态），不向上抛。
   }
 }
 

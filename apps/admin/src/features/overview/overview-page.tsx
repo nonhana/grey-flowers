@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatCount, formatHours } from '@/lib/format.js';
 import {
   Button,
@@ -51,12 +52,10 @@ export const OverviewPage = () => {
   const [reloadKey, setReloadKey] = useState(0);
 
   const requestKey = `counts|${String(reloadKey)}`;
-  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
-  if (prevRequestKey !== requestKey) {
-    setPrevRequestKey(requestKey);
+  useDerivedReset(requestKey, () => {
     setLoading(true);
     setError('');
-  }
+  });
 
   useEffect(() => {
     let cancelled = false;

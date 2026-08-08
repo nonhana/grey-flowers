@@ -39,6 +39,9 @@ jobs:
         env:
           HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
 
+      - name: Quality gates
+        run: pnpm test && pnpm typecheck && pnpm lint
+
       - name: Build (Nuxt)
         run: pnpm build
         env:
@@ -74,7 +77,6 @@ jobs:
           script: |
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
-            npm --help
 
             set -e
             mkdir -p "$VPS_DIR"

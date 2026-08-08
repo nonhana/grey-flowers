@@ -3,6 +3,7 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { Alert, AppDialog, Button, TextAreaField } from '@/ui/index.js';
 
@@ -33,14 +34,12 @@ export const ReplyDialog = ({
   const [error, setError] = useState<string | null>(null);
 
   // 打开时同步当前目标（渲染期、受条件保护地调整 state）
-  const [prevOpen, setPrevOpen] = useState(false);
-  if (prevOpen !== open) {
-    setPrevOpen(open);
+  useDerivedReset(open, () => {
     if (open) {
       setContent('');
       setError(null);
     }
-  }
+  });
 
   const send = async () => {
     if (!target) return;

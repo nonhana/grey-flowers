@@ -12,6 +12,7 @@ import {
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { AUDIO_ACCEPT, IMAGE_ACCEPT } from '@/lib/media-accept.js';
 import { Alert, AppDialog, Button, FieldLabel } from '@/ui/index.js';
 
@@ -35,9 +36,7 @@ export const UploadDialog = ({
   const [error, setError] = useState('');
 
   // 对话框关闭后重置表单：在渲染期、受条件保护地调整 state（React 官方推荐模式）
-  const [prevOpen, setPrevOpen] = useState(open);
-  if (prevOpen !== open) {
-    setPrevOpen(open);
+  useDerivedReset(open, () => {
     if (!open) {
       setPurpose(null);
       setFile(null);
@@ -45,7 +44,7 @@ export const UploadDialog = ({
       setPhase('idle');
       setError('');
     }
-  }
+  });
 
   const accept = purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT : IMAGE_ACCEPT;
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';

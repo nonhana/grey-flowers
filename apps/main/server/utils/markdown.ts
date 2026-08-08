@@ -15,6 +15,12 @@ const STATIC_MARKDOWN_SOURCES: Record<StaticMarkdownPageSlug, string> = {
   friends: 'markdown/friends.md',
 }
 
+/**
+ * 静态页（非文章）的展示标题。这些页面占用同名 URL/标题，不应以同名文章
+ * 出现在 feed / 邻章等公开列表里 —— 需要隐藏时引用本常量，不要散落字面量。
+ */
+export const STATIC_MARKDOWN_TITLES: readonly string[] = ['About', 'Friends']
+
 const staticMarkdownCache = new Map<StaticMarkdownPageSlug, Promise<MarkdownPagePayload>>()
 
 export function isStaticMarkdownPageSlug(value: string | undefined): value is StaticMarkdownPageSlug {

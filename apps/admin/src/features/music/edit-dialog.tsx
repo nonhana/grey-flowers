@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import {
@@ -56,9 +57,7 @@ export const EditMusicDialog = ({
   const [error, setError] = useState<string | null>(null);
 
   // 打开对话框时同步当前值（渲染期、受条件保护地调整 state）
-  const [prevOpen, setPrevOpen] = useState(false);
-  if (prevOpen !== open) {
-    setPrevOpen(open);
+  useDerivedReset(open, () => {
     if (open && music) {
       setForm({
         album: music.album,
@@ -69,7 +68,7 @@ export const EditMusicDialog = ({
       });
       setError(null);
     }
-  }
+  });
 
   const save = async () => {
     if (!music) return;

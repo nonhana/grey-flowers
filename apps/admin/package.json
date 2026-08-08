@@ -51,6 +51,7 @@
     "@types/react": "catalog:admin",
     "@types/react-dom": "catalog:admin",
     "@vitejs/plugin-react": "catalog:admin",
+    "babel-plugin-react-compiler": "catalog:admin",
     "tailwindcss": "catalog:admin",
     "vite": "catalog:admin",
     "vitest": "catalog:admin"

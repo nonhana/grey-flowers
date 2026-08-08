@@ -20,7 +20,7 @@ Long-form articles are database records. `Article.content` is the raw Markdown/M
 
 ## Preview
 
-The admin mints a short-lived preview token (`POST /articles/:id/preview-token`) and opens the main site detail URL with it. `apps/main/server/api/articles/detail.get.ts` first tries the public detail; on `NOT_FOUND` with a token it falls back to `GET /public/articles/preview` and adds `X-Robots-Tag: noindex` (plus `Cache-Control: no-store` and `Referrer-Policy: no-referrer`) so drafts are never indexed and the token never lands in caches or Referer. The token deliberately rides the query — SSR reads it server-side — so it stays 15-minute and single-revision bound.
+The admin mints a short-lived preview token (`POST /articles/:id/preview-token`) and opens the main site detail URL with it. `apps/main/server/api/articles/detail.get.ts` first tries the public detail; on `NOT_FOUND` with a token it falls back to `GET /public/articles/preview`. 防泄密由两层组成（都落在**最终页面响应**上，内部 API 路由上设置的 header 不会冒泡到最终 HTML）：`apps/main/server/middleware/preview-headers.ts` 按「文章路径 + `?preview=`」写入 `Cache-Control: no-store` 与 `Referrer-Policy: no-referrer`（防缓存、防 token 进 Referer）；`noindex` 则由 `[article].vue` 在 preview 时注入 `<meta name="robots" content="noindex, nofollow">`（`@nuxtjs/seo` 会在响应末段改写 `X-Robots-Tag`，header 方案在那里会被覆盖）。token 刻意放在 query —— SSR 必须在服务端读取它 —— 因此它保持 15 分钟、单版本约束。
 
 ## Rendered markdown (main site)
 

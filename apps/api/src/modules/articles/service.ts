@@ -125,13 +125,20 @@ const createSnippet = (row: SearchRow, query: string) => {
   return fallback ? truncateSnippet(fallback) : '暂无摘要';
 };
 
-/** cover/coverAssetId 归一：置 asset 则 cover=deliveryUrl；仅外部 URL 则 coverAssetId=null。 */
+/**
+ * cover/coverAssetId 归一：置 asset 则 cover=deliveryUrl；显式 null（仅外部
+ * URL）则清掉 asset；undefined 表示本次未碰 cover 字段 —— cover 独立接受输入
+ * 且沿用既有 asset 引用（不再被旧 asset 的 deliveryUrl 强制回写）。
+ */
 const resolveCover = async (
   client: Prisma.TransactionClient,
   assetPublicUrl: string,
   cover: string,
-  coverAssetId: number | null,
+  coverAssetId: number | null | undefined,
+  existingCoverAssetId: number | null = null,
 ): Promise<{ cover: string; coverAssetId: number | null }> => {
+  if (coverAssetId === undefined)
+    return { cover, coverAssetId: existingCoverAssetId };
   if (coverAssetId === null) return { cover, coverAssetId: null };
   return {
     cover: await assertAvailableAssetDeliveryUrl(
@@ -249,6 +256,15 @@ export class ArticleService {
       );
 
       const published = input.published ?? false;
+
+      // 先落缺失标签再 connect 关联，并发同名新标签也不会撞唯一约束（skipDuplicates）。
+      if (tags.length > 0) {
+        await tx.tag.createMany({
+          data: tags.map((name) => ({ name })),
+          skipDuplicates: true,
+        });
+      }
+
       const row = await tx.article.create({
         data: {
           alt: input.alt ?? title,
@@ -260,12 +276,7 @@ export class ArticleService {
           editedAt: new Date(),
           published,
           publishedAt: new Date(),
-          tags: {
-            connectOrCreate: tags.map((name) => ({
-              create: { name },
-              where: { name },
-            })),
-          },
+          tags: { connect: tags.map((name) => ({ name })) },
           title,
           to,
           wordCount,
@@ -342,15 +353,12 @@ export class ArticleService {
         content,
       );
       const wordCount = countArticleWordCount(content);
-      const coverAssetId =
-        input.coverAssetId !== undefined
-          ? input.coverAssetId
-          : existing.coverAssetId;
       const { cover, coverAssetId: resolvedCoverAssetId } = await resolveCover(
         tx,
         this.environment.ASSET_PUBLIC_URL,
         input.cover ?? existing.cover,
-        coverAssetId,
+        input.coverAssetId,
+        existing.coverAssetId,
       );
 
       // 先落缺失标签再整体 set，保证新标签可建、旧标签可摘除，且只写一次关联。
@@ -437,19 +445,32 @@ export class ArticleService {
       const existing = await this.lockArticleForWrite(tx, id);
       if (existing.published) return this.resolveAdmin(tx, id);
 
-      const updated = await tx.article.update({
-        data: {
-          editedAt: new Date(),
-          published: true,
-          publishedAt: new Date(),
-          revision: { increment: 1 },
-        },
-        select: {
-          ...articleListAdminProjection,
-          content: true,
-        },
-        where: { id },
-      });
+      let updated: ArticleDetailRecord & {
+        categoryId: number | null;
+        coverAssetId: number | null;
+        id: number;
+        revision: number;
+      };
+      try {
+        updated = await tx.article.update({
+          data: {
+            editedAt: new Date(),
+            published: true,
+            publishedAt: new Date(),
+            revision: { increment: 1 },
+          },
+          select: {
+            ...articleListAdminProjection,
+            content: true,
+          },
+          // 与 save 相同的乐观锁：publish 读改写之间被别的写并发覆盖时
+          // where 不命中抛 P2025 → ARTICLE_STALE，而不是静默盖掉对方的 revision。
+          where: { id, revision: existing.revision },
+        });
+      } catch (error) {
+        if (isRecordNotFound(error)) throw new ApiError('ARTICLE_STALE');
+        throw error;
+      }
 
       await this.insertSnapshot(tx, {
         articleId: id,
@@ -479,18 +500,29 @@ export class ArticleService {
       const existing = await this.lockArticleForWrite(tx, id);
       if (!existing.published) return this.resolveAdmin(tx, id);
 
-      const updated = await tx.article.update({
-        data: {
-          editedAt: new Date(),
-          published: false,
-          revision: { increment: 1 },
-        },
-        select: {
-          ...articleListAdminProjection,
-          content: true,
-        },
-        where: { id },
-      });
+      let updated: ArticleDetailRecord & {
+        categoryId: number | null;
+        coverAssetId: number | null;
+        id: number;
+        revision: number;
+      };
+      try {
+        updated = await tx.article.update({
+          data: {
+            editedAt: new Date(),
+            published: false,
+            revision: { increment: 1 },
+          },
+          select: {
+            ...articleListAdminProjection,
+            content: true,
+          },
+          where: { id, revision: existing.revision },
+        });
+      } catch (error) {
+        if (isRecordNotFound(error)) throw new ApiError('ARTICLE_STALE');
+        throw error;
+      }
 
       await this.insertSnapshot(tx, {
         articleId: id,
@@ -969,16 +1001,22 @@ export class ArticleService {
       wordCount: number;
     },
   ) {
-    await client.articleSnapshot.create({
-      data: {
-        articleId: input.articleId,
-        content: input.content,
-        createdById: input.createdById,
-        description: input.description,
-        revision: input.revision,
-        title: input.title,
-        wordCount: input.wordCount,
-      },
+    // 按 (articleId, revision) 幂等：publish/unpublish/保存都会在当前 revision
+    // 落一张快照，冲突「保留我的」的 preserve 快照可能正好撞上已存在的一行 ——
+    // createMany skipDuplicates 让重复写变成无害 no-op，而非 P2002 → 500。
+    await client.articleSnapshot.createMany({
+      data: [
+        {
+          articleId: input.articleId,
+          content: input.content,
+          createdById: input.createdById,
+          description: input.description,
+          revision: input.revision,
+          title: input.title,
+          wordCount: input.wordCount,
+        },
+      ],
+      skipDuplicates: true,
     });
   }
 

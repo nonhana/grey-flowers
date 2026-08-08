@@ -24,17 +24,12 @@
 import bcrypt from 'bcryptjs';
 import { createHash, randomUUID } from 'node:crypto';
 
+import type { Prisma } from '../src/index.js';
+
+import { isLocalDatabaseUrl } from '../scripts/guard-local-db.mts';
 import { createPrismaClient } from '../src/index.js';
 
 const PASSWORD_COST = 10;
-
-/** 解析后的主机名若非本机回环地址，视为非测试目标，禁止清库重灌。 */
-const isLocalDatabaseTarget = (url: string) => {
-  const hostname = new URL(url).hostname;
-  return (
-    hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
-  );
-};
 
 /** 数量配置：足够撑起分页（每页 20，>10 页）与模糊检索命中。 */
 const COUNTS = {
@@ -61,7 +56,7 @@ const run = async () => {
   if (!url) {
     throw new Error('缺少 HANA_DATABASE_URL 环境变量（从根 .env 读取）。');
   }
-  if (!isLocalDatabaseTarget(url)) {
+  if (!isLocalDatabaseUrl(url)) {
     throw new Error(
       `拒绝在非本机测试库执行 seed（目标: ${new URL(url).host}）。种子会清空全部表，仅允许 localhost/127.0.0.1。`,
     );
@@ -357,7 +352,7 @@ const run = async () => {
             : spreadDate(i, 365 * 6)
           : futureDate(i);
         articleRows.push({
-          to: `article-${i}`,
+          to: `/articles/article-${i}`,
           title: articleTitle(i),
           description: `关于「${articleTitle(i)}」的说明摘要：${SUMMARY[i % SUMMARY.length]}。`,
           cover: coverUrl(coverAssetId),
@@ -554,7 +549,7 @@ const run = async () => {
         replyToCommentId: number | null;
         publishedAt: Date;
         path: string;
-        contentMarkdown: { type: string; children: unknown[] };
+        contentMarkdown: Prisma.InputJsonValue;
       }> = [];
       const parentIds: number[] = [];
 
@@ -568,7 +563,7 @@ const run = async () => {
           authorId,
           replyToUserId: null,
           replyToCommentId: null,
-          // 主站文章路由为 /articles/[article]。to = article-ID，故路径对齐 /articles/article-<id>。
+          // 主站文章路由为 /articles/[article]；to 需为规范路由 /articles/article-<id>（API 按 to 精确匹配 path）。
           publishedAt: i % 11 === 0 ? recentDate(i) : spreadDate(i, 365 * 4),
           path: `/articles/article-${articleId - 1}`,
           contentMarkdown: { type: 'root', children: [] },
@@ -591,7 +586,7 @@ const run = async () => {
         replyToCommentId: number | null;
         publishedAt: Date;
         path: string;
-        contentMarkdown: { type: string; children: unknown[] };
+        contentMarkdown: Prisma.InputJsonValue;
       }> = [];
       for (let i = 0; i < COUNTS.commentsChild; i += 1) {
         const parentId = parentIds[i % parentIds.length];

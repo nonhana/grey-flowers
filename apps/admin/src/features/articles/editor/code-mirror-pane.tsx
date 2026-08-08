@@ -33,6 +33,7 @@ import {
   removeUpload,
   rewriteImageAlt,
   updateUpload,
+  uploadField,
 } from './live-preview/index.js';
 import {
   altForAsset,
@@ -113,9 +114,16 @@ export const CodeMirrorPane = ({
           view?.dispatch({ effects: updateUpload.of({ id, progress }) }),
         )
         .then((asset) => {
-          view?.dispatch({
+          if (!view) return;
+          // 上传在途期间的输入会平移占位插入点（uploadField 按文档变更重映射），
+          // 完成时读 field 里的实时坐标，避免按陈旧 insertAt 插入造成漂移。
+          const liveAt =
+            view.state
+              .field(uploadField, false)
+              ?.find((entry) => entry.id === id)?.insertAt ?? insertAt;
+          view.dispatch({
             changes: {
-              from: Math.min(insertAt, view.state.doc.length),
+              from: Math.min(liveAt, view.state.doc.length),
               insert: wrappedMarkdown(asset, altForFile(file)),
             },
             effects: removeUpload.of(id),
@@ -129,7 +137,10 @@ export const CodeMirrorPane = ({
     });
   };
 
-  const extensions: Extension[] = [
+  // 扩展是静态的（交互出口走模块级 imageActions 槽位，闭包用稳定 ref）：
+  // 只在挂载时构建一次，避免每次键入触发的重渲染都让 react-codemirror
+  // 整体 reconfigure、重建 ViewPlugin/装饰，造成排版抖动与无谓开销。
+  const [extensions] = useState<Extension[]>(() => [
     EditorView.lineWrapping,
     history(),
     // 用 GFM base：表格才被解析成 Table 节点，块级观感类才套得上；
@@ -183,7 +194,7 @@ export const CodeMirrorPane = ({
         return false;
       },
     }),
-  ];
+  ]);
 
   const runCommand = (run: (view: EditorView) => void) => {
     const view = viewRef.current;

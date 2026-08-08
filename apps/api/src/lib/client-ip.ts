@@ -31,8 +31,8 @@ export const resolveClientIp = (input: ClientIpInput): string => {
     .filter((entry) => entry.length > 0);
   if (entries.length === 0) return fallback;
 
-  // 配置跳数多于实际链路时夹到最左段：宁可粒度变粗，也不越界读到
-  // 客户端可伪造的区间之外的空值。
-  const index = Math.max(entries.length - input.trustedProxyHops, 0);
-  return entries[index] ?? fallback;
+  // 实际链路短于配置跳数时模型失效：最左段很可能就是客户端伪造的，
+  // 夹到 index 0 会读到可伪造段 —— 直接回退可信对端（socket peer）。
+  if (entries.length < input.trustedProxyHops) return fallback;
+  return entries[entries.length - input.trustedProxyHops] ?? fallback;
 };

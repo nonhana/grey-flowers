@@ -51,7 +51,7 @@ There is no root `pnpm dev` script — use the per-app `dev:main` / `dev:api` / 
 
 ## Deployment
 
-Pushing `master` (or the `article_published` repository dispatch) invokes `.github/workflows/deploy.yml`: it builds the workspace with `pnpm build`, copies only `apps/main/.output/` and `apps/main/ecosystem.config.cjs` to the VPS, then PM2 reloads `grey-flowers` running `.output/server/index.mjs` on port `2408` (`ecosystem.config.cjs` `port: 2408`).
+Pushing `master` (or the `article_published` repository dispatch) invokes `.github/workflows/deploy.yml`: it runs the quality gates (`pnpm test && pnpm typecheck && pnpm lint`) first, then builds the workspace with `pnpm build`, copies only `apps/main/.output/` and `apps/main/ecosystem.config.cjs` to the VPS, then PM2 reloads `grey-flowers` running `.output/server/index.mjs` on port `2408` (`ecosystem.config.cjs` `port: 2408`).
 
 The workflow does not run `pnpm prisma:migrate:deploy`; the deploy script's SSH step only moves artifacts and reloads PM2. Apply a reviewed migration separately before relying on a schema change in production (notably the session refresh-rotation column). The API and admin apps are built but not deployed by this workflow.
 

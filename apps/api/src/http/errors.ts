@@ -110,8 +110,17 @@ export const createSuccess = <TData>(
 };
 
 export const handleError = (error: Error, c: Context<ApiEnvironment>) => {
-  if (error instanceof ApiError)
+  if (error instanceof ApiError) {
+    // INTERNAL_ERROR 表示真实服务端失败：与「500 logged with requestId」的
+    // 契约保持一致，不能像客户端可预期错误那样静默短路（<500 的不落日志）。
+    if (error.code === 'INTERNAL_ERROR') {
+      c.get('dependencies').logger.error(
+        { cause: error.cause, err: error, requestId: c.get('requestId') },
+        'Internal API error',
+      );
+    }
     return createFailure(c, error.code, error.fields, error.message);
+  }
 
   const requestId = c.get('requestId');
   c.get('dependencies').logger.error(

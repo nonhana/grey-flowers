@@ -186,10 +186,18 @@ export class CommentService {
       let parentId: number | null | undefined = input.parentId;
       if (parentId !== undefined) {
         const parent = await tx.comment.findUnique({
-          select: { id: true, level: true, parentId: true },
+          select: { id: true, level: true, parentId: true, path: true },
           where: { id: parentId },
         });
+        // parent 必须与本次评论同 path，否则会造成跨路径树损坏。
         if (!parent) throw new ApiError('NOT_FOUND');
+        if (parent.path !== input.path) {
+          throw new ApiError('VALIDATION_FAILED', {
+            fields: {
+              parentId: ['Parent comment does not belong to this path'],
+            },
+          });
+        }
         // 树两级硬约束：回复 CHILD 时父归并到其父
         if (parent.level === 'CHILD') parentId = parent.parentId;
       }
@@ -203,10 +211,18 @@ export class CommentService {
       let targetAuthorId: number | null = null;
       if (input.replyToCommentId !== undefined) {
         const target = await tx.comment.findUnique({
-          select: { authorId: true, id: true },
+          select: { authorId: true, id: true, path: true },
           where: { id: input.replyToCommentId },
         });
         if (!target) throw new ApiError('NOT_FOUND');
+        // replyTo 目标同样必须与本次评论同 path。
+        if (target.path !== input.path) {
+          throw new ApiError('VALIDATION_FAILED', {
+            fields: {
+              replyToCommentId: ['Target comment does not belong to this path'],
+            },
+          });
+        }
         targetAuthorId = target.authorId;
       }
 
@@ -369,7 +385,10 @@ export class CommentService {
     if (!parsed.success) {
       const message = parsed.statusMessage;
       if (parsed.statusCode >= 500) {
-        throw new ApiError('INTERNAL_ERROR', { message });
+        throw new ApiError('INTERNAL_ERROR', {
+          message,
+          cause: parsed.cause,
+        });
       }
       throw new ApiError('VALIDATION_FAILED', { message });
     }

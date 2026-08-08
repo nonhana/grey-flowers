@@ -34,6 +34,7 @@ import {
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import {
@@ -324,12 +325,10 @@ export const CommentsPage = () => {
 
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
   const requestKey = `${JSON.stringify(filters)}|${String(page)}|${String(reloadKey)}`;
-  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
-  if (prevRequestKey !== requestKey) {
-    setPrevRequestKey(requestKey);
+  useDerivedReset(requestKey, () => {
     setLoading(true);
     setError('');
-  }
+  });
 
   useEffect(() => {
     let cancelled = false;

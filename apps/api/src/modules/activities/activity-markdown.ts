@@ -1,5 +1,6 @@
 import {
   createRestrictedMarkdown,
+  type RestrictedMarkdownFailure,
   type RestrictedMarkdownPayload,
 } from '@/lib/restricted-markdown.js';
 
@@ -7,7 +8,7 @@ export type ActivityMarkdownPayload = RestrictedMarkdownPayload;
 
 export type ActivityMarkdownParseRes =
   | { success: true; payload: ActivityMarkdownPayload | null }
-  | { success: false; statusCode: number; statusMessage: string };
+  | ({ success: false } & RestrictedMarkdownFailure);
 
 const activityMarkdown = createRestrictedMarkdown({
   clobberPrefix: 'activity-',

@@ -29,6 +29,13 @@ export interface RestrictedMarkdownResult {
   statusMessage: string;
 }
 
+export interface RestrictedMarkdownFailure {
+  statusCode: number;
+  statusMessage: string;
+  /** 意外异常（非规则拒绝）时透传原始错误，供 handleError 带 requestId 记栈。 */
+  cause?: unknown;
+}
+
 export interface RestrictedMarkdownOptions {
   /** 消毒后的类名冲突前缀（评论 comment- / 动态 activity-）。 */
   clobberPrefix: string;
@@ -142,7 +149,7 @@ export const createRestrictedMarkdown = (
     content: string,
   ): Promise<
     | { success: true; payload: RestrictedMarkdownPayload | null }
-    | { success: false; statusCode: number; statusMessage: string }
+    | ({ success: false } & RestrictedMarkdownFailure)
   > => {
     try {
       const parsed = await parseMarkdown(content, {
@@ -187,12 +194,14 @@ export const createRestrictedMarkdown = (
         };
       }
 
-      // eslint-disable-next-line no-console
-      console.error(`[restricted-markdown:${options.validatorKey}]`, error);
+      // 意外异常（真实解析崩溃）不是内容质量问题：透传 cause 给上层转
+      // INTERNAL_ERROR，由 handleError 带 requestId 记录 —— 不再裸 console.error
+      //（无 requestId，500 无法按请求归因）。
       return {
         success: false,
         statusCode: 500,
         statusMessage: `${options.resourceLabel} Markdown 解析失败，请稍后重试`,
+        cause: error,
       };
     }
   };

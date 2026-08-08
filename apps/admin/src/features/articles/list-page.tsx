@@ -5,6 +5,7 @@ import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatDateTime } from '@/lib/format.js';
 import {
   Alert,
@@ -136,12 +137,10 @@ export const ArticlesListPage = () => {
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
   // 放进 effect 里会触发级联渲染。
   const requestKey = `${status}|${debouncedQuery}|${String(page)}|${String(reloadKey)}`;
-  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
-  if (prevRequestKey !== requestKey) {
-    setPrevRequestKey(requestKey);
+  useDerivedReset(requestKey, () => {
     setLoading(true);
     setError(null);
-  }
+  });
 
   useEffect(() => {
     let cancelled = false;

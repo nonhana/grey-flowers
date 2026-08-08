@@ -9,6 +9,7 @@ import { CloudOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import {
   Button,
   EmptyState,
@@ -78,12 +79,10 @@ export const TrendCard = ({ className }: { className?: string }) => {
   const [reloadKey, setReloadKey] = useState(0);
 
   const requestKey = `${metric}|${days}|${String(reloadKey)}`;
-  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
-  if (prevRequestKey !== requestKey) {
-    setPrevRequestKey(requestKey);
+  useDerivedReset(requestKey, () => {
     setLoading(true);
     setError('');
-  }
+  });
 
   useEffect(() => {
     let cancelled = false;
