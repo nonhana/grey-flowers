@@ -5,6 +5,7 @@ import { cn } from 'cnfast';
 import { FileUp, ImagePlus, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { Form, ProgressBar } from 'react-aria-components';
+import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
@@ -12,7 +13,7 @@ import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { assetErrorMessage } from '@/features/assets/display.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
-import { AUDIO_ACCEPT } from '@/lib/media-accept.js';
+import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept.js';
 import {
   Alert,
   AssetImage,
@@ -126,6 +127,21 @@ export const UploadWizard = () => {
 
   const isBusy = phase === 'uploading' || phase === 'parsing';
 
+  // 拖放与点击选择都走 react-dropzone（两者统一由 onDrop 收口）。
+  // noClick + label htmlFor：点击由原生 label 激活打开选择器，避免
+  // 与 dropzone 根节点的 onClick 双开对话框。
+  const { getInputProps, getRootProps } = useDropzone({
+    accept: AUDIO_ACCEPT_MAP,
+    disabled: isBusy,
+    multiple: false,
+    noClick: true,
+    onDrop: (acceptedFiles) => {
+      const dropped = acceptedFiles[0];
+      if (dropped) void startWithFile(dropped);
+    },
+    onDropRejected: () => setError('请选择音频文件。'),
+  });
+
   return (
     <div className="grid gap-5">
       <Panel className="p-5">
@@ -147,13 +163,8 @@ export const UploadWizard = () => {
               `,
               isBusy && 'pointer-events-none opacity-60',
             )}
+            {...getRootProps()}
             htmlFor="music-file-input"
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={(event) => {
-              event.preventDefault();
-              const dropped = event.dataTransfer.files?.[0];
-              if (dropped) void startWithFile(dropped);
-            }}
           >
             <FileUp
               aria-hidden="true"
@@ -172,14 +183,10 @@ export const UploadWizard = () => {
                   : 'MP3 / FLAC / WAV / OGG / AAC'}
             </span>
             <input
-              accept={AUDIO_ACCEPT}
-              className="sr-only"
-              id="music-file-input"
-              onChange={(event) => {
-                const selected = event.target.files?.[0];
-                if (selected) void startWithFile(selected);
-              }}
-              type="file"
+              {...getInputProps({
+                className: 'sr-only',
+                id: 'music-file-input',
+              })}
             />
           </label>
 

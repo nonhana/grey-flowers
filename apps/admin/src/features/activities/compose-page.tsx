@@ -12,6 +12,7 @@ import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
+import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
 import {
   Alert,
   AppDialog,
@@ -222,7 +223,7 @@ export const ActivityComposePage = () => {
     getRootProps,
     open: openFilePicker,
   } = useDropzone({
-    accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'] },
+    accept: IMAGE_ACCEPT_MAP,
     multiple: true,
     noClick: true,
     noKeyboard: true,

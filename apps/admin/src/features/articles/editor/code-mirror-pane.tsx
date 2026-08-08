@@ -14,10 +14,12 @@ import { EditorView, keymap } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 import { apiClient } from '@/app/api/index.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset.js';
+import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
 import { isUrl } from '@/lib/url.js';
 import { Alert, Button } from '@/ui/index.js';
 
@@ -156,19 +158,6 @@ export const CodeMirrorPane = ({
     paperTheme,
     ...livePreview(),
     EditorView.domEventHandlers({
-      drop: (event, view) => {
-        const images = Array.from(event.dataTransfer?.files ?? []).filter(
-          (file) => file.type.startsWith('image/'),
-        );
-        if (images.length === 0) return false;
-        event.preventDefault();
-        uploadImages(
-          images,
-          view,
-          view.posAtCoords({ x: event.clientX, y: event.clientY }) ?? undefined,
-        );
-        return true;
-      },
       paste: (event, view) => {
         const images = Array.from(event.clipboardData?.files ?? []).filter(
           (file) =>
@@ -196,6 +185,27 @@ export const CodeMirrorPane = ({
     }),
   ]);
 
+  // 文件拖放统一走 react-dropzone（挂在编辑器外壳上）。drop 事件会先到
+  // CodeMirror 内置处理器：它对二进制图片是无害 no-op（按文本读入后被
+  // 控制字符过滤成空串），图片上传/插入由这里接手；粘贴仍由 CodeMirror
+  // 的 domEventHandlers 处理，所以关掉 dropzone 的 onPaste（noPaste）。
+  const { getRootProps } = useDropzone({
+    accept: IMAGE_ACCEPT_MAP,
+    multiple: true,
+    noClick: true,
+    noKeyboard: true,
+    noPaste: true,
+    onDrop: (acceptedFiles, _rejections, event) => {
+      const view = viewRef.current;
+      if (!view || acceptedFiles.length === 0) return;
+      const pos =
+        'clientX' in event
+          ? view.posAtCoords({ x: event.clientX, y: event.clientY })
+          : null;
+      uploadImages(acceptedFiles, view, pos ?? undefined);
+    },
+  });
+
   const runCommand = (run: (view: EditorView) => void) => {
     const view = viewRef.current;
     if (view) run(view);
@@ -217,7 +227,10 @@ export const CodeMirrorPane = ({
         onRun={runCommand}
       />
 
-      <div className="min-h-0 flex-1 overflow-hidden bg-paper">
+      <div
+        {...getRootProps()}
+        className="min-h-0 flex-1 overflow-hidden bg-paper"
+      >
         {/*
           theme="none" 是必须的：默认的 "light" 会注入一条写死的
           backgroundColor: #fff，暗色下把纸面刷成白的，正文变成

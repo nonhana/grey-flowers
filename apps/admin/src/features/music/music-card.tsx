@@ -33,8 +33,8 @@ export const MusicCard = ({
   return (
     <article
       className="
-        group grid overflow-hidden rounded-panel border border-rule
-        bg-case-raised transition-colors
+        group flex h-full flex-col overflow-hidden rounded-panel border
+        border-rule bg-case-raised transition-colors
         hover:border-accent-rule
       "
     >
@@ -43,14 +43,18 @@ export const MusicCard = ({
           isCurrent && isPlaying ? `暂停 ${music.title}` : `播放 ${music.title}`
         }
         className="
-          relative grid aspect-4/3 place-items-center overflow-hidden border-b
-          border-rule bg-well
+          relative grid min-h-[10.5rem] flex-1 place-items-center overflow-hidden
+          border-b border-rule bg-well
         "
         onClick={onPlayToggle}
         type="button"
       >
         {cover ? (
-          <AssetImage alt="" className="size-full object-cover" src={cover} />
+          <AssetImage
+            alt=""
+            className="absolute inset-0 size-full object-cover"
+            src={cover}
+          />
         ) : (
           <Disc3 aria-hidden="true" className="size-8 text-ink-dim" />
         )}

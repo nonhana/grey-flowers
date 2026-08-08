@@ -58,8 +58,8 @@ const statusTone = (status: AssetStatus) =>
 const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   <Link
     className="
-      group grid content-start overflow-hidden rounded-panel border border-rule
-      bg-case-raised transition-colors
+      group flex h-full flex-col overflow-hidden rounded-panel border
+      border-rule bg-case-raised transition-colors
       hover:border-accent-rule
     "
     params={{ assetId: String(asset.id) }}
@@ -67,8 +67,8 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   >
     <div
       className="
-        grid h-28 place-items-center overflow-hidden border-b border-rule
-        bg-well
+        relative grid min-h-28 flex-1 place-items-center overflow-hidden
+        border-b border-rule bg-well
       "
     >
       {asset.mediaType === 'AUDIO' ? (
@@ -76,7 +76,7 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
       ) : (
         <AssetImage
           alt=""
-          className="size-full object-cover"
+          className="absolute inset-0 size-full object-cover"
           src={asset.deliveryUrl}
         />
       )}
@@ -105,22 +105,27 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   </Link>
 );
 
-/* 只剩一两个资产时也不该出现一块 500px 宽的巨砖：轨道宽度固定，缺的补空位。 */
-const GRID_CLASS = 'grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3';
+/* 只剩一两个资产时也不该出现一块 500px 宽的巨砖：轨道宽度固定，缺的补空位。
+   网格 h-full 撑满列表区，行高 minmax(min-content,1fr)：内容超过视口时
+   行取内容高、列表区照常滚动；视口高时 1fr 均分剩余高度。缩略图绝对定位
+   不参与行高计算（否则加载出来的图片会把行撑得参差不齐），由卡片内部的
+   缩略图区吸收增长，避免底部留白。 */
+const GRID_CLASS =
+  'grid h-full grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] auto-rows-[minmax(min-content,1fr)] gap-3';
 
 /**
- * 与真实资产卡同构的骨架：图区 h-28 + 标签行（含状态读数位 28px）+
- * 三段元数据。块高按真实字号的 line-height 取 em，落地时卡高相等。
+ * 与真实资产卡同构的骨架：图区（min-h-28、随行高吸收增长）+ 标签行（含状态
+ * 读数位 28px）+ 三段元数据。块高按真实字号的 line-height 取 em，落地时卡高相等。
  */
 const AssetCardSkeleton = () => (
   <div
     aria-hidden="true"
     className="
-      grid content-start overflow-hidden rounded-panel border border-rule
-      bg-case-raised
+      flex h-full flex-col overflow-hidden rounded-panel border
+      border-rule bg-case-raised
     "
   >
-    <Skeleton className="h-28 w-full rounded-none" />
+    <Skeleton className="min-h-28 w-full flex-1 rounded-none" />
     <div className="grid gap-1 px-3 py-2.5">
       <div className="flex items-center justify-between gap-2">
         <Skeleton className="h-[1.55em] w-1/2 text-base" />
