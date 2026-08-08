@@ -14,6 +14,7 @@ export {
 } from './feedback.js';
 export type { ReadoutTone, Tone } from './feedback.js';
 export { AssetImage } from './image.js';
+export { FileDrop } from './file-drop.js';
 export {
   controlClass,
   FieldLabel,

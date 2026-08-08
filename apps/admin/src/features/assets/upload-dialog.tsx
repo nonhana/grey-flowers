@@ -9,13 +9,12 @@ import {
   RadioField,
   RadioGroup,
 } from 'react-aria-components';
-import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { AUDIO_ACCEPT_MAP, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
-import { Alert, AppDialog, Button, FieldLabel } from '@/ui/index.js';
+import { Alert, AppDialog, Button, FieldLabel, FileDrop } from '@/ui/index.js';
 
 import { assetErrorMessage, purposeLabels, purposeOptions } from './display.js';
 
@@ -50,24 +49,6 @@ export const UploadDialog = ({
   const acceptMap =
     purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT_MAP : IMAGE_ACCEPT_MAP;
   const acceptLabel = purpose === 'MUSIC_SOURCE' ? '音频' : '图片';
-
-  // 拖放与点击选择统一走 react-dropzone；noClick + htmlFor 让原生 label
-  // 激活打开选择器，避免与根节点 onClick 双开。
-  const { getInputProps, getRootProps } = useDropzone({
-    accept: acceptMap,
-    disabled: phase === 'uploading',
-    multiple: false,
-    noClick: true,
-    onDrop: (acceptedFiles) => {
-      setFile(acceptedFiles[0] ?? null);
-      setPhase('idle');
-      setError('');
-    },
-    onDropRejected: () => {
-      setError('文件类型不支持。');
-      setPhase('idle');
-    },
-  });
 
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
 
@@ -145,24 +126,19 @@ export const UploadDialog = ({
 
         <div className="grid gap-2">
           <FieldLabel>文件</FieldLabel>
-          <label
-            className={cn(
-              'flex min-h-11 cursor-pointer items-center gap-3 rounded-control',
-              `
-                border border-dashed border-edge bg-well px-3 text-base
-                text-ink-dim
-              `,
-              `
-                transition-colors
-                hover:border-edge-hover
-              `,
-              `
-                focus-within:outline-2 focus-within:outline-offset-2
-                focus-within:outline-focus
-              `,
-            )}
-            {...getRootProps()}
-            htmlFor="asset-file-input"
+          <FileDrop
+            accept={acceptMap}
+            busy={phase === 'uploading'}
+            onFile={(target) => {
+              setFile(target);
+              setPhase('idle');
+              setError('');
+            }}
+            onRejected={() => {
+              setFile(null);
+              setPhase('idle');
+              setError('文件类型不支持。');
+            }}
           >
             <FileUp
               aria-hidden="true"
@@ -176,13 +152,7 @@ export const UploadDialog = ({
                 ? `${(file.size / 1024 / 1024).toFixed(1)} MB`
                 : acceptLabel}
             </span>
-            <input
-              {...getInputProps({
-                className: 'sr-only',
-                id: 'asset-file-input',
-              })}
-            />
-          </label>
+          </FileDrop>
         </div>
 
         {phase === 'uploading' ? (

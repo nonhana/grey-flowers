@@ -1,11 +1,9 @@
 import type { MusicParseData } from '@grey-flowers/contracts';
 
 import { useNavigate } from '@tanstack/react-router';
-import { cn } from 'cnfast';
 import { FileUp, ImagePlus, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { Form, ProgressBar } from 'react-aria-components';
-import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
@@ -19,6 +17,7 @@ import {
   AssetImage,
   Button,
   FieldLabel,
+  FileDrop,
   MetaLine,
   Panel,
   TextField,
@@ -127,44 +126,15 @@ export const UploadWizard = () => {
 
   const isBusy = phase === 'uploading' || phase === 'parsing';
 
-  // 拖放与点击选择都走 react-dropzone（两者统一由 onDrop 收口）。
-  // noClick + label htmlFor：点击由原生 label 激活打开选择器，避免
-  // 与 dropzone 根节点的 onClick 双开对话框。
-  const { getInputProps, getRootProps } = useDropzone({
-    accept: AUDIO_ACCEPT_MAP,
-    disabled: isBusy,
-    multiple: false,
-    noClick: true,
-    onDrop: (acceptedFiles) => {
-      const dropped = acceptedFiles[0];
-      if (dropped) void startWithFile(dropped);
-    },
-    onDropRejected: () => setError('请选择音频文件。'),
-  });
-
   return (
     <div className="grid gap-5">
       <Panel className="p-5">
         <div className="grid gap-4">
-          <label
-            className={cn(
-              'flex min-h-12 cursor-pointer items-center gap-3 rounded-control',
-              `
-                border border-dashed border-edge bg-well px-3 text-base
-                text-ink-dim
-              `,
-              `
-                transition-colors
-                hover:border-edge-hover
-              `,
-              `
-                focus-within:outline-2 focus-within:outline-offset-2
-                focus-within:outline-focus
-              `,
-              isBusy && 'pointer-events-none opacity-60',
-            )}
-            {...getRootProps()}
-            htmlFor="music-file-input"
+          <FileDrop
+            accept={AUDIO_ACCEPT_MAP}
+            busy={isBusy}
+            onFile={(target) => void startWithFile(target)}
+            onRejected={() => setError('请选择音频文件。')}
           >
             <FileUp
               aria-hidden="true"
@@ -182,13 +152,7 @@ export const UploadWizard = () => {
                   ? `已选择 · ${(file.size / 1024 / 1024).toFixed(1)} MB`
                   : 'MP3 / FLAC / WAV / OGG / AAC'}
             </span>
-            <input
-              {...getInputProps({
-                className: 'sr-only',
-                id: 'music-file-input',
-              })}
-            />
-          </label>
+          </FileDrop>
 
           {phase === 'uploading' ? (
             <ProgressBar
