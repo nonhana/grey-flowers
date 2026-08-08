@@ -19,7 +19,6 @@ import {
   PageBody,
   PageHeader,
   Paginator,
-  RowSkeleton,
   SearchInput,
   SelectField,
 } from '@/ui/index.js';
@@ -27,7 +26,7 @@ import {
 import { UserDeleteConfirm } from './delete-confirm.js';
 import { UserDetailDialog } from './detail-dialog.js';
 import { EditUserDialog } from './edit-dialog.js';
-import { UserCard } from './user-card.js';
+import { UserCard, UserCardSkeleton } from './user-card.js';
 
 const PAGE_SIZE = 20;
 
@@ -188,7 +187,11 @@ export const UsersPage = () => {
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (
-          <RowSkeleton rows={6} />
+          <div className="grid animate-content-in gap-3" key="skeleton">
+            {Array.from({ length: PAGE_SIZE }, (_, index) => (
+              <UserCardSkeleton key={index} />
+            ))}
+          </div>
         ) : error ? (
           <EmptyState
             action={<Button onPress={reload}>重试</Button>}
@@ -219,7 +222,7 @@ export const UsersPage = () => {
               : '注册用户会在这里显示。'}
           </EmptyState>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid animate-content-in gap-3" key="content">
             {data?.items.map((user) => (
               <UserCard
                 actions={{

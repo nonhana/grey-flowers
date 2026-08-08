@@ -7,7 +7,7 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ChevronRight } from 'lucide-react';
 
-import { Panel, RankBars, SectionLabel } from '@/ui/index.js';
+import { Panel, RankBars, SectionLabel, Skeleton } from '@/ui/index.js';
 
 /**
  * 一个排行段：标题（深链到该维度的管理页）+ 排行条 + 尾注。
@@ -110,3 +110,64 @@ export const CompositionCard = ({
     </Panel>
   );
 };
+
+/** 排行段占位：与 RankBars 同网格（名称 / 槽 / 计数）。行数 = 契约 RANK_TAKE。 */
+const RankRowsSkeleton = ({ rows }: { rows: number }) => (
+  <div
+    className="
+      grid grid-cols-[minmax(0,7.5rem)_minmax(0,1fr)_auto] items-center gap-x-3
+      gap-y-2
+    "
+  >
+    {Array.from({ length: rows }, (_, index) => (
+      <div
+        className="col-span-3 grid grid-cols-subgrid items-center"
+        key={index}
+      >
+        <Skeleton className="h-[1.55em] w-full text-base" />
+        <div className="h-2.5 w-full animate-pulse bg-rule" />
+        <Skeleton className="h-[1.55em] w-6 text-base" />
+      </div>
+    ))}
+  </div>
+);
+
+/**
+ * 与真实构成卡同构的骨架：卡头 + 两段排行（分类 5 行 / 标签 6 行，与 API 的
+ * RANK_TAKE 一致）+ 尾注位。落地时卡高与真实逐段相等。
+ */
+export const CompositionCardSkeleton = ({
+  className,
+}: {
+  className?: string;
+}) => (
+  <Panel
+    aria-hidden="true"
+    className={cn(
+      `
+        flex animate-content-in flex-col gap-4 p-4
+        md:p-5
+      `,
+      className,
+    )}
+  >
+    <div className="flex items-baseline justify-between gap-3">
+      <Skeleton className="h-[1.45em] w-24 text-xs" />
+      <Skeleton className="h-[1.45em] w-12 text-2xs" />
+    </div>
+
+    <section className="grid gap-2.5">
+      <Skeleton className="h-[1.45em] w-40 text-xs" />
+      <RankRowsSkeleton rows={5} />
+      <Skeleton className="h-[1.45em] w-48 text-2xs" />
+    </section>
+
+    <span aria-hidden="true" className="h-px w-full bg-rule" />
+
+    <section className="grid gap-2.5">
+      <Skeleton className="h-[1.45em] w-36 text-xs" />
+      <RankRowsSkeleton rows={6} />
+      <Skeleton className="h-[1.45em] w-44 text-2xs" />
+    </section>
+  </Panel>
+);

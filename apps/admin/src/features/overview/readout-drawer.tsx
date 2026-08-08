@@ -36,7 +36,7 @@ export const ReadoutCell = ({
 }: {
   icon: ReactNode;
   label: string;
-  secondary: string;
+  secondary?: string;
   value: string;
 }) => (
   <div className="grid content-start gap-1.5 bg-case-raised p-4">
@@ -53,12 +53,21 @@ export const ReadoutCell = ({
       </span>
     </div>
     <p className="font-mono text-xl font-medium text-ink-strong">{value}</p>
-    {/* 不截断：副行被切成「已发布 972…」时它就不再是信息了。让它换行。 */}
-    <p className="font-mono text-2xs/snug text-ink-dim">{secondary}</p>
+    {/* 副行最多两行：三行会把格子顶得参差，骨架按两行占位后整排高度就锁死了。
+        超出部分截断 —— 两行内足够承载「类别 · 数量」这类完整信息。 */}
+    {secondary && (
+      <p className="line-clamp-2 font-mono text-2xs/snug text-ink-dim">
+        {secondary}
+      </p>
+    )}
   </div>
 );
 
-/** 骨架与真实格眼同高同节奏，数据落地时抽屉不跳。 */
+/**
+ * 骨架与真实格眼同高同节奏：label 行（含图标位）、数值行、副行按两行占位。
+ * 副行取最大高度 —— 网格整排高度由最高格决定，内容落地后至少一格占满两行，
+ * 排高即保持不变。
+ */
 export const ReadoutDrawerSkeleton = () => (
   <ReadoutDrawer>
     {Array.from({ length: 6 }, (_, index) => (
@@ -66,9 +75,15 @@ export const ReadoutDrawerSkeleton = () => (
         className="grid content-start gap-1.5 bg-case-raised p-4"
         key={index}
       >
-        <Skeleton className="h-3 w-12" />
-        <Skeleton className="h-6 w-16" />
-        <Skeleton className="h-3 w-full" />
+        <div className="flex items-center justify-between gap-2">
+          <Skeleton className="h-[1.45em] w-12 text-xs" />
+          <Skeleton className="size-4" />
+        </div>
+        <Skeleton className="h-[1.3em] w-16 text-xl" />
+        <div className="grid">
+          <Skeleton className="h-[1.375em] w-full text-2xs" />
+          <Skeleton className="h-[1.375em] w-3/4 text-2xs" />
+        </div>
       </div>
     ))}
   </ReadoutDrawer>

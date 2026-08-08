@@ -10,7 +10,7 @@ import {
 import { useState } from 'react';
 
 import { formatDateTime } from '@/lib/format.js';
-import { AssetImage, IconButton, MetaLine } from '@/ui/index.js';
+import { AssetImage, IconButton, MetaLine, Skeleton } from '@/ui/index.js';
 
 import { commentPageUrl } from './display.js';
 
@@ -254,5 +254,49 @@ export const CommentCard = ({
         </span>
       </MetaLine>
     ) : null}
+  </article>
+);
+
+/**
+ * 与真实评论卡同构的骨架：勾选位 + 作者行（头像/名/邮箱/时间）+ path 行 +
+ * 三行正文 + 操作位。children 区数量不定，不画 —— 取无回复的最常见形态。
+ * 块高按真实字号的 line-height 取 em，落地时行高与真实逐段相等。
+ */
+export const CommentCardSkeleton = () => (
+  <article
+    aria-hidden="true"
+    className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
+  >
+    <div className="flex items-start gap-3">
+      <Skeleton className="mt-1 size-4.5 shrink-0 rounded-sm" />
+      <div className="min-w-0 flex-1">
+        {/* 作者行：头像 24px 主导行高 */}
+        <div className="flex min-w-0 items-center gap-2">
+          <Skeleton className="size-6 shrink-0 rounded-full" />
+          <Skeleton className="h-[1.55em] w-28 text-base" />
+          <Skeleton className="h-[1.45em] w-40 text-2xs" />
+          <Skeleton className="ml-auto h-[1.45em] w-24 text-2xs" />
+        </div>
+        {/* path 面包屑 + 外链位 */}
+        <MetaLine className="mt-1.5">
+          <Skeleton className="h-[1.45em] w-56 text-2xs" />
+          <Skeleton className="h-[1.45em] w-4 text-2xs" />
+        </MetaLine>
+        {/* 正文三行：text-base/relaxed → lh 1.625 */}
+        <div className="mt-2 grid gap-1.5">
+          <Skeleton className="h-[1.625em] w-full text-base" />
+          <Skeleton className="h-[1.625em] w-4/5 text-base" />
+          <Skeleton className="h-[1.625em] w-2/3 text-base" />
+        </div>
+        {/* 操作位：三个 sm 图标按钮 */}
+        <MetaLine className="mt-2">
+          <span className="flex shrink-0 gap-1">
+            <Skeleton className="size-8 rounded-control" />
+            <Skeleton className="size-8 rounded-control" />
+            <Skeleton className="size-8 rounded-control" />
+          </span>
+        </MetaLine>
+      </div>
+    </div>
   </article>
 );

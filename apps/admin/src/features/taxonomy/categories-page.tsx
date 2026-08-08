@@ -21,10 +21,25 @@ import {
   IconButton,
   PageBody,
   PageHeader,
-  RowSkeleton,
   RowStack,
+  Skeleton,
   TextField,
 } from '@/ui/index.js';
+
+/** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位。 */
+const CategoryRowSkeleton = () => (
+  <div aria-hidden="true" className="flex items-center gap-4 px-4 py-3">
+    <Skeleton className="size-12 shrink-0 rounded-control" />
+    <div className="min-w-0 flex-1">
+      <Skeleton className="h-[1.6em] w-40 text-md" />
+      <Skeleton className="h-[1.45em] w-20 text-2xs" />
+    </div>
+    <div className="flex shrink-0 gap-1.5">
+      <Skeleton className="size-8 rounded-control" />
+      <Skeleton className="size-8 rounded-control" />
+    </div>
+  </div>
+);
 
 interface CategoryForm {
   cover: string;
@@ -157,7 +172,11 @@ export const CategoriesPage = () => {
 
       <div className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
-          <RowSkeleton rows={3} />
+          <RowStack className="animate-content-in" key="skeleton">
+            {Array.from({ length: 3 }, (_, index) => (
+              <CategoryRowSkeleton key={index} />
+            ))}
+          </RowStack>
         ) : items.length === 0 ? (
           <EmptyState
             action={
@@ -175,7 +194,7 @@ export const CategoriesPage = () => {
             分类是文章的主干目录，会显示在主站的导航里。没有分类的文章会归入「未分类」。
           </EmptyState>
         ) : (
-          <RowStack>
+          <RowStack className="animate-content-in" key="content">
             {items.map((category) => (
               <div
                 className="flex items-center gap-4 px-4 py-3"

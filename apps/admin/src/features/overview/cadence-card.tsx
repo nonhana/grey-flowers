@@ -2,7 +2,7 @@ import type { OverviewCalendarData } from '@grey-flowers/contracts';
 
 import { cn } from 'cnfast';
 import { CloudOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
 import {
@@ -14,14 +14,39 @@ import {
   Skeleton,
 } from '@/ui/index.js';
 
-/** 骨架照抄热力图的三段结构（读数行 / 网格 / 无），落地时不跳。 */
+/** 骨架照抄热力图的三段结构（读数行 / 月份标签 + 7 行日格 / 无），落地时不跳。
+ *  网格用与真实相同的 53 列 × auto+7 行模板：格高 = 列宽（aspect-square），
+ *  卡宽变化时骨架与真实同比例伸缩，任何视口下高度都一致。 */
 const HeatmapSkeleton = () => (
   <div aria-hidden="true" className="grid gap-2.5">
-    <div className="flex items-baseline justify-between gap-4">
-      <Skeleton className="h-5 w-32" />
-      <Skeleton className="h-3 w-20" />
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+      <Skeleton className="h-[1.6em] w-32 text-md" />
+      <Skeleton className="h-[1.45em] w-24 text-2xs" />
     </div>
-    <Skeleton className="h-24 w-full rounded-control" />
+    <div className="gf-scroll-x min-w-0">
+      <div
+        className="grid gap-0.75"
+        style={{
+          gridTemplateColumns: 'repeat(53, minmax(9px, 1fr))',
+          gridTemplateRows: 'auto repeat(7, minmax(0, 1fr))',
+          gridAutoFlow: 'column',
+        }}
+      >
+        {Array.from({ length: 53 }, (_, column) => (
+          <Fragment key={column}>
+            {/* 月份标签格：只占行高，不画条 —— 真实标签也只有首列有字。 */}
+            <span aria-hidden="true" className="h-[1.45em] text-2xs" />
+            {Array.from({ length: 7 }, (_, row) => (
+              <div
+                aria-hidden="true"
+                className="aspect-square w-full animate-pulse bg-rule"
+                key={row}
+              />
+            ))}
+          </Fragment>
+        ))}
+      </div>
+    </div>
   </div>
 );
 

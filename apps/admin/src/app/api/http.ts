@@ -5,6 +5,7 @@ import {
 } from '@grey-flowers/contracts';
 import ky from 'ky';
 
+import { readApiDelayMs } from './delay.js';
 import {
   ApiNetworkError,
   ApiRequestError,
@@ -86,6 +87,12 @@ export const createHttp = (options: HttpOptions) => {
           401,
         );
       }
+    }
+
+    // 调试：统一延迟（0 时不引入任何开销）。每次请求前读，改完即生效。
+    const delayMs = readApiDelayMs();
+    if (delayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
 
     let response: Response;
@@ -236,6 +243,13 @@ export const createHttp = (options: HttpOptions) => {
 
       reject(new ApiResponseError());
     };
+
+    // 调试：与 fetch 通道同一个统一延迟，上传态同样可验收。
+    const delayMs = readApiDelayMs();
+    if (delayMs > 0) {
+      setTimeout(() => xhr.send(requestOptions.body), delayMs);
+      return promise;
+    }
 
     xhr.send(requestOptions.body);
     return promise;

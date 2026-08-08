@@ -129,11 +129,43 @@ export const AssetsDetailPage = () => {
   if (state.kind === 'loading') {
     return (
       <PageBody>
-        <div className="grid gap-4">
-          <Skeleton className="h-6 w-32" />
-          <Skeleton className="h-56 w-full" />
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-1/3" />
+        {/* 与真实详情同构：页头位（返回/标题/状态读数）+ 图区 + 地址面板 + 元数据面板 */}
+        <div className="grid animate-content-in gap-4">
+          <div className="flex items-center gap-2">
+            <Skeleton className="size-10 shrink-0 rounded-control" />
+            <Skeleton className="h-7 w-32" />
+            <Skeleton className="ml-auto h-7 w-20 rounded-full" />
+          </div>
+          <Skeleton className="h-96 w-full rounded-panel" />
+          <div
+            className="
+              grid gap-2 rounded-panel border border-rule bg-case-raised p-4
+            "
+          >
+            <Skeleton className="h-[1.45em] w-16 text-2xs" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-10 flex-1 rounded-control" />
+              <Skeleton className="size-10 rounded-control" />
+            </div>
+          </div>
+          <div
+            className="
+              grid gap-2 rounded-panel border border-rule bg-case-raised p-4
+            "
+          >
+            <Skeleton className="h-[1.45em] w-16 text-2xs" />
+            <div className="divide-y divide-rule">
+              {Array.from({ length: 7 }, (_, index) => (
+                <div
+                  className="flex items-center justify-between gap-4 py-2.5"
+                  key={index}
+                >
+                  <Skeleton className="h-[1.45em] w-10 text-2xs" />
+                  <Skeleton className="h-[1.55em] w-32 text-base" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </PageBody>
     );

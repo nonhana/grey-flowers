@@ -14,6 +14,7 @@ import {
   Button,
   ConfirmDialog,
   EmptyState,
+  MetaLine,
   PageBody,
   PageHeader,
   Paginator,
@@ -25,20 +26,27 @@ import { ActivityCard } from './activity-card.js';
 
 const PAGE_SIZE = 10;
 
-const FeedSkeleton = () => (
-  <div className="grid gap-3">
-    {Array.from({ length: 3 }, (_, index) => (
-      <div
-        className="
-          grid gap-3 rounded-panel border border-rule bg-case-raised p-4
-        "
-        key={index}
-      >
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-2/3" />
-        <Skeleton className="h-32 w-full rounded-control" />
-      </div>
-    ))}
+/**
+ * 与真实动态卡同构的骨架（取最常见形态：两行预览 + 双图网格 + 元数据行）。
+ * 图片数 0–3 不定，无法逐像素预测卡高 —— 双图是分布中心，落地跳动最小。
+ */
+const ActivityCardSkeleton = () => (
+  <div
+    aria-hidden="true"
+    className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
+  >
+    <div className="grid gap-1.5">
+      <Skeleton className="h-[1.625em] w-full text-base" />
+      <Skeleton className="h-[1.625em] w-2/3 text-base" />
+    </div>
+    <div className="grid grid-cols-2 gap-1">
+      <Skeleton className="aspect-square w-full rounded-control" />
+      <Skeleton className="aspect-square w-full rounded-control" />
+    </div>
+    <MetaLine>
+      <Skeleton className="h-[1.45em] w-40 text-2xs" />
+      <Skeleton className="ml-auto h-[1.45em] w-20 text-2xs" />
+    </MetaLine>
   </div>
 );
 
@@ -188,7 +196,11 @@ export const ActivitiesPage = () => {
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (
-          <FeedSkeleton />
+          <div className="grid animate-content-in gap-3" key="skeleton">
+            {Array.from({ length: PAGE_SIZE }, (_, index) => (
+              <ActivityCardSkeleton key={index} />
+            ))}
+          </div>
         ) : error ? (
           <EmptyState
             action={
@@ -225,7 +237,7 @@ export const ActivitiesPage = () => {
               : '轻量写作，配图或音乐，按下 Cmd/Ctrl+Enter 发布。'}
           </EmptyState>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid animate-content-in gap-3" key="content">
             {data?.items.map((activity) => (
               <ActivityCard
                 activity={activity}

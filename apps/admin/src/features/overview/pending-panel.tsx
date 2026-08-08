@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ChevronRight, FileText, Images, Music2 } from 'lucide-react';
 
-import { SectionLabel } from '@/ui/index.js';
+import { SectionLabel, Skeleton } from '@/ui/index.js';
 
 interface PendingMeta {
   icon: typeof FileText;
@@ -126,3 +126,33 @@ export const PendingPanel = ({
     </section>
   );
 };
+
+/**
+ * 与真实待办带同构的骨架：标签 + 三格（图标 / 文案 / 计数 / 箭头）。
+ * 格高与真实一致（py-3.5 + 计数行 25.6px 主导），落地时整带不跳。
+ */
+export const PendingPanelSkeleton = () => (
+  <section aria-hidden="true" className="grid animate-content-in gap-2">
+    <SectionLabel>待处理</SectionLabel>
+    <div
+      className="
+        grid gap-px overflow-hidden rounded-panel border border-rule bg-rule
+      "
+      style={{
+        gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))',
+      }}
+    >
+      {Array.from({ length: 3 }, (_, index) => (
+        <div
+          className="flex items-center gap-2.5 bg-case-raised px-4 py-3.5"
+          key={index}
+        >
+          <Skeleton className="size-4 shrink-0" />
+          <Skeleton className="h-[1.55em] min-w-0 flex-1 text-base" />
+          <Skeleton className="h-[1.6em] w-10 text-md" />
+          <Skeleton className="size-4 shrink-0" />
+        </div>
+      ))}
+    </div>
+  </section>
+);

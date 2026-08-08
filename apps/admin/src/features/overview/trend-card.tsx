@@ -47,17 +47,17 @@ const DAYS_OPTIONS: readonly OverviewTrendDays[] = ['7', '14', '30'];
 /** 加载骨架照抄真实图表的三段结构（读数行 / 图区 / 日期行），落地时不跳。 */
 const PlotSkeleton = () => (
   <div aria-hidden="true" className="flex min-h-0 flex-1 flex-col gap-2.5">
-    <div className="flex items-baseline justify-between gap-4">
-      <Skeleton className="h-5 w-24" />
-      <Skeleton className="h-3 w-40" />
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+      <Skeleton className="h-[1.6em] w-24 text-md" />
+      <Skeleton className="h-[1.45em] w-40 text-2xs" />
     </div>
     <div className="flex min-h-0 flex-1 gap-2">
       <span className="w-9 shrink-0" />
-      <Skeleton className="min-h-40 flex-1 rounded-control" />
+      <Skeleton className="min-h-32 flex-1 rounded-control" />
     </div>
     <div className="flex gap-2">
       <span className="w-9 shrink-0" />
-      <Skeleton className="h-3 flex-1" />
+      <Skeleton className="h-[1.45em] flex-1 text-2xs" />
     </div>
   </div>
 );

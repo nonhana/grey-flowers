@@ -26,14 +26,17 @@ import {
 } from '@/ui/index.js';
 
 import { CadenceCard } from './cadence-card.js';
-import { CompositionCard } from './composition-card.js';
-import { PendingPanel } from './pending-panel.js';
+import {
+  CompositionCard,
+  CompositionCardSkeleton,
+} from './composition-card.js';
+import { PendingPanel, PendingPanelSkeleton } from './pending-panel.js';
 import {
   ReadoutCell,
   ReadoutDrawer,
   ReadoutDrawerSkeleton,
 } from './readout-drawer.js';
-import { StorageCard } from './storage-card.js';
+import { StorageCard, StorageCardSkeleton } from './storage-card.js';
 import { TrendCard } from './trend-card.js';
 
 /**
@@ -179,7 +182,11 @@ export const OverviewPage = () => {
           ) : null}
         </section>
 
-        {data ? <PendingPanel items={data.pending} /> : null}
+        {loading ? (
+          <PendingPanelSkeleton />
+        ) : data ? (
+          <PendingPanel className="animate-content-in" items={data.pending} />
+        ) : null}
 
         {/* 逐日新增 7 / 内容构成 5：柱图不再贪婪吃满视口，它只是四张图之一。 */}
         <div
@@ -196,9 +203,14 @@ export const OverviewPage = () => {
               xl:col-span-7
             "
           />
-          {data ? (
+          {loading ? (
+            <CompositionCardSkeleton className="xl:col-span-5" />
+          ) : data ? (
             <CompositionCard
-              className="xl:col-span-5"
+              className="
+                animate-content-in
+                xl:col-span-5
+              "
               composition={data.composition}
             />
           ) : null}
@@ -212,8 +224,16 @@ export const OverviewPage = () => {
           "
         >
           <CadenceCard className="xl:col-span-8" />
-          {data ? (
-            <StorageCard className="xl:col-span-4" storage={data.storage} />
+          {loading ? (
+            <StorageCardSkeleton className="xl:col-span-4" />
+          ) : data ? (
+            <StorageCard
+              className="
+                animate-content-in
+                xl:col-span-4
+              "
+              storage={data.storage}
+            />
           ) : null}
         </div>
       </div>

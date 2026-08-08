@@ -95,25 +95,6 @@ export const Skeleton = ({ className }: { className?: string }) => (
   <div className={cn('animate-pulse rounded-control bg-rule', className)} />
 );
 
-/** 列表骨架。加载时保持与真实内容相同的行高，避免加载完成时页面跳动。 */
-export const RowSkeleton = ({ rows = 5 }: { rows?: number }) => (
-  <div
-    aria-hidden="true"
-    className="
-      overflow-hidden rounded-panel border border-rule bg-case-raised
-      [&>*+*]:border-t [&>*+*]:border-rule
-    "
-  >
-    {Array.from({ length: rows }, (_, index) => (
-      <div className="grid gap-2 px-4 py-3.5" key={index}>
-        <Skeleton className="h-4 w-1/3" />
-        <Skeleton className="h-3 w-2/3" />
-        <Skeleton className="h-2.5 w-1/4" />
-      </div>
-    ))}
-  </div>
-);
-
 export const Spinner = ({
   className,
   label,
