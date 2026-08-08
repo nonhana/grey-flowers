@@ -91,7 +91,12 @@ export class UploadGhostWidget extends WidgetType {
   }
 
   eq(other: UploadGhostWidget) {
-    return other.item.id === this.item.id;
+    // 进度是幽灵图的意义所在：只比 id 会让 updateUpload 的进度更新
+    // 被 CodeMirror 判定为「相等」而跳过 DOM 重建，进度永远停在 0%。
+    return (
+      other.item.id === this.item.id &&
+      other.item.progress === this.item.progress
+    );
   }
 
   toDOM() {

@@ -89,13 +89,13 @@ describe('resolveClientIp · 多层可信反代（hops = 2）', () => {
     ).toBe('203.0.113.9');
   });
 
-  it('链路短于配置跳数时夹到最左段，不越界', () => {
+  it('链路短于配置跳数时无法定位客户端，回退可信对端', () => {
     expect(
       resolveClientIp({
         forwardedFor: '203.0.113.9',
         remoteAddress: '127.0.0.1',
         trustedProxyHops: 2,
       }),
-    ).toBe('203.0.113.9');
+    ).toBe('127.0.0.1');
   });
 });

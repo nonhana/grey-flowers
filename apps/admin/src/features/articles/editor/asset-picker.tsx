@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatBytes } from '@/lib/format.js';
 import {
   Alert,
@@ -48,9 +49,7 @@ export const AssetPickerDialog = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 打开对话框时重置列表态（渲染期、受条件保护地调整 state）
-  const [prevOpen, setPrevOpen] = useState(open);
-  if (prevOpen !== open) {
-    setPrevOpen(open);
+  useDerivedReset(open, () => {
     if (open) {
       setItems([]);
       setTotal(0);
@@ -58,7 +57,7 @@ export const AssetPickerDialog = ({
       setLoading(true);
       setError(null);
     }
-  }
+  });
 
   useEffect(() => {
     if (!open) return;

@@ -6,5 +6,12 @@
     "rootDir": ".",
     "rewriteRelativeImportExtensions": true
   },
-  "include": ["src/**/*.ts", "prisma/generated/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.mts",
+    "scripts/**/*.ts",
+    "scripts/**/*.mts",
+    "prisma/**/*.ts",
+    "prisma/**/*.mts"
+  ]
 }

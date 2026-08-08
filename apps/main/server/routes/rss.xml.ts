@@ -3,8 +3,7 @@ import { Feed } from 'feed'
 
 import { apiGet } from '#server/utils/api-gateway'
 import { resolveArticleImagePolicy, toAbsoluteArticleImageUrl } from '#server/utils/article-generated-image'
-
-const titleBlacklist = ['About', 'Friends']
+import { STATIC_MARKDOWN_TITLES } from '#server/utils/markdown'
 
 const basePath = 'https://caelum.moe'
 
@@ -50,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const articles = (await fetchAllPublishedArticles())
-      .filter(article => !titleBlacklist.includes(article.title))
+      .filter(article => !STATIC_MARKDOWN_TITLES.includes(article.title))
 
     articles.forEach((article) => {
       const { displayImage } = resolveArticleImagePolicy({

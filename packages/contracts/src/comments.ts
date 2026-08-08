@@ -83,10 +83,12 @@ export const commentPublicSchema = z
 
 export type CommentPublic = z.infer<typeof commentPublicSchema>;
 
-export const commentPublicTreeSchema = commentPublicSchema.extend({
-  /** children 按 publishedAt asc（对齐主站） */
-  children: z.array(commentPublicSchema),
-});
+export const commentPublicTreeSchema = commentPublicSchema
+  .extend({
+    /** children 按 publishedAt asc（对齐主站） */
+    children: z.array(commentPublicSchema),
+  })
+  .strict();
 
 export type CommentPublicTree = z.infer<typeof commentPublicTreeSchema>;
 
@@ -109,11 +111,13 @@ export const commentAdminSchema = z
 
 export type CommentAdmin = z.infer<typeof commentAdminSchema>;
 
-export const commentAdminTreeSchema = commentAdminSchema.extend({
-  children: z.array(commentAdminSchema),
-  /** 供删除确认披露 */
-  childrenCount: z.number().int().min(0),
-});
+export const commentAdminTreeSchema = commentAdminSchema
+  .extend({
+    children: z.array(commentAdminSchema),
+    /** 供删除确认披露 */
+    childrenCount: z.number().int().min(0),
+  })
+  .strict();
 
 export type CommentAdminTree = z.infer<typeof commentAdminTreeSchema>;
 

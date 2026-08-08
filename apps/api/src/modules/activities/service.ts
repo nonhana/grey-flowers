@@ -227,15 +227,20 @@ export class ActivityService {
 
   // ==================== 私有 ====================
 
-  /** 正文受限 Markdown 解析；失败统一 VALIDATION_FAILED（文案中文）。空正文 → SQL NULL。 */
+  /** 正文受限 Markdown 解析；内容规则拒绝 → VALIDATION_FAILED（中文文案），意外异常 → INTERNAL_ERROR（透传 cause）。空正文 → SQL NULL。 */
   private async resolveContentMarkdown(
     content: string,
   ): Promise<Prisma.InputJsonValue | typeof Prisma.DbNull> {
     const parsed = await parseActivityMarkdown(content);
     if (!parsed.success) {
-      throw new ApiError('VALIDATION_FAILED', {
-        message: parsed.statusMessage,
-      });
+      const message = parsed.statusMessage;
+      if (parsed.statusCode >= 500) {
+        throw new ApiError('INTERNAL_ERROR', {
+          message,
+          cause: parsed.cause,
+        });
+      }
+      throw new ApiError('VALIDATION_FAILED', { message });
     }
     return parsed.payload === null
       ? Prisma.DbNull

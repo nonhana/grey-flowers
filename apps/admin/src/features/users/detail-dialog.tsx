@@ -8,6 +8,7 @@ import { CloudOff, ExternalLink, MessagesSquare } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatDateTime } from '@/lib/format.js';
 import { pageUrl } from '@/lib/page-url.js';
 import {
@@ -99,12 +100,10 @@ export const UserDetailDialog = ({
   const requestKey = user
     ? `${String(user.id)}|${String(commentPage)}|${String(reloadKey)}`
     : '';
-  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
-  if (prevRequestKey !== requestKey) {
-    setPrevRequestKey(requestKey);
+  useDerivedReset(requestKey, () => {
     setLoading(true);
     setError('');
-  }
+  });
 
   useEffect(() => {
     if (!user) return;

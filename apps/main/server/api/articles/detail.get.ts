@@ -23,15 +23,13 @@ export default formattedEventHandler(async (event) => {
   }
   catch (error) {
     if (previewToken && isApiNotFound(error)) {
-      // 草稿预览：一次 token 门控 SSR，未发布页面不被索引
+      // 草稿预览：一次 token 门控 SSR，未发布页面不被索引。
+      // 防泄密 header（noindex / no-store / no-referrer）由 server/middleware
+      // 按「文章路径 + ?preview=」落到最终页面响应，内部子路由不重复设置。
       article = await apiGet<ArticleDetail>('/public/articles/preview', {
         path,
         token: previewToken,
       })
-      setResponseHeader(event, 'X-Robots-Tag', 'noindex')
-      // token 在 query 中（SSR 必需）；禁止缓存与 Referer 传递，防止泄漏。
-      setResponseHeader(event, 'Cache-Control', 'no-store')
-      setResponseHeader(event, 'Referrer-Policy', 'no-referrer')
     }
     else if (!isApiNotFound(error)) {
       throw error

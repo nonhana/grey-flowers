@@ -1,5 +1,6 @@
 import {
   createRestrictedMarkdown,
+  type RestrictedMarkdownFailure,
   type RestrictedMarkdownPayload,
 } from '@/lib/restricted-markdown.js';
 
@@ -7,7 +8,7 @@ export type CommentMarkdownPayload = RestrictedMarkdownPayload;
 
 export type CommentMarkdownParseRes =
   | { success: true; payload: CommentMarkdownPayload }
-  | { success: false; statusCode: number; statusMessage: string };
+  | ({ success: false } & RestrictedMarkdownFailure);
 
 const commentMarkdown = createRestrictedMarkdown({
   clobberPrefix: 'comment-',

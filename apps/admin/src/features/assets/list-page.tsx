@@ -10,6 +10,7 @@ import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatBytes, formatDateTime } from '@/lib/format.js';
 import {
   AssetImage,
@@ -137,12 +138,10 @@ export const AssetsListPage = () => {
 
   // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
   const requestKey = `${JSON.stringify(filters)}|${String(activeStatus)}|${String(page)}|${String(reloadKey)}`;
-  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
-  if (prevRequestKey !== requestKey) {
-    setPrevRequestKey(requestKey);
+  useDerivedReset(requestKey, () => {
     setLoading(true);
     setError('');
-  }
+  });
 
   useEffect(() => {
     let cancelled = false;

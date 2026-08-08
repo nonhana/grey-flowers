@@ -193,8 +193,11 @@ export const createArticleEditorStore = (articleId: number | null) => {
             }
           } else if (isApiNetworkError(error)) {
             set({ phase: 'offline', lastError: null });
+            // 存「此刻最新」的草稿而非请求开始时的快照：请求在途期间的输入
+            // 不因一次离线失败而丢字，后续保存链 / reload 恢复能接到最新稿。
+            const latest = get().draft ?? current;
             await idbSet(draftKey(articleId), {
-              draft: current,
+              draft: latest,
               savedAt: Date.now(),
             } satisfies RestoreCandidate).catch(() => undefined);
           } else {

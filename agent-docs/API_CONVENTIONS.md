@@ -80,7 +80,7 @@ Mounted in `createApp`; public reads and management operations are distinct rout
   - Save input carries `createSnapshot` / `preserveServerSnapshot` booleans; out-of-date `revision` → `ARTICLE_STALE` (409). The save's optimistic lock is atomic: `UPDATE ... WHERE id = ? AND revision = ?` (a stale concurrent save fails with `ARTICLE_STALE`).
   - Publishing an unpublished article sets `publishedAt = now()`; `PATCH /articles/:id/publish` and `/unpublish` are bodyless operations.
   - `wordCount` is computed server-side from MDC-stripped text (CJK per character, ASCII letters/numbers per word) — never sent by the client.
-  - Cover consistency: when `coverAssetId` is set, the server normalizes `cover` to the asset's delivery URL (applies to articles and `categorySaveInputSchema`).
+  - Cover consistency: when the client sets `coverAssetId`, the server normalizes `cover` to that asset's delivery URL (applies to articles and `categorySaveInputSchema`). On an article save that omits `coverAssetId`, the existing asset reference is kept while `cover` accepts the input independently — an as-authored external URL is not silently reverted to the old asset's delivery URL; pass `coverAssetId: null` to explicitly clear the asset.
   - Preview: `POST /articles/:id/preview-token` mints a short-lived (15 min) token; `GET /public/articles/preview?path=&token=` serves a draft one-shot under `noindex`, `Cache-Control: no-store` and `Referrer-Policy: no-referrer` for the main site's SSR. The token rides the query intentionally — SSR must read it server-side.
 
 ## Admin client conventions
@@ -95,4 +95,4 @@ Mounted in `createApp`; public reads and management operations are distinct rout
 
 ## Logging
 
-Each request gets a `requestId` (`http/middleware/request-id.ts`) surfaced in the envelope and the pino logs (`requestLogger`, `bootstrap/logger.ts`). `handleError` logs the full unhandled error (message/stack via `err` field) with the `requestId` so 500s are debuggable.
+Each request gets a `requestId` (`http/middleware/request-id.ts`) surfaced in the envelope and the pino logs (`requestLogger`, `bootstrap/logger.ts`). `handleError` logs the full unhandled error (message/stack via `err` field) with the `requestId` so 500s are debuggable. This includes `ApiError` with code `INTERNAL_ERROR` (unexpected internal failures surfaced with an explicit `cause`) — only client-expectable error codes below 500 are short-circuited without logging.

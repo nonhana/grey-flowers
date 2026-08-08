@@ -23,7 +23,6 @@ trustPolicyExclude:
   - resend@6.18.1
   - semver@5.7.2
   - volar-service-pug@0.0.71
-
 catalog:
   '@types/node': 24.13.3
   '@vue/language-server': ^3.3.9
@@ -75,6 +74,7 @@ catalogs:
     sonner: ^2.0.7
     vitest: ^4.1.10
     zustand: ^5.0.14
+    babel-plugin-react-compiler: ^1.0.0
 
   api:
     '@aws-sdk/client-s3': ^3.1105.0

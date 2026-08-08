@@ -5,6 +5,7 @@ import { Check, Disc3, ListMusic } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
+import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatDuration } from '@/lib/format.js';
 import {
   AppDialog,
@@ -42,16 +43,14 @@ export const MusicPickerDialog = ({
   const [reloadKey, setReloadKey] = useState(0);
 
   // 打开时以当前已选种子重建选择集；渲染期受条件保护地重置（React 官方模式）。
-  const [prevOpen, setPrevOpen] = useState(isOpen);
-  if (prevOpen !== isOpen) {
-    setPrevOpen(isOpen);
+  useDerivedReset(isOpen, () => {
     if (isOpen) {
       setSelection(new Map(selected.map((track) => [track.id, track])));
       setQuery('');
       setDebouncedQuery('');
       setPage(1);
     }
-  }
+  });
 
   // 搜索防抖 300ms
   useEffect(() => {

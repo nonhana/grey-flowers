@@ -27,6 +27,19 @@ export const uploadField = StateField.define<UploadEntry[]>({
   update(entries, transaction) {
     let next = entries;
     let changed = false;
+
+    // 上传在途期间文档可能被输入改动：占位插入点要沿文档变更平移，否则
+    // 上传完成时按陈旧坐标落插入会漂移。上传自身带起的变更不需要平移到
+    // 本事务新 effect 的坐标 —— insertAt 已在 dispatch 时按当前文档给好；
+    // 同事务被移除的 entry 平移结果不产生副作用。
+    if (!transaction.changes.empty) {
+      next = entries.map((entry) => ({
+        ...entry,
+        insertAt: transaction.changes.mapPos(entry.insertAt, 1),
+      }));
+      changed = true;
+    }
+
     for (const effect of transaction.effects) {
       if (effect.is(insertUpload)) {
         next = [...next, effect.value];

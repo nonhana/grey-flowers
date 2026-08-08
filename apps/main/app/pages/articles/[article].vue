@@ -15,8 +15,17 @@ definePageMeta({
 const route = useRoute()
 const requestUrl = useRequestURL()
 
+// 草稿预览：?preview= 存在时页面不得进索引。noindex 用 <meta name="robots">
+// 落最终 HTML（@nuxtjs/seo 会改写 X-Robots-Tag header，header 方案在这里会被覆盖）。
+const isPreview = Boolean(route.query.preview)
+if (isPreview) {
+  useHead({
+    meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+  })
+}
+
 // 从数据库获取文章详情
-const { data: articleResponse } = await useFetch('/api/articles/detail', {
+const { data: articleResponse, error: articleFetchError } = await useFetch('/api/articles/detail', {
   key: () => `article-${route.path}`,
   query: {
     path: route.path,
@@ -26,6 +35,32 @@ const { data: articleResponse } = await useFetch('/api/articles/detail', {
 })
 
 const article = computed(() => (articleResponse.value?.payload as ArticleMarkdownPayload | null) ?? null)
+
+// S5：文章缺失时渲染空态，但把真实状态码落到最终响应（404 / 上游 5xx 原样
+// 透传），让监控/搜索引擎不再看到被 200 吞掉的软 404 —— useFetch 不抛错，
+// data 为 null，页面照常渲染。
+function getArticleFailStatus(error: unknown): number {
+  if (
+    typeof error === 'object'
+    && error !== null
+    && 'response' in error
+    && typeof error.response === 'object'
+    && error.response !== null
+    && 'status' in error.response
+    && typeof error.response.status === 'number'
+    && error.response.status >= 400
+  ) {
+    return error.response.status
+  }
+  return 404
+}
+
+if (import.meta.server && !article.value) {
+  const event = useRequestEvent()
+  if (event) {
+    setResponseStatus(event, getArticleFailStatus(articleFetchError.value))
+  }
+}
 
 if (article.value) {
   articleStore.setContent(article.value)
