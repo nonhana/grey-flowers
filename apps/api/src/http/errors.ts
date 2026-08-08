@@ -3,8 +3,6 @@ import type { Context } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type { z } from 'zod';
 
-import process from 'node:process';
-
 import type { ApiEnvironment } from './context.js';
 
 interface ApiErrorOptions {
@@ -23,6 +21,7 @@ const errorStatus: Record<ApiErrorCode, ContentfulStatusCode> = {
   CONFLICT: 409,
   INTERNAL_ERROR: 500,
   NOT_FOUND: 404,
+  RATE_LIMITED: 429,
   UNSUPPORTED_MEDIA_TYPE: 415,
   UPLOAD_FAILED: 502,
   VALIDATION_FAILED: 400,
@@ -39,6 +38,7 @@ const errorMessages: Record<ApiErrorCode, string> = {
   CONFLICT: 'Request conflicts with the current state',
   INTERNAL_ERROR: 'An unexpected error occurred',
   NOT_FOUND: 'Resource not found',
+  RATE_LIMITED: 'Too many requests; please try again later',
   UNSUPPORTED_MEDIA_TYPE: 'Unsupported media type',
   UPLOAD_FAILED: 'Upload failed',
   VALIDATION_FAILED: 'The request is invalid',
@@ -113,6 +113,10 @@ export const handleError = (error: Error, c: Context<ApiEnvironment>) => {
   if (error instanceof ApiError)
     return createFailure(c, error.code, error.fields, error.message);
 
-  process.stderr.write(`Unhandled API error requestId=${c.get('requestId')}\n`);
+  const requestId = c.get('requestId');
+  c.get('dependencies').logger.error(
+    { err: error, requestId },
+    'Unhandled API error',
+  );
   return createFailure(c, 'INTERNAL_ERROR');
 };

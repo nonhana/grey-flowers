@@ -20,7 +20,7 @@ interface MailContext {
 }
 
 /**
- * 评论回复邮件。环境值从 `ApiEnvironment` 构造时注入（`MAIL_ENABLE = HANA_MAIL_ENABLE === 'true'`）；
+ * 评论回复邮件。环境键为 `HANA_MAIL_ENABLE`（与 .env.example / deploy 一致）；
  * Resend 客户端按需惰性初始化；发送失败由调用方 best-effort 吞错，不阻断评论/通知主流程。
  */
 export class CommentMailer {
@@ -28,7 +28,7 @@ export class CommentMailer {
   private resendClient: Resend | null = null;
 
   constructor(private readonly environment: ApiEnvironment) {
-    this.mailEnable = environment.MAIL_ENABLE === 'true';
+    this.mailEnable = environment.HANA_MAIL_ENABLE === 'true';
   }
 
   private getResend(): Resend | null {

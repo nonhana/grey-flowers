@@ -20,13 +20,13 @@ Long-form articles are database records. `Article.content` is the raw Markdown/M
 
 ## Preview
 
-The admin mints a short-lived preview token (`POST /articles/:id/preview-token`) and opens the main site detail URL with it. `apps/main/server/api/articles/detail.get.ts` first tries the public detail; on `NOT_FOUND` with a token it falls back to `GET /public/articles/preview` and adds `X-Robots-Tag: noindex` so drafts are never indexed.
+The admin mints a short-lived preview token (`POST /articles/:id/preview-token`) and opens the main site detail URL with it. `apps/main/server/api/articles/detail.get.ts` first tries the public detail; on `NOT_FOUND` with a token it falls back to `GET /public/articles/preview` and adds `X-Robots-Tag: noindex` (plus `Cache-Control: no-store` and `Referrer-Policy: no-referrer`) so drafts are never indexed and the token never lands in caches or Referer. The token deliberately rides the query — SSR reads it server-side — so it stays 15-minute and single-revision bound.
 
 ## Rendered markdown (main site)
 
 - `apps/main/server/utils/markdown.ts` (`parseAppMarkdown`) generates a depth-two table of contents and returns the MDC renderer payload; `components/prose/` overrides MDC element rendering globally and `components/hana/` provides shared feature components. Article detail SSR composes these for reading pages.
 - Static Markdown pages are not articles. `apps/main/public/markdown/about.md` and `friends.md` are served by `/api/markdown/:slug`, gated by an explicit `about`/`friends` whitelist (the `StaticMarkdownPageSlug` type in `apps/main/shared/types/markdown.d.ts` plus the whitelist in `server/utils/markdown.ts`). Adding a static page requires updating both places and its consumer.
-- Comments do not use this path; comment Markdown follows the separate restrictive parser `apps/main/server/utils/comment-markdown.ts`.
+- Comments do not use this path. Comment and activity Markdown both use the restricted sanitizer factory `apps/api/src/lib/restricted-markdown.ts` (comments: `apps/api/src/modules/comments/comment-markdown.ts`, activities: `apps/api/src/modules/activities/activity-markdown.ts`); raw HTML is off, heading/html/image/table are rejected, and `href` protocols are whitelisted.
 
 ## Content constraints
 

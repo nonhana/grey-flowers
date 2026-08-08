@@ -1,3 +1,4 @@
+import { ACCESS_TOKEN_TTL_SECONDS } from '@grey-flowers/contracts';
 import { SignJWT, jwtVerify } from 'jose';
 import { Buffer } from 'node:buffer';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
@@ -6,7 +7,7 @@ import { z } from 'zod';
 import type { ApiEnvironment } from '@/env.js';
 
 export const ACCESS_TOKEN_AUDIENCE = 'grey-flowers-web';
-export const ACCESS_TOKEN_TTL_SECONDS = 900;
+export { ACCESS_TOKEN_TTL_SECONDS };
 export const REFRESH_COOKIE_NAME = 'gf_refresh';
 export const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 export const SESSION_TTL_SECONDS = SESSION_TTL_MS / 1000;

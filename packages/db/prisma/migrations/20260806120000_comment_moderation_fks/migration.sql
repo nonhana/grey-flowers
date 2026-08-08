@@ -1,12 +1,12 @@
 -- 去重前置守卫：在加唯一约束前清理同一 (receiverId, commentId) 的存量重复行。
--- 若以下核对有结果（count(*)>1），先执行 DELETE 再继续；否则跳过删除。
-SELECT "receiverId", "commentId", count(*) FROM "UserMessage" GROUP BY 1, 2 HAVING count(*) > 1;
+-- 保留每组最小 id，删除其余重复（防止生产库已有重复时 CREATE UNIQUE INDEX 中断）。
+DELETE FROM "UserMessage" AS a USING "UserMessage" AS b
+  WHERE a."id" > b."id"
+    AND a."receiverId" = b."receiverId"
+    AND a."commentId" = b."commentId";
 
--- 保留每组最小 id，删除其余重复（生产数据存在重复时才需要）
--- DELETE FROM "UserMessage" AS a USING "UserMessage" AS b
---   WHERE a."id" > b."id"
---     AND a."receiverId" = b."receiverId"
---     AND a."commentId" = b."commentId";
+-- 复核：执行后应无输出（可安全跳过）。
+SELECT "receiverId", "commentId", count(*) FROM "UserMessage" GROUP BY 1, 2 HAVING count(*) > 1;
 
 -- 被回复评论删除后，其余回复降级为无引用（修复兄弟回复指向被删评论时的 P2003）
 ALTER TABLE "Comment" DROP CONSTRAINT "Comment_replyToCommentId_fkey";

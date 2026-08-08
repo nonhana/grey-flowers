@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 
 import { Link, Outlet, useMatches } from '@tanstack/react-router';
-import cn from 'cnfast';
+import { cn } from 'cnfast';
 import {
   FileText,
   Flower2,

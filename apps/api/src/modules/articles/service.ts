@@ -23,12 +23,14 @@ import { ApiError } from '@/http/errors.js';
 import { concatUrl } from '@/lib/concat-url.js';
 import { stripMarkdownToPlainText } from '@/lib/markdown.js';
 import { pagination } from '@/lib/pagination.js';
+import { isRecordNotFound } from '@/lib/prisma.js';
 
 import type { TaxonomyService } from '../taxonomy/service.js';
 
 import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset.js';
 import {
   articleListAdminProjection,
+  type ArticleDetailRecord,
   toArticleAdmin,
   toArticleCard,
   toArticleDetail,
@@ -359,33 +361,46 @@ export class ArticleService {
         });
       }
 
-      const updated = await tx.article.update({
-        data: {
-          alt: input.alt ?? existing.alt,
-          categoryId,
-          content,
-          cover,
-          coverAssetId: resolvedCoverAssetId,
-          description:
-            input.description === undefined
-              ? existing.description
-              : input.description,
-          editedAt: new Date(),
-          publishedAt:
-            input.publishedAt === undefined
-              ? existing.publishedAt
-              : new Date(input.publishedAt),
-          revision: { increment: 1 },
-          tags: { set: tags.map((name) => ({ name })) },
-          title: input.title,
-          wordCount,
-        },
-        select: {
-          ...articleListAdminProjection,
-          content: true,
-        },
-        where: { id },
-      });
+      let updated: ArticleDetailRecord & {
+        categoryId: number | null;
+        coverAssetId: number | null;
+        id: number;
+        revision: number;
+      };
+      try {
+        updated = await tx.article.update({
+          data: {
+            alt: input.alt ?? existing.alt,
+            categoryId,
+            content,
+            cover,
+            coverAssetId: resolvedCoverAssetId,
+            description:
+              input.description === undefined
+                ? existing.description
+                : input.description,
+            editedAt: new Date(),
+            publishedAt:
+              input.publishedAt === undefined
+                ? existing.publishedAt
+                : new Date(input.publishedAt),
+            revision: { increment: 1 },
+            tags: { set: tags.map((name) => ({ name })) },
+            title: input.title,
+            wordCount,
+          },
+          select: {
+            ...articleListAdminProjection,
+            content: true,
+          },
+          // revision 谓词使「读-revision → 改」变为单条原子更新：
+          // 两个并发请求都读到 rev=5 时，第一个写成功，第二个因 where 不命中抛 P2025 → ARTICLE_STALE。
+          where: { id, revision: input.expectedRevision },
+        });
+      } catch (error) {
+        if (isRecordNotFound(error)) throw new ApiError('ARTICLE_STALE');
+        throw error;
+      }
 
       await this.rebuildInlineAssets(tx, id, inlineRefs);
 

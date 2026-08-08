@@ -15,6 +15,9 @@ const props = withDefaults(defineProps<DialogOptions>(), {
   closable: true,
   hideScrollbar: true,
   navigationMode: 'history',
+  // 编程式对话框默认只展示「确定」；撤销按钮由调用方显式开启。
+  showOkButton: true,
+  showCancelButton: false,
 })
 
 const emits = defineEmits<{
@@ -241,7 +244,7 @@ defineExpose({
         </div>
         <div v-if="programmatic" class="mt-5 flex justify-end gap-4">
           <HanaButton
-            v-if="showCancelButton || false"
+            v-if="showCancelButton"
             shape="square"
             class="w-20"
             @click="emits('cancel')"
@@ -249,7 +252,7 @@ defineExpose({
             {{ cancelText || '取消' }}
           </HanaButton>
           <HanaButton
-            v-if="showOkButton || true"
+            v-if="showOkButton"
             dark-mode
             shape="square"
             class="w-20"

@@ -21,6 +21,7 @@
     "prisma:reset": "pnpm -F @grey-flowers/db run prisma:migrate:reset",
     "prisma:seed": "pnpm -F @grey-flowers/db run prisma:seed",
     "prisma:studio": "pnpm -F @grey-flowers/db run prisma:studio",
+    "test": "pnpm -r --workspace-concurrency=1 run test",
     "typecheck": "tsc -p tsconfig.json --noEmit && pnpm -r --workspace-concurrency=1 run typecheck"
   },
   "devDependencies": {

@@ -29,7 +29,6 @@
     "@uiw/react-codemirror": "catalog:admin",
     "cnfast": "catalog:admin",
     "es-toolkit": "catalog:admin",
-    "hono": "catalog:admin",
     "idb-keyval": "catalog:admin",
     "ky": "catalog:admin",
     "lucide-react": "catalog:admin",

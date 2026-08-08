@@ -31,6 +31,8 @@ export default defineConfig(({ mode }) => {
       react(),
       themeInitScript(),
       tailwindcss(),
+      // react-compiler 的唯一注入通道：plugin-react 6 的 react() 只负责 JSX(oxc)，
+      // compiler 需经 reactCompilerPreset + @rolldown/plugin-babel 应用（无重复转换）。
       babel({
         presets: [reactCompilerPreset()],
       }),

@@ -89,15 +89,16 @@ model User {
 }
 
 model Session {
-  id                String               @id @default(cuid())
-  userId            Int
-  refreshSecretHash String
-  createdAt         DateTime             @default(now())
-  lastUsedAt        DateTime             @default(now())
-  expiresAt         DateTime
-  revokedAt         DateTime?
-  revokeReason      SessionRevokeReason?
-  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                     String               @id @default(cuid())
+  userId                 Int
+  refreshSecretHash      String
+  previousRefreshSecretHash String?           // 上一次轮换前的 hash：refresh 轮换 + 重用检测
+  createdAt              DateTime             @default(now())
+  lastUsedAt             DateTime             @default(now())
+  expiresAt              DateTime
+  revokedAt              DateTime?
+  revokeReason           SessionRevokeReason?
+  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, revokedAt, expiresAt])
   @@index([expiresAt])
@@ -235,6 +236,7 @@ enum UserRole {
 enum SessionRevokeReason {
   LOGOUT
   PASSWORD_CHANGED
+  REUSE_DETECTED
   ROLE_CHANGED
 }
 

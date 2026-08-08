@@ -16,6 +16,7 @@ import type { ObjectStorage } from '@/adapters/object-storage/r2.js';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
+import type { ApiLogger } from '@/bootstrap/logger.js';
 import { pagination } from '@/lib/pagination.js';
 
 import {
@@ -139,6 +140,7 @@ export class AssetService {
     private readonly prisma: PrismaClient,
     private readonly environment: ApiEnvironment,
     private readonly objectStorage: ObjectStorage,
+    private readonly logger: ApiLogger,
   ) {}
 
   async upload(
@@ -358,13 +360,24 @@ export class AssetService {
 
     await this.assertUnreferenced(id);
 
-    await this.objectStorage.deleteObject(existing.storageKey);
-
+    // 先标 DB，再删对象：若 DB 更新失败，对象还在而记录仍 AVAILABLE → 404 交付；
+    // 若对象删除失败，记录已是 DELETED，删除侧可恢复（对象残留不会让交付 404）。
     const deleted = await this.prisma.asset.update({
       data: { deletedAt: new Date(), status: 'DELETED' },
       select: assetProjection,
       where: { id },
     });
+
+    try {
+      await this.objectStorage.deleteObject(existing.storageKey);
+    } catch (error) {
+      // 对象残留可恢复（DELETED 记录 + 定时清扫），不要因外部存储抖动回滚交付状态。
+      this.logger.warn(
+        { error, storageKey: existing.storageKey },
+        'Asset marked DELETED but object removal failed; left for cleanup',
+      );
+    }
+
     return toAssetDto(deleted, this.environment.ASSET_PUBLIC_URL);
   }
 

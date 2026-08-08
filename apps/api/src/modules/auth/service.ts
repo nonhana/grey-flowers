@@ -132,16 +132,23 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(input.password, user.password)))
       throw new ApiError('AUTH_INVALID_CREDENTIALS');
 
-    await this.revokeCurrentRefreshCredential(priorRefreshCredential, 'LOGOUT');
-
     const refreshSecret = createRefreshSecret();
-    const session = await this.prisma.session.create({
-      data: {
-        userId: user.id,
-        refreshSecretHash: hashRefreshSecret(refreshSecret, this.environment),
-        expiresAt: new Date(Date.now() + SESSION_TTL_MS),
-      },
-      select: { id: true },
+    // 同事务内「吊销旧会话 + 建新会话」：建会话失败不会连带吊销旧 refresh，
+    // 避免登录失败导致旧端静默登出。旧会话缺失/已失效时 revoke 为空操作。
+    const session = await this.prisma.$transaction(async (tx) => {
+      await this.revokeSessionIn(tx, priorRefreshCredential, 'LOGOUT');
+
+      return tx.session.create({
+        data: {
+          userId: user.id,
+          refreshSecretHash: hashRefreshSecret(
+            refreshSecret,
+            this.environment,
+          ),
+          expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+        },
+        select: { id: true },
+      });
     });
     const principal = toPrincipal(user, session.id);
 
@@ -154,20 +161,82 @@ export class AuthService {
     };
   }
 
+  /**
+   * refresh 轮换：每次成功 refresh 都会生成新 refresh secret 并落库，
+   * 旧 hash 记入 `previousRefreshSecretHash`。若收到的是「已轮换前的旧
+   * credential」，判定为 token 重用（可能被盗），随即吊销该用户全部
+   * active session（REUSE_DETECTED），迫使用户重新登录。
+   */
   async refresh(
     value: string | undefined,
-  ): Promise<AuthenticatedSession | undefined> {
-    const session = await this.findRefreshSession(value);
-    if (!session) return undefined;
+  ): Promise<LoginResult | undefined> {
+    const credential = parseRefreshCredential(value);
+    if (!credential) return undefined;
 
+    const session = await this.prisma.session.findUnique({
+      where: { id: credential.sessionId },
+      select: {
+        id: true,
+        refreshSecretHash: true,
+        previousRefreshSecretHash: true,
+        revokedAt: true,
+        expiresAt: true,
+        userId: true,
+        user: { select: authUserSelect },
+      },
+    });
+    if (
+      !session ||
+      session.revokedAt !== null ||
+      session.expiresAt <= new Date()
+    )
+      return undefined;
+
+    const matches = (hash: string | null) =>
+      hash !== null &&
+      verifyRefreshSecret(
+        credential.refreshSecret,
+        hash,
+        this.environment,
+      );
+
+    // 重用检测：命中 previous hash = 已轮换过的旧 token 再次被使用。
+    if (matches(session.previousRefreshSecretHash)) {
+      await this.prisma.session.updateMany({
+        where: {
+          userId: session.userId,
+          revokedAt: null,
+          expiresAt: { gt: new Date() },
+        },
+        data: {
+          revokedAt: new Date(),
+          revokeReason: 'REUSE_DETECTED',
+        },
+      });
+      return undefined;
+    }
+
+    if (!matches(session.refreshSecretHash)) return undefined;
+
+    const nextSecret = createRefreshSecret();
     await this.prisma.session.update({
       where: { id: session.id },
-      data: { lastUsedAt: new Date() },
+      data: {
+        previousRefreshSecretHash: session.refreshSecretHash,
+        refreshSecretHash: hashRefreshSecret(nextSecret, this.environment),
+        lastUsedAt: new Date(),
+      },
     });
 
-    return this.createAuthenticatedSession(
-      toPrincipal(session.user, session.id),
-    );
+    const principal = toPrincipal(session.user, session.id);
+
+    return {
+      ...(await this.createAuthenticatedSession(principal)),
+      refreshCredential: formatRefreshCredential({
+        sessionId: session.id,
+        refreshSecret: nextSecret,
+      }),
+    };
   }
 
   async logout(value: string | undefined): Promise<void> {
@@ -368,6 +437,31 @@ export class AuthService {
     }
 
     return session;
+  }
+
+  /**
+   * revoke 旧 refresh credential 的可事务版本：传入客户端（本类 prisma 或外层事务）
+   * 即可在同一原子单元内完成「吊销旧会话 + 建新会话」。旧会话缺失/已失效时空操作。
+   */
+  private async revokeSessionIn(
+    store: Pick<PrismaClient, 'session'>,
+    value: string | undefined,
+    reason: 'LOGOUT' | 'PASSWORD_CHANGED' | 'ROLE_CHANGED',
+  ) {
+    const credential = parseRefreshCredential(value);
+    if (!credential) return;
+
+    await store.session.updateMany({
+      where: {
+        id: credential.sessionId,
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      data: {
+        revokedAt: new Date(),
+        revokeReason: reason,
+      },
+    });
   }
 
   private async revokeCurrentRefreshCredential(
