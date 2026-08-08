@@ -12,6 +12,7 @@ import { syntaxHighlighting } from '@codemirror/language';
 import { searchKeymap } from '@codemirror/search';
 import { EditorView, keymap } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
+import { cn } from 'cnfast';
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -189,7 +190,7 @@ export const CodeMirrorPane = ({
   // CodeMirror 内置处理器：它对二进制图片是无害 no-op（按文本读入后被
   // 控制字符过滤成空串），图片上传/插入由这里接手；粘贴仍由 CodeMirror
   // 的 domEventHandlers 处理，所以关掉 dropzone 的 onPaste（noPaste）。
-  const { getRootProps } = useDropzone({
+  const { getRootProps, isDragActive } = useDropzone({
     accept: IMAGE_ACCEPT_MAP,
     multiple: true,
     noClick: true,
@@ -229,8 +230,28 @@ export const CodeMirrorPane = ({
 
       <div
         {...getRootProps()}
-        className="min-h-0 flex-1 overflow-hidden bg-paper"
+        className={cn(
+          'relative min-h-0 flex-1 overflow-hidden bg-paper',
+          isDragActive && 'outline-2 -outline-offset-2 outline-focus',
+        )}
       >
+        {isDragActive ? (
+          <div
+            className="
+              pointer-events-none absolute inset-x-0 top-0 z-10 grid
+              place-items-center bg-scrim/40 py-2
+            "
+          >
+            <span
+              className="
+                rounded-control bg-case-raised px-3 py-1 font-mono text-xs
+                text-ink-strong shadow-float
+              "
+            >
+              松开以插入图片
+            </span>
+          </div>
+        ) : null}
         {/*
           theme="none" 是必须的：默认的 "light" 会注入一条写死的
           backgroundColor: #fff，暗色下把纸面刷成白的，正文变成
