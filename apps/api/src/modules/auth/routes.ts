@@ -1,10 +1,12 @@
+import type { Context } from 'hono';
+
 import {
   authLoginInputSchema,
   authRegisterInputSchema,
   authUpdateMeInputSchema,
 } from '@grey-flowers/contracts';
+import { getConnInfo } from '@hono/node-server/conninfo';
 import { Hono } from 'hono';
-import type { Context } from 'hono';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
@@ -13,8 +15,9 @@ import type { ApiEnvironment } from '@/http/context.js';
 import { ApiError, createSuccess } from '@/http/errors.js';
 import { requireAllowedOrigin } from '@/http/middleware/require-allowed-origin.js';
 import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { createRateLimiter, type RateLimiter } from '@/lib/rate-limit.js';
+import { resolveClientIp } from '@/lib/client-ip.js';
 import { parseBody } from '@/lib/parser.js';
+import { createRateLimiter, type RateLimiter } from '@/lib/rate-limit.js';
 
 import {
   ACCESS_TOKEN_TTL_SECONDS,
@@ -29,26 +32,48 @@ const ipWindowMs = 15 * 60 * 1000;
 const ipMaxAttempts = 30;
 const accountWindowMs = 15 * 60 * 1000;
 const accountMaxAttempts = 10;
+// key 上界：IP 维度是被伪造洪泛的主要面，给足真实用户量的同时封住内存增长；
+// 账号维度只可能落在真实账号空间，上界更小。
+const ipMaxKeys = 20_000;
+const accountMaxKeys = 5_000;
 
 const ipLimiter = createRateLimiter({
   windowMs: ipWindowMs,
   max: ipMaxAttempts,
+  maxKeys: ipMaxKeys,
 });
 const accountLimiter = createRateLimiter({
   windowMs: accountWindowMs,
   max: accountMaxAttempts,
+  maxKeys: accountMaxKeys,
 });
 
-/** 客户端 IP：取 X-Forwarded-For 首段（反代后），否则回退占位 key。 */
-const clientIp = (context: Context<ApiEnvironment>) => {
-  const forwarded = context.req.header('X-Forwarded-For');
-  return forwarded?.split(',')[0]?.trim() || 'unknown';
+/**
+ * socket 对端地址。`getConnInfo` 直接读 node 的 `env.incoming.socket`，
+ * 非 node-server 载体（如 `app.request()` 直调）下会抛 TypeError ——
+ * 限流不该因为拿不到对端地址就把请求打成 500，取不到就当缺失。
+ */
+const remoteAddressOf = (context: Context<ApiEnvironment>) => {
+  try {
+    return getConnInfo(context).remote.address;
+  } catch {
+    return undefined;
+  }
 };
 
-const throwIfRateLimited = (
-  key: string,
-  limiter: RateLimiter,
+/** 客户端 IP：按可信反代跳数解析，杜绝 XFF 伪造绕过（见 lib/client-ip.ts）。 */
+const clientIp = (
+  context: Context<ApiEnvironment>,
+  trustedProxyHops: number,
 ) => {
+  return resolveClientIp({
+    forwardedFor: context.req.header('X-Forwarded-For'),
+    remoteAddress: remoteAddressOf(context),
+    trustedProxyHops,
+  });
+};
+
+const throwIfRateLimited = (key: string, limiter: RateLimiter) => {
   if (!limiter.check(key)) throw new ApiError('RATE_LIMITED');
 };
 
@@ -66,9 +91,10 @@ export const createAuthRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const requireOrigin = requireAllowedOrigin(dependencies.environment);
   const principal = requirePrincipal(dependencies.environment);
+  const trustedProxyHops = dependencies.environment.TRUSTED_PROXY_HOPS;
 
   routes.post('/register', requireOrigin, async (context) => {
-    throwIfRateLimited(`ip:${clientIp(context)}`, ipLimiter);
+    throwIfRateLimited(`ip:${clientIp(context, trustedProxyHops)}`, ipLimiter);
 
     const input = await parseBody(context.req.raw, authRegisterInputSchema);
     const user = await dependencies.auth.register(input);
@@ -77,7 +103,7 @@ export const createAuthRoutes = (dependencies: AppDependencies) => {
 
   routes.post('/login', requireOrigin, async (context) => {
     const input = await parseBody(context.req.raw, authLoginInputSchema);
-    throwIfRateLimited(`ip:${clientIp(context)}`, ipLimiter);
+    throwIfRateLimited(`ip:${clientIp(context, trustedProxyHops)}`, ipLimiter);
     throwIfRateLimited(
       `account:${input.account.trim().toLowerCase()}`,
       accountLimiter,
@@ -101,7 +127,7 @@ export const createAuthRoutes = (dependencies: AppDependencies) => {
   });
 
   routes.post('/refresh', requireOrigin, async (context) => {
-    throwIfRateLimited(`ip:${clientIp(context)}`, ipLimiter);
+    throwIfRateLimited(`ip:${clientIp(context, trustedProxyHops)}`, ipLimiter);
 
     const refreshed = await dependencies.auth.refresh(
       getCookie(context, REFRESH_COOKIE_NAME),

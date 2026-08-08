@@ -39,6 +39,12 @@ const r2SecretAccessKey = z.string().min(1);
 const r2BucketName = z.string().min(1);
 const r2PublicUrl = z.url();
 
+/**
+ * 本服务前置的可信反代层数（限流取客户端 IP 用，见 lib/client-ip.ts）。
+ * 缺省按 NODE_ENV 推导：production 视为 1 层 nginx，development 视为直连 0 层。
+ */
+const trustedProxyHops = z.coerce.number().int().min(0).max(8).optional();
+
 /** 评论回复邮件开关（与主站 .env 同一键名，见 .env.example / deploy.yml）。 */
 const mailEnable = z.literal('true').or(z.literal('false')).default('false');
 const resendApiKey = z.string().optional();
@@ -49,6 +55,7 @@ const environmentSchema = z
     z.object({
       ADMIN_PORT: port,
       API_PORT: port,
+      API_TRUSTED_PROXY_HOPS: trustedProxyHops,
       AUTH_ACCESS_TOKEN_SECRET: base64urlSecret,
       AUTH_REFRESH_TOKEN_PEPPER: base64urlSecret,
       HANA_DATABASE_URL: postgresUrl,
@@ -66,6 +73,7 @@ const environmentSchema = z
     z.object({
       ADMIN_PORT: port.optional(),
       API_PORT: port,
+      API_TRUSTED_PROXY_HOPS: trustedProxyHops,
       AUTH_ACCESS_TOKEN_SECRET: base64urlSecret,
       AUTH_REFRESH_TOKEN_PEPPER: base64urlSecret,
       HANA_DATABASE_URL: postgresUrl,
@@ -101,6 +109,7 @@ export type ApiEnvironment = ParsedApiEnvironment & {
   AUTH_JWT_ISSUER: string;
   R2_ENDPOINT: string;
   R2_REGION: string;
+  TRUSTED_PROXY_HOPS: number;
 };
 
 const deriveAssetEnvironment = (env: ParsedApiEnvironment) => {
@@ -108,6 +117,17 @@ const deriveAssetEnvironment = (env: ParsedApiEnvironment) => {
     ASSET_PUBLIC_URL: env.R2_PUBLIC_URL,
     R2_ENDPOINT: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
     R2_REGION: 'auto',
+  };
+};
+
+/**
+ * 可信反代层数：显式配置优先；未配置时 production 视为 1 层（nginx 终止 TLS
+ * 后转发到本进程），development 视为 0 层直连（此时 XFF 一律不采信）。
+ */
+const deriveNetworkEnvironment = (env: ParsedApiEnvironment) => {
+  return {
+    TRUSTED_PROXY_HOPS:
+      env.API_TRUSTED_PROXY_HOPS ?? (env.NODE_ENV === 'production' ? 1 : 0),
   };
 };
 
@@ -136,5 +156,6 @@ export const readApiEnvironment = (env: NodeJS.ProcessEnv): ApiEnvironment => {
     ...parsedEnvironment,
     ...deriveAssetEnvironment(parsedEnvironment),
     ...deriveAuthenticationEnvironment(parsedEnvironment),
+    ...deriveNetworkEnvironment(parsedEnvironment),
   };
 };

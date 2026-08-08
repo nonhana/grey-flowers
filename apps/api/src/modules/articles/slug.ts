@@ -30,10 +30,11 @@ export const slugifyTitle = (title: string): string => {
 };
 
 /**
- * 将客户端 slug（`my-title` 或 `/articles/my-title`）归一为文章路径
- * `/articles/<slug>`。
+ * 将客户端 slug（`my-title` 或 `/articles/my-title`，两种形式 contracts 的
+ * `slugSchema` 都放行）归一为文章路径 `/articles/<slug>`。
+ * 已带 `articles/` 前缀的不再叠加，其余层级斜杠压成连字符。
  */
 export const normalizeArticleTo = (slug: string): string => {
-  const bare = slug.replace(/^\/+|\/+$/g, '');
+  const bare = slug.replace(/^\/+|\/+$/g, '').replace(/^articles\/+/, '');
   return `/articles/${bare.replace(/\/+/g, '-')}`;
 };

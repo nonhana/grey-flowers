@@ -40,7 +40,8 @@ All ops slices (music, activity, comments, users, overview) and all API resource
 - `src/app.ts` — `createApp(dependencies)`: global HTTP middleware (request id, logger, CORS), mounts modules, `onError(handleError)`, exports `AppType` (type-only).
 - `src/main.ts` — `@hono/node-server` listen; process lifecycle only.
 - `src/http/` — `errors.ts` (envelope + status mapping), `context.ts`, `middleware/` (`request-id`, `request-logger`, `require-principal`, `require-role`, `require-allowed-origin`).
-- `src/lib/` — shared pure helpers across modules: `rate-limit.ts` (in-memory sliding window), `restricted-markdown.ts` (comment/activity sanitizer factory), plus pagination/markdown/parser/prisma utilities.
+- `src/lib/` — shared pure helpers across modules: `rate-limit.ts` (in-memory sliding window with a bounded, LRU-evicted key table), `client-ip.ts` (trusted-proxy-hop resolution of the rate-limit key), `restricted-markdown.ts` (comment/activity sanitizer factory), plus pagination/markdown/parser/prisma utilities.
+- `src/testing/` — test-only fixtures (`environment.ts` builds an `ApiEnvironment` through the real parser). Not reachable from the `tsdown` entry points, so it never ships in `dist/`.
 - `src/adapters/object-storage/` — R2 adapter; wraps real external I/O only, no permissions or business rules.
 - `src/modules/` — vertical business modules, one per entity: `auth/`, `assets/`, `articles/`, `taxonomy/`, `comments/`, `activities/`, `music/`, `users/`, `overview/`. Each has `routes.ts` (thin: validate → call service → return mapped DTO), `service.ts` (queries, transactions, rules), `contracts.ts` (Prisma → DTO projections/mappers).
 

@@ -1,4 +1,7 @@
-import { createRestrictedMarkdown, type RestrictedMarkdownPayload } from '@/lib/restricted-markdown.js';
+import {
+  createRestrictedMarkdown,
+  type RestrictedMarkdownPayload,
+} from '@/lib/restricted-markdown.js';
 
 export type ActivityMarkdownPayload = RestrictedMarkdownPayload;
 

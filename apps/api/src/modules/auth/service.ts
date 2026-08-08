@@ -16,6 +16,7 @@ import { ApiError } from '@/http/errors.js';
 import { isUniqueConstraint } from '@/lib/prisma.js';
 
 import { toPrincipal } from './principal.js';
+import { decideRefresh } from './refresh-policy.js';
 import {
   createRefreshSecret,
   formatRefreshCredential,
@@ -141,10 +142,7 @@ export class AuthService {
       return tx.session.create({
         data: {
           userId: user.id,
-          refreshSecretHash: hashRefreshSecret(
-            refreshSecret,
-            this.environment,
-          ),
+          refreshSecretHash: hashRefreshSecret(refreshSecret, this.environment),
           expiresAt: new Date(Date.now() + SESSION_TTL_MS),
         },
         select: { id: true },
@@ -164,12 +162,11 @@ export class AuthService {
   /**
    * refresh 轮换：每次成功 refresh 都会生成新 refresh secret 并落库，
    * 旧 hash 记入 `previousRefreshSecretHash`。若收到的是「已轮换前的旧
-   * credential」，判定为 token 重用（可能被盗），随即吊销该用户全部
-   * active session（REUSE_DETECTED），迫使用户重新登录。
+   * credential」，且距上次轮换已超出重用宽限窗口，则判定为 token 重用
+   * （可能被盗），随即吊销该用户全部 active session（REUSE_DETECTED）；
+   * 窗口内则视为并发刷新 / 响应丢失后的重试，照常轮换（见 refresh-policy.ts）。
    */
-  async refresh(
-    value: string | undefined,
-  ): Promise<LoginResult | undefined> {
+  async refresh(value: string | undefined): Promise<LoginResult | undefined> {
     const credential = parseRefreshCredential(value);
     if (!credential) return undefined;
 
@@ -179,6 +176,7 @@ export class AuthService {
         id: true,
         refreshSecretHash: true,
         previousRefreshSecretHash: true,
+        lastUsedAt: true,
         revokedAt: true,
         expiresAt: true,
         userId: true,
@@ -194,14 +192,16 @@ export class AuthService {
 
     const matches = (hash: string | null) =>
       hash !== null &&
-      verifyRefreshSecret(
-        credential.refreshSecret,
-        hash,
-        this.environment,
-      );
+      verifyRefreshSecret(credential.refreshSecret, hash, this.environment);
 
-    // 重用检测：命中 previous hash = 已轮换过的旧 token 再次被使用。
-    if (matches(session.previousRefreshSecretHash)) {
+    const decision = decideRefresh({
+      lastRotatedAt: session.lastUsedAt,
+      matchesCurrentSecret: matches(session.refreshSecretHash),
+      matchesPreviousSecret: matches(session.previousRefreshSecretHash),
+      now: Date.now(),
+    });
+
+    if (decision === 'reuse-detected') {
       await this.prisma.session.updateMany({
         where: {
           userId: session.userId,
@@ -216,7 +216,7 @@ export class AuthService {
       return undefined;
     }
 
-    if (!matches(session.refreshSecretHash)) return undefined;
+    if (decision === 'reject') return undefined;
 
     const nextSecret = createRefreshSecret();
     await this.prisma.session.update({

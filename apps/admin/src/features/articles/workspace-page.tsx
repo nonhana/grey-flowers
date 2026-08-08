@@ -170,10 +170,7 @@ const ConflictDialog = ({
           <p className="mt-2 text-sm text-ink-dim">{editor.lastError}</p>
         ) : null}
         <div className="mt-5 flex justify-end gap-2">
-          <Button
-            onPress={() => void editor.retryConflict()}
-            tone="solid"
-          >
+          <Button onPress={() => void editor.retryConflict()} tone="solid">
             重试加载
           </Button>
         </div>

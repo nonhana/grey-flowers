@@ -32,9 +32,7 @@ const PASSWORD_COST = 10;
 const isLocalDatabaseTarget = (url: string) => {
   const hostname = new URL(url).hostname;
   return (
-    hostname === 'localhost' ||
-    hostname === '127.0.0.1' ||
-    hostname === '::1'
+    hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
   );
 };
 
@@ -474,10 +472,8 @@ const run = async () => {
         seconds: 90 + (i % 480),
         // 缺元数据样本：每 20 条取 1 条 artist 或 album 留空，
         // 让 admin「缺元数据」筛选与 overview missingMetadata 指标在种子上有真实数据。
-        album:
-          i % 20 === 0 ? '' : MUSIC_ALBUMS[i % MUSIC_ALBUMS.length],
-        artist:
-          i % 20 === 10 ? '' : MUSIC_ARTISTS[i % MUSIC_ARTISTS.length],
+        album: i % 20 === 0 ? '' : MUSIC_ALBUMS[i % MUSIC_ALBUMS.length],
+        artist: i % 20 === 10 ? '' : MUSIC_ARTISTS[i % MUSIC_ARTISTS.length],
         cover: musicCover(musicCoverIds[i % musicCoverIds.length]),
         coverAssetId:
           i % 5 === 0 ? null : musicCoverIds[i % musicCoverIds.length],

@@ -13,10 +13,10 @@ import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 
 import type { ObjectStorage } from '@/adapters/object-storage/r2.js';
+import type { ApiLogger } from '@/bootstrap/logger.js';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
-import type { ApiLogger } from '@/bootstrap/logger.js';
 import { pagination } from '@/lib/pagination.js';
 
 import {

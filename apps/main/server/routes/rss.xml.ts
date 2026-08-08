@@ -72,8 +72,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  catch {
-    // 公开文章接口不可用时仍输出空的合法 feed，避免构建/定时抓取因 API 抖动失败。
+  catch (error) {
+    // 公开文章接口不可用时仍输出空的合法 feed，避免构建/定时抓取因 API 抖动失败；
+    // 但降级必须留痕，否则「RSS 突然变空」在服务端毫无线索可查。
+    console.error('[rss.xml] 拉取公开文章列表失败，输出空 feed 降级', error)
   }
 
   return feed.rss2()

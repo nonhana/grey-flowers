@@ -154,67 +154,89 @@ export const createArticleEditorStore = (articleId: number | null) => {
       };
 
       /**
-       * 落盘。已在保存中时记录 pendingAgain 并 **join 在途 promise**（而非直接返回），
-       * 让 flushNow 的「发布前先落盘」门控能等到真正落定而不是提前失败。
+       * 单次落盘。成功返回 true；冲突 / 离线 / 服务端报错返回 false
+       * （失败态已写入 store，由 UI 接管）。本函数不抛。
+       */
+      const saveOnce = async (): Promise<boolean> => {
+        const current = get().draft;
+        if (articleId === null || current === null) return false;
+
+        set({ phase: 'saving' });
+        try {
+          const result = await apiClient.articles.save(
+            articleId,
+            buildSavePayload(current, { expectedRevision: get().revision }),
+          );
+          set({
+            article: result,
+            revision: result.revision,
+            // 请求在途期间又改了稿（draft 换了引用）就仍然是脏的，
+            // 别让 canPublish / flushNow 在续保存启动前误判为已落盘。
+            dirty: get().draft !== current,
+            phase: 'saved',
+            lastError: null,
+          });
+          await del(draftKey(articleId)).catch(() => undefined);
+          return true;
+        } catch (error) {
+          if (isApiRequestError(error, 'ARTICLE_STALE')) {
+            set({ phase: 'conflict', lastError: null });
+            // 拉取服务端版本失败仍保持冲突态，由用户显式 retryConflict 重试。
+            try {
+              const server = await apiClient.articles.detail(articleId);
+              set({ conflict: { resolution: null, server } });
+            } catch {
+              set({
+                conflict: null,
+                lastError: '无法加载服务端版本，请重试。',
+              });
+            }
+          } else if (isApiNetworkError(error)) {
+            set({ phase: 'offline', lastError: null });
+            await idbSet(draftKey(articleId), {
+              draft: current,
+              savedAt: Date.now(),
+            } satisfies RestoreCandidate).catch(() => undefined);
+          } else {
+            set({
+              lastError: isApiRequestError(error)
+                ? error.message
+                : '保存失败，请重试。',
+              phase: 'idle',
+            });
+          }
+          return false;
+        }
+      };
+
+      /**
+       * 串行落盘直到队列真的排空：在途保存期间产生的改动记在 pendingAgain 上，
+       * 本轮一结束立刻续跑下一轮。这样返回的 promise 才等价于「草稿已全部落盘」。
+       * 保存失败（冲突/离线/报错）时停在失败态，不自旋重试。
+       */
+      const drainSaves = async (): Promise<void> => {
+        pendingAgain = false;
+        const saved = await saveOnce();
+        if (saved && pendingAgain) await drainSaves();
+      };
+
+      /**
+       * 落盘入口。已在保存中时记录 pendingAgain 并 **join 整条链**（而非只等
+       * 当前这一次请求），flushNow 的「发布前内容已落盘」门控才真正成立。
        */
       const persist = (): Promise<void> => {
-        const current = get().draft;
-        if (articleId === null || current === null) return Promise.resolve();
+        if (articleId === null || get().draft === null)
+          return Promise.resolve();
 
         if (savingPromise) {
           pendingAgain = true;
           return savingPromise;
         }
 
-        set({ phase: 'saving' });
-        savingPromise = apiClient.articles
-          .save(
-            articleId,
-            buildSavePayload(current, { expectedRevision: get().revision }),
-          )
-          .then((result) => {
-            set({
-              article: result,
-              revision: result.revision,
-              dirty: false,
-              phase: 'saved',
-              lastError: null,
-            });
-            return del(draftKey(articleId)).catch(() => undefined);
-          })
-          .catch(async (error) => {
-            if (isApiRequestError(error, 'ARTICLE_STALE')) {
-              set({ phase: 'conflict', lastError: null });
-              // 拉取服务端版本失败仍保持冲突态，由用户显式 retryConflict 重试。
-              try {
-                const server = await apiClient.articles.detail(articleId);
-                set({ conflict: { resolution: null, server } });
-              } catch {
-                set({ conflict: null, lastError: '无法加载服务端版本，请重试。' });
-              }
-            } else if (isApiNetworkError(error)) {
-              set({ phase: 'offline', lastError: null });
-              await idbSet(draftKey(articleId), {
-                draft: current,
-                savedAt: Date.now(),
-              } satisfies RestoreCandidate).catch(() => undefined);
-            } else {
-              set({
-                lastError: isApiRequestError(error)
-                  ? error.message
-                  : '保存失败，请重试。',
-                phase: 'idle',
-              });
-            }
-          })
-          .finally(() => {
-            savingPromise = null;
-            if (pendingAgain) {
-              pendingAgain = false;
-              void persist();
-            }
-          });
-
+        savingPromise = drainSaves().finally(() => {
+          savingPromise = null;
+          pendingAgain = false;
+        });
         return savingPromise;
       };
 
@@ -267,17 +289,15 @@ export const createArticleEditorStore = (articleId: number | null) => {
 
       /**
        * 立刻落盘；成功返回 true，供发布 / 预览等前置门控。
-       * 保存进行中时 join 在途 promise，等真正落定再判断结果。
+       * 保存进行中时 join 整条续保存链，等草稿真正排空再判断结果 ——
+       * 返回 true 即「此刻 store 里的草稿已经在服务端」。
        */
       const flushNow = async (): Promise<boolean> => {
         if (articleId === null || get().draft === null) return false;
 
-        if (!get().dirty && !savingPromise) {
-          return get().phase === 'saved';
-        }
         scheduleSave.cancel();
-        await persist();
-        return get().phase === 'saved';
+        if (get().dirty || savingPromise !== null) await persist();
+        return get().phase === 'saved' && !get().dirty;
       };
 
       const applyRestored = (candidate: RestoreCandidate) => {
@@ -362,11 +382,14 @@ export const createArticleEditorStore = (articleId: number | null) => {
       };
 
       const restoreVersion = async (snapshot: ArticleSnapshot) => {
-        const current = get().draft;
-        if (articleId === null || !current) return;
+        if (articleId === null || get().draft === null) return;
 
         const saved = await flushNow();
-        if (!saved && get().phase !== 'saved') return;
+        if (!saved) return;
+
+        // 落盘后重新取草稿：flushNow 期间可能又落了一版，payload 必须基于最新的。
+        const current = get().draft;
+        if (!current) return;
 
         const result = await apiClient.articles.save(
           articleId,
@@ -436,11 +459,14 @@ export const createArticleEditorStore = (articleId: number | null) => {
       };
 
       const requestPreview = async (): Promise<string | null> => {
-        const current = get().article;
-        if (articleId === null || !current) return null;
+        if (articleId === null || get().article === null) return null;
 
         const saved = await flushNow();
         if (!saved) return null;
+
+        // 落盘会换掉 article（新的 to / revision），预览链接取落盘后的那份。
+        const current = get().article;
+        if (!current) return null;
 
         const { token } =
           await apiClient.articles.requestPreviewToken(articleId);

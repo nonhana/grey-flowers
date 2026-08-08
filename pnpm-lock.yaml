@@ -111,6 +111,9 @@ catalogs:
     vite:
       specifier: ^8.2.0
       version: 8.2.0
+    vitest:
+      specifier: ^4.1.7
+      version: 4.1.7
     zustand:
       specifier: ^5.0.14
       version: 5.0.14
@@ -460,6 +463,9 @@ importers:
       vite:
         specifier: catalog:admin
         version: 8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.5)(yaml@2.9.0)
+      vitest:
+        specifier: catalog:admin
+        version: 4.1.7(@types/node@24.13.3)(vite@8.2.0(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.59.0(supports-color@10.2.2))(terser@5.44.1)(tsx@4.23.5)(yaml@2.9.0))
 
   apps/api:
     dependencies:
