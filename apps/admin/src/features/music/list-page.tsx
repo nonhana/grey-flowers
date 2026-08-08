@@ -28,20 +28,25 @@ import { EditMusicDialog } from './edit-dialog.js';
 import { MusicCard } from './music-card.js';
 
 const PAGE_SIZE = 12;
-const GRID_CLASS = 'grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3';
+/* 网格撑满列表区，行高 minmax(min-content,1fr) 均分剩余高度；溢出时回落到
+   内容高照常滚动。与资产库同构，卡片封面区吸收增长。 */
+const GRID_CLASS =
+  'grid h-full grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] auto-rows-[minmax(min-content,1fr)] gap-3';
 
 /**
- * 与真实音乐卡同构的骨架：封面 aspect-4/3 + 标题行 + 三段元数据 +
- * 底部操作位（三个 sm 按钮 32px 主导）。块高按真实字号的 line-height 取 em。
+ * 与真实音乐卡同构的骨架：封面区（min-h-[10.5rem]、随行高吸收增长）+
+ * 标题行 + 三段元数据 + 底部操作位（三个 sm 按钮 32px 主导）。
+ * 块高按真实字号的 line-height 取 em。
  */
 const MusicCardSkeleton = () => (
   <div
     aria-hidden="true"
     className="
-      grid overflow-hidden rounded-panel border border-rule bg-case-raised
+      flex h-full flex-col overflow-hidden rounded-panel border
+      border-rule bg-case-raised
     "
   >
-    <Skeleton className="aspect-4/3 w-full rounded-none" />
+    <Skeleton className="min-h-[10.5rem] w-full flex-1 rounded-none" />
     <div className="grid gap-1 px-3 py-2.5">
       <Skeleton className="h-[1.55em] w-1/2 text-base" />
       <MetaLine>

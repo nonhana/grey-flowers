@@ -9,11 +9,12 @@ import {
   RadioField,
   RadioGroup,
 } from 'react-aria-components';
+import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
-import { AUDIO_ACCEPT, IMAGE_ACCEPT } from '@/lib/media-accept.js';
+import { AUDIO_ACCEPT_MAP, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
 import { Alert, AppDialog, Button, FieldLabel } from '@/ui/index.js';
 
 import { assetErrorMessage, purposeLabels, purposeOptions } from './display.js';
@@ -46,7 +47,28 @@ export const UploadDialog = ({
     }
   });
 
-  const accept = purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT : IMAGE_ACCEPT;
+  const acceptMap =
+    purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT_MAP : IMAGE_ACCEPT_MAP;
+  const acceptLabel = purpose === 'MUSIC_SOURCE' ? '音频' : '图片';
+
+  // 拖放与点击选择统一走 react-dropzone；noClick + htmlFor 让原生 label
+  // 激活打开选择器，避免与根节点 onClick 双开。
+  const { getInputProps, getRootProps } = useDropzone({
+    accept: acceptMap,
+    disabled: phase === 'uploading',
+    multiple: false,
+    noClick: true,
+    onDrop: (acceptedFiles) => {
+      setFile(acceptedFiles[0] ?? null);
+      setPhase('idle');
+      setError('');
+    },
+    onDropRejected: () => {
+      setError('文件类型不支持。');
+      setPhase('idle');
+    },
+  });
+
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
 
   const submit = async () => {
@@ -85,35 +107,34 @@ export const UploadDialog = ({
             value={purpose ?? undefined}
           >
             {purposeOptions.map((option) => (
-              <RadioField
-                className={cn(
-                  `
-                    flex min-h-11 cursor-pointer items-center gap-2
-                    rounded-control
-                  `,
-                  `
-                    border border-edge bg-well px-3 text-base text-ink
-                    outline-none
-                  `,
-                  `
-                    transition-colors
-                    hover:border-edge-hover
-                  `,
-                  `
-                    focus-within:outline-2 focus-within:outline-offset-2
-                    focus-within:outline-focus
-                  `,
-                  `
-                    data-selected:border-accent-rule
-                    data-selected:bg-accent-wash
-                  `,
-                  'data-selected:text-accent-text',
-                )}
-                key={option}
-                value={option}
-              >
-                <RadioButton className="sr-only" />
-                {purposeLabels[option]}
+              <RadioField key={option} value={option}>
+                <RadioButton
+                  className={cn(
+                    `
+                      flex min-h-11 cursor-pointer items-center gap-2
+                      rounded-control
+                    `,
+                    `
+                      border border-edge bg-well px-3 text-base text-ink
+                      outline-none
+                    `,
+                    `
+                      transition-colors
+                      hover:border-edge-hover
+                    `,
+                    `
+                      focus-within:outline-2 focus-within:outline-offset-2
+                      focus-within:outline-focus
+                    `,
+                    `
+                      data-selected:border-accent-rule
+                      data-selected:bg-accent-wash
+                    `,
+                    'data-selected:text-accent-text',
+                  )}
+                >
+                  {purposeLabels[option]}
+                </RadioButton>
               </RadioField>
             ))}
           </RadioGroup>
@@ -140,6 +161,7 @@ export const UploadDialog = ({
                 focus-within:outline-focus
               `,
             )}
+            {...getRootProps()}
             htmlFor="asset-file-input"
           >
             <FileUp
@@ -152,20 +174,13 @@ export const UploadDialog = ({
             <span className="ml-auto shrink-0 font-mono text-2xs">
               {file
                 ? `${(file.size / 1024 / 1024).toFixed(1)} MB`
-                : accept.startsWith('audio')
-                  ? '音频'
-                  : '图片'}
+                : acceptLabel}
             </span>
             <input
-              accept={accept}
-              className="sr-only"
-              id="asset-file-input"
-              onChange={(event) => {
-                setFile(event.target.files?.[0] ?? null);
-                setPhase('idle');
-                setError('');
-              }}
-              type="file"
+              {...getInputProps({
+                className: 'sr-only',
+                id: 'asset-file-input',
+              })}
             />
           </label>
         </div>
@@ -195,7 +210,7 @@ export const UploadDialog = ({
           </ProgressBar>
         ) : null}
 
-        {phase === 'error' ? <Alert>{error}</Alert> : null}
+        {error ? <Alert>{error}</Alert> : null}
 
         <div className="flex items-center justify-end gap-2">
           <Button
