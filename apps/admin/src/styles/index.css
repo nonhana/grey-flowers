@@ -127,6 +127,9 @@
      单根仍在 200ms 带内，错峰只是把同一个动作沿时间轴摊开，
      错峰窗口由组件按天数封顶（见 charts.tsx 的 STAGGER_WINDOW）。 */
   --animate-bar-rise: gf-bar-rise 200ms var(--ease-out-quint) backwards;
+  /* 列表骨架 ↔ 内容落地：一次手势内纯透明度收场（无错峰），
+     与 Item 级同构骨架配套 —— 同构保证不跳，fade 掩盖剩余亚像素差。 */
+  --animate-content-in: gf-fade-in 140ms ease-out;
 }
 
 @keyframes gf-fade-in {

@@ -47,13 +47,12 @@ import {
   PageBody,
   PageHeader,
   Paginator,
-  RowSkeleton,
   SearchInput,
   TextField,
   controlClass,
 } from '@/ui/index.js';
 
-import { CommentCard } from './comment-card.js';
+import { CommentCard, CommentCardSkeleton } from './comment-card.js';
 import { ReplyDialog, type ReplyTarget } from './reply-dialog.js';
 import { SessionDialog } from './session-dialog.js';
 
@@ -486,7 +485,11 @@ export const CommentsPage = () => {
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (
-          <RowSkeleton rows={6} />
+          <div className="grid animate-content-in gap-3" key="skeleton">
+            {Array.from({ length: PAGE_SIZE }, (_, index) => (
+              <CommentCardSkeleton key={index} />
+            ))}
+          </div>
         ) : error ? (
           <EmptyState
             action={<Button onPress={reload}>重试</Button>}
@@ -517,7 +520,7 @@ export const CommentsPage = () => {
               : '访客在文章或动态下发布评论后会显示在这里。'}
           </EmptyState>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid animate-content-in gap-3" key="content">
             {data?.items.map((comment) => (
               <CommentCard
                 actions={{

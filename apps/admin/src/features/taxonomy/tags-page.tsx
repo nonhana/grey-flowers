@@ -18,9 +18,23 @@ import {
   IconButton,
   PageBody,
   PageHeader,
-  RowSkeleton,
   RowStack,
+  Skeleton,
 } from '@/ui/index.js';
+
+/** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳。 */
+const TagRowSkeleton = () => (
+  <div
+    aria-hidden="true"
+    className="flex items-center justify-between gap-3 px-4 py-3"
+  >
+    <div className="min-w-0">
+      <Skeleton className="h-[1.6em] w-32 text-md" />
+      <Skeleton className="h-[1.45em] w-16 text-2xs" />
+    </div>
+    <Skeleton className="size-8 shrink-0 rounded-control" />
+  </div>
+);
 
 export const TagsPage = () => {
   const [items, setItems] = useState<TagAdmin[]>([]);
@@ -133,7 +147,11 @@ export const TagsPage = () => {
 
       <div className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
-          <RowSkeleton rows={4} />
+          <RowStack className="animate-content-in" key="skeleton">
+            {Array.from({ length: 4 }, (_, index) => (
+              <TagRowSkeleton key={index} />
+            ))}
+          </RowStack>
         ) : items.length === 0 ? (
           <EmptyState
             icon={<TagsIcon aria-hidden="true" />}
@@ -144,7 +162,7 @@ export const TagsPage = () => {
               : '在上面的输入框里敲一个名字回车，或者在编辑文章时直接输入新标签。'}
           </EmptyState>
         ) : (
-          <RowStack>
+          <RowStack className="animate-content-in" key="content">
             {items.map((tag) => (
               <div
                 className="flex items-center justify-between gap-3 px-4 py-3"

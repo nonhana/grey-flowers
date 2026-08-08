@@ -18,7 +18,7 @@ import {
   EmptyState,
   MetaLine,
   Paginator,
-  RowSkeleton,
+  Skeleton,
 } from '@/ui/index.js';
 
 const COMMENT_PAGE_SIZE = 10;
@@ -64,6 +64,23 @@ const CommentRow = ({ comment }: { comment: CommentAdmin }) => (
     <p className="line-clamp-3 text-base/relaxed whitespace-pre-line text-ink">
       {comment.content}
     </p>
+  </article>
+);
+
+/**
+ * 与 CommentRow 同构的骨架：path 行 + 三行正文（引用行可有可无，不画）。
+ * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
+ */
+const CommentRowSkeleton = () => (
+  <article aria-hidden="true" className="grid gap-1.5">
+    <MetaLine>
+      <Skeleton className="h-[1.45em] w-56 text-2xs" />
+      <Skeleton className="h-[1.45em] w-24 text-2xs" />
+      <Skeleton className="h-[1.45em] w-4 text-2xs" />
+    </MetaLine>
+    <Skeleton className="h-[1.625em] w-full text-base" />
+    <Skeleton className="h-[1.625em] w-3/4 text-base" />
+    <Skeleton className="h-[1.625em] w-1/2 text-base" />
   </article>
 );
 
@@ -215,7 +232,11 @@ export const UserDetailDialog = ({
             <h3 className="font-mono text-xs text-ink-dim">评论历史</h3>
 
             {loading ? (
-              <RowSkeleton rows={4} />
+              <div className="grid animate-content-in gap-4" key="skeleton">
+                {Array.from({ length: 4 }, (_, index) => (
+                  <CommentRowSkeleton key={index} />
+                ))}
+              </div>
             ) : error ? (
               <EmptyState
                 action={
@@ -239,7 +260,7 @@ export const UserDetailDialog = ({
                 该用户发布评论后会显示在这里。
               </EmptyState>
             ) : (
-              <div className="grid gap-4">
+              <div className="grid animate-content-in gap-4" key="content">
                 {data?.comments.items.map((comment) => (
                   <CommentRow comment={comment} key={comment.id} />
                 ))}

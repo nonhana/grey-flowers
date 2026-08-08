@@ -178,13 +178,23 @@ export const AssetPickerDialog = ({
         {loading && items.length === 0 ? (
           <ul
             className="
-              grid grid-cols-3 gap-3
+              grid animate-content-in grid-cols-3 gap-3
               sm:grid-cols-4
             "
           >
             {Array.from({ length: 8 }, (_, index) => (
               <li key={index}>
-                <Skeleton className="aspect-square w-full" />
+                {/* 与真实条目同构：描边容器 + 方图 + 体积位 */}
+                <div
+                  aria-hidden="true"
+                  className="
+                    grid w-full gap-1.5 rounded-control border border-rule
+                    bg-well p-1.5
+                  "
+                >
+                  <Skeleton className="aspect-square w-full rounded-none" />
+                  <Skeleton className="h-[1.45em] w-2/3 text-2xs" />
+                </div>
               </li>
             ))}
           </ul>

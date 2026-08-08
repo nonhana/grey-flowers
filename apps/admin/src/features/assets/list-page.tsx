@@ -6,6 +6,7 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { cn } from 'cnfast';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -107,16 +108,29 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
 /* 只剩一两个资产时也不该出现一块 500px 宽的巨砖：轨道宽度固定，缺的补空位。 */
 const GRID_CLASS = 'grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3';
 
-const CardSkeleton = () => (
+/**
+ * 与真实资产卡同构的骨架：图区 h-28 + 标签行（含状态读数位 28px）+
+ * 三段元数据。块高按真实字号的 line-height 取 em，落地时卡高相等。
+ */
+const AssetCardSkeleton = () => (
   <div
+    aria-hidden="true"
     className="
-      grid overflow-hidden rounded-panel border border-rule bg-case-raised
+      grid content-start overflow-hidden rounded-panel border border-rule
+      bg-case-raised
     "
   >
     <Skeleton className="h-28 w-full rounded-none" />
-    <div className="grid gap-2 px-3 py-2.5">
-      <Skeleton className="h-4 w-2/3" />
-      <Skeleton className="h-3 w-1/2" />
+    <div className="grid gap-1 px-3 py-2.5">
+      <div className="flex items-center justify-between gap-2">
+        <Skeleton className="h-[1.55em] w-1/2 text-base" />
+        <Skeleton className="h-7 w-16 rounded-full" />
+      </div>
+      <MetaLine>
+        <Skeleton className="h-[1.45em] w-16 text-2xs" />
+        <Skeleton className="h-[1.45em] w-14 text-2xs" />
+        <Skeleton className="ml-auto h-[1.45em] w-24 text-2xs" />
+      </MetaLine>
     </div>
   </div>
 );
@@ -261,9 +275,9 @@ export const AssetsListPage = () => {
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (
-          <div className={GRID_CLASS}>
-            {Array.from({ length: 6 }, (_, index) => (
-              <CardSkeleton key={index} />
+          <div className={cn(GRID_CLASS, 'animate-content-in')} key="skeleton">
+            {Array.from({ length: PAGE_SIZE }, (_, index) => (
+              <AssetCardSkeleton key={index} />
             ))}
           </div>
         ) : error ? (
@@ -301,7 +315,7 @@ export const AssetsListPage = () => {
               : '在编辑文章时直接粘贴或拖入图片也会自动上传到这里，不必先来这一页。'}
           </EmptyState>
         ) : (
-          <div className={GRID_CLASS}>
+          <div className={cn(GRID_CLASS, 'animate-content-in')} key="content">
             {data?.items.map((asset) => (
               <AssetCard asset={asset} key={asset.id} />
             ))}

@@ -8,7 +8,6 @@ export {
   Alert,
   EmptyState,
   PublishBadge,
-  RowSkeleton,
   Skeleton,
   Spinner,
   StatusReadout,

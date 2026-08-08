@@ -5,7 +5,7 @@ import { cn } from 'cnfast';
 import type { ShareSegment } from '@/ui/index.js';
 
 import { formatBytes } from '@/lib/format.js';
-import { Panel, SectionLabel, ShareBar } from '@/ui/index.js';
+import { Panel, SectionLabel, ShareBar, Skeleton } from '@/ui/index.js';
 
 /**
  * 存储构成。读数抽屉已经给了资产的**数量**（图片 1191 · 音频 280），
@@ -57,3 +57,39 @@ export const StorageCard = ({
     </Panel>
   );
 };
+
+/**
+ * 与真实存储卡同构的骨架：卡头 + 量值条 h-2.5 + 三行图例。
+ * 图例行高与真实一致（text-base lh 1.55 主导），落地时卡高不跳。
+ */
+export const StorageCardSkeleton = ({ className }: { className?: string }) => (
+  <Panel
+    aria-hidden="true"
+    className={cn(
+      `
+        flex animate-content-in flex-col gap-3.5 p-4
+        md:p-5
+      `,
+      className,
+    )}
+  >
+    <div className="flex items-baseline justify-between gap-3">
+      <Skeleton className="h-[1.45em] w-24 text-xs" />
+      <Skeleton className="h-[1.45em] w-20 text-2xs" />
+    </div>
+
+    <div className="grid gap-3">
+      <Skeleton className="h-2.5 w-full rounded-none" />
+      <ul className="grid gap-1.5">
+        {Array.from({ length: 3 }, (_, index) => (
+          <li className="flex items-baseline gap-2" key={index}>
+            <div className="size-2 shrink-0 animate-pulse bg-rule" />
+            <Skeleton className="h-[1.55em] min-w-0 flex-1 text-base" />
+            <Skeleton className="h-[1.55em] w-16 text-base" />
+            <Skeleton className="h-[1.45em] w-10 text-2xs" />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Panel>
+);

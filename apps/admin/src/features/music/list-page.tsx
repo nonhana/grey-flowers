@@ -1,6 +1,7 @@
 import type { MusicAdmin, MusicListData } from '@grey-flowers/contracts';
 
 import { useNavigate, useSearch } from '@tanstack/react-router';
+import { cn } from 'cnfast';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -15,6 +16,7 @@ import {
   ConfirmDialog,
   EmptyState,
   FilterChip,
+  MetaLine,
   PageBody,
   PageHeader,
   Paginator,
@@ -28,16 +30,33 @@ import { MusicCard } from './music-card.js';
 const PAGE_SIZE = 12;
 const GRID_CLASS = 'grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3';
 
-const CardSkeleton = () => (
+/**
+ * 与真实音乐卡同构的骨架：封面 aspect-4/3 + 标题行 + 三段元数据 +
+ * 底部操作位（三个 sm 按钮 32px 主导）。块高按真实字号的 line-height 取 em。
+ */
+const MusicCardSkeleton = () => (
   <div
+    aria-hidden="true"
     className="
       grid overflow-hidden rounded-panel border border-rule bg-case-raised
     "
   >
     <Skeleton className="aspect-4/3 w-full rounded-none" />
-    <div className="grid gap-2 px-3 py-2.5">
-      <Skeleton className="h-4 w-2/3" />
-      <Skeleton className="h-3 w-1/2" />
+    <div className="grid gap-1 px-3 py-2.5">
+      <Skeleton className="h-[1.55em] w-1/2 text-base" />
+      <MetaLine>
+        <Skeleton className="h-[1.45em] w-20 text-2xs" />
+        <Skeleton className="h-[1.45em] w-24 text-2xs" />
+        <Skeleton className="ml-auto h-[1.45em] w-10 text-2xs" />
+      </MetaLine>
+      <div className="mt-1.5 flex items-center justify-between gap-2">
+        <Skeleton className="h-[1.45em] w-14 text-2xs" />
+        <span className="flex shrink-0 gap-1.5">
+          <Skeleton className="size-8 rounded-control" />
+          <Skeleton className="size-8 rounded-control" />
+          <Skeleton className="size-8 rounded-control" />
+        </span>
+      </div>
     </div>
   </div>
 );
@@ -186,9 +205,9 @@ export const MusicLibraryPage = () => {
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (
-          <div className={GRID_CLASS}>
-            {Array.from({ length: 6 }, (_, index) => (
-              <CardSkeleton key={index} />
+          <div className={cn(GRID_CLASS, 'animate-content-in')} key="skeleton">
+            {Array.from({ length: PAGE_SIZE }, (_, index) => (
+              <MusicCardSkeleton key={index} />
             ))}
           </div>
         ) : error ? (
@@ -246,7 +265,7 @@ export const MusicLibraryPage = () => {
                 : '上传音频时会自动解析标题、艺术家、专辑与内嵌封面。'}
           </EmptyState>
         ) : (
-          <div className={GRID_CLASS}>
+          <div className={cn(GRID_CLASS, 'animate-content-in')} key="content">
             {data?.items.map((music, index) => (
               <MusicCard
                 isCurrent={currentTrack?.id === music.id}

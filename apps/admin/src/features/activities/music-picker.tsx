@@ -19,7 +19,25 @@ import {
 } from '@/ui/index.js';
 
 const PAGE_SIZE = 20;
-const SELECT_LIMIT = 12;
+const SELECT_LIMIT = 10;
+
+/**
+ * 与真实选择行同构：封面 44px + 标题/艺术家两段 + 时长位。
+ * 行高与真实相等（封面主导），数据落地时列表不跳。
+ */
+const MusicRowSkeleton = () => (
+  <div
+    aria-hidden="true"
+    className="flex w-full items-center gap-3 rounded-control p-2"
+  >
+    <Skeleton className="size-11 shrink-0 rounded-control" />
+    <span className="min-w-0 flex-1">
+      <Skeleton className="h-[1.55em] w-1/3 text-base" />
+      <Skeleton className="h-[1.45em] w-1/2 text-2xs" />
+    </span>
+    <Skeleton className="h-[1.45em] w-10 shrink-0 text-2xs" />
+  </div>
+);
 
 export const MusicPickerDialog = ({
   isOpen,
@@ -134,9 +152,9 @@ export const MusicPickerDialog = ({
               {error}
             </EmptyState>
           ) : !data ? (
-            <div className="grid gap-1">
+            <div className="grid animate-content-in gap-1">
               {Array.from({ length: 5 }, (_, index) => (
-                <Skeleton className="h-12 w-full" key={index} />
+                <MusicRowSkeleton key={index} />
               ))}
             </div>
           ) : data.items.length === 0 ? (

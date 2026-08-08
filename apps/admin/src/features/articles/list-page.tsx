@@ -1,6 +1,7 @@
 import type { ArticleListAdmin } from '@grey-flowers/contracts';
 
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { cn } from 'cnfast';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -18,9 +19,9 @@ import {
   PageHeader,
   Paginator,
   PublishBadge,
-  RowSkeleton,
   RowStack,
   SearchInput,
+  Skeleton,
 } from '@/ui/index.js';
 
 import type { ArticleStatusFilter } from './display.js';
@@ -47,12 +48,18 @@ const EMPTY_COPY: Record<ArticleStatusFilter, string> = {
   published: '在编辑页打开元数据面板，点「发布」，文章就会出现在主站上。',
 };
 
+/** 行布局骨架与真实行共用：标题 / 描述 / 元数据三段的行高永远同步。 */
+const ARTICLE_ROW_LAYOUT = 'grid gap-1.5 px-4 py-3.5';
+
 const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
   <Link
-    className="
-      group grid gap-1.5 px-4 py-3.5 transition-colors
-      hover:bg-accent-wash
-    "
+    className={cn(
+      ARTICLE_ROW_LAYOUT,
+      `
+        group transition-colors
+        hover:bg-accent-wash
+      `,
+    )}
     params={{ articleId: String(article.id) }}
     to="/articles/$articleId"
   >
@@ -78,6 +85,28 @@ const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
       <span className="ml-auto">{formatDateTime(article.editedAt)}</span>
     </MetaLine>
   </Link>
+);
+
+/**
+ * 与真实行同构的行骨架：块高按真实字号的 line-height 取 em，
+ * 徽章 / 日期位按固定高度取 —— 行高与真实逐段相等，落地时零跳动。
+ */
+const ArticleRowSkeleton = () => (
+  <div aria-hidden="true" className={ARTICLE_ROW_LAYOUT}>
+    <div className="flex items-start justify-between gap-3">
+      <Skeleton className="h-[1.6em] w-48 text-md" />
+      {/* 发布徽章：text-2xs lh 1.45 + py-0.5 ≈ 20px */}
+      <Skeleton className="h-5 w-14" />
+    </div>
+    <Skeleton className="h-[1.55em] w-3/5 text-base" />
+    <MetaLine>
+      <Skeleton className="h-[1.45em] w-14 text-2xs" />
+      <Skeleton className="h-[1.45em] w-24 text-2xs" />
+      <Skeleton className="h-[1.45em] w-12 text-2xs" />
+      <Skeleton className="h-[1.45em] w-10 text-2xs" />
+      <Skeleton className="ml-auto h-[1.45em] w-28 text-2xs" />
+    </MetaLine>
+  </div>
 );
 
 const EmptyArticles = ({ status }: { status: ArticleStatusFilter }) => (
@@ -218,7 +247,11 @@ export const ArticlesListPage = () => {
 
       <div className="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
-          <RowSkeleton />
+          <RowStack className="animate-content-in" key="skeleton">
+            {Array.from({ length: PAGE_SIZE }, (_, index) => (
+              <ArticleRowSkeleton key={index} />
+            ))}
+          </RowStack>
         ) : error ? (
           <Alert
             action={
@@ -239,7 +272,7 @@ export const ArticlesListPage = () => {
             <EmptyArticles status={status} />
           )
         ) : (
-          <RowStack>
+          <RowStack className="animate-content-in" key="content">
             {items.map((article) => (
               <ArticleRow article={article} key={article.id} />
             ))}

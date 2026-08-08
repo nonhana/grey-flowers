@@ -3,7 +3,7 @@ import type { UserAdminSummary } from '@grey-flowers/contracts';
 import { ExternalLink, Pencil, Trash2, UserRound } from 'lucide-react';
 
 import { formatDateTime } from '@/lib/format.js';
-import { AssetImage, IconButton, MetaLine } from '@/ui/index.js';
+import { AssetImage, IconButton, MetaLine, Skeleton } from '@/ui/index.js';
 
 /** 用户列表卡片：头像 + 用户名/邮箱/ADMIN Pin + 注册时间 + 「N 条评论」角标 + 操作。 */
 export const UserCard = ({
@@ -106,6 +106,34 @@ export const UserCard = ({
         >
           <Trash2 aria-hidden="true" />
         </IconButton>
+      </span>
+    </div>
+  </article>
+);
+
+/**
+ * 与真实用户卡同构的骨架：头像 40px 主导行高，右侧三个操作位。
+ * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
+ */
+export const UserCardSkeleton = () => (
+  <article
+    aria-hidden="true"
+    className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
+  >
+    <div className="flex min-w-0 items-center gap-3">
+      <Skeleton className="size-10 shrink-0 rounded-full" />
+      <div className="min-w-0 flex-1">
+        <Skeleton className="h-[1.6em] w-36 text-md" />
+        <MetaLine className="mt-1">
+          <Skeleton className="h-[1.45em] w-32 text-2xs" />
+          <Skeleton className="h-[1.45em] w-16 text-2xs" />
+          <Skeleton className="h-[1.45em] w-8 text-2xs" />
+        </MetaLine>
+      </div>
+      <span className="flex shrink-0 gap-1">
+        <Skeleton className="size-8 rounded-control" />
+        <Skeleton className="size-8 rounded-control" />
+        <Skeleton className="size-8 rounded-control" />
       </span>
     </div>
   </article>
