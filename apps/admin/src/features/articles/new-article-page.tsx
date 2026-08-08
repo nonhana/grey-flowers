@@ -105,7 +105,7 @@ export const NewArticlePage = () => {
           />
 
           <TextField
-            description="留空则由标题自动转写为拼音。仅支持小写字母、数字与连字符。"
+            description="留空则按标题自动生成（小写、空格与标点转连字符）。仅支持小写字母、数字与连字符。"
             label="路径"
             onChange={(value) => {
               setSlug(value.replace(/^\/+/, ''));

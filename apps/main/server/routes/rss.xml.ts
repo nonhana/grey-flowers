@@ -1,28 +1,37 @@
+import type { ArticleListData } from '@grey-flowers/contracts'
 import { Feed } from 'feed'
+
+import { apiGet } from '#server/utils/api-gateway'
 import { resolveArticleImagePolicy, toAbsoluteArticleImageUrl } from '#server/utils/article-generated-image'
-import prisma from '#server/utils/prisma'
 
 const titleBlacklist = ['About', 'Friends']
 
 const basePath = 'https://caelum.moe'
 
+const RSS_PAGE_SIZE = 50
+
+/** 拉取全部已发布文章（API 侧已强制 published: true），分页收集。 */
+async function fetchAllPublishedArticles(): Promise<ArticleListData['items']> {
+  const items: ArticleListData['items'] = []
+  let total = Number.POSITIVE_INFINITY
+
+  for (let page = 1; items.length < total; page += 1) {
+    const data = await apiGet<ArticleListData>(
+      '/public/articles/list',
+      { page, pageSize: RSS_PAGE_SIZE },
+    )
+    items.push(...data.items)
+    total = data.total
+    if (data.items.length === 0)
+      break
+  }
+
+  return items
+}
+
 export default defineEventHandler(async (event) => {
   setHeader(event, 'content-type', 'text/xml')
-  const result = await prisma.article.findMany({
-    select: {
-      title: true,
-      to: true,
-      description: true,
-      publishedAt: true,
-      cover: true,
-      category: { select: { name: true } },
-      tags: { select: { name: true } },
-    },
-    orderBy: {
-      publishedAt: 'desc',
-    },
-  })
-  const articles = result.filter(article => !titleBlacklist.includes(article.title))
+
   const feed = new Feed({
     title: 'GreyFlowers',
     description: '在失去了意义的世界里，会绽放出什么颜色的花朵呢',
@@ -39,24 +48,33 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  articles.forEach((article) => {
-    const { displayImage } = resolveArticleImagePolicy({
-      to: article.to,
-      title: article.title,
-      cover: article.cover,
-      publishedAt: article.publishedAt.toISOString(),
-    })
+  try {
+    const articles = (await fetchAllPublishedArticles())
+      .filter(article => !titleBlacklist.includes(article.title))
 
-    feed.addItem({
-      title: article.title,
-      id: basePath + article.to,
-      link: basePath + article.to,
-      description: article.description ?? '',
-      content: article.description ?? '',
-      date: new Date(article.publishedAt),
-      image: toAbsoluteArticleImageUrl(displayImage, basePath),
+    articles.forEach((article) => {
+      const { displayImage } = resolveArticleImagePolicy({
+        to: article.to,
+        title: article.title,
+        cover: article.cover,
+        publishedAt: article.publishedAt,
+      })
+
+      feed.addItem({
+        title: article.title,
+        id: basePath + article.to,
+        link: basePath + article.to,
+        description: article.description ?? '',
+        content: article.description ?? '',
+        date: new Date(article.publishedAt),
+        image: toAbsoluteArticleImageUrl(displayImage, basePath),
+      })
     })
-  })
+  }
+
+  catch {
+    // 公开文章接口不可用时仍输出空的合法 feed，避免构建/定时抓取因 API 抖动失败。
+  }
 
   return feed.rss2()
 })

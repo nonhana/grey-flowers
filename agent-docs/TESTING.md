@@ -2,21 +2,22 @@
 
 ## Current automation
 
-There is no test framework, `test` script, test-file convention, watch command, or coverage threshold. No `*.test.*` / `*.spec.*` files exist. Validation is static checks plus manual/scripted smoke tests.
+Automated tests are minimal but present: `apps/api` runs a **vitest** suite (`src/**/*.test.ts`) covering the pure logic that static checks cannot (in-memory rate limiter window semantics, restricted-markdown sanitizer allow/reject matrix, preview token mint/verify/expiry). `apps/main`, `apps/admin`, `packages/contracts`, and `packages/db` have no unit-test framework yet.
 
 Use the regression gate for every code change:
 
 ```sh
-pnpm typecheck && pnpm lint && pnpm build
+pnpm test && pnpm typecheck && pnpm lint && pnpm build
 ```
 
+- `pnpm test` = `vitest run` for `apps/api` (no DB / no network).
 - `pnpm typecheck` = root `tsc -p tsconfig.json --noEmit` (root `*.ts` only) + per-package `typecheck`. Nuxt `nuxt typecheck` for `apps/main`, `tsc --noEmit` for the others.
 - `pnpm lint` = ESLint (Antfu) for `apps/main`; oxlint for `apps/api`, `apps/admin`, `packages/contracts`, `packages/db`. Generated Prisma code under `packages/db/prisma/generated/` is not linted.
 - Do not report a suite as passing when only static checks have run.
 
 ## Prerequisites
 
-`pnpm build` and `pnpm dev` import application environments and need the complete root `.env` described in [BUILD.md](./BUILD.md) (`HANA_DATABASE_URL`, API/auth/R2 secrets, mail). The API process exits at startup if the environment is invalid.
+`pnpm build` and `pnpm dev:*` import application environments and need the complete root `.env` described in [BUILD.md](./BUILD.md) (`HANA_DATABASE_URL`, API/auth/R2 secrets, mail). The API process exits at startup if the environment is invalid.
 
 ## 测试数据
 
@@ -40,4 +41,4 @@ pnpm typecheck && pnpm lint && pnpm build
 
 ## Runtime regression check for database-backed routes
 
-Start the built main app from `apps/main/.output/` with the complete environment (plus a running `apps/api`), then request a Prisma-backed page and `/rss.xml`. This verifies Nitro included the required packages and the deployed route wiring without mutating data. `rss.xml.ts` currently reads Prisma directly, so it needs no running API.
+Start the built main app from `apps/main/.output/` with the complete environment (plus a running `apps/api`), then request a page and `/rss.xml`. `/rss.xml` reads published articles through the API (`/public/articles/list`), so it needs the API running, not the database directly.

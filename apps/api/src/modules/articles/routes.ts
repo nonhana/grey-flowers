@@ -134,6 +134,11 @@ export const createArticlePublicRoutes = (dependencies: AppDependencies) => {
   routes.get('/preview', async (context) => {
     const query = parseQuery(context.req.query(), articlePreviewQuerySchema);
     const data = await dependencies.articles.preview(query.path, query.token);
+
+    // 预览 token 走 query 是 SSR 需要（fragment 到不了服务端）。
+    // 响应绝不可缓存，杜绝 query 中的 token 进入共享/代理缓存日志。
+    context.header('Cache-Control', 'no-store');
+    context.header('Referrer-Policy', 'no-referrer');
     return createSuccess(context, data);
   });
 

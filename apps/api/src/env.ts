@@ -39,7 +39,7 @@ const r2SecretAccessKey = z.string().min(1);
 const r2BucketName = z.string().min(1);
 const r2PublicUrl = z.url();
 
-/** 评论回复邮件开关（= 主站 HANA_MAIL_ENABLE 语义）。 */
+/** 评论回复邮件开关（与主站 .env 同一键名，见 .env.example / deploy.yml）。 */
 const mailEnable = z.literal('true').or(z.literal('false')).default('false');
 const resendApiKey = z.string().optional();
 const resendFrom = z.string().optional();
@@ -53,7 +53,7 @@ const environmentSchema = z
       AUTH_REFRESH_TOKEN_PEPPER: base64urlSecret,
       HANA_DATABASE_URL: postgresUrl,
       MAIN_PORT: port,
-      MAIL_ENABLE: mailEnable,
+      HANA_MAIL_ENABLE: mailEnable,
       NODE_ENV: z.literal('development'),
       R2_ACCESS_KEY_ID: r2AccessKeyId,
       R2_ACCOUNT_ID: r2AccountId,
@@ -70,7 +70,7 @@ const environmentSchema = z
       AUTH_REFRESH_TOKEN_PEPPER: base64urlSecret,
       HANA_DATABASE_URL: postgresUrl,
       MAIN_PORT: port.optional(),
-      MAIL_ENABLE: mailEnable,
+      HANA_MAIL_ENABLE: mailEnable,
       NODE_ENV: z.literal('production'),
       R2_ACCESS_KEY_ID: r2AccessKeyId,
       R2_ACCOUNT_ID: r2AccountId,

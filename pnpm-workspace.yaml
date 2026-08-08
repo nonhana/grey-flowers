@@ -56,7 +56,6 @@ catalogs:
     '@uiw/react-codemirror': ^4.25.11
     '@vitejs/plugin-react': ^6.0.5
     es-toolkit: ^1.50.0
-    hono: ^4.12.33
     idb-keyval: ^6.3.0
     lucide-react: ^1.28.0
     next-themes: ^0.4.6
@@ -93,6 +92,7 @@ catalogs:
     tsdown: ^0.22.14
     rehype-sanitize: 6.0.0
     resend: ^6.18.1
+    vitest: ^4.1.7
     zod: ^4.4.3
   main:
     '@golar/vue': ^0.1.10
@@ -120,8 +120,6 @@ catalogs:
     nuxt-og-image: ^6.7.5
     pinia: ^4.0.2
     pinia-plugin-persistedstate: ^4.7.1
-    rehype-sanitize: 6.0.0
-    resend: ^6.18.1
     unocss: ^66.7.5
     unocss-preset-scrollbar: ^4.0.0
     vivus: ^0.4.6

@@ -13,6 +13,7 @@ export const apiErrorCodeSchema = z.enum([
   'UNSUPPORTED_MEDIA_TYPE',
   'UPLOAD_FAILED',
   'ASSET_REFERENCED',
+  'RATE_LIMITED',
 ]);
 
 export type ApiErrorCode = z.infer<typeof apiErrorCodeSchema>;
@@ -150,10 +151,13 @@ export const authLoginInputSchema = z
 
 export type AuthLoginInput = z.infer<typeof authLoginInputSchema>;
 
+/** access token 有效期（秒）。API 签名与响应 DTO 共用这一个值，杜绝两侧漂移。 */
+export const ACCESS_TOKEN_TTL_SECONDS = 900;
+
 export const authLoginDataSchema = z
   .object({
     accessToken: z.string().min(1),
-    expiresIn: z.literal(900),
+    expiresIn: z.literal(ACCESS_TOKEN_TTL_SECONDS),
     principal: principalSchema,
   })
   .strict();

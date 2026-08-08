@@ -79,7 +79,7 @@ export type OverviewPendingItem = z.infer<typeof overviewPendingItemSchema>;
 
 export const overviewRankItemSchema = z
   .object({
-    name: z.string(),
+    name: z.string().min(1),
     count: z.number().int().min(0),
   })
   .strict();

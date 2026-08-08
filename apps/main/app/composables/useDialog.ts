@@ -52,16 +52,31 @@ export default function useDialog() {
       const container = document.createElement('div')
       document.body.appendChild(container)
 
+      // ok/cancel 显式选择或遮罩/Esc 关闭都只会 settle 一次。
+      let settled = false
+      const settle = (result: 'ok' | 'cancel') => {
+        if (settled)
+          return
+        settled = true
+        resolve(result)
+      }
+      const fail = (error: unknown) => {
+        if (settled)
+          return
+        settled = true
+        reject(error)
+      }
+
       const dialogVNode = createVNode(Dialog, {
         ...options,
         programmatic: true,
         onOk: async () => {
           try {
             await options.onOk?.()
-            resolve('ok')
+            settle('ok')
           }
           catch (error) {
-            reject(error)
+            fail(error)
           }
           finally {
             dialogVNode.component?.exposed?.handleClose()
@@ -70,16 +85,18 @@ export default function useDialog() {
         onCancel: async () => {
           try {
             await options.onCancel?.()
-            resolve('cancel')
+            settle('cancel')
           }
           catch (error) {
-            reject(error)
+            fail(error)
           }
           finally {
             dialogVNode.component?.exposed?.handleClose()
           }
         },
         onDestroy: () => {
+          // 遮罩/Esc 直接关闭（未走 onOk/onCancel）：按「取消」settle，避免悬挂。
+          settle('cancel')
           render(null, container)
           document.body.removeChild(container)
         },

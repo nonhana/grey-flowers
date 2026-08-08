@@ -157,6 +157,7 @@ export const SessionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   refreshSecretHash: 'refreshSecretHash',
+  previousRefreshSecretHash: 'previousRefreshSecretHash',
   createdAt: 'createdAt',
   lastUsedAt: 'lastUsedAt',
   expiresAt: 'expiresAt',

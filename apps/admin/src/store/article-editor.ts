@@ -1,4 +1,8 @@
-import type { ArticleAdmin, ArticleSnapshot } from '@grey-flowers/contracts';
+import type {
+  ArticleAdmin,
+  ArticleSaveInput,
+  ArticleSnapshot,
+} from '@grey-flowers/contracts';
 
 import { debounce } from 'es-toolkit';
 import { del, get as idbGet, set as idbSet } from 'idb-keyval';
@@ -61,6 +65,8 @@ export interface ArticleEditorActions {
   applyRestored: (candidate: RestoreCandidate) => void;
   discardRestored: () => Promise<void>;
   resolveConflict: (mode: 'keep-mine' | 'take-server') => Promise<void>;
+  /** 冲突时服务端详情拉取失败后的人工重试：重新拉取并进入解析对话框。 */
+  retryConflict: () => Promise<void>;
   loadVersions: () => Promise<void>;
   restoreVersion: (snapshot: ArticleSnapshot) => Promise<void>;
   publish: () => Promise<ArticleAdmin | null>;
@@ -89,9 +95,49 @@ export const toDraft = (article: ArticleAdmin): ArticleDraft => {
   };
 };
 
+interface SavePayloadOverrides {
+  content?: string;
+  description?: string;
+  expectedRevision: number;
+  title?: string;
+  createSnapshot?: boolean;
+  preserveServerSnapshot?: boolean;
+}
+
+/**
+ * save payload 单点组装（persist / resolveConflict(keep-mine) / restoreVersion
+ * 三处共用）。加字段只改这里，杜绝反射环类漏字段。
+ */
+const buildSavePayload = (
+  draft: ArticleDraft,
+  overrides: SavePayloadOverrides,
+): ArticleSaveInput => {
+  const payload: ArticleSaveInput = {
+    alt: draft.alt,
+    categoryId: draft.categoryId,
+    content: overrides.content ?? draft.content,
+    cover: draft.cover,
+    coverAssetId: draft.coverAssetId,
+    description:
+      overrides.description === undefined
+        ? (draft.description ?? undefined)
+        : overrides.description,
+    expectedRevision: overrides.expectedRevision,
+    tags: draft.tags,
+    title: overrides.title ?? draft.title,
+  };
+
+  if (overrides.createSnapshot !== undefined)
+    payload.createSnapshot = overrides.createSnapshot;
+  if (overrides.preserveServerSnapshot !== undefined)
+    payload.preserveServerSnapshot = overrides.preserveServerSnapshot;
+
+  return payload;
+};
+
 /** 每个编辑实例一个 store */
 export const createArticleEditorStore = (articleId: number | null) => {
-  let saving = false;
+  let savingPromise: Promise<void> | null = null;
   let pendingAgain = false;
 
   return createStore<ArticleEditorState & ArticleEditorActions>()(
@@ -107,68 +153,69 @@ export const createArticleEditorStore = (articleId: number | null) => {
         });
       };
 
-      const persist = async () => {
-        const id = articleId;
+      /**
+       * 落盘。已在保存中时记录 pendingAgain 并 **join 在途 promise**（而非直接返回），
+       * 让 flushNow 的「发布前先落盘」门控能等到真正落定而不是提前失败。
+       */
+      const persist = (): Promise<void> => {
         const current = get().draft;
-        if (id === null || current === null) return;
+        if (articleId === null || current === null) return Promise.resolve();
 
-        if (saving) {
+        if (savingPromise) {
           pendingAgain = true;
-          return;
+          return savingPromise;
         }
 
-        saving = true;
         set({ phase: 'saving' });
-        try {
-          const result = await apiClient.articles.save(id, {
-            alt: current.alt,
-            categoryId: current.categoryId,
-            content: current.content,
-            cover: current.cover,
-            coverAssetId: current.coverAssetId,
-            description: current.description ?? undefined,
-            expectedRevision: get().revision,
-            tags: current.tags,
-            title: current.title,
-          });
-          set({
-            article: result,
-            revision: result.revision,
-            dirty: false,
-            phase: 'saved',
-            lastError: null,
-          });
-          await del(draftKey(id)).catch(() => undefined);
-        } catch (error) {
-          if (isApiRequestError(error, 'ARTICLE_STALE')) {
-            set({ phase: 'conflict', lastError: null });
-            try {
-              const server = await apiClient.articles.detail(id);
-              set({ conflict: { resolution: null, server } });
-            } catch {
-              // 拉取服务端版本失败仍保持冲突态，由用户重试刷新
-            }
-          } else if (isApiNetworkError(error)) {
-            set({ phase: 'offline', lastError: null });
-            await idbSet(draftKey(id), {
-              draft: current,
-              savedAt: Date.now(),
-            } satisfies RestoreCandidate).catch(() => undefined);
-          } else {
+        savingPromise = apiClient.articles
+          .save(
+            articleId,
+            buildSavePayload(current, { expectedRevision: get().revision }),
+          )
+          .then((result) => {
             set({
-              lastError: isApiRequestError(error)
-                ? error.message
-                : '保存失败，请重试。',
-              phase: 'idle',
+              article: result,
+              revision: result.revision,
+              dirty: false,
+              phase: 'saved',
+              lastError: null,
             });
-          }
-        } finally {
-          saving = false;
-          if (pendingAgain) {
-            pendingAgain = false;
-            void persist();
-          }
-        }
+            return del(draftKey(articleId)).catch(() => undefined);
+          })
+          .catch(async (error) => {
+            if (isApiRequestError(error, 'ARTICLE_STALE')) {
+              set({ phase: 'conflict', lastError: null });
+              // 拉取服务端版本失败仍保持冲突态，由用户显式 retryConflict 重试。
+              try {
+                const server = await apiClient.articles.detail(articleId);
+                set({ conflict: { resolution: null, server } });
+              } catch {
+                set({ conflict: null, lastError: '无法加载服务端版本，请重试。' });
+              }
+            } else if (isApiNetworkError(error)) {
+              set({ phase: 'offline', lastError: null });
+              await idbSet(draftKey(articleId), {
+                draft: current,
+                savedAt: Date.now(),
+              } satisfies RestoreCandidate).catch(() => undefined);
+            } else {
+              set({
+                lastError: isApiRequestError(error)
+                  ? error.message
+                  : '保存失败，请重试。',
+                phase: 'idle',
+              });
+            }
+          })
+          .finally(() => {
+            savingPromise = null;
+            if (pendingAgain) {
+              pendingAgain = false;
+              void persist();
+            }
+          });
+
+        return savingPromise;
       };
 
       const scheduleSave = debounce(() => void persist(), AUTOSAVE_DELAY_MS);
@@ -218,19 +265,18 @@ export const createArticleEditorStore = (articleId: number | null) => {
         scheduleSave();
       };
 
-      /** 立刻落盘；成功返回 true，供发布 / 预览等前置门控。 */
+      /**
+       * 立刻落盘；成功返回 true，供发布 / 预览等前置门控。
+       * 保存进行中时 join 在途 promise，等真正落定再判断结果。
+       */
       const flushNow = async (): Promise<boolean> => {
-        if (articleId === null) return false;
+        if (articleId === null || get().draft === null) return false;
 
-        if (!get().dirty) {
+        if (!get().dirty && !savingPromise) {
           return get().phase === 'saved';
         }
         scheduleSave.cancel();
-        try {
-          await persist();
-        } catch {
-          return false;
-        }
+        await persist();
         return get().phase === 'saved';
       };
 
@@ -255,18 +301,13 @@ export const createArticleEditorStore = (articleId: number | null) => {
 
         if (mode === 'keep-mine') {
           try {
-            const result = await apiClient.articles.save(articleId, {
-              alt: current.alt,
-              categoryId: current.categoryId,
-              content: current.content,
-              cover: current.cover,
-              coverAssetId: current.coverAssetId,
-              description: current.description ?? undefined,
-              expectedRevision: conflictState.server.revision,
-              preserveServerSnapshot: true,
-              tags: current.tags,
-              title: current.title,
-            });
+            const result = await apiClient.articles.save(
+              articleId,
+              buildSavePayload(current, {
+                expectedRevision: conflictState.server.revision,
+                preserveServerSnapshot: true,
+              }),
+            );
             sync(result);
             set({ phase: 'saved', conflict: null });
             await del(draftKey(articleId)).catch(() => undefined);
@@ -297,6 +338,23 @@ export const createArticleEditorStore = (articleId: number | null) => {
         }
       };
 
+      /** 冲突时服务端详情拉取失败后的显式重试（保持冲突态，不再死胡同）。 */
+      const retryConflict = async () => {
+        if (articleId === null) return;
+        set({ phase: 'conflict', lastError: null });
+        try {
+          const server = await apiClient.articles.detail(articleId);
+          set({ conflict: { resolution: null, server } });
+        } catch (error) {
+          set({
+            conflict: null,
+            lastError: isApiNetworkError(error)
+              ? '无法连接服务，请稍后重试。'
+              : '无法加载服务端版本，请重试。',
+          });
+        }
+      };
+
       const loadVersions = async () => {
         if (articleId === null) return;
         const data = await apiClient.articles.snapshots(articleId);
@@ -310,18 +368,16 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved && get().phase !== 'saved') return;
 
-        const result = await apiClient.articles.save(articleId, {
-          alt: current.alt,
-          categoryId: current.categoryId,
-          content: snapshot.content,
-          cover: current.cover,
-          coverAssetId: current.coverAssetId,
-          createSnapshot: true,
-          description: snapshot.description ?? undefined,
-          expectedRevision: get().revision,
-          tags: current.tags,
-          title: snapshot.title,
-        });
+        const result = await apiClient.articles.save(
+          articleId,
+          buildSavePayload(current, {
+            content: snapshot.content,
+            createSnapshot: true,
+            description: snapshot.description ?? undefined,
+            expectedRevision: get().revision,
+            title: snapshot.title,
+          }),
+        );
         sync(result);
         set({ phase: 'saved' });
         await loadVersions();
@@ -413,6 +469,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         applyRestored,
         discardRestored,
         resolveConflict,
+        retryConflict,
         loadVersions,
         restoreVersion,
         publish,
@@ -450,6 +507,7 @@ export const useArticleEditor = (articleId: number | null) => {
   const removeArticle = useStore(store, (s) => s.removeArticle);
   const requestPreview = useStore(store, (s) => s.requestPreview);
   const resolveConflict = useStore(store, (s) => s.resolveConflict);
+  const retryConflict = useStore(store, (s) => s.retryConflict);
   const restoreVersion = useStore(store, (s) => s.restoreVersion);
   const sync = useStore(store, (s) => s.sync);
   const unpublish = useStore(store, (s) => s.unpublish);
@@ -481,6 +539,7 @@ export const useArticleEditor = (articleId: number | null) => {
     requestPreview,
     resolveConflict,
     restoreVersion,
+    retryConflict,
     sync,
     unpublish,
     updateDraft,

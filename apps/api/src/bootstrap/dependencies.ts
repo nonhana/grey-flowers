@@ -43,7 +43,7 @@ export const createDependencies = (
   const logger = createLogger(environment);
   const objectStorage = new R2ObjectStorage(environment);
   const taxonomy = new TaxonomyService(prisma, environment);
-  const assets = new AssetService(prisma, environment, objectStorage);
+  const assets = new AssetService(prisma, environment, objectStorage, logger);
   const auth = new AuthService(prisma, environment);
   const users = new UserService(prisma, auth);
 

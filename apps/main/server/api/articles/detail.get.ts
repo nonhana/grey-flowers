@@ -29,6 +29,9 @@ export default formattedEventHandler(async (event) => {
         token: previewToken,
       })
       setResponseHeader(event, 'X-Robots-Tag', 'noindex')
+      // token 在 query 中（SSR 必需）；禁止缓存与 Referer 传递，防止泄漏。
+      setResponseHeader(event, 'Cache-Control', 'no-store')
+      setResponseHeader(event, 'Referrer-Policy', 'no-referrer')
     }
     else if (!isApiNotFound(error)) {
       throw error

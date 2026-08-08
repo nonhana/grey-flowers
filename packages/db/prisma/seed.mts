@@ -1,7 +1,7 @@
 /**
  * Grey Flowers 测试数据库种子脚本。
  *
- * 覆盖全部 13 张表，并针对 `apps/api` 各列表端点的真实筛选/检索字段
+ * 覆盖全部 14 个模型，并针对 `apps/api` 各列表端点的真实筛选/检索字段
  * （文章标题 trgm 检索、评论内容/路径/作者/日期区间 contains、资产
  * purpose 目录前缀/媒体类型/状态、音乐标题/艺术家/专辑、用户角色/用户名/
  * 邮箱、活动内容 contains、标签 unused、分类/标签 articleCount）造出
@@ -15,6 +15,10 @@
  * 唯一管理员：username `nonhana` / email `nonhana@outlook.com` /
  * 密码 `20021209xiang`（bcrypt cost 10）。其余用户为假造测试数据，共用一个
  * 预计算哈希（登录作为一种密码即可，全部非管理员）。
+ *
+ * 安全：本脚本会先 `deleteMany` 清空全部表，只能在本地/测试库运行。
+ * 遇到指向非本地测试库（非 localhost/127.0.0.1）的 `HANA_DATABASE_URL`
+ * 会直接退出，防止误连生产库造成灾难。
  */
 /* oxlint-disable no-use-before-define -- 文本池常量集中在文件底部便于维护；函数体内引用在运行时早已初始化。 */
 import bcrypt from 'bcryptjs';
@@ -23,6 +27,16 @@ import { createHash, randomUUID } from 'node:crypto';
 import { createPrismaClient } from '../src/index.js';
 
 const PASSWORD_COST = 10;
+
+/** 解析后的主机名若非本机回环地址，视为非测试目标，禁止清库重灌。 */
+const isLocalDatabaseTarget = (url: string) => {
+  const hostname = new URL(url).hostname;
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1'
+  );
+};
 
 /** 数量配置：足够撑起分页（每页 20，>10 页）与模糊检索命中。 */
 const COUNTS = {
@@ -48,6 +62,11 @@ const run = async () => {
   const url = process.env.HANA_DATABASE_URL;
   if (!url) {
     throw new Error('缺少 HANA_DATABASE_URL 环境变量（从根 .env 读取）。');
+  }
+  if (!isLocalDatabaseTarget(url)) {
+    throw new Error(
+      `拒绝在非本机测试库执行 seed（目标: ${new URL(url).host}）。种子会清空全部表，仅允许 localhost/127.0.0.1。`,
+    );
   }
   const prisma = createPrismaClient(url);
 
@@ -453,8 +472,12 @@ const run = async () => {
         src: `https://cdn.example.com/music/${randomUUID()}.mp3`,
         sourceAssetId: musicSourceIds[i % musicSourceIds.length],
         seconds: 90 + (i % 480),
-        album: MUSIC_ALBUMS[i % MUSIC_ALBUMS.length],
-        artist: MUSIC_ARTISTS[i % MUSIC_ARTISTS.length],
+        // 缺元数据样本：每 20 条取 1 条 artist 或 album 留空，
+        // 让 admin「缺元数据」筛选与 overview missingMetadata 指标在种子上有真实数据。
+        album:
+          i % 20 === 0 ? '' : MUSIC_ALBUMS[i % MUSIC_ALBUMS.length],
+        artist:
+          i % 20 === 10 ? '' : MUSIC_ARTISTS[i % MUSIC_ARTISTS.length],
         cover: musicCover(musicCoverIds[i % musicCoverIds.length]),
         coverAssetId:
           i % 5 === 0 ? null : musicCoverIds[i % musicCoverIds.length],
@@ -549,9 +572,9 @@ const run = async () => {
           authorId,
           replyToUserId: null,
           replyToCommentId: null,
-          // 约每 11 条父评论取 1 条落在近 30 天窗口（11 与 30 互质 → 逐日错开）。
+          // 主站文章路由为 /articles/[article]。to = article-ID，故路径对齐 /articles/article-<id>。
           publishedAt: i % 11 === 0 ? recentDate(i) : spreadDate(i, 365 * 4),
-          path: `/article/article-${articleId - 1}`,
+          path: `/articles/article-${articleId - 1}`,
           contentMarkdown: { type: 'root', children: [] },
         });
       }
@@ -597,7 +620,7 @@ const run = async () => {
               3600_000 +
               (i % 3600_000),
           ),
-          path: `/article/article-${articleIndex}`,
+          path: `/articles/article-${articleIndex}`,
           contentMarkdown: { type: 'root', children: [] },
         });
       }

@@ -152,7 +152,7 @@ const ConflictDialog = ({
   revision,
 }: {
   editor: Editor;
-  revision: number;
+  revision: number | null;
 }) => (
   <AppDialog
     isDismissable={false}
@@ -161,30 +161,51 @@ const ConflictDialog = ({
     size="sm"
     title="内容冲突"
   >
-    <p className="text-base/relaxed text-ink">
-      这篇文章在另一个窗口被改过，服务端已经到 rev {revision}。选一份留下：
-    </p>
-    <ul className="mt-4 grid gap-2 text-base/relaxed text-ink-dim">
-      <li className="rounded-control border border-rule p-3">
-        <b className="text-ink-strong">保留我的</b>
-        ：用当前编辑内容覆盖服务端，并先为服务端那一版留一份快照。
-      </li>
-      <li className="rounded-control border border-rule p-3">
-        <b className="text-ink-strong">采用服务端</b>
-        ：丢弃本地修改，载入服务端最新版本。
-      </li>
-    </ul>
-    <div className="mt-5 flex justify-end gap-2">
-      <Button onPress={() => void editor.resolveConflict('take-server')}>
-        采用服务端
-      </Button>
-      <Button
-        onPress={() => void editor.resolveConflict('keep-mine')}
-        tone="solid"
-      >
-        保留我的
-      </Button>
-    </div>
+    {revision === null ? (
+      <>
+        <p className="text-base/relaxed text-ink">
+          这篇文章在另一个窗口被改过，但服务端版本暂时拉取失败。
+        </p>
+        {editor.lastError ? (
+          <p className="mt-2 text-sm text-ink-dim">{editor.lastError}</p>
+        ) : null}
+        <div className="mt-5 flex justify-end gap-2">
+          <Button
+            onPress={() => void editor.retryConflict()}
+            tone="solid"
+          >
+            重试加载
+          </Button>
+        </div>
+      </>
+    ) : (
+      <>
+        <p className="text-base/relaxed text-ink">
+          这篇文章在另一个窗口被改过，服务端已经到 rev {revision}。选一份留下：
+        </p>
+        <ul className="mt-4 grid gap-2 text-base/relaxed text-ink-dim">
+          <li className="rounded-control border border-rule p-3">
+            <b className="text-ink-strong">保留我的</b>
+            ：用当前编辑内容覆盖服务端，并先为服务端那一版留一份快照。
+          </li>
+          <li className="rounded-control border border-rule p-3">
+            <b className="text-ink-strong">采用服务端</b>
+            ：丢弃本地修改，载入服务端最新版本。
+          </li>
+        </ul>
+        <div className="mt-5 flex justify-end gap-2">
+          <Button onPress={() => void editor.resolveConflict('take-server')}>
+            采用服务端
+          </Button>
+          <Button
+            onPress={() => void editor.resolveConflict('keep-mine')}
+            tone="solid"
+          >
+            保留我的
+          </Button>
+        </div>
+      </>
+    )}
   </AppDialog>
 );
 
@@ -356,10 +377,10 @@ export const ArticleWorkspacePage = () => {
         </BottomSheet>
       )}
 
-      {editor.conflict ? (
+      {editor.phase === 'conflict' ? (
         <ConflictDialog
           editor={editor}
-          revision={editor.conflict.server.revision}
+          revision={editor.conflict?.server.revision ?? null}
         />
       ) : null}
     </div>

@@ -6,7 +6,7 @@
 
 ## 阅读说明
 
-- 当前 Schema 包含 11 个模型和 4 组枚举。
+- 当前 Schema 包含 **14 个模型和 5 组枚举**（含 `Session`、`ActivityMusic` 与 `SessionRevokeReason`）。
 - 字段表同时列出数据库标量列与 Prisma 关系字段。关系字段不会额外创建同名数据库列；实际外键列由诸如 `authorId`、`assetId` 的标量字段承载。
 - `?` 表示字段可为 `NULL`；`[]` 表示一对多或多对多关系集合。
 - `@default(...)` 是创建记录时的默认值，`@updatedAt` 由 Prisma 在更新记录时写入当前时间。
@@ -16,9 +16,9 @@
 
 | 领域       | 模型                                                | 责任                                                  |
 | ---------- | --------------------------------------------------- | ----------------------------------------------------- |
-| 内容发布   | `Article`、`Tag`、`Category`                        | 管理文章、文章标签与文章分类。                        |
-| 身份与互动 | `User`、`Comment`、`UserMessage`                    | 管理用户身份、评论回复树与面向用户的评论消息。        |
-| 动态与音乐 | `Activity`、`Music`                                 | 管理动态内容、动态图片和音乐元数据。                  |
+| 内容发布   | `Article`、`Tag`、`Category`、`ArticleSnapshot`     | 管理文章、文章标签、文章分类与文章版本快照。          |
+| 身份与互动 | `User`、`Session`、`Comment`、`UserMessage`         | 管理用户身份、登录会话、评论回复树与面向用户的评论消息。 |
+| 动态与音乐 | `Activity`、`Music`、`ActivityMusic`               | 管理动态内容、动态图片排序、音乐元数据与动态-音乐多对多。 |
 | 媒体资产   | `Asset`、`ArticleInlineAsset`、`ActivityImageAsset` | 管理受用户创建的图片/音频资产，以及内容与资产的关联。 |
 
 ## 内容发布领域
@@ -31,11 +31,11 @@
 | -------------- | ---------------------- | -------------------------------------- | --------------------------------------------------------------------------- |
 | `id`           | `Int`                  | 主键；自增                             | 文章的内部标识。                                                            |
 | `to`           | `String`               | 必填；唯一                             | 文章的唯一 `to` 标识。Schema 未限定它是否为 URL、路径或其他格式。           |
-| `title`        | `String`               | 必填；唯一                             | 文章标题。                                                                  |
-| `description`  | `String?`              | 可空                                   | 文章说明或摘要文本。                                                        |
+| `title`        | `String`               | 必填                                   | 文章标题。Schema 未声明唯一约束。                              |
+| `description`  | `String?`              | 可空                                   | 文章说明或摘要文本。                                        |
 | `cover`        | `String`               | 必填                                   | 文章封面的字符串引用。Schema 未限定其格式，也未要求与 `coverAssetId` 同步。 |
 | `coverAssetId` | `Int?`                 | 可空；外键至 `Asset.id`；有索引        | 封面所使用的资产标识；为空时文章仍可仅使用 `cover` 字符串。                 |
-| `alt`          | `String`               | 必填；唯一                             | 名为 `alt` 的文章唯一字符串值；Schema 未定义其展示或语义用途。              |
+| `alt`          | `String`               | 必填                                   | 名为 `alt` 的文章替代文本字符串值；Schema 未定义其展示或语义用途。Schema 未声明唯一约束。              |
 | `publishedAt`  | `DateTime`             | 必填；默认 `now()`                     | 文章的发布时间字段；新建记录默认写入当前时间。                              |
 | `editedAt`     | `DateTime`             | 必填；无默认值、无 `@updatedAt`        | 文章编辑时间字段，写入与更新时机需由调用方负责。                            |
 | `published`    | `Boolean`              | 必填；默认 `false`                     | 文章是否处于发布状态。                                                      |
@@ -50,7 +50,7 @@
 **约束与索引**
 
 - 主键：`id`。
-- 唯一：`to`、`title`、`alt`。
+- 唯一：`to`。
 - 普通索引：`coverAssetId`。
 - 条件 GIN 索引：仅当 `published = true` 时，`title` 使用 `gin_trgm_ops` 参与索引，索引名为 `Article_search_title_trgm_idx`。这是面向已发布文章标题的三元组搜索索引。
 
@@ -143,10 +143,31 @@
 | `id`         | `Int`     | 主键；自增                | 用户评论消息的内部标识。           |
 | `receiverId` | `Int`     | 必填；外键至 `User.id`    | 接收该消息的用户标识。             |
 | `commentId`  | `Int`     | 必填；外键至 `Comment.id` | 该消息关联的评论标识。             |
-| `comment`    | `Comment` | Prisma 关系字段           | 通过 `commentId` 读取的关联评论。  |
+| `comment`    | `Comment` | Prisma 关系字段；删除时显式 `Cascade` | 通过 `commentId` 读取的关联评论。删除评论时，其消息一并删除。  |
 | `receiver`   | `User`    | Prisma 关系字段           | 通过 `receiverId` 读取的接收用户。 |
 
-**约束与索引**：主键为 `id`。Schema 没有为 `(receiverId, commentId)` 声明唯一约束，也没有时间字段；同一用户和评论的组合可出现多次。
+**约束与索引**：主键为 `id`；`(receiverId, commentId)` 唯一 —— 同一接收者对同一评论至多一条通知。
+
+## 身份与互动领域：会话
+
+### `Session`（登录会话）
+
+每次登录创建的刷新令牌会话。凭据以 HMAC(pepper) 哈希存储，支持轮换与重用检测。
+
+| 字段                        | 类型                 | 存储与约束                                | 含义                                                                 |
+| --------------------------- | -------------------- | ----------------------------------------- | -------------------------------------------------------------------- |
+| `id`                        | `String`             | 主键；`cuid()` 默认值                      | 会话的内部标识，也是刷新凭据的一部分。                               |
+| `userId`                    | `Int`                | 必填；外键至 `User.id`                     | 所属用户标识。                                                       |
+| `refreshSecretHash`         | `String`             | 必填                                        | 当前有效刷新 secret 的哈希。                                         |
+| `previousRefreshSecretHash` | `String?`            | 可空                                        | 上一次轮换前的刷新 secret 哈希；用于重用检测。                       |
+| `createdAt`                 | `DateTime`           | 必填；默认 `now()`                          | 会话创建时间。                                                       |
+| `lastUsedAt`                | `DateTime`           | 必填；默认 `now()`                          | 最近一次 refresh 时间（轮换时滑动）。                                |
+| `expiresAt`                 | `DateTime`           | 必填                                        | 过期时间（30 天），过期即作废。                                      |
+| `revokedAt`                 | `DateTime?`          | 可空                                        | 吊销时间；非空即不可用。                                             |
+| `revokeReason`              | `SessionRevokeReason?` | 可空                                      | 吊销原因（登出 / 改密 / 角色变更 / 检测到重用）。                    |
+| `user`                      | `User`               | Prisma 关系字段；删除时显式 `Cascade`      | 通过 `userId` 读取的所属用户。删除用户时，其会话一并删除。           |
+
+**约束与索引**：主键为 `id`；`(userId, revokedAt, expiresAt)` 与 `expiresAt` 各有普通索引。每次成功的 `POST /auth/refresh` 都会轮换 `refreshSecretHash`；若是旧 token 再次出现（命中 `previousRefreshSecretHash`），整族会话以 `REUSE_DETECTED` 吊销。
 
 ## 动态与音乐领域
 
@@ -163,13 +184,13 @@
 | `editedAt`        | `DateTime`             | 必填；`@updatedAt` | 动态记录最近一次经 Prisma 更新的时间。                                           |
 | `contentMarkdown` | `Json?`                | 可空               | 动态正文的 JSON 表示；Schema 未约束结构，也未要求与 `content` 同步。             |
 | `imageAssets`     | `ActivityImageAsset[]` | Prisma 关系集合    | 动态关联的资产化图片及其排序记录。                                               |
-| `music`           | `Music[]`              | Prisma 关系集合    | 关联到该动态的音乐集合。                                                         |
+| `music`           | `ActivityMusic[]` | Prisma 关系集合    | 关联到该动态的音乐多对多记录（经 `ActivityMusic`，展示按 `music.id` 升序）。    |
 
 **约束与索引**：主键为 `id`。除主键外，Schema 未为本模型声明唯一约束或普通索引。
 
 ### `Music`（音乐）
 
-一条音乐元数据记录，可选地归属一条动态，并可分别引用音源资产和封面资产。
+一条音乐元数据记录，可被多条动态通过 `ActivityMusic` 多对多关联引用，并可分别引用音源资产和封面资产。
 
 | 字段            | 类型        | 存储与约束                                                | 含义                                                                      |
 | --------------- | ----------- | --------------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -178,16 +199,29 @@
 | `src`           | `String`    | 必填                                                      | 音源的字符串引用。Schema 未限定格式，也未要求与 `sourceAssetId` 同步。    |
 | `sourceAssetId` | `Int?`      | 可空；外键至 `Asset.id`；有索引                           | 音源所用资产的标识。                                                      |
 | `seconds`       | `Int`       | 必填                                                      | 曲目时长的整数秒数。Schema 未声明非负约束。                               |
-| `activityId`    | `Int?`      | 可空；外键至 `Activity.id`                                | 所属动态的标识；为空时音乐记录可独立存在。                                |
 | `album`         | `String`    | 必填                                                      | 专辑名称。                                                                |
 | `artist`        | `String`    | 必填                                                      | 表演者或作者名称。                                                        |
 | `cover`         | `String`    | 必填                                                      | 音乐封面的字符串引用。Schema 未限定格式，也未要求与 `coverAssetId` 同步。 |
 | `coverAssetId`  | `Int?`      | 可空；外键至 `Asset.id`；有索引                           | 音乐封面所用资产的标识。                                                  |
-| `activity`      | `Activity?` | Prisma 关系字段                                           | 通过 `activityId` 读取的所属动态。                                        |
+| `createdAt`     | `DateTime`  | 必填；默认 `now()`                                        | 入库时间，供库内排序与展示用。                                            |
+| `activities`    | `ActivityMusic[]` | Prisma 关系集合                     | 引用该音乐的动态关联记录（多对多）。                                      |
 | `sourceAsset`   | `Asset?`    | Prisma 关系字段 `MusicSourceAsset`；删除时显式 `Restrict` | 通过 `sourceAssetId` 读取的音源资产。被引用资产不可删除。                 |
 | `coverAsset`    | `Asset?`    | Prisma 关系字段 `MusicCoverAsset`；删除时显式 `Restrict`  | 通过 `coverAssetId` 读取的封面资产。被引用资产不可删除。                  |
 
-**约束与索引**：主键为 `id`；`sourceAssetId`、`coverAssetId` 各有普通索引。
+**约束与索引**：主键为 `id`；`sourceAssetId`、`coverAssetId` 各有普通索引。音乐与动态的关联不再通过 `Music.activityId` 外键表达，而是显式多对多 `ActivityMusic`（见下）。
+
+### `ActivityMusic`（动态-音乐多对多）
+
+连接动态与音乐的显式多对多关联。
+
+| 字段        | 类型        | 存储与约束                            | 含义                                        |
+| ----------- | ----------- | ------------------------------------- | ------------------------------------------- |
+| `activityId` | `Int`       | 复合主键组成部分；外键至 `Activity.id` | 关联该音乐记录是否显示在动态中…（动态标识）。 |
+| `musicId`    | `Int`       | 复合主键组成部分；外键至 `Music.id`；有索引 | 关联的音乐标识。                        |
+| `activity`   | `Activity`  | Prisma 关系字段；删除时显式 `Cascade`  | 通过 `activityId` 读取的动态。删除动态时，其关联记录一并删除。 |
+| `music`      | `Music`     | Prisma 关系字段；删除时显式 `Cascade`  | 通过 `musicId` 读取的音乐。删除音乐时，其关联记录一并删除。 |
+
+**约束与索引**：复合主键为 `(activityId, musicId)`，因此同一动态至多关联同一音乐一次；`musicId` 有普通索引。
 
 ## 媒体资产领域
 
@@ -267,6 +301,15 @@
 
 枚举只定义角色取值，不定义各角色拥有的权限。
 
+### 会话吊销原因 `SessionRevokeReason`
+
+| 值                | 使用字段            | 含义                                  |
+| ----------------- | ------------------- | ------------------------------------- |
+| `LOGOUT`          | `Session.revokeReason` | 用户主动登出。                    |
+| `PASSWORD_CHANGED`| `Session.revokeReason` | 修改密码后吊销全部会话。          |
+| `ROLE_CHANGED`    | `Session.revokeReason` | 角色变更后吊销全部会话。          |
+| `REUSE_DETECTED`  | `Session.revokeReason` | 检测到刷新令牌重用（可能被盗）。 |
+
 ### 资产媒体类型 `AssetMediaType`
 
 | 值      | 使用字段          | 含义               |
@@ -296,8 +339,8 @@
 | `Comment`            | `Comment`（回复目标） | 一条评论对零或一个被回复评论，`replyToCommentId` 可空 | 未显式声明。                                            |
 | `Comment`            | `User`（回复目标）    | 多条评论对零或一个用户，`replyToUserId` 可空          | 未显式声明。                                            |
 | `UserMessage`        | `User`                | 多条消息对一个接收用户，`receiverId` 必填             | 未显式声明。                                            |
-| `UserMessage`        | `Comment`             | 多条消息对一条评论，`commentId` 必填                  | 未显式声明。                                            |
-| `Activity`           | `Music`               | 一条动态对多条音乐，`Music.activityId` 可空           | 未显式声明。                                            |
+| `UserMessage`        | `Comment`             | 多条消息对一条评论，`commentId` 必填                  | 显式 `Cascade`：删除评论会删除相关评论消息。            |
+| `Activity`           | `Music`               | 多条动态对多条音乐，显式多对多 `ActivityMusic`        | 删除任一侧时 `Cascade`。                                |
 | `User`               | `Asset`（创建者）     | 一个用户对多项资产，`Asset.createdById` 必填          | 显式 `Restrict`。                                       |
 | `Music`              | `Asset`（音源/封面）  | 多条音乐各自可选引用一个资产                          | 两条关系均显式 `Restrict`。                             |
 | `ArticleInlineAsset` | `Article` / `Asset`   | 文章与资产的显式多对多                                | 删除文章时 `Cascade`；删除仍被关联的资产时 `Restrict`。 |

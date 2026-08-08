@@ -53,6 +53,18 @@ onMounted(() => {
   fetchComments()
 })
 
+// 翻页重取：分页器改页不会自然触发重新请求。
+watch(page, () => {
+  fetchComments()
+})
+
+// 同一路由内切换文章 / recent 参数变化时，回到第一页并整体刷新。
+watch(queryPath, () => {
+  page.value = 1
+  fetchTotal()
+  fetchComments()
+})
+
 const submitDialogVisible = ref(false)
 const replyTo = ref<IReplyComment | null>(null)
 

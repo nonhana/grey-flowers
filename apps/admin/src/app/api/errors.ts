@@ -18,7 +18,7 @@ export class ApiRequestError extends Error {
 
 export class ApiNetworkError extends Error {
   constructor(cause: unknown) {
-    super('无法连接身份服务。');
+    super('无法连接服务。');
     this.name = 'ApiNetworkError';
     this.cause = cause;
   }
@@ -26,7 +26,7 @@ export class ApiNetworkError extends Error {
 
 export class ApiResponseError extends Error {
   constructor() {
-    super('身份服务返回了无法识别的响应。');
+    super('服务返回了无法识别的响应。');
     this.name = 'ApiResponseError';
   }
 }

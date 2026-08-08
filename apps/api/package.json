@@ -19,6 +19,7 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "start": "node dist/main.mjs",
+    "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -44,6 +45,7 @@
   "devDependencies": {
     "pino-pretty": "catalog:api",
     "tsdown": "catalog:api",
-    "tsx": "catalog:"
+    "tsx": "catalog:",
+    "vitest": "catalog:api"
   }
 }

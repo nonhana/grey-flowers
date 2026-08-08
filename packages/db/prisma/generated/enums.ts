@@ -28,6 +28,7 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 export const SessionRevokeReason = {
   LOGOUT: 'LOGOUT',
   PASSWORD_CHANGED: 'PASSWORD_CHANGED',
+  REUSE_DETECTED: 'REUSE_DETECTED',
   ROLE_CHANGED: 'ROLE_CHANGED'
 } as const
 

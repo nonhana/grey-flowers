@@ -2,7 +2,7 @@
 
 ## Workspace shape
 
-Grey Flowers is a pnpm monorepo (`pnpm@11.18.0`, `pnpm-workspace.yaml`, `catalogMode: prefer`). There are five workspace packages + the root operator shell:
+Grey Flowers is a pnpm monorepo (`pnpm@11.19.0`, `pnpm-workspace.yaml`, `catalogMode: prefer`). There are five workspace packages + the root operator shell:
 
 | Package                                          | Identity                                    | Exclusive ownership                                                                     | Build                              |
 | ------------------------------------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------- |
@@ -33,13 +33,13 @@ Prohibited:
 - `apps/admin` holding its own business rules, second MDC renderer, or publishing logic;
 - `packages/contracts` or `packages/db` importing Hono, Node, or any app module.
 
-**Migration caveat:** the target matrix above is the design contract; it is not yet fully enforced in code. `apps/main` still depends on `@grey-flowers/db` and keeps legacy `server/api` + Prisma read/writes for activity, comments, user, and auth (`rss.xml.ts` reads Prisma directly). Only `apps/api` may be _extended_ to use the database; do not add new database access to `apps/main`.
+**Migration state:** the target matrix is now fully enforced. `apps/main` has no `@grey-flowers/db` dependency; every `server/api` route proxies the API through `apiGet`/`apiMutate` (`apps/main/server/utils/api-gateway.ts`). Extend business capabilities in `apps/api` only.
 
 ## Dependency direction rules in practice
 
 - Add a cross-package dependency only when a stable, cross-runtime reuse is proven. Do not create a generic `shared`, `ui`, or state package for anticipated reuse with a single caller.
 - Public reads and management operations are different Interfaces under the same module (see [API_CONVENTIONS.md](./API_CONVENTIONS.md)); callers never filter sensitive fields client-side.
-- The Hono `AppType` from `apps/api` is consumed type-only by the admin client; never pull `apps/api` runtime code or Prisma types into a browser bundle.
+- `apps/api` exports `AppType` as a type convenience for Hono integration tests/tooling; no workspace consumer currently imports it. Never pull `apps/api` runtime code or Prisma types into a browser bundle.
 
 ## Version and dependency management
 
