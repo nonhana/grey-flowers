@@ -1,18 +1,21 @@
 import type {
+  AssetConfirmInput,
   AssetDetailData,
   AssetDto,
   AssetListData,
   AssetListQuery,
   AssetPurpose,
+  AssetUploadUrlData,
+  AssetUploadUrlInput,
 } from '@grey-flowers/contracts';
 import type { PrismaClient } from '@grey-flowers/db';
 
-import { fileTypeFromBuffer } from 'file-type';
-import { parseBuffer } from 'music-metadata';
 import { randomUUID } from 'node:crypto';
-import sharp from 'sharp';
 
-import type { ObjectStorage } from '@/adapters/object-storage/r2.js';
+import type {
+  HeadObjectResult,
+  ObjectStorage,
+} from '@/adapters/object-storage/r2.js';
 import type { ApiLogger } from '@/bootstrap/logger.js';
 import type { ApiEnvironment } from '@/env.js';
 
@@ -22,6 +25,7 @@ import { pagination } from '@/lib/pagination.js';
 import {
   assetProjection,
   assetPurposeDirectory,
+  assetPurposeFromDirectory,
   toAssetDto,
   toReferenceCounts,
 } from './contracts.js';
@@ -102,39 +106,6 @@ const currentMonthPrefix = () => {
   return `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
 };
 
-interface MediaMetadata {
-  durationMs?: number;
-  height?: number;
-  width?: number;
-}
-
-const readImageDimensions = async (
-  buffer: Uint8Array,
-): Promise<MediaMetadata> => {
-  try {
-    const { height, width } = await sharp(buffer).metadata();
-    return { height: height ?? undefined, width: width ?? undefined };
-  } catch {
-    return { height: undefined, width: undefined };
-  }
-};
-
-const readAudioDuration = async (
-  buffer: Uint8Array,
-): Promise<MediaMetadata> => {
-  try {
-    const { format } = await parseBuffer(buffer);
-    return {
-      durationMs:
-        typeof format.duration === 'number'
-          ? Math.round(format.duration * 1000)
-          : undefined,
-    };
-  } catch {
-    return { durationMs: undefined };
-  }
-};
-
 export class AssetService {
   constructor(
     private readonly prisma: PrismaClient,
@@ -143,117 +114,120 @@ export class AssetService {
     private readonly logger: ApiLogger,
   ) {}
 
-  async upload(
-    createdById: number,
-    purpose: AssetPurpose,
-    file: File,
-  ): Promise<AssetDto> {
-    const profile = purposeProfiles[purpose];
-    if (file.size > profile.maxBytes)
-      throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
+  /** MIME（normalize 后）→ 存储扩展名；presign 白名单校验保证命中。 */
+  private readonly mimeToExt: Record<string, string> = {
+    'audio/aac': 'aac',
+    'audio/flac': 'flac',
+    'audio/mpeg': 'mp3',
+    'audio/ogg': 'ogg',
+    'audio/wav': 'wav',
+    'image/gif': 'gif',
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+  };
 
-    const buffer = new Uint8Array(await file.arrayBuffer());
-    const detected = await fileTypeFromBuffer(buffer);
-    const declared = normalizeDeclaredMime(file.type);
+  /**
+   * 直传第一步：服务端生成受管 key 并签发一次性 PUT URL。
+   * 密钥不出服务端；浏览器随后直接 PUT 对象，全程可见真实上传进度。
+   */
+  async createUploadUrl(
+    input: AssetUploadUrlInput,
+  ): Promise<AssetUploadUrlData> {
+    const profile = purposeProfiles[input.purpose];
+    const declared = normalizeDeclaredMime(input.contentType);
 
-    if (
-      !detected ||
-      !profile.mimeTypes.has(detected.mime) ||
-      !profile.mimeTypes.has(declared)
-    ) {
+    if (!profile.mimeTypes.has(declared)) {
       throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
     }
+    if (input.size !== undefined && input.size > profile.maxBytes) {
+      throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
+    }
 
-    return await this.persistBuffer(
-      createdById,
-      purpose,
-      buffer,
-      declared,
-      detected.ext,
-    );
+    const ext = this.mimeToExt[declared];
+    const key = `${assetPurposeDirectory[input.purpose]}/${currentMonthPrefix()}/${randomUUID()}.${ext}`;
+    const uploadUrl = await this.objectStorage.presignUpload({
+      contentType: declared,
+      key,
+    });
+
+    return { uploadUrl, key, maxBytes: profile.maxBytes };
   }
 
   /**
-   * 受管媒体提取用的写入路径（音乐模块封面提取调用）：复跑 purpose 校验与
-   * 媒体元数据抽取后走同一单写入尾段。对象写入、key 命名与孤儿补偿全部
-   * 收敛在资产用例内，不泄露给业务模块。
+   * 直传第三步：浏览器 PUT 完成后回执。HEAD 校验对象（存在、大小一致、
+   * 类型在白名单内）后落库；失败补偿删除对象，防止孤儿残留。
    */
-  async createFromBuffer(
-    purpose: AssetPurpose,
-    buffer: Uint8Array,
-    contentType: string,
+  async confirmUpload(
     createdById: number,
+    input: AssetConfirmInput,
   ): Promise<AssetDto> {
-    const profile = purposeProfiles[purpose];
-    if (buffer.byteLength > profile.maxBytes)
-      throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
-
-    const detected = await fileTypeFromBuffer(buffer);
-    const declared = normalizeDeclaredMime(contentType);
-
-    if (
-      !detected ||
-      !profile.mimeTypes.has(detected.mime) ||
-      !profile.mimeTypes.has(declared)
-    ) {
-      throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
+    // 幂等：同 key 已落库（如前端重复回执）直接返回既有记录。
+    const existing = await this.prisma.asset.findFirst({
+      select: assetProjection,
+      where: { storageKey: input.key },
+    });
+    if (existing) {
+      return toAssetDto(existing, this.environment.ASSET_PUBLIC_URL);
     }
 
-    return await this.persistBuffer(
-      createdById,
-      purpose,
-      buffer,
-      declared,
-      detected.ext,
-    );
-  }
-
-  /** 单写入尾段：媒体元数据抽取 → key 命名 → putObject → asset.create → 孤儿补偿。 */
-  private async persistBuffer(
-    createdById: number,
-    purpose: AssetPurpose,
-    buffer: Uint8Array,
-    contentType: string,
-    ext: string,
-  ): Promise<AssetDto> {
-    const profile = purposeProfiles[purpose];
-    const metadata =
-      profile.mediaType === 'IMAGE'
-        ? await readImageDimensions(buffer)
-        : await readAudioDuration(buffer);
-
-    const key = `${assetPurposeDirectory[purpose]}/${currentMonthPrefix()}/${randomUUID()}.${ext}`;
-
-    try {
-      await this.objectStorage.putObject({
-        body: buffer,
-        contentType,
-        key,
-        size: buffer.byteLength,
+    const directory = input.key.split('/')[0] ?? '';
+    const purpose = assetPurposeFromDirectory(directory);
+    if (!purpose) {
+      throw new ApiError('VALIDATION_FAILED', {
+        fields: { key: ['存储路径不在受管目录内'] },
       });
+    }
+    const profile = purposeProfiles[purpose];
+
+    let head: HeadObjectResult;
+    try {
+      head = await this.objectStorage.headObject(input.key);
     } catch (cause) {
-      throw new ApiError('UPLOAD_FAILED', { cause });
+      throw new ApiError('UPLOAD_FAILED', {
+        cause,
+        fields: { key: ['对象不存在或不可读'] },
+      });
+    }
+
+    const contentType = normalizeDeclaredMime(head.contentType);
+    if (!profile.mimeTypes.has(contentType)) {
+      throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
+    }
+    if (head.size !== input.size || head.size > profile.maxBytes) {
+      throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
     }
 
     try {
       const record = await this.prisma.asset.create({
         data: {
-          byteSize: BigInt(buffer.byteLength),
+          byteSize: BigInt(head.size),
           createdById,
-          durationMs: metadata.durationMs,
-          height: metadata.height,
+          durationMs:
+            profile.mediaType === 'AUDIO' ? (input.durationMs ?? null) : null,
+          height:
+            profile.mediaType === 'IMAGE' &&
+            input.height !== undefined &&
+            input.width !== undefined
+              ? input.height
+              : null,
           mediaType: profile.mediaType,
           mimeType: contentType,
           status: 'AVAILABLE',
-          storageKey: key,
-          width: metadata.width,
+          storageKey: input.key,
+          width:
+            profile.mediaType === 'IMAGE' &&
+            input.height !== undefined &&
+            input.width !== undefined
+              ? input.width
+              : null,
         },
         select: assetProjection,
       });
       return toAssetDto(record, this.environment.ASSET_PUBLIC_URL);
     } catch (cause) {
       try {
-        await this.objectStorage.deleteObject(key);
+        await this.objectStorage.deleteObject(input.key);
       } catch {
         // best-effort 孤儿补偿：对象残留可留待保留策略兜底
       }

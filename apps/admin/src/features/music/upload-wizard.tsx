@@ -1,14 +1,12 @@
-import type { MusicParseData } from '@grey-flowers/contracts';
-
 import { useNavigate } from '@tanstack/react-router';
 import { FileUp, ImagePlus, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { parseBlob } from 'music-metadata';
+import { useEffect, useState } from 'react';
 import { Form, ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
-import { assetErrorMessage } from '@/features/assets/display.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept.js';
@@ -23,7 +21,7 @@ import {
   TextField,
 } from '@/ui/index.js';
 
-type Phase = 'idle' | 'uploading' | 'parsing' | 'ready';
+type Phase = 'idle' | 'parsing' | 'ready';
 
 interface WizForm {
   album: string;
@@ -32,6 +30,11 @@ interface WizForm {
   coverAssetId: number | null;
   seconds: number;
   title: string;
+}
+
+interface EmbeddedCover {
+  blob: Blob;
+  objectUrl: string;
 }
 
 const EMPTY_FORM: WizForm = {
@@ -43,79 +46,139 @@ const EMPTY_FORM: WizForm = {
   title: '',
 };
 
+const fallbackTitle = (name: string) =>
+  name.replace(/\.[^/.]+$/, '') || '未命名';
+
 export const UploadWizard = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [progress, setProgress] = useState(0);
   const [form, setForm] = useState<WizForm>(EMPTY_FORM);
-  const [sourceAssetId, setSourceAssetId] = useState<number | null>(null);
+  const [embeddedCover, setEmbeddedCover] = useState<EmbeddedCover | null>(
+    null,
+  );
   const [pickerOpen, setPickerOpen] = useState(false);
   const [error, setError] = useState('');
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const applyParse = (parsed: MusicParseData) => {
-    setForm({
-      album: parsed.album,
-      artist: parsed.artist,
-      cover: parsed.cover ?? '',
-      coverAssetId: parsed.coverAssetId,
-      seconds: parsed.seconds,
-      title: parsed.title,
-    });
-    setSourceAssetId(parsed.sourceAssetId);
-  };
+  // 内嵌封面 objectURL 跟随组件生命周期释放。
+  useEffect(() => {
+    return () => {
+      if (embeddedCover) URL.revokeObjectURL(embeddedCover.objectUrl);
+    };
+  }, [embeddedCover]);
 
+  /** 解析唯一一次：发生在客户端（拖入即解析），服务端不再解析媒体。 */
   const startWithFile = async (target: File) => {
-    if (!target.type.startsWith('audio/')) {
+    const isAudio =
+      target.type.startsWith('audio/') ||
+      /\.(mp3|flac|wav|ogg|aac)$/i.test(target.name);
+    if (!isAudio) {
       setError('请选择音频文件。');
       return;
     }
     setFile(target);
-    setPhase('uploading');
+    setPhase('parsing');
     setProgress(0);
     setError('');
     setSaveError('');
 
-    try {
-      // 1. 音源先作为受管资产上传（进度真实可感知）。
-      const asset = await apiClient.assets.upload(
-        { file: target, purpose: 'MUSIC_SOURCE' },
-        setProgress,
-      );
-      // 2. 服务端读回对象解析元数据 + 提取内嵌封面。
-      setPhase('parsing');
-      const parsed = await apiClient.music.parse(asset.id);
-      applyParse(parsed);
+    const degrade = (title: string) => {
+      setForm({
+        album: '',
+        artist: '',
+        cover: '',
+        coverAssetId: null,
+        seconds: 0,
+        title,
+      });
+      setEmbeddedCover(null);
       setPhase('ready');
-    } catch (cause) {
-      setError(assetErrorMessage(cause));
-      setPhase('idle');
+    };
+
+    try {
+      const { common, format } = await parseBlob(target);
+      const picture = common.picture?.[0];
+      const embedded = picture
+        ? (() => {
+            const blob = new Blob([picture.data.slice()], {
+              type: picture.format,
+            });
+            return { blob, objectUrl: URL.createObjectURL(blob) };
+          })()
+        : null;
+
+      setForm({
+        album: common.album ?? '',
+        artist: common.artist ?? '',
+        cover: embedded?.objectUrl ?? '',
+        coverAssetId: null,
+        seconds:
+          typeof format.duration === 'number' && format.duration > 0
+            ? Math.round(format.duration)
+            : 0,
+        title: common.title?.trim() || fallbackTitle(target.name),
+      });
+      setEmbeddedCover(embedded);
+      setPhase('ready');
+    } catch {
+      // 不可解析：降级为文件名标题，仍可手动补全后保存。
+      degrade(fallbackTitle(target.name));
+      setError('未能解析文件元数据，已用文件名作为标题，可手动补全。');
     }
   };
 
   const canSave =
     phase === 'ready' &&
     form.title.trim().length > 0 &&
-    form.cover.trim().length > 0 &&
-    sourceAssetId !== null;
+    form.cover.trim().length > 0;
 
   const save = async () => {
-    if (!canSave || sourceAssetId === null) return;
+    if (!canSave || !file) return;
     setSaving(true);
     setSaveError('');
+    setProgress(0);
+
+    const uploadCover = async () => {
+      if (!embeddedCover) return null;
+      const coverFile = new File([embeddedCover.blob], 'cover', {
+        type: embeddedCover.blob.type,
+      });
+      return apiClient.assets.upload({
+        file: coverFile,
+        purpose: 'MUSIC_COVER',
+      });
+    };
+
     try {
+      // 音源直传（进度真实可感知）与内嵌封面上传并行。
+      const [sourceAsset, coverAsset] = await Promise.all([
+        apiClient.assets.upload(
+          { file, purpose: 'MUSIC_SOURCE' },
+          setProgress,
+          { durationMs: form.seconds * 1000 },
+        ),
+        uploadCover(),
+      ]);
+
+      const coverAssetId =
+        form.coverAssetId ?? (coverAsset ? coverAsset.id : null);
+
       await apiClient.music.create({
         album: form.album.trim(),
         artist: form.artist.trim(),
-        sourceAssetId,
+        seconds: form.seconds,
+        sourceAssetId: sourceAsset.id,
         title: form.title.trim(),
-        // 选了受管封面则交资产；否则以外部 URL 为准。
-        ...(form.coverAssetId === null
+        // 解析出的内嵌封面或资源库封面走受管资产；否则以外部 URL 为准。
+        ...(coverAssetId === null
           ? { cover: form.cover.trim() }
-          : { coverAssetId: form.coverAssetId }),
+          : { coverAssetId }),
       });
+
+      if (embeddedCover) URL.revokeObjectURL(embeddedCover.objectUrl);
       toast.success('已加入音乐库。');
       await navigate({ to: '/music' });
     } catch (cause) {
@@ -124,7 +187,7 @@ export const UploadWizard = () => {
     }
   };
 
-  const isBusy = phase === 'uploading' || phase === 'parsing';
+  const isParsing = phase === 'parsing';
 
   return (
     <div className="grid gap-5">
@@ -132,7 +195,7 @@ export const UploadWizard = () => {
         <div className="grid gap-4">
           <FileDrop
             accept={AUDIO_ACCEPT_MAP}
-            busy={isBusy}
+            busy={isParsing || saving}
             onFile={(target) => void startWithFile(target)}
             onRejected={() => setError('请选择音频文件。')}
           >
@@ -141,12 +204,10 @@ export const UploadWizard = () => {
               className="size-4 shrink-0 text-accent-text"
             />
             <span className="truncate">
-              {phase === 'uploading' || phase === 'parsing'
-                ? file?.name
-                : '拖入音频文件，或点击选择'}
+              {isParsing || saving ? file?.name : '拖入音频文件，或点击选择'}
             </span>
             <span className="ml-auto shrink-0 font-mono text-2xs">
-              {phase === 'parsing'
+              {isParsing
                 ? '正在解析元数据…'
                 : file
                   ? `已选择 · ${(file.size / 1024 / 1024).toFixed(1)} MB`
@@ -154,7 +215,7 @@ export const UploadWizard = () => {
             </span>
           </FileDrop>
 
-          {phase === 'uploading' ? (
+          {saving ? (
             <ProgressBar
               aria-label="上传进度"
               className="grid gap-1.5"
@@ -218,7 +279,7 @@ export const UploadWizard = () => {
               value={form.album}
             />
             <div className="grid gap-2">
-              <FieldLabel>时长（服务端解析，只读）</FieldLabel>
+              <FieldLabel>时长（已从文件解析）</FieldLabel>
               <p className="font-mono text-base text-ink">
                 {formatDuration(form.seconds)}
               </p>

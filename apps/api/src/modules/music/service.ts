@@ -3,24 +3,17 @@ import type {
   MusicCreateInput,
   MusicListData,
   MusicListQuery,
-  MusicParseData,
   MusicPublicListData,
   MusicTrack,
   MusicUpdateInput,
-  Principal,
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import { parseBuffer } from 'music-metadata';
-
-import type { ObjectStorage } from '@/adapters/object-storage/r2.js';
 import type { ApiEnvironment } from '@/env.js';
 
 import { ApiError } from '@/http/errors.js';
 import { concatUrl } from '@/lib/concat-url.js';
 import { pagination } from '@/lib/pagination.js';
-
-import type { AssetService } from '../assets/service.js';
 
 import { assetPurposeFromStorageKey } from '../assets/contracts.js';
 import {
@@ -38,105 +31,17 @@ interface SourceAssetView {
 }
 
 /**
- * 音乐库用例。`seconds` 服务端权威（优先音源资产 durationMs，缺失时重算）；
- * 封面/音源必须是 AVAILABLE 的受管资产；删 Music 不动资产（资产生命周期归切片 1）。
+ * 音乐库用例。`seconds` 由客户端解析上报（解析只发生一次，在浏览器）；
+ * 音源资产 durationMs（直传 confirm 上报）存在时优先。封面/音源必须是
+ * AVAILABLE 的受管资产；删 Music 不动资产（资产生命周期归切片 1）。
  */
 export class MusicService {
   constructor(
     private readonly prisma: PrismaClient,
     private readonly environment: ApiEnvironment,
-    private readonly objectStorage: ObjectStorage,
-    private readonly assets: AssetService,
   ) {}
 
   // ==================== 管理写 ====================
-
-  /** 解析音源对象：ID3 提取 + 内嵌封面落库；失败降级为文件名标题，绝不阻断。 */
-  async parse(
-    principal: Principal,
-    sourceAssetId: number,
-  ): Promise<MusicParseData> {
-    const sourceAsset = await this.assertSourceAsset(
-      this.prisma,
-      sourceAssetId,
-    );
-
-    let bytes: Uint8Array;
-    try {
-      bytes = await this.objectStorage.getObject(sourceAsset.storageKey);
-    } catch (cause) {
-      throw new ApiError('VALIDATION_FAILED', {
-        cause,
-        fields: { sourceAssetId: ['无法读取音源对象，请确认对象存储可用'] },
-      });
-    }
-
-    let metadata:
-      | {
-          album: string | undefined;
-          artist: string | undefined;
-          duration?: number;
-          picture?: { data: Uint8Array; format: string };
-          title: string | undefined;
-        }
-      | undefined;
-    try {
-      const { common, format } = await parseBuffer(bytes);
-      const picture = common.picture?.[0];
-      metadata = {
-        album: common.album,
-        artist: common.artist,
-        duration: format.duration,
-        picture: picture
-          ? { data: new Uint8Array(picture.data), format: picture.format }
-          : undefined,
-        title: common.title,
-      };
-    } catch {
-      // 不可解析：整体降级
-    }
-
-    const fallbackTitle =
-      sourceAsset.storageKey
-        .split('/')
-        .pop()
-        ?.replace(/\.[^/.]+$/, '') ?? '未命名';
-    const title = metadata?.title?.trim() || fallbackTitle;
-    const artist = metadata?.artist?.trim() || '';
-    const album = metadata?.album?.trim() || '';
-    const seconds =
-      typeof metadata?.duration === 'number' && metadata.duration > 0
-        ? Math.round(metadata.duration)
-        : 0;
-
-    let coverAssetId: number | null = null;
-    let cover: string | null = null;
-    if (metadata?.picture) {
-      try {
-        const coverAsset = await this.assets.createFromBuffer(
-          'MUSIC_COVER',
-          metadata.picture.data,
-          metadata.picture.format,
-          principal.userId,
-        );
-        coverAssetId = coverAsset.id;
-        cover = coverAsset.deliveryUrl;
-      } catch {
-        // 内嵌封面写入失败不阻断：cover 留空，前端提示手动补传
-      }
-    }
-
-    return {
-      album,
-      artist,
-      cover,
-      coverAssetId,
-      seconds,
-      sourceAssetId,
-      src: concatUrl(this.environment.ASSET_PUBLIC_URL, sourceAsset.storageKey),
-      title,
-    };
-  }
 
   async create(input: MusicCreateInput): Promise<MusicAdmin> {
     return await this.prisma.$transaction(async (tx) => {
@@ -148,7 +53,7 @@ export class MusicService {
         });
       }
 
-      const seconds = await this.resolveSeconds(sourceAsset);
+      const seconds = this.resolveSeconds(sourceAsset, input.seconds);
 
       const record = await tx.music.create({
         data: {
@@ -194,7 +99,7 @@ export class MusicService {
           this.environment.ASSET_PUBLIC_URL,
           sourceAsset.storageKey,
         );
-        seconds = await this.resolveSeconds(sourceAsset);
+        seconds = this.resolveSeconds(sourceAsset, input.seconds ?? 0);
       }
 
       let cover = existing.cover;
@@ -370,31 +275,21 @@ export class MusicService {
     };
   }
 
-  /** seconds 服务端权威：优先 durationMs；缺失则 getObject + parseBuffer 重算。 */
-  private async resolveSeconds(sourceAsset: SourceAssetView): Promise<number> {
+  /**
+   * 时长决策：音源资产 durationMs（直传 confirm 上报）优先，
+   * 否则用客户端解析上报的声明值（0 = 未知）。服务端不再解析媒体。
+   */
+  private resolveSeconds(
+    sourceAsset: SourceAssetView,
+    declaredSeconds: number,
+  ): number {
     if (
       typeof sourceAsset.durationMs === 'number' &&
       sourceAsset.durationMs > 0
     ) {
       return Math.round(sourceAsset.durationMs / 1000);
     }
-    try {
-      const bytes = await this.objectStorage.getObject(sourceAsset.storageKey);
-      const { format } = await parseBuffer(bytes);
-      if (typeof format.duration === 'number' && format.duration > 0) {
-        return Math.round(format.duration);
-      }
-    } catch (cause) {
-      throw new ApiError('VALIDATION_FAILED', {
-        cause,
-        fields: {
-          sourceAssetId: ['无法确定音源时长，请改用可解析的音频'],
-        },
-      });
-    }
-    throw new ApiError('VALIDATION_FAILED', {
-      fields: { sourceAssetId: ['无法确定音源时长，请改用可解析的音频'] },
-    });
+    return declaredSeconds;
   }
 
   private buildListWhere(

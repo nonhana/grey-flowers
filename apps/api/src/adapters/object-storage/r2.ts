@@ -1,23 +1,30 @@
 import {
   DeleteObjectCommand,
-  GetObjectCommand,
+  HeadObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import type { ApiEnvironment } from '@/env.js';
 
-export interface PutObjectInput {
-  body: Uint8Array;
+export interface HeadObjectResult {
   contentType: string;
-  key: string;
   size: number;
 }
 
+/**
+ * 对象存储接口：上传走浏览器直传（presign → PUT → confirm），
+ * 服务端只保留签名、校验与清理能力。
+ */
 export interface ObjectStorage {
   deleteObject(key: string): Promise<void>;
-  getObject(key: string): Promise<Uint8Array>;
-  putObject(input: PutObjectInput): Promise<void>;
+  headObject(key: string): Promise<HeadObjectResult>;
+  presignUpload(input: {
+    contentType: string;
+    key: string;
+    expiresInSeconds?: number;
+  }): Promise<string>;
 }
 
 export class R2ObjectStorage implements ObjectStorage {
@@ -35,28 +42,34 @@ export class R2ObjectStorage implements ObjectStorage {
     });
   }
 
-  async putObject(input: PutObjectInput): Promise<void> {
-    await this.client.send(
+  /** 生成一次性 PUT URL（短时效），密钥不出服务端。 */
+  async presignUpload(input: {
+    contentType: string;
+    key: string;
+    expiresInSeconds?: number;
+  }): Promise<string> {
+    return getSignedUrl(
+      this.client,
       new PutObjectCommand({
-        Body: input.body,
         Bucket: this.environment.R2_BUCKET_NAME,
-        ContentLength: input.size,
         ContentType: input.contentType,
         Key: input.key,
       }),
+      { expiresIn: input.expiresInSeconds ?? 600 },
     );
   }
 
-  async getObject(key: string): Promise<Uint8Array> {
+  async headObject(key: string): Promise<HeadObjectResult> {
     const response = await this.client.send(
-      new GetObjectCommand({
+      new HeadObjectCommand({
         Bucket: this.environment.R2_BUCKET_NAME,
         Key: key,
       }),
     );
-    const body = response.Body;
-    if (!body) return new Uint8Array(0);
-    return await body.transformToByteArray();
+    return {
+      contentType: response.ContentType ?? '',
+      size: response.ContentLength ?? 0,
+    };
   }
 
   async deleteObject(key: string): Promise<void> {

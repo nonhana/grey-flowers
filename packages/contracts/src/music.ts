@@ -84,13 +84,15 @@ export const musicAdminResponseSchema = apiSuccessSchema(musicAdminSchema);
 export type MusicAdminData = z.infer<typeof musicAdminSchema>;
 export type MusicAdminResponse = z.infer<typeof musicAdminResponseSchema>;
 
-// ============ 创建/更新 —— seconds 不在输入内（服务端权威） ============
+// ============ 创建/更新 —— seconds 由前端解析后上报（解析唯一一次，发生在客户端） ============
 
 export const musicCreateInputSchema = z
   .object({
     title: z.string().trim().min(1).max(200),
     artist: z.string().trim().max(200).optional(),
     album: z.string().trim().max(200).optional(),
+    /** 时长（秒），前端 music-metadata 解析结果；0 表示未知。 */
+    seconds: z.number().int().min(0).max(86_400),
     /** 受管音源（MUSIC_SOURCE），必填。 */
     sourceAssetId: z.number().int().positive(),
     /** 受管封面（MUSIC_COVER）。 */
@@ -105,35 +107,6 @@ export type MusicCreateInput = z.infer<typeof musicCreateInputSchema>;
 export const musicUpdateInputSchema = musicCreateInputSchema.partial();
 
 export type MusicUpdateInput = z.infer<typeof musicUpdateInputSchema>;
-
-// ============ 解析端点 ============
-
-export const musicParseInputSchema = z
-  .object({
-    sourceAssetId: z.number().int().positive(),
-  })
-  .strict();
-
-export type MusicParseInput = z.infer<typeof musicParseInputSchema>;
-
-export const musicParseDataSchema = z
-  .object({
-    title: z.string().min(1),
-    artist: z.string(),
-    album: z.string(),
-    seconds: z.number().int().min(0),
-    src: z.url(),
-    sourceAssetId: z.number().int().positive(),
-    cover: z.url().nullable(),
-    coverAssetId: z.number().int().positive().nullable(),
-  })
-  .strict();
-
-export type MusicParseData = z.infer<typeof musicParseDataSchema>;
-
-export const musicParseResponseSchema = apiSuccessSchema(musicParseDataSchema);
-
-export type MusicParseResponse = z.infer<typeof musicParseResponseSchema>;
 
 // ============ 公开读 —— 同 Track 形状 ============
 

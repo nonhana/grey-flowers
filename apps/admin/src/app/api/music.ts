@@ -3,15 +3,10 @@ import type {
   MusicCreateInput,
   MusicListData,
   MusicListQuery,
-  MusicParseData,
   MusicUpdateInput,
 } from '@grey-flowers/contracts';
 
-import {
-  musicAdminResponseSchema,
-  musicListResponseSchema,
-  musicParseResponseSchema,
-} from '@grey-flowers/contracts';
+import { musicAdminResponseSchema, musicListResponseSchema } from '@grey-flowers/contracts';
 
 import type { Http } from './http.js';
 
@@ -37,12 +32,6 @@ export const createMusicApi = (http: Http) => {
       http.get(`/music/${id}`, {
         authenticated: true,
         schema: musicAdminResponseSchema,
-      }),
-    parse: (sourceAssetId: number): Promise<MusicParseData> =>
-      http.post('/music/parse', {
-        authenticated: true,
-        json: { sourceAssetId },
-        schema: musicParseResponseSchema,
       }),
     create: (input: MusicCreateInput): Promise<MusicAdmin> =>
       http.post('/music', {

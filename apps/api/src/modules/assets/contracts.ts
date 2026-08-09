@@ -41,6 +41,11 @@ export const assetPurposeFromStorageKey = (
   );
 };
 
+/** 目录前缀 → purpose；未知前缀返回 undefined（confirm 校验受管路径用）。 */
+export const assetPurposeFromDirectory = (
+  directory: string,
+): AssetPurpose | undefined => directoryAssetPurpose[directory];
+
 export interface AssetRecord {
   byteSize: bigint;
   createdAt: Date;

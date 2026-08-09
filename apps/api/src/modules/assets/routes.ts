@@ -1,53 +1,35 @@
 import {
+  assetConfirmInputSchema,
   assetListQuerySchema,
-  assetPurposeSchema,
   assetSetStatusInputSchema,
+  assetUploadUrlInputSchema,
 } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
 
 import type { AppDependencies } from '@/bootstrap/dependencies.js';
 import type { ApiEnvironment } from '@/http/context.js';
 
-import { ApiError, createSuccess } from '@/http/errors.js';
+import { createSuccess } from '@/http/errors.js';
 import { adminGuard } from '@/http/middleware/admin-guard.js';
 import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
-
-import { MAX_UPLOAD_BYTES } from './service.js';
-
-/** multipart 边界等开销，只为避免 Content-Length 预检误伤。 */
-const MULTIPART_OVERHEAD = 64 * 1024;
 
 export const createAssetRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const { admin, principal } = adminGuard(dependencies.environment);
 
-  routes.post('/upload', principal, admin, async (context) => {
-    const contentLength = Number(context.req.header('content-length'));
-    if (
-      Number.isFinite(contentLength) &&
-      contentLength > MAX_UPLOAD_BYTES + MULTIPART_OVERHEAD
-    ) {
-      throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
-    }
+  /** 直传第一步：签发一次性 PUT URL（浏览器直接传 R2）。 */
+  routes.post('/upload-url', principal, admin, async (context) => {
+    const input = await parseBody(context.req.raw, assetUploadUrlInputSchema);
+    const data = await dependencies.assets.createUploadUrl(input);
+    return createSuccess(context, data);
+  });
 
-    let body: Record<string, string | File>;
-    try {
-      body = await context.req.parseBody();
-    } catch {
-      throw new ApiError('VALIDATION_FAILED');
-    }
-
-    const file = body['file'];
-    const purposeParsed = assetPurposeSchema.safeParse(body['purpose']);
-
-    if (!(file instanceof File) || !purposeParsed.success) {
-      throw new ApiError('VALIDATION_FAILED');
-    }
-
-    const asset = await dependencies.assets.upload(
+  /** 直传第三步：PUT 完成后回执，服务端 HEAD 校验并落库。 */
+  routes.post('/confirm', principal, admin, async (context) => {
+    const input = await parseBody(context.req.raw, assetConfirmInputSchema);
+    const asset = await dependencies.assets.confirmUpload(
       context.get('principal').userId,
-      purposeParsed.data,
-      file,
+      input,
     );
     return createSuccess(context, asset, 201);
   });

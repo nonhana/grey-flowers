@@ -1,7 +1,6 @@
 import {
   musicCreateInputSchema,
   musicListQuerySchema,
-  musicParseInputSchema,
   musicUpdateInputSchema,
 } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
@@ -17,15 +16,6 @@ import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
 export const createMusicRoutes = (dependencies: AppDependencies) => {
   const routes = new Hono<ApiEnvironment>();
   const { admin, principal } = adminGuard(dependencies.environment);
-
-  routes.post('/parse', principal, admin, async (context) => {
-    const input = await parseBody(context.req.raw, musicParseInputSchema);
-    const data = await dependencies.music.parse(
-      context.get('principal'),
-      input.sourceAssetId,
-    );
-    return createSuccess(context, data);
-  });
 
   routes.post('/', principal, admin, async (context) => {
     const input = await parseBody(context.req.raw, musicCreateInputSchema);

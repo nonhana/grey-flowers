@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "catalog:api",
+    "@aws-sdk/s3-request-presigner": "catalog:api",
     "@grey-flowers/contracts": "workspace:*",
     "@grey-flowers/db": "workspace:*",
     "@hono/node-server": "catalog:api",
@@ -31,15 +32,12 @@
     "@nuxtjs/mdc": "catalog:api",
     "bcryptjs": "catalog:",
     "es-toolkit": "catalog:api",
-    "file-type": "catalog:api",
     "hono": "catalog:api",
     "jose": "catalog:api",
-    "music-metadata": "catalog:api",
     "pino": "catalog:api",
     "pinyin-pro": "catalog:api",
     "rehype-sanitize": "catalog:api",
     "resend": "catalog:api",
-    "sharp": "catalog:api",
     "zod": "catalog:api"
   },
   "devDependencies": {

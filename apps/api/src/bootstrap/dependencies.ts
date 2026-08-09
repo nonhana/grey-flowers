@@ -61,7 +61,7 @@ export const createDependencies = (
       logger,
       new CommentMailer(environment),
     ),
-    music: new MusicService(prisma, environment, objectStorage, assets),
+    music: new MusicService(prisma, environment),
     overview: new OverviewService(prisma),
     taxonomy,
     users,
