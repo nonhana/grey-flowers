@@ -86,8 +86,10 @@ export const Paginator = ({
     <nav
       aria-label="分页"
       className={cn(
-        'flex items-center gap-3',
-        hasCount && 'flex-wrap',
+        // 移动端两行：计数一行、控件一行居中（计数 + 控件并排放不下 76px
+        // 让位后的宽度，flex-wrap 换行反而松散）；桌面端恢复单行并排。
+        'flex flex-col items-stretch gap-1.5',
+        'md:flex-row md:items-center md:gap-3',
         className,
       )}
     >
@@ -96,7 +98,12 @@ export const Paginator = ({
           共 {total} {unit} · 第 {current} / {totalPages} 页
         </span>
       )}
-      <div className="ml-auto flex items-center gap-1">
+      <div
+        className="
+          flex items-center justify-center gap-1
+          md:ml-auto
+        "
+      >
         <IconButton
           isDisabled={current <= 1}
           label="上一页"

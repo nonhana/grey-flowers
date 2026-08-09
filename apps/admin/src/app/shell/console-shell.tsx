@@ -128,6 +128,7 @@ const MoreSheet = ({
  * 侧栏只有内容高、底下露出网格的根因。
  */
 export const ConsoleShell = () => {
+  const [composeOpen, setComposeOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const matches = useMatches();
   const isFullBleed = matches.some(
@@ -148,8 +149,8 @@ export const ConsoleShell = () => {
         </main>
         {isFullBleed ? null : (
           <>
-            <MusicPlayer />
-            <ComposeMenu />
+            <MusicPlayer composeMenuOpen={composeOpen} />
+            <ComposeMenu onOpenChange={setComposeOpen} open={composeOpen} />
             <MobileTabBar onMore={() => setMoreOpen(true)} />
           </>
         )}

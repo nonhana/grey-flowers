@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { PenLine, Plus, SquarePen } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const MENU_ITEMS = [
   { icon: PenLine, label: '发布动态', to: '/activities/new' },
@@ -30,19 +30,27 @@ const stackStep = CHILD_SIZE + CHILD_GAP;
  * Admin 开了 React Compiler，motion 的挂载期初始动画会被跳过
  * （实测 A/B：rotate 这类挂载后切换的动画正常，AnimatePresence 新挂载卡在 initial）。
  * 子按钮绝对定位，收起时不占布局，也不会拦截点击。
+ *
+ * 展开态由 ConsoleShell 持有：音乐悬浮按钮需要在菜单展开时让位隐藏，
+ * 两个组件共享同一份状态，避免各管各的互相遮挡。
  */
-export const ComposeMenu = () => {
-  const [open, setOpen] = useState(false);
+export const ComposeMenu = ({
+  onOpenChange,
+  open,
+}: {
+  onOpenChange: (open: boolean) => void;
+  open: boolean;
+}) => {
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') onOpenChange(false);
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [open]);
+  }, [onOpenChange, open]);
 
   const spring = prefersReducedMotion
     ? { duration: 0 }
@@ -60,7 +68,7 @@ export const ComposeMenu = () => {
         )}
         animate={{ opacity: open ? 1 : 0 }}
         initial={false}
-        onClick={() => setOpen(false)}
+        onClick={() => onOpenChange(false)}
         tabIndex={open ? 0 : -1}
         transition={spring}
         type="button"
@@ -69,10 +77,11 @@ export const ComposeMenu = () => {
       <div
         aria-hidden={!open}
         className={cn(
-          'fixed z-50 h-44 w-14',
+          'fixed z-50 w-12',
+          'pointer-events-none',
           'md:hidden',
           'right-[max(1rem,env(safe-area-inset-right))]',
-          'bottom-[calc(6rem+env(safe-area-inset-bottom))]',
+          'bottom-[calc(5rem+env(safe-area-inset-bottom))]',
         )}
       >
         {MENU_ITEMS.map((item, index) => (
@@ -84,7 +93,7 @@ export const ComposeMenu = () => {
             }
             className={cn(
               'absolute inset-x-0 grid size-12 place-items-center',
-              open ? '' : 'pointer-events-none',
+              open ? 'pointer-events-auto' : 'pointer-events-none',
             )}
             initial={false}
             key={item.label}
@@ -107,7 +116,7 @@ export const ComposeMenu = () => {
                 duration-150
                 hover:bg-accent-wash hover:text-accent-text
               "
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               tabIndex={open ? 0 : -1}
               to={item.to}
             >
@@ -122,12 +131,13 @@ export const ComposeMenu = () => {
           aria-label={open ? '收起发布菜单' : '发布新内容'}
           className={cn(
             'absolute inset-x-0 bottom-0 grid size-12 place-items-center',
+            'pointer-events-auto',
             'rounded-full bg-accent text-accent-on',
             'shadow-float transition-colors duration-150',
             'hover:bg-accent-hover',
             open && 'bg-accent-hover',
           )}
-          onClick={() => setOpen((current) => !current)}
+          onClick={() => onOpenChange(!open)}
           whileTap={{ scale: 0.92 }}
           type="button"
         >

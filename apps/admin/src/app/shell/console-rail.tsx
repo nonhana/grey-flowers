@@ -20,11 +20,12 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import type { RailSize } from '@/lib/rail-size.js';
+
+import { ThemeToggle } from '@/app/theme/theme-toggle.js';
 import { useResizableEdge } from '@/hooks/use-resizable-edge.js';
 import { RAIL_SIZE, resolveRailSize } from '@/lib/rail-size.js';
-import type { RailSize } from '@/lib/rail-size.js';
 import { useAuth } from '@/store/auth.js';
-import { ThemeToggle } from '@/app/theme/theme-toggle.js';
 import { buttonClass, Hint, IconButton } from '@/ui/index.js';
 
 import { ApiDelayControl } from './api-delay-control.js';
@@ -133,8 +134,7 @@ const saveRailSize = (size: RailSize) => {
 const BrandMark = () => (
   <span className="flex items-center gap-2 font-mono text-base text-accent-text">
     <Flower2 aria-hidden="true" className="size-5 shrink-0" />
-    <span className="truncate">Grey Flowers</span>
-    <span className="text-2xs text-ink-dim">Admin</span>
+    <span className="truncate">Admin</span>
   </span>
 );
 
@@ -304,9 +304,7 @@ export const ConsoleRail = () => {
       <div
         className={cn(
           'flex items-center',
-          collapsed
-            ? 'justify-center p-2'
-            : 'justify-between px-4 pt-5 pb-4',
+          collapsed ? 'justify-center p-2' : 'justify-between px-4 pt-5 pb-4',
         )}
       >
         {collapsed ? null : <BrandMark />}

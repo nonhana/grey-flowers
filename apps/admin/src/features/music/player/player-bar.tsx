@@ -12,6 +12,7 @@ import {
   Volume1,
   Volume2,
   VolumeX,
+  X,
 } from 'lucide-react';
 
 import { usePlayerStore, type LoopMode } from '@/store/player.js';
@@ -66,6 +67,7 @@ export const PlayerBar = () => {
   const cycleLoopMode = usePlayerStore((s) => s.cycleLoopMode);
   const toggleMute = usePlayerStore((s) => s.toggleMute);
   const setVolume = usePlayerStore((s) => s.setVolume);
+  const stop = usePlayerStore((s) => s.stop);
 
   if (track === null) return null;
 
@@ -180,6 +182,9 @@ export const PlayerBar = () => {
           />
         </span>
       </span>
+      <IconButton label="停止播放" onPress={stop} size="sm">
+        <X aria-hidden="true" />
+      </IconButton>
     </div>
   );
 };

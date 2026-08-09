@@ -13,7 +13,11 @@ const WIDTH: Record<PageWidth, string> = {
 
 /**
  * 页面容器。默认在内容区内滚动；列表页将滚动所有权移交给子级 items 区域。
- * 底部在移动端预留拇指动作栏与安全区，否则最后一行内容会被永久压在栏下面。
+ * 底部 padding 按滚动模式区分：
+ * - body（内容区自滚）：预留悬浮层高度（FAB / 音乐按钮列），否则滚动到底时
+ *   最后一行会被永久压在悬浮层下面。
+ * - child（列表页）：滚动发生在子级 items 区，底部只剩静态元素（分页器），
+ *   只需留安全区与呼吸间距；悬浮按钮列由底部组件自行让位。
  */
 export const PageBody = ({
   children,
@@ -28,10 +32,10 @@ export const PageBody = ({
 }) => (
   <div
     className={cn(
-      `
-        mx-auto flex size-full min-h-0 flex-col px-4
-        pb-[calc(6rem+env(safe-area-inset-bottom))]
-      `,
+      `mx-auto flex size-full min-h-0 flex-col px-4`,
+      scroll === 'body'
+        ? 'pb-[calc(6rem+env(safe-area-inset-bottom))]'
+        : 'pb-[calc(1rem+env(safe-area-inset-bottom))]',
       'pt-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))]',
       `
         sm:px-6

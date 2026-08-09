@@ -12,10 +12,12 @@ import {
   Volume1,
   Volume2,
   VolumeX,
+  X,
 } from 'lucide-react';
+import { useEffect } from 'react';
 
 import { usePlayerStore, type LoopMode } from '@/store/player.js';
-import { AssetImage, BottomSheet, IconButton } from '@/ui/index.js';
+import { AssetImage, BottomSheet, Button, IconButton } from '@/ui/index.js';
 
 import { SeekRow } from './seek-row.js';
 import { TrackSlider } from './track-slider.js';
@@ -74,6 +76,12 @@ export const NowPlayingSheet = ({
   const cycleLoopMode = usePlayerStore((s) => s.cycleLoopMode);
   const toggleMute = usePlayerStore((s) => s.toggleMute);
   const setVolume = usePlayerStore((s) => s.setVolume);
+  const stop = usePlayerStore((s) => s.stop);
+
+  // 曲目被清空（停止、删曲）而浮层还开着时，自动收起浮层。
+  useEffect(() => {
+    if (track === null && isOpen) onOpenChange(false);
+  }, [isOpen, onOpenChange, track]);
 
   const LoopIcon = LOOP_ICON[loopMode];
   const isPlaying = status === 'playing';
@@ -163,6 +171,18 @@ export const NowPlayingSheet = ({
               <LoopIcon aria-hidden="true" />
             </IconButton>
           </div>
+
+          <Button
+            className="w-full"
+            icon={<X aria-hidden="true" />}
+            onPress={() => {
+              onOpenChange(false);
+              stop();
+            }}
+            tone="quiet"
+          >
+            停止播放
+          </Button>
         </div>
       ) : null}
     </BottomSheet>

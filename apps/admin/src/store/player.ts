@@ -195,6 +195,8 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
   const initAudioElement = () => {
     // 状态机沿用 HTML5 Media Element 规范：idle → loading → playing ↔ paused → error。
     audioElement.addEventListener('loadstart', () => {
+      // stop() 里摘 src 再 load() 也会触发 loadstart；无曲目时保持 idle。
+      if (get().currentTrack === null) return;
       set({ status: 'loading' });
     });
     audioElement.addEventListener('waiting', () => {
@@ -277,15 +279,31 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     playByIndex(index);
   };
 
+  /** 停止并清空：释放音源、清掉媒体会话（锁屏/控制中心）、清空队列。 */
   const stop = () => {
-    audioElement.pause();
-    audioElement.currentTime = 0;
     playIntentActive = false;
+    audioElement.pause();
+    // 摘掉 src 再 load()，中止进行中的拉取并让元素回到无源状态，
+    // 避免停止后仍持有音频流。
+    audioElement.removeAttribute('src');
+    audioElement.load();
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = null;
+      if ('setPositionState' in navigator.mediaSession) {
+        try {
+          navigator.mediaSession.setPositionState(undefined);
+        } catch {
+          // 位置状态清空失败可忽略
+        }
+      }
+    }
     set({
       currentIndex: -1,
       currentTime: 0,
       currentTrack: null,
       duration: 0,
+      playlist: [],
+      shuffleHistory: [],
       status: 'idle',
     });
   };
