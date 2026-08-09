@@ -16,7 +16,7 @@ export const MusicUploadPage = () => {
             label="返回音乐库"
             onPress={() => void navigate({ to: '/music' })}
           >
-            <ArrowLeft aria-hidden="true" />
+            <ArrowLeft aria-hidden />
           </IconButton>
         }
         description="选择音频文件后自动解析元数据与内嵌封面；解析失败也能继续手动补全。"

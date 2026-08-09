@@ -27,7 +27,7 @@ const SELECT_LIMIT = 10;
  */
 const MusicRowSkeleton = () => (
   <div
-    aria-hidden="true"
+    aria-hidden
     className="flex w-full items-center gap-3 rounded-control p-2"
   >
     <Skeleton className="size-11 shrink-0 rounded-control" />
@@ -146,7 +146,7 @@ export const MusicPickerDialog = ({
                   重试
                 </Button>
               }
-              icon={<Disc3 aria-hidden="true" />}
+              icon={<Disc3 aria-hidden />}
               title="没能连上音乐库"
             >
               {error}
@@ -159,7 +159,7 @@ export const MusicPickerDialog = ({
             </div>
           ) : data.items.length === 0 ? (
             <EmptyState
-              icon={<ListMusic aria-hidden="true" />}
+              icon={<ListMusic aria-hidden />}
               title={debouncedQuery ? '没有匹配的音乐' : '音乐库是空的'}
             >
               {debouncedQuery
@@ -214,10 +214,7 @@ export const MusicPickerDialog = ({
                             src={cover}
                           />
                         ) : (
-                          <Disc3
-                            aria-hidden="true"
-                            className="size-5 text-ink-dim"
-                          />
+                          <Disc3 aria-hidden className="size-5 text-ink-dim" />
                         )}
                       </span>
                       <span className="min-w-0 flex-1">
@@ -240,7 +237,7 @@ export const MusicPickerDialog = ({
                         {formatDuration(music.seconds)}
                       </span>
                       <span
-                        aria-hidden="true"
+                        aria-hidden
                         className={cn(
                           `
                             grid size-5 shrink-0 place-items-center rounded-full

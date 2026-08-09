@@ -275,7 +275,7 @@ export const CodeMirrorPane = ({
         <Alert
           action={
             <Button
-              icon={<RotateCcw aria-hidden="true" />}
+              icon={<RotateCcw aria-hidden />}
               onPress={() => uploadImages([...failedFiles], viewRef.current)}
               size="sm"
             >

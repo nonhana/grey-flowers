@@ -140,10 +140,7 @@ export const UploadDialog = ({
               setError('文件类型不支持。');
             }}
           >
-            <FileUp
-              aria-hidden="true"
-              className="size-4 shrink-0 text-accent-text"
-            />
+            <FileUp aria-hidden className="size-4 shrink-0 text-accent-text" />
             <span className="truncate">
               {file ? file.name : '选择要上传的文件'}
             </span>
@@ -190,7 +187,7 @@ export const UploadDialog = ({
             取消
           </Button>
           <Button
-            icon={<Upload aria-hidden="true" />}
+            icon={<Upload aria-hidden />}
             isDisabled={!canSubmit}
             isLoading={phase === 'uploading'}
             onPress={() => void submit()}

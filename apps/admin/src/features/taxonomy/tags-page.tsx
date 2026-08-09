@@ -25,7 +25,7 @@ import {
 /** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳。 */
 const TagRowSkeleton = () => (
   <div
-    aria-hidden="true"
+    aria-hidden
     className="flex items-center justify-between gap-3 px-4 py-3"
   >
     <div className="min-w-0">
@@ -132,7 +132,7 @@ export const TagsPage = () => {
           value={newName}
         />
         <Button
-          icon={<Plus aria-hidden="true" />}
+          icon={<Plus aria-hidden />}
           isDisabled={!newName.trim()}
           isLoading={creating}
           onPress={() => void create()}
@@ -154,7 +154,7 @@ export const TagsPage = () => {
           </RowStack>
         ) : items.length === 0 ? (
           <EmptyState
-            icon={<TagsIcon aria-hidden="true" />}
+            icon={<TagsIcon aria-hidden />}
             title={unusedOnly ? '没有闲置的标签' : '还没有标签'}
           >
             {unusedOnly
@@ -180,7 +180,7 @@ export const TagsPage = () => {
                   size="sm"
                   tone="warnish"
                 >
-                  <Trash2 aria-hidden="true" />
+                  <Trash2 aria-hidden />
                 </IconButton>
               </div>
             ))}

@@ -103,7 +103,7 @@ export const CommentBody = ({
           rel="noreferrer noopener"
           target="_blank"
         >
-          <ExternalLink aria-hidden="true" className="size-3" />
+          <ExternalLink aria-hidden className="size-3" />
         </a>
       </MetaLine>
 
@@ -159,7 +159,7 @@ export const CommentBody = ({
               size="sm"
               tone="quiet"
             >
-              <MessageSquareText aria-hidden="true" />
+              <MessageSquareText aria-hidden />
             </IconButton>
           ) : null}
           <IconButton
@@ -168,7 +168,7 @@ export const CommentBody = ({
             size="sm"
             tone="quiet"
           >
-            <MessageSquareReply aria-hidden="true" />
+            <MessageSquareReply aria-hidden />
           </IconButton>
           <IconButton
             label={`删除评论 #${String(comment.id)}`}
@@ -176,7 +176,7 @@ export const CommentBody = ({
             size="sm"
             tone="warnish"
           >
-            <Trash2 aria-hidden="true" />
+            <Trash2 aria-hidden />
           </IconButton>
         </span>
       </MetaLine>
@@ -264,7 +264,7 @@ export const CommentCard = ({
  */
 export const CommentCardSkeleton = () => (
   <article
-    aria-hidden="true"
+    aria-hidden
     className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
   >
     <div className="flex items-start gap-3">

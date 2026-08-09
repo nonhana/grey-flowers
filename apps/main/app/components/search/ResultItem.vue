@@ -66,7 +66,7 @@ const visibleTagItems = computed(() =>
 <template>
   <NuxtLink
     :to="item.to"
-    data-search-result="true"
+    data-search-result
     class="w-full border rounded-2xl px-4 py-3 text-left transition-all"
     :class="[
       active

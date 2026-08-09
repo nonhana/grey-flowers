@@ -49,7 +49,7 @@ const saveStatus = (editor: Editor) => {
   switch (editor.phase) {
     case 'saving':
       return {
-        icon: <Loader2 aria-hidden="true" className="animate-spin" />,
+        icon: <Loader2 aria-hidden className="animate-spin" />,
         label: '保存中',
         tone: 'busy' as const,
       };
@@ -61,13 +61,13 @@ const saveStatus = (editor: Editor) => {
       };
     case 'conflict':
       return {
-        icon: <AlertTriangle aria-hidden="true" />,
+        icon: <AlertTriangle aria-hidden />,
         label: '有冲突待处理',
         tone: 'err' as const,
       };
     case 'offline':
       return {
-        icon: <WifiOff aria-hidden="true" />,
+        icon: <WifiOff aria-hidden />,
         label: '离线 · 草稿存在本机',
         tone: 'warn' as const,
       };
@@ -110,7 +110,7 @@ const TitleSwitcher = ({
         "
       >
         <span className="truncate">{title}</span>
-        <ChevronDown aria-hidden="true" className="size-3.5 shrink-0" />
+        <ChevronDown aria-hidden className="size-3.5 shrink-0" />
       </AriaButton>
       <Popover
         className="
@@ -241,7 +241,7 @@ export const ArticleWorkspacePage = () => {
   if (editor.loading) {
     return (
       <div className="grid h-full place-items-center text-ink-dim">
-        <Loader2 aria-hidden="true" className="size-5 animate-spin" />
+        <Loader2 aria-hidden className="size-5 animate-spin" />
       </div>
     );
   }
@@ -252,7 +252,7 @@ export const ArticleWorkspacePage = () => {
         <div className="grid max-w-sm justify-items-center gap-4 text-center">
           <p className="text-md text-ink">{editor.loadError}</p>
           <Link className={buttonClass()} to="/articles">
-            <ArrowLeft aria-hidden="true" className="size-4" />
+            <ArrowLeft aria-hidden className="size-4" />
             返回文章列表
           </Link>
         </div>
@@ -294,7 +294,7 @@ export const ArticleWorkspacePage = () => {
             "
             to="/articles"
           >
-            <ArrowLeft aria-hidden="true" className="size-4.5" />
+            <ArrowLeft aria-hidden className="size-4.5" />
           </Link>
           <TitleSwitcher
             articleId={numericId}
@@ -317,7 +317,7 @@ export const ArticleWorkspacePage = () => {
               onPress={() => setInspectorOpen((open) => !open)}
               size="sm"
             >
-              <PanelRight aria-hidden="true" />
+              <PanelRight aria-hidden />
             </IconButton>
           </Hint>
         </div>

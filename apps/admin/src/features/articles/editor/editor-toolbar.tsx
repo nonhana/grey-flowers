@@ -110,12 +110,12 @@ export const EditorToolbar = ({
         onPress={() => onRun(button.run)}
         size="md"
       >
-        <button.icon aria-hidden="true" />
+        <button.icon aria-hidden />
       </IconButton>
     ))}
-    <span aria-hidden="true" className="mx-1 h-5 w-px shrink-0 bg-rule" />
+    <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-rule" />
     <IconButton label="从资产库插入图片" onPress={onOpenPicker} size="md">
-      <ImagePlus aria-hidden="true" />
+      <ImagePlus aria-hidden />
     </IconButton>
   </div>
 );

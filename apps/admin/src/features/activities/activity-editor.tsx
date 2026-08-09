@@ -143,7 +143,7 @@ export const ActivityEditor = ({
             onPress={() => run(action.run)}
             size="md"
           >
-            <action.icon aria-hidden="true" />
+            <action.icon aria-hidden />
           </IconButton>
         ))}
       </div>

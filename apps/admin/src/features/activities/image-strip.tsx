@@ -62,7 +62,7 @@ export const ImageStrip = ({
         </FieldLabel>
         <div className="flex flex-wrap items-center gap-2">
           <Button
-            icon={<Images aria-hidden="true" />}
+            icon={<Images aria-hidden />}
             isDisabled={atLimit}
             onPress={onOpenAssets}
             size="sm"
@@ -70,7 +70,7 @@ export const ImageStrip = ({
             从资产库
           </Button>
           <Button
-            icon={<ImagePlus aria-hidden="true" />}
+            icon={<ImagePlus aria-hidden />}
             isDisabled={atLimit}
             onPress={onOpenFilePicker}
             size="sm"
@@ -151,7 +151,7 @@ export const ImageStrip = ({
                     onPress={() => onRemove(image.id)}
                     size="sm"
                   >
-                    <X aria-hidden="true" />
+                    <X aria-hidden />
                   </IconButton>
                 </>
               ) : image.status === 'uploading' ? (

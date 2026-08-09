@@ -111,12 +111,12 @@ export const Paginator = ({
           size="sm"
           tone="quiet"
         >
-          <ChevronLeft aria-hidden="true" />
+          <ChevronLeft aria-hidden />
         </IconButton>
         {items.map((item) =>
           item === 'gap-l' || item === 'gap-r' ? (
             <span
-              aria-hidden="true"
+              aria-hidden
               className="
                 h-8 w-5 text-center font-mono text-xs/8 text-ink-dim select-none
               "
@@ -147,7 +147,7 @@ export const Paginator = ({
           size="sm"
           tone="quiet"
         >
-          <ChevronRight aria-hidden="true" />
+          <ChevronRight aria-hidden />
         </IconButton>
       </div>
     </nav>

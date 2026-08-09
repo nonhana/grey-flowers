@@ -169,7 +169,7 @@ export const UsersPage = () => {
         {hasFilter ? (
           <Button
             className="self-end justify-self-start"
-            icon={<RotateCcw aria-hidden="true" />}
+            icon={<RotateCcw aria-hidden />}
             onPress={() => {
               setDraft(EMPTY_FILTER);
               setPage(1);
@@ -195,7 +195,7 @@ export const UsersPage = () => {
         ) : error ? (
           <EmptyState
             action={<Button onPress={reload}>重试</Button>}
-            icon={<CloudOff aria-hidden="true" />}
+            icon={<CloudOff aria-hidden />}
             title="没能连上用户"
           >
             {error}
@@ -214,7 +214,7 @@ export const UsersPage = () => {
                 </Button>
               ) : undefined
             }
-            icon={<Users aria-hidden="true" />}
+            icon={<Users aria-hidden />}
             title={hasFilter ? '没有符合这组筛选的用户' : '还没有注册用户'}
           >
             {hasFilter

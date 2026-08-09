@@ -98,25 +98,25 @@ export const OverviewPage = () => {
                 className={buttonClass({ tone: 'solid' })}
                 to="/articles/new"
               >
-                <SquarePen aria-hidden="true" className="size-4" />
+                <SquarePen aria-hidden className="size-4" />
                 新建文章
               </Link>
               <Link
                 className={buttonClass({ tone: 'quiet' })}
                 to="/activities/new"
               >
-                <Send aria-hidden="true" className="size-4" />
+                <Send aria-hidden className="size-4" />
                 发布动态
               </Link>
               <Link className={buttonClass({ tone: 'quiet' })} to="/assets">
-                <Upload aria-hidden="true" className="size-4" />
+                <Upload aria-hidden className="size-4" />
                 上传资产
               </Link>
               <Link
                 className={buttonClass({ tone: 'quiet' })}
                 to="/music/upload"
               >
-                <Music2 aria-hidden="true" className="size-4" />
+                <Music2 aria-hidden className="size-4" />
                 上传音乐
               </Link>
             </div>
@@ -135,7 +135,7 @@ export const OverviewPage = () => {
                   重试
                 </Button>
               }
-              icon={<CloudOff aria-hidden="true" />}
+              icon={<CloudOff aria-hidden />}
               title="没能连上概览"
             >
               {error}
@@ -143,37 +143,37 @@ export const OverviewPage = () => {
           ) : counts ? (
             <ReadoutDrawer>
               <ReadoutCell
-                icon={<FileText aria-hidden="true" />}
+                icon={<FileText aria-hidden />}
                 label="文章"
                 secondary={`草稿 ${counts.articles.drafts} · 已发布 ${formatCount(counts.articles.wordTotal)}字`}
                 value={formatCount(counts.articles.published)}
               />
               <ReadoutCell
-                icon={<Send aria-hidden="true" />}
+                icon={<Send aria-hidden />}
                 label="动态"
                 secondary={`近 30 天 ${counts.activities.last30d}`}
                 value={formatCount(counts.activities.total)}
               />
               <ReadoutCell
-                icon={<MessagesSquare aria-hidden="true" />}
+                icon={<MessagesSquare aria-hidden />}
                 label="评论"
                 secondary={`父 ${counts.comments.parents} · 子 ${counts.comments.children}`}
                 value={formatCount(counts.comments.total)}
               />
               <ReadoutCell
-                icon={<Users aria-hidden="true" />}
+                icon={<Users aria-hidden />}
                 label="用户"
                 secondary={`近 30 天 ${counts.users.joined30d}`}
                 value={formatCount(counts.users.total)}
               />
               <ReadoutCell
-                icon={<Images aria-hidden="true" />}
+                icon={<Images aria-hidden />}
                 label="资产"
                 secondary={`图片 ${counts.assets.images} · 音频 ${counts.assets.audio} · 待清理 ${counts.assets.pendingCleanup}`}
                 value={formatCount(counts.assets.total)}
               />
               <ReadoutCell
-                icon={<Music2 aria-hidden="true" />}
+                icon={<Music2 aria-hidden />}
                 label="音乐"
                 secondary={`缺元数据 ${counts.music.missingMetadata} · 总长 ${formatHours(counts.music.secondsTotal)}`}
                 value={formatCount(counts.music.total)}

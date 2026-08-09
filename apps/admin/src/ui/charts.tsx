@@ -149,7 +149,7 @@ export const TrendPlot = ({
 
       <div className="flex min-h-0 flex-1 gap-2">
         {/* 纵轴：mono tabular 右对齐，标签中心压在自己那条刻度线上。 */}
-        <div aria-hidden="true" className="relative w-9 shrink-0">
+        <div aria-hidden className="relative w-9 shrink-0">
           {ticks.map((value) => (
             <span
               className="
@@ -176,7 +176,7 @@ export const TrendPlot = ({
         >
           {ticks.map((value) => (
             <span
-              aria-hidden="true"
+              aria-hidden
               className={cn(
                 'absolute inset-x-0 h-px',
                 // 零轴比刻度线重一档：它是地面，不是参考线。
@@ -205,7 +205,7 @@ export const TrendPlot = ({
                 >
                   {/* 选中格：底色、竖边、柱色三者同时变——状态不骑在色相上。 */}
                   <span
-                    aria-hidden="true"
+                    aria-hidden
                     className={cn(
                       `
                         absolute inset-0 border-x border-transparent
@@ -215,7 +215,7 @@ export const TrendPlot = ({
                     )}
                   />
                   <span
-                    aria-hidden="true"
+                    aria-hidden
                     className={cn(
                       `
                         absolute bottom-0 w-[58%] origin-bottom animate-bar-rise
@@ -245,7 +245,7 @@ export const TrendPlot = ({
       </div>
 
       {/* 日期刻度：与柱区同一套等分列，靠 gridColumnStart 精确落在自己那根柱下面。 */}
-      <div aria-hidden="true" className="flex gap-2">
+      <div aria-hidden className="flex gap-2">
         <span className="w-9 shrink-0" />
         <div
           className="grid flex-1"
@@ -309,7 +309,7 @@ export const RankBars = ({
           {/* 槽是 well 凹面，条是方头的——和趋势图的铅字同一套几何。
               厚度与 ShareBar 对齐（同一种「横向量值条」，不该有两个厚度）：
               6px 在整幅宽的卡里会细成一条下划线，读不出「条」。 */}
-          <span aria-hidden="true" className="h-2.5 w-full bg-well">
+          <span aria-hidden className="h-2.5 w-full bg-well">
             <span
               className="block h-full bg-accent"
               style={{ width: `${(item.count / max) * 100}%` }}
@@ -453,11 +453,7 @@ export const CalendarHeatmap = ({
         <p className="flex items-center gap-1 font-mono text-2xs text-ink-dim">
           少
           {LEVEL_FILL.map((fill) => (
-            <span
-              aria-hidden="true"
-              className={cn('size-2', fill)}
-              key={fill}
-            />
+            <span aria-hidden className={cn('size-2', fill)} key={fill} />
           ))}
           多
         </p>
@@ -487,7 +483,7 @@ export const CalendarHeatmap = ({
             // grid-auto-flow: column 的一列 8 格。Fragment 不产生 DOM，不打断流。
             <Fragment key={column}>
               <span
-                aria-hidden="true"
+                aria-hidden
                 className="
                   justify-self-start overflow-visible font-mono text-2xs
                   whitespace-nowrap text-ink-dim
@@ -499,14 +495,12 @@ export const CalendarHeatmap = ({
                 const index = column * 7 + row - padStart;
                 const day = days[index];
                 if (!day)
-                  return (
-                    <span aria-hidden="true" key={row} />
-                  ); /* 首尾残周占位 */
+                  return <span aria-hidden key={row} />; /* 首尾残周占位 */
 
                 const total = day.articles + day.activities;
                 return (
                   <span
-                    aria-hidden="true"
+                    aria-hidden
                     className={cn(
                       'aspect-square w-full transition-colors duration-150',
                       LEVEL_FILL[levelOf(total)],
@@ -580,7 +574,7 @@ export const ShareBar = ({
         {segments.map((segment) => (
           <li className="flex items-baseline gap-2" key={segment.label}>
             <span
-              aria-hidden="true"
+              aria-hidden
               className={cn(
                 'size-2 shrink-0 translate-y-px',
                 SHARE_FILL[segment.tone],

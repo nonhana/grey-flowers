@@ -29,6 +29,8 @@ export const MusicCard = ({
   onPlayToggle: () => void;
 }) => {
   const cover = music.coverAsset?.deliveryUrl ?? music.cover;
+  const playLabel =
+    isCurrent && isPlaying ? `暂停 ${music.title}` : `播放 ${music.title}`;
 
   return (
     <article
@@ -38,16 +40,11 @@ export const MusicCard = ({
         hover:border-accent-rule
       "
     >
-      <button
-        aria-label={
-          isCurrent && isPlaying ? `暂停 ${music.title}` : `播放 ${music.title}`
-        }
+      <div
         className="
           relative grid min-h-[10.5rem] flex-1 place-items-center overflow-hidden
           border-b border-rule bg-well
         "
-        onClick={onPlayToggle}
-        type="button"
       >
         {cover ? (
           <AssetImage
@@ -56,33 +53,64 @@ export const MusicCard = ({
             src={cover}
           />
         ) : (
-          <Disc3 aria-hidden="true" className="size-8 text-ink-dim" />
+          <Disc3 aria-hidden className="size-8 text-ink-dim" />
         )}
-        <span
-          className={cn(
-            'absolute inset-0 grid place-items-center bg-scrim/40',
-            !isCurrent &&
-              `
-                opacity-0 transition-opacity
-                group-focus-within:opacity-100
-                group-hover:opacity-100
-              `,
-          )}
+
+        {/* 桌面：整块封面即播放开关，hover/聚焦时揭示遮罩与圆钮。 */}
+        <button
+          aria-label={playLabel}
+          className="
+            absolute inset-0 hidden place-items-center
+            md:grid
+          "
+          onClick={onPlayToggle}
+          type="button"
         >
           <span
-            className="
-              grid size-11 place-items-center rounded-full bg-accent
-              text-accent-on
-            "
-          >
-            {isCurrent && isPlaying ? (
-              <Pause aria-hidden="true" />
-            ) : (
-              <Play aria-hidden="true" />
+            className={cn(
+              'absolute inset-0 grid place-items-center bg-scrim/40',
+              !isCurrent &&
+                `
+                  opacity-0 transition-opacity
+                  group-focus-within:opacity-100
+                  group-hover:opacity-100
+                `,
             )}
+          >
+            <span
+              className="
+                grid size-11 place-items-center rounded-full bg-accent
+                text-accent-on
+              "
+            >
+              {isCurrent && isPlaying ? (
+                <Pause aria-hidden />
+              ) : (
+                <Play aria-hidden />
+              )}
+            </span>
           </span>
-        </span>
-      </button>
+        </button>
+
+        {/* 移动端：封面不可点，提供常显的显式播放/暂停圆钮。 */}
+        <button
+          aria-label={playLabel}
+          className="
+            absolute inset-0 m-auto grid size-11 place-items-center rounded-full
+            bg-accent text-accent-on shadow-float transition-colors
+            hover:bg-accent-hover
+            md:hidden
+          "
+          onClick={onPlayToggle}
+          type="button"
+        >
+          {isCurrent && isPlaying ? (
+            <Pause aria-hidden className="size-5" />
+          ) : (
+            <Play aria-hidden className="size-5" />
+          )}
+        </button>
+      </div>
 
       <div className="grid gap-1 px-3 py-2.5">
         <div className="flex items-center justify-between gap-2">
@@ -117,7 +145,7 @@ export const MusicCard = ({
               params={{ musicId: String(music.id) }}
               to="/music/$musicId"
             >
-              <Info aria-hidden="true" />
+              <Info aria-hidden />
             </Link>
             <IconButton
               label={`编辑 ${music.title}`}
@@ -125,7 +153,7 @@ export const MusicCard = ({
               size="sm"
               tone="quiet"
             >
-              <Pencil aria-hidden="true" />
+              <Pencil aria-hidden />
             </IconButton>
             <IconButton
               label={`删除 ${music.title}`}
@@ -133,7 +161,7 @@ export const MusicCard = ({
               size="sm"
               tone="warnish"
             >
-              <Trash2 aria-hidden="true" />
+              <Trash2 aria-hidden />
             </IconButton>
           </span>
         </div>

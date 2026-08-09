@@ -47,7 +47,7 @@ const CommentRow = ({ comment }: { comment: CommentAdmin }) => (
         rel="noreferrer noopener"
         target="_blank"
       >
-        <ExternalLink aria-hidden="true" className="size-3" />
+        <ExternalLink aria-hidden className="size-3" />
       </a>
     </MetaLine>
 
@@ -72,7 +72,7 @@ const CommentRow = ({ comment }: { comment: CommentAdmin }) => (
  * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
  */
 const CommentRowSkeleton = () => (
-  <article aria-hidden="true" className="grid gap-1.5">
+  <article aria-hidden className="grid gap-1.5">
     <MetaLine>
       <Skeleton className="h-[1.45em] w-56 text-2xs" />
       <Skeleton className="h-[1.45em] w-24 text-2xs" />
@@ -208,7 +208,7 @@ export const UserDetailDialog = ({
                     rel="noreferrer noopener"
                     target="_blank"
                   >
-                    <ExternalLink aria-hidden="true" className="size-3" />
+                    <ExternalLink aria-hidden className="size-3" />
                     主页
                   </a>
                 ) : null}
@@ -247,14 +247,14 @@ export const UserDetailDialog = ({
                     重试
                   </Button>
                 }
-                icon={<CloudOff aria-hidden="true" />}
+                icon={<CloudOff aria-hidden />}
                 title="没能连上评论历史"
               >
                 {error}
               </EmptyState>
             ) : data && data.comments.items.length === 0 ? (
               <EmptyState
-                icon={<MessagesSquare aria-hidden="true" />}
+                icon={<MessagesSquare aria-hidden />}
                 title="还没有评论"
               >
                 该用户发布评论后会显示在这里。

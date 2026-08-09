@@ -133,7 +133,7 @@ const saveRailSize = (size: RailSize) => {
 
 const BrandMark = () => (
   <span className="flex items-center gap-2 font-mono text-base text-accent-text">
-    <Flower2 aria-hidden="true" className="size-5 shrink-0" />
+    <Flower2 aria-hidden className="size-5 shrink-0" />
     <span className="truncate">Admin</span>
   </span>
 );
@@ -162,7 +162,7 @@ const NavRow = ({ collapsed, item }: { collapsed: boolean; item: NavItem }) => (
     title={collapsed ? item.label : undefined}
     to={item.path}
   >
-    <item.icon aria-hidden="true" className="shrink-0" />
+    <item.icon aria-hidden className="shrink-0" />
     {/*
      * 文字不占位（absolute）：折叠时图标居中、展开时文字从图标右侧开始，
      * 都不会因文字占位把图标挤出中心。opacity 过渡负责淡入淡出，
@@ -238,7 +238,7 @@ export const AccountBlock = ({
           onPress={() => void signOut()}
           size="sm"
         >
-          <LogOut aria-hidden="true" />
+          <LogOut aria-hidden />
         </IconButton>
       </Hint>
     </div>
@@ -318,9 +318,9 @@ export const ConsoleRail = () => {
             size="sm"
           >
             {collapsed ? (
-              <PanelLeftOpen aria-hidden="true" />
+              <PanelLeftOpen aria-hidden />
             ) : (
-              <PanelLeftClose aria-hidden="true" />
+              <PanelLeftClose aria-hidden />
             )}
           </IconButton>
         </Hint>
@@ -332,7 +332,7 @@ export const ConsoleRail = () => {
           title={collapsed ? '新建文章' : undefined}
           to="/articles/new"
         >
-          <SquarePen aria-hidden="true" className="size-4 shrink-0" />
+          <SquarePen aria-hidden className="size-4 shrink-0" />
           {collapsed ? null : '新建文章'}
         </Link>
       </div>

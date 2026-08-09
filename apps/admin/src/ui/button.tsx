@@ -87,7 +87,7 @@ export const Button = ({
     isDisabled={isDisabled === true || isLoading}
     {...rest}
   >
-    {isLoading ? <Loader2 aria-hidden="true" className="animate-spin" /> : icon}
+    {isLoading ? <Loader2 aria-hidden className="animate-spin" /> : icon}
     {children}
   </AriaButton>
 );

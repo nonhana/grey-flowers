@@ -83,7 +83,7 @@ watch(dialogVisible, (isVisible) => {
 })
 
 function clickActiveResult() {
-  const resultLinks = searchPanelRef.value?.querySelectorAll<HTMLElement>('[data-search-result="true"]')
+  const resultLinks = searchPanelRef.value?.querySelectorAll<HTMLElement>('[data-search-result]')
   const activeLink = resultLinks?.[activeIndex.value]
   if (activeLink) {
     activeLink.click()

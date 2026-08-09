@@ -84,7 +84,7 @@ const VersionList = ({ editor }: { editor: Editor }) => {
   return (
     <>
       <Button
-        icon={<ChevronDown aria-hidden="true" />}
+        icon={<ChevronDown aria-hidden />}
         onPress={() => void editor.loadVersions()}
         size="sm"
       >
@@ -206,7 +206,7 @@ export const InspectorPane = ({
         <h2 className="font-mono text-xs text-ink-dim">元数据</h2>
         {onClose ? (
           <IconButton label="收起元数据" onPress={onClose} size="sm">
-            <X aria-hidden="true" />
+            <X aria-hidden />
           </IconButton>
         ) : null}
       </div>
@@ -255,7 +255,7 @@ export const InspectorPane = ({
         ) : null}
         <div className="flex flex-wrap items-center gap-2">
           <Button
-            icon={<ImagePlus aria-hidden="true" />}
+            icon={<ImagePlus aria-hidden />}
             onPress={() => setCoverPickerOpen(true)}
             size="sm"
           >
@@ -269,7 +269,7 @@ export const InspectorPane = ({
               }
               size="sm"
             >
-              <X aria-hidden="true" />
+              <X aria-hidden />
             </IconButton>
           ) : null}
         </div>
@@ -346,7 +346,7 @@ export const InspectorPane = ({
                 }
                 size="sm"
               >
-                <X aria-hidden="true" />
+                <X aria-hidden />
               </IconButton>
             </span>
           ))}
@@ -393,7 +393,7 @@ export const InspectorPane = ({
           编辑区已是所见即所得；这个按钮只在真实主站做发布前最终确认，草稿会自动生成一次性预览链接。
         </p>
         <Button
-          icon={<Trash2 aria-hidden="true" />}
+          icon={<Trash2 aria-hidden />}
           onPress={() => confirmDialog.open({ kind: 'delete' })}
           tone="warnish"
         >
@@ -418,7 +418,7 @@ export const InspectorPane = ({
       >
         <Button
           className="w-full"
-          icon={<Eye aria-hidden="true" />}
+          icon={<Eye aria-hidden />}
           isDisabled={!editor.canPublish}
           onPress={() =>
             confirmDialog.open({

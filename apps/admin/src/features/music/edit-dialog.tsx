@@ -196,7 +196,7 @@ export const EditMusicDialog = ({
               </div>
             ) : null}
             <Button
-              icon={<ImagePlus aria-hidden="true" />}
+              icon={<ImagePlus aria-hidden />}
               onPress={() => setPickerOpen(true)}
               size="sm"
             >

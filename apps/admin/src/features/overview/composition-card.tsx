@@ -36,7 +36,7 @@ const RankSection = ({
       to={to}
     >
       {label} · {group.totalItems} 个
-      <ChevronRight aria-hidden="true" className="size-3" />
+      <ChevronRight aria-hidden className="size-3" />
     </Link>
 
     {group.items.length === 0 ? (
@@ -99,7 +99,7 @@ export const CompositionCard = ({
         to="/categories"
       />
 
-      <span aria-hidden="true" className="h-px w-full bg-rule" />
+      <span aria-hidden className="h-px w-full bg-rule" />
 
       <RankSection
         footnote={restNote(composition.tags, '篇')}
@@ -142,7 +142,7 @@ export const CompositionCardSkeleton = ({
   className?: string;
 }) => (
   <Panel
-    aria-hidden="true"
+    aria-hidden
     className={cn(
       `
         flex animate-content-in flex-col gap-4 p-4
@@ -162,7 +162,7 @@ export const CompositionCardSkeleton = ({
       <Skeleton className="h-[1.45em] w-48 text-2xs" />
     </section>
 
-    <span aria-hidden="true" className="h-px w-full bg-rule" />
+    <span aria-hidden className="h-px w-full bg-rule" />
 
     <section className="grid gap-2.5">
       <Skeleton className="h-[1.45em] w-36 text-xs" />

@@ -92,7 +92,7 @@ const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
  * 徽章 / 日期位按固定高度取 —— 行高与真实逐段相等，落地时零跳动。
  */
 const ArticleRowSkeleton = () => (
-  <div aria-hidden="true" className={ARTICLE_ROW_LAYOUT}>
+  <div aria-hidden className={ARTICLE_ROW_LAYOUT}>
     <div className="flex items-start justify-between gap-3">
       <Skeleton className="h-[1.6em] w-48 text-md" />
       {/* 发布徽章：text-2xs lh 1.45 + py-0.5 ≈ 20px */}
@@ -113,11 +113,11 @@ const EmptyArticles = ({ status }: { status: ArticleStatusFilter }) => (
   <EmptyState
     action={
       <Link className={buttonClass({ tone: 'solid' })} to="/articles/new">
-        <SquarePen aria-hidden="true" className="size-4" />
+        <SquarePen aria-hidden className="size-4" />
         新建文章
       </Link>
     }
-    icon={<FileText aria-hidden="true" />}
+    icon={<FileText aria-hidden />}
     title={EMPTY_TITLE[status]}
   >
     {EMPTY_COPY[status]}
@@ -133,7 +133,7 @@ const EmptySearch = ({
 }) => (
   <EmptyState
     action={<Button onPress={onClear}>清除搜索</Button>}
-    icon={<SearchX aria-hidden="true" />}
+    icon={<SearchX aria-hidden />}
     title={`没有标题匹配「${query}」`}
   >
     搜索只匹配标题。换个关键词，或者清除搜索看看全部文章。

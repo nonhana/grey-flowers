@@ -184,7 +184,7 @@ export const MusicDetailPage = () => {
             })}
             to="/music"
           >
-            <ArrowLeft aria-hidden="true" className="size-4" />
+            <ArrowLeft aria-hidden className="size-4" />
           </Link>
         }
         title={music.title}
@@ -204,7 +204,7 @@ export const MusicDetailPage = () => {
               src={music.cover}
             />
           ) : (
-            <Disc3 aria-hidden="true" className="size-10 text-ink-dim" />
+            <Disc3 aria-hidden className="size-10 text-ink-dim" />
           )}
         </div>
 
@@ -212,7 +212,7 @@ export const MusicDetailPage = () => {
           <SectionLabel>播放</SectionLabel>
           <div className="flex items-center gap-2">
             <Button
-              icon={isPlaying ? <Disc3 aria-hidden="true" /> : undefined}
+              icon={isPlaying ? <Disc3 aria-hidden /> : undefined}
               onPress={togglePlayback}
               tone="solid"
             >
@@ -288,7 +288,7 @@ export const MusicDetailPage = () => {
           <SectionLabel>操作</SectionLabel>
           <div className="flex flex-wrap items-center gap-2">
             <Button
-              icon={<Pencil aria-hidden="true" />}
+              icon={<Pencil aria-hidden />}
               onPress={() => {
                 setEditingOpen(true);
               }}
@@ -297,7 +297,7 @@ export const MusicDetailPage = () => {
               编辑
             </Button>
             <Button
-              icon={<Trash2 aria-hidden="true" />}
+              icon={<Trash2 aria-hidden />}
               isDisabled={busy}
               onPress={() => {
                 setConfirmDelete(true);

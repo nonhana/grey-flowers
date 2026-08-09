@@ -36,10 +36,10 @@ const LOOP_ICON: Record<LoopMode, typeof Repeat> = {
 };
 
 const VolumeIcon = ({ muted, volume }: { muted: boolean; volume: number }) => {
-  if (muted || volume === 0) return <VolumeX aria-hidden="true" />;
-  if (volume < 0.3) return <Volume1 aria-hidden="true" />;
-  if (volume < 0.7) return <Volume1 aria-hidden="true" />;
-  return <Volume2 aria-hidden="true" />;
+  if (muted || volume === 0) return <VolumeX aria-hidden />;
+  if (volume < 0.3) return <Volume1 aria-hidden />;
+  if (volume < 0.7) return <Volume1 aria-hidden />;
+  return <Volume2 aria-hidden />;
 };
 
 /** 桌面 docked 播放条：跨路由常驻，挂在 ConsoleShell 底部。 */
@@ -96,7 +96,7 @@ export const PlayerBar = () => {
             src={track.cover}
           />
         ) : (
-          <Disc3 aria-hidden="true" className="size-5 text-ink-dim" />
+          <Disc3 aria-hidden className="size-5 text-ink-dim" />
         )}
       </div>
 
@@ -119,7 +119,7 @@ export const PlayerBar = () => {
           onPress={prev}
           size="sm"
         >
-          <SkipBack aria-hidden="true" />
+          <SkipBack aria-hidden />
         </IconButton>
         <IconButton
           label={isPlaying ? '暂停' : '播放'}
@@ -127,11 +127,11 @@ export const PlayerBar = () => {
           tone="solid"
         >
           {isLoading ? (
-            <Loader2 aria-hidden="true" className="animate-spin" />
+            <Loader2 aria-hidden className="animate-spin" />
           ) : isPlaying ? (
-            <Pause aria-hidden="true" />
+            <Pause aria-hidden />
           ) : (
-            <Play aria-hidden="true" />
+            <Play aria-hidden />
           )}
         </IconButton>
         <IconButton
@@ -140,7 +140,7 @@ export const PlayerBar = () => {
           onPress={next}
           size="sm"
         >
-          <SkipForward aria-hidden="true" />
+          <SkipForward aria-hidden />
         </IconButton>
       </span>
 
@@ -163,7 +163,7 @@ export const PlayerBar = () => {
           onPress={cycleLoopMode}
           size="sm"
         >
-          <LoopIcon aria-hidden="true" />
+          <LoopIcon aria-hidden />
         </IconButton>
         <span className="flex items-center gap-1">
           <IconButton
@@ -183,7 +183,7 @@ export const PlayerBar = () => {
         </span>
       </span>
       <IconButton label="停止播放" onPress={stop} size="sm">
-        <X aria-hidden="true" />
+        <X aria-hidden />
       </IconButton>
     </div>
   );

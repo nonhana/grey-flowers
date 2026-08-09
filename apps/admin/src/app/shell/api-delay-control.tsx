@@ -60,7 +60,7 @@ export const ApiDelayControl = () => {
         size="sm"
         tone="ghost"
       >
-        <Gauge aria-hidden="true" />
+        <Gauge aria-hidden />
       </IconButton>
 
       {open ? (

@@ -38,24 +38,20 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
       `,
     )}
   >
-    <Link
-      activeOptions={{ exact: false, includeSearch: false }}
-      className={tabClass}
-      to="/articles"
-    >
-      <FileText aria-hidden="true" />
+    <Link className={tabClass} to="/">
+      <LayoutDashboard aria-hidden />
+      总览
+    </Link>
+    <Link className={tabClass} to="/articles">
+      <FileText aria-hidden />
       文章
     </Link>
     <Link className={tabClass} to="/activities">
-      <PenLine aria-hidden="true" />
+      <PenLine aria-hidden />
       动态
     </Link>
-    <Link className={tabClass} to="/assets">
-      <Images aria-hidden="true" />
-      资产
-    </Link>
     <button className={tabClass} onClick={onMore} type="button">
-      <MoreHorizontal aria-hidden="true" />
+      <MoreHorizontal aria-hidden />
       更多
     </button>
   </nav>
@@ -69,16 +65,20 @@ const MoreSheet = ({
 }) => (
   <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange} title="更多">
     <div className="grid gap-1 px-4 pt-1 pb-4">
-      <Link className={navRowClass} onClick={() => onOpenChange(false)} to="/">
-        <LayoutDashboard aria-hidden="true" />
-        总览
+      <Link
+        className={navRowClass}
+        onClick={() => onOpenChange(false)}
+        to="/assets"
+      >
+        <Images aria-hidden />
+        资产
       </Link>
       <Link
         className={navRowClass}
         onClick={() => onOpenChange(false)}
         to="/music"
       >
-        <Music2 aria-hidden="true" />
+        <Music2 aria-hidden />
         音乐库
       </Link>
       <Link
@@ -86,7 +86,7 @@ const MoreSheet = ({
         onClick={() => onOpenChange(false)}
         to="/categories"
       >
-        <FolderTree aria-hidden="true" />
+        <FolderTree aria-hidden />
         分类
       </Link>
       <Link
@@ -94,7 +94,7 @@ const MoreSheet = ({
         onClick={() => onOpenChange(false)}
         to="/comments"
       >
-        <MessagesSquare aria-hidden="true" />
+        <MessagesSquare aria-hidden />
         评论
       </Link>
       <Link
@@ -102,7 +102,7 @@ const MoreSheet = ({
         onClick={() => onOpenChange(false)}
         to="/users"
       >
-        <Users aria-hidden="true" />
+        <Users aria-hidden />
         用户
       </Link>
       <Link
@@ -110,7 +110,7 @@ const MoreSheet = ({
         onClick={() => onOpenChange(false)}
         to="/tags"
       >
-        <Tags aria-hidden="true" />
+        <Tags aria-hidden />
         标签
       </Link>
       <div className="mt-3 border-t border-rule pt-3">

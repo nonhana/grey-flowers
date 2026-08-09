@@ -18,7 +18,7 @@ import {
  *  网格用与真实相同的 53 列 × auto+7 行模板：格高 = 列宽（aspect-square），
  *  卡宽变化时骨架与真实同比例伸缩，任何视口下高度都一致。 */
 const HeatmapSkeleton = () => (
-  <div aria-hidden="true" className="grid gap-2.5">
+  <div aria-hidden className="grid gap-2.5">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
       <Skeleton className="h-[1.6em] w-32 text-md" />
       <Skeleton className="h-[1.45em] w-24 text-2xs" />
@@ -35,10 +35,10 @@ const HeatmapSkeleton = () => (
         {Array.from({ length: 53 }, (_, column) => (
           <Fragment key={column}>
             {/* 月份标签格：只占行高，不画条 —— 真实标签也只有首列有字。 */}
-            <span aria-hidden="true" className="h-[1.45em] text-2xs" />
+            <span aria-hidden className="h-[1.45em] text-2xs" />
             {Array.from({ length: 7 }, (_, row) => (
               <div
-                aria-hidden="true"
+                aria-hidden
                 className="aspect-square w-full animate-pulse bg-rule"
                 key={row}
               />
@@ -123,7 +123,7 @@ export const CadenceCard = ({ className }: { className?: string }) => {
               重试
             </Button>
           }
-          icon={<CloudOff aria-hidden="true" />}
+          icon={<CloudOff aria-hidden />}
           title="没能连上发布节奏"
         >
           {error}

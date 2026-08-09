@@ -125,7 +125,7 @@ const CommentDatePicker = ({
         "
         slot="trigger"
       >
-        <CalendarDays aria-hidden="true" className="size-4" />
+        <CalendarDays aria-hidden className="size-4" />
       </AriaButton>
     </Group>
 
@@ -148,7 +148,7 @@ const CommentDatePicker = ({
             "
             slot="previous"
           >
-            <ChevronLeft aria-hidden="true" className="size-4" />
+            <ChevronLeft aria-hidden className="size-4" />
           </AriaButton>
           <CalendarHeading className="flex-1 text-center font-mono text-xs text-ink-strong" />
           <AriaButton
@@ -160,7 +160,7 @@ const CommentDatePicker = ({
             "
             slot="next"
           >
-            <ChevronRight aria-hidden="true" className="size-4" />
+            <ChevronRight aria-hidden className="size-4" />
           </AriaButton>
         </header>
 
@@ -255,7 +255,7 @@ const FilterControls = ({
       <div className="grid min-w-0 gap-1.5">
         <span className="font-mono text-xs text-ink-dim">发表日期</span>
         <div className={dateRangeClass}>
-          <span aria-hidden="true" className="shrink-0 text-xs text-ink-dim">
+          <span aria-hidden className="shrink-0 text-xs text-ink-dim">
             从
           </span>
           <CommentDatePicker
@@ -263,7 +263,7 @@ const FilterControls = ({
             onChange={set('startDate')}
             value={value.startDate}
           />
-          <span aria-hidden="true" className="shrink-0 text-xs text-ink-dim">
+          <span aria-hidden className="shrink-0 text-xs text-ink-dim">
             至
           </span>
           <CommentDatePicker
@@ -276,7 +276,7 @@ const FilterControls = ({
       {hasFilter ? (
         <Button
           className="self-end justify-self-start"
-          icon={<RotateCcw aria-hidden="true" />}
+          icon={<RotateCcw aria-hidden />}
           onPress={() => onChange(EMPTY_FILTER)}
           size="md"
           tone="ghost"
@@ -446,7 +446,7 @@ export const CommentsPage = () => {
             onPress={() => setFilterSheetOpen(true)}
             tone="quiet"
           >
-            <Filter aria-hidden="true" />
+            <Filter aria-hidden />
           </IconButton>
         </div>
       </div>
@@ -493,7 +493,7 @@ export const CommentsPage = () => {
         ) : error ? (
           <EmptyState
             action={<Button onPress={reload}>重试</Button>}
-            icon={<CloudOff aria-hidden="true" />}
+            icon={<CloudOff aria-hidden />}
             title="没能连上评论"
           >
             {error}
@@ -512,7 +512,7 @@ export const CommentsPage = () => {
                 </Button>
               ) : undefined
             }
-            icon={<MessagesSquare aria-hidden="true" />}
+            icon={<MessagesSquare aria-hidden />}
             title={hasFilter ? '没有符合这组筛选的评论' : '还没有评论'}
           >
             {hasFilter

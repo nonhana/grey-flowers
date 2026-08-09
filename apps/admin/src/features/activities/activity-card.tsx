@@ -82,9 +82,9 @@ export const ActivityCard = ({
                 type="button"
               >
                 {isPlaying ? (
-                  <Pause aria-hidden="true" className="size-3" />
+                  <Pause aria-hidden className="size-3" />
                 ) : (
-                  <Play aria-hidden="true" className="size-3" />
+                  <Play aria-hidden className="size-3" />
                 )}
                 <span className="max-w-40 truncate">{track.title}</span>
                 <span className="text-ink-dim">
@@ -109,7 +109,7 @@ export const ActivityCard = ({
             size="sm"
             tone="quiet"
           >
-            <Pencil aria-hidden="true" />
+            <Pencil aria-hidden />
           </IconButton>
           <IconButton
             label={`删除动态 #${String(activity.id)}`}
@@ -117,7 +117,7 @@ export const ActivityCard = ({
             size="sm"
             tone="warnish"
           >
-            <Trash2 aria-hidden="true" />
+            <Trash2 aria-hidden />
           </IconButton>
         </span>
       </MetaLine>

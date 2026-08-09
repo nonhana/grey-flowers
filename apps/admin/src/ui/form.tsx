@@ -168,7 +168,7 @@ export const SelectField = <T extends string>({
               : defaultChildren
           }
         </SelectValue>
-        <ChevronDown aria-hidden="true" />
+        <ChevronDown aria-hidden />
       </AriaButton>
       <Popover
         className={cn(
@@ -190,9 +190,7 @@ export const SelectField = <T extends string>({
             {({ isSelected }) => (
               <>
                 {placeholderLabel}
-                {isSelected ? (
-                  <Check aria-hidden="true" className="size-3.5" />
-                ) : null}
+                {isSelected ? <Check aria-hidden className="size-3.5" /> : null}
               </>
             )}
           </ListBoxItem>
@@ -212,7 +210,7 @@ export const SelectField = <T extends string>({
                 <>
                   {optionLabels[option]}
                   {isSelected ? (
-                    <Check aria-hidden="true" className="size-3.5" />
+                    <Check aria-hidden className="size-3.5" />
                   ) : null}
                 </>
               )}
@@ -241,7 +239,7 @@ export const SearchInput = ({
 }: SearchInputProps) => (
   <div className={cn('relative', className)}>
     <Search
-      aria-hidden="true"
+      aria-hidden
       className="
         pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2
         text-ink-dim

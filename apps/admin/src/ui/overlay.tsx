@@ -95,7 +95,7 @@ const BottomSheetContents = ({
           "
           unstyled
         >
-          <span aria-hidden="true" className="h-1 w-10 rounded-full bg-edge" />
+          <span aria-hidden className="h-1 w-10 rounded-full bg-edge" />
         </Sheet.Header>
         <Sheet.Content
           className="min-h-0"
@@ -242,7 +242,7 @@ const AppDialogSheetContents = ({
           "
           unstyled
         >
-          <span aria-hidden="true" className="h-1 w-10 rounded-full bg-edge" />
+          <span aria-hidden className="h-1 w-10 rounded-full bg-edge" />
         </Sheet.Header>
         <div
           className="
@@ -255,7 +255,7 @@ const AppDialogSheetContents = ({
           </span>
           {isDismissable ? (
             <IconButton label="关闭" onPress={() => state.close()} size="sm">
-              <X aria-hidden="true" />
+              <X aria-hidden />
             </IconButton>
           ) : null}
         </div>
@@ -382,7 +382,7 @@ export const AppDialog = ({
                   onPress={() => onOpenChange(false)}
                   size="sm"
                 >
-                  <X aria-hidden="true" />
+                  <X aria-hidden />
                 </IconButton>
               ) : null}
             </div>

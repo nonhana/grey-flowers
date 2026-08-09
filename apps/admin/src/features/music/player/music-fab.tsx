@@ -33,7 +33,7 @@ export const MusicFab = ({
       onClick={onOpen}
       type="button"
     >
-      <Disc3 aria-hidden="true" className="size-5" />
+      <Disc3 aria-hidden className="size-5" />
     </button>
   );
 };

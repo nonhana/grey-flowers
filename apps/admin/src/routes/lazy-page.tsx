@@ -14,7 +14,7 @@ const RoutePending = () => (
         <Skeleton className="h-4 w-64" />
       </div>
       <div
-        aria-hidden="true"
+        aria-hidden
         className="
           overflow-hidden rounded-panel border border-rule bg-case-raised
           [&>*+*]:border-t [&>*+*]:border-rule

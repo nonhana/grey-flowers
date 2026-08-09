@@ -43,7 +43,7 @@ export const Alert = ({
       )}
       role="alert"
     >
-      <Icon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+      <Icon aria-hidden className="mt-0.5 size-4 shrink-0" />
       <div className="min-w-0 flex-1">{children}</div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
@@ -73,7 +73,7 @@ export const EmptyState = ({
     "
   >
     <span
-      aria-hidden="true"
+      aria-hidden
       className="
         grid size-11 place-items-center rounded-full bg-accent-wash
         text-accent-text
@@ -106,7 +106,7 @@ export const Spinner = ({
     className={cn('inline-flex items-center gap-2 text-ink-dim', className)}
     role="status"
   >
-    <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+    <Loader2 aria-hidden className="size-4 animate-spin" />
     <span className="font-mono text-xs">{label}</span>
   </span>
 );
@@ -128,7 +128,7 @@ export const PublishBadge = ({ published }: { published: boolean }) => (
     )}
   >
     <span
-      aria-hidden="true"
+      aria-hidden
       className={cn(
         'size-1.5 rounded-full',
         published ? 'bg-accent' : 'bg-ink-dim',

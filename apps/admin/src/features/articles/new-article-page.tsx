@@ -79,7 +79,7 @@ export const NewArticlePage = () => {
             label="返回文章列表"
             onPress={() => void navigate({ to: '/articles' })}
           >
-            <ArrowLeft aria-hidden="true" />
+            <ArrowLeft aria-hidden />
           </IconButton>
         }
         title="新建文章"

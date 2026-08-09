@@ -47,7 +47,7 @@ export const ThemeToggle = ({ className }: { className?: string }) => {
           key={mode}
           onPress={() => setTheme(mode)}
         >
-          <Icon aria-hidden="true" />
+          <Icon aria-hidden />
         </Button>
       ))}
     </div>

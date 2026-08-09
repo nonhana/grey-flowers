@@ -212,7 +212,7 @@ export const AssetsDetailPage = () => {
             })}
             to="/assets"
           >
-            <ArrowLeft aria-hidden="true" className="size-4" />
+            <ArrowLeft aria-hidden className="size-4" />
           </Link>
         }
         title={purposeLabels[asset.purpose]}
@@ -228,7 +228,7 @@ export const AssetsDetailPage = () => {
           {isAudio ? (
             <div className="grid w-full gap-3 p-5">
               <div className="grid h-32 place-items-center">
-                <Music2 aria-hidden="true" className="size-9 text-ink-dim" />
+                <Music2 aria-hidden className="size-9 text-ink-dim" />
               </div>
               <audio
                 className="w-full"
@@ -263,9 +263,9 @@ export const AssetsDetailPage = () => {
               tone="quiet"
             >
               {copied ? (
-                <Check aria-hidden="true" className="text-accent-text" />
+                <Check aria-hidden className="text-accent-text" />
               ) : (
-                <Copy aria-hidden="true" />
+                <Copy aria-hidden />
               )}
             </IconButton>
           </div>
@@ -340,7 +340,7 @@ export const AssetsDetailPage = () => {
                     恢复为可用
                   </Button>
                   <Button
-                    icon={<Trash2 aria-hidden="true" />}
+                    icon={<Trash2 aria-hidden />}
                     isDisabled={referenced || busy}
                     onPress={() => deleteDialog.open()}
                     tone="warnish"

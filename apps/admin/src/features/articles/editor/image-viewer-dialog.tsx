@@ -36,7 +36,7 @@ export const ImageViewerDialog = ({
         />
         <div className="flex justify-end">
           <Button
-            icon={<ExternalLink aria-hidden="true" />}
+            icon={<ExternalLink aria-hidden />}
             onPress={() => window.open(viewer.src, '_blank', 'noopener')}
             size="sm"
             tone="ghost"

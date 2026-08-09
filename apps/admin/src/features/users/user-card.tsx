@@ -74,7 +74,7 @@ export const UserCard = ({
               rel="noreferrer noopener"
               target="_blank"
             >
-              <ExternalLink aria-hidden="true" className="size-3" />
+              <ExternalLink aria-hidden className="size-3" />
               主页
             </a>
           ) : null}
@@ -88,7 +88,7 @@ export const UserCard = ({
           size="sm"
           tone="quiet"
         >
-          <UserRound aria-hidden="true" />
+          <UserRound aria-hidden />
         </IconButton>
         <IconButton
           label="编辑用户"
@@ -96,7 +96,7 @@ export const UserCard = ({
           size="sm"
           tone="quiet"
         >
-          <Pencil aria-hidden="true" />
+          <Pencil aria-hidden />
         </IconButton>
         <IconButton
           label="删除用户"
@@ -104,7 +104,7 @@ export const UserCard = ({
           size="sm"
           tone="warnish"
         >
-          <Trash2 aria-hidden="true" />
+          <Trash2 aria-hidden />
         </IconButton>
       </span>
     </div>
@@ -117,7 +117,7 @@ export const UserCard = ({
  */
 export const UserCardSkeleton = () => (
   <article
-    aria-hidden="true"
+    aria-hidden
     className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
   >
     <div className="flex min-w-0 items-center gap-3">

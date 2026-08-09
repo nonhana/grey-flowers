@@ -285,7 +285,7 @@ export const ActivityComposePage = () => {
             音乐（{music.length} / {MAX_MUSIC}）
           </FieldLabel>
           <Button
-            icon={<Music2 aria-hidden="true" />}
+            icon={<Music2 aria-hidden />}
             isDisabled={music.length >= MAX_MUSIC}
             onPress={() => setMusicPickerOpen(true)}
             size="sm"
@@ -329,10 +329,7 @@ export const ActivityComposePage = () => {
                       src={track.cover}
                     />
                   ) : (
-                    <Music2
-                      aria-hidden="true"
-                      className="size-4 text-ink-dim"
-                    />
+                    <Music2 aria-hidden className="size-4 text-ink-dim" />
                   )}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -354,7 +351,7 @@ export const ActivityComposePage = () => {
                   size="sm"
                   tone="warnish"
                 >
-                  <Trash2 aria-hidden="true" />
+                  <Trash2 aria-hidden />
                 </IconButton>
               </li>
             ))}
@@ -395,7 +392,7 @@ export const ActivityComposePage = () => {
             "
             to="/activities"
           >
-            <ArrowLeft aria-hidden="true" className="size-4.5" />
+            <ArrowLeft aria-hidden className="size-4.5" />
           </Link>
           <span className="truncate text-base font-bold text-ink-strong">
             {editingId !== null ? '编辑动态' : '发布动态'}
@@ -425,7 +422,7 @@ export const ActivityComposePage = () => {
       <div className="flex min-h-0 flex-1 flex-col">
         {loading ? (
           <div className="grid h-full flex-1 place-items-center text-ink-dim">
-            <Loader2 aria-hidden="true" className="size-5 animate-spin" />
+            <Loader2 aria-hidden className="size-5 animate-spin" />
           </div>
         ) : loadError ? (
           <div className="grid h-full flex-1 place-items-center p-6">
@@ -436,7 +433,7 @@ export const ActivityComposePage = () => {
                 onClick={() => void navigate({ to: '/activities' })}
                 to="/activities"
               >
-                <ArrowLeft aria-hidden="true" className="size-4" />
+                <ArrowLeft aria-hidden className="size-4" />
                 返回动态列表
               </Link>
             </div>
@@ -518,7 +515,7 @@ export const ActivityComposePage = () => {
             />
             <div className="flex justify-end">
               <Button
-                icon={<ExternalLink aria-hidden="true" />}
+                icon={<ExternalLink aria-hidden />}
                 onPress={() =>
                   window.open(images[lightbox]?.url, '_blank', 'noopener')
                 }

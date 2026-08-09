@@ -40,7 +40,7 @@ const GRID_CLASS =
  */
 const MusicCardSkeleton = () => (
   <div
-    aria-hidden="true"
+    aria-hidden
     className="
       flex h-full flex-col overflow-hidden rounded-panel border
       border-rule bg-case-raised
@@ -175,7 +175,7 @@ export const MusicLibraryPage = () => {
 
       <div className="mt-5 flex items-center gap-2">
         <Button
-          icon={<Upload aria-hidden="true" />}
+          icon={<Upload aria-hidden />}
           onPress={() => void navigate({ to: '/music/upload' })}
           tone="solid"
         >
@@ -222,7 +222,7 @@ export const MusicLibraryPage = () => {
                 重试
               </Button>
             }
-            icon={<CloudOff aria-hidden="true" />}
+            icon={<CloudOff aria-hidden />}
             title="没能连上音乐库"
           >
             {error}
@@ -240,7 +240,7 @@ export const MusicLibraryPage = () => {
                 </Button>
               ) : (
                 <Button
-                  icon={<Upload aria-hidden="true" />}
+                  icon={<Upload aria-hidden />}
                   onPress={() => void navigate({ to: '/music/upload' })}
                   tone="solid"
                 >
@@ -250,9 +250,9 @@ export const MusicLibraryPage = () => {
             }
             icon={
               hasQuery || incomplete ? (
-                <Music2 aria-hidden="true" />
+                <Music2 aria-hidden />
               ) : (
-                <Disc3 aria-hidden="true" />
+                <Disc3 aria-hidden />
               )
             }
             title={

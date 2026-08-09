@@ -72,7 +72,7 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
       "
     >
       {asset.mediaType === 'AUDIO' ? (
-        <Music2 aria-hidden="true" className="size-7 text-ink-dim" />
+        <Music2 aria-hidden className="size-7 text-ink-dim" />
       ) : (
         <AssetImage
           alt=""
@@ -119,7 +119,7 @@ const GRID_CLASS =
  */
 const AssetCardSkeleton = () => (
   <div
-    aria-hidden="true"
+    aria-hidden
     className="
       flex h-full flex-col overflow-hidden rounded-panel border
       border-rule bg-case-raised
@@ -208,7 +208,7 @@ export const AssetsListPage = () => {
       <PageHeader
         actions={
           <Button
-            icon={<Upload aria-hidden="true" />}
+            icon={<Upload aria-hidden />}
             onPress={() => setUploadOpen(true)}
             tone="solid"
           >
@@ -265,7 +265,7 @@ export const AssetsListPage = () => {
         />
         {hasFilter ? (
           <Button
-            icon={<X aria-hidden="true" />}
+            icon={<X aria-hidden />}
             onPress={clearFilters}
             size="lg"
             tone="ghost"
@@ -292,7 +292,7 @@ export const AssetsListPage = () => {
                 重试
               </Button>
             }
-            icon={<CloudOff aria-hidden="true" />}
+            icon={<CloudOff aria-hidden />}
             title="没能连上资产库"
           >
             {error}
@@ -304,7 +304,7 @@ export const AssetsListPage = () => {
                 <Button onPress={clearFilters}>清除筛选</Button>
               ) : (
                 <Button
-                  icon={<Upload aria-hidden="true" />}
+                  icon={<Upload aria-hidden />}
                   onPress={() => setUploadOpen(true)}
                   tone="solid"
                 >
@@ -312,7 +312,7 @@ export const AssetsListPage = () => {
                 </Button>
               )
             }
-            icon={<FolderOpen aria-hidden="true" />}
+            icon={<FolderOpen aria-hidden />}
             title={hasFilter ? '没有符合这组筛选的资产' : '资产库是空的'}
           >
             {hasFilter

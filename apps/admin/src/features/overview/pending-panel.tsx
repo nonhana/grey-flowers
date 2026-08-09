@@ -88,7 +88,7 @@ export const PendingPanel = ({
                 to={meta.to}
               >
                 <Icon
-                  aria-hidden="true"
+                  aria-hidden
                   className="
                     size-4 shrink-0 text-ink-dim transition-colors
                     group-hover:text-accent-text
@@ -112,7 +112,7 @@ export const PendingPanel = ({
                   {item.count}
                 </span>
                 <ChevronRight
-                  aria-hidden="true"
+                  aria-hidden
                   className="
                     size-4 shrink-0 text-ink-dim transition-colors
                     group-hover:text-accent-text
@@ -132,7 +132,7 @@ export const PendingPanel = ({
  * 格高与真实一致（py-3.5 + 计数行 25.6px 主导），落地时整带不跳。
  */
 export const PendingPanelSkeleton = () => (
-  <section aria-hidden="true" className="grid animate-content-in gap-2">
+  <section aria-hidden className="grid animate-content-in gap-2">
     <SectionLabel>待处理</SectionLabel>
     <div
       className="

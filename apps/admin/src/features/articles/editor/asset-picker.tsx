@@ -151,7 +151,7 @@ export const AssetPickerDialog = ({
       <div className="grid gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <Button
-            icon={<ImageUp aria-hidden="true" />}
+            icon={<ImageUp aria-hidden />}
             isLoading={uploading !== null}
             onPress={() => fileInputRef.current?.click()}
             tone="solid"
@@ -160,7 +160,7 @@ export const AssetPickerDialog = ({
           </Button>
           <input
             accept="image/png,image/jpeg,image/gif,image/webp"
-            aria-hidden="true"
+            aria-hidden
             className="hidden"
             onChange={(event) => {
               const file = event.target.files?.[0];
@@ -186,7 +186,7 @@ export const AssetPickerDialog = ({
               <li key={index}>
                 {/* 与真实条目同构：描边容器 + 方图 + 体积位 */}
                 <div
-                  aria-hidden="true"
+                  aria-hidden
                   className="
                     grid w-full gap-1.5 rounded-control border border-rule
                     bg-well p-1.5
@@ -200,7 +200,7 @@ export const AssetPickerDialog = ({
           </ul>
         ) : items.length === 0 ? (
           <EmptyState
-            icon={<Images aria-hidden="true" />}
+            icon={<Images aria-hidden />}
             title="这个用途下还没有资产"
           >
             用上面的按钮传一张，它会立刻被选中并插入。
@@ -245,7 +245,7 @@ export const AssetPickerDialog = ({
                     </span>
                     {isSelected ? (
                       <span
-                        aria-hidden="true"
+                        aria-hidden
                         className="
                           absolute top-2 right-2 grid size-6 place-items-center
                           rounded-full border border-accent bg-accent

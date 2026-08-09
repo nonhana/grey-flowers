@@ -36,7 +36,7 @@ export const AssetImage = ({
         )}
         title="读不到这张图"
       >
-        <ImageOff aria-hidden="true" className="size-5" />
+        <ImageOff aria-hidden className="size-5" />
         <span className="sr-only">{alt || '图片加载失败'}</span>
       </span>
     );

@@ -34,7 +34,7 @@ export const TrackSlider = ({
       {({ state }) => (
         <>
           <span
-            aria-hidden="true"
+            aria-hidden
             className="absolute inset-y-0 left-0 rounded-full bg-accent"
             style={{ width: `${state.getThumbPercent(0) * 100}%` }}
           />

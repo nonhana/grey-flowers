@@ -43,7 +43,7 @@ export const ReadoutCell = ({
     <div className="flex items-center justify-between gap-2">
       <SectionLabel>{label}</SectionLabel>
       <span
-        aria-hidden="true"
+        aria-hidden
         className="
           shrink-0 text-ink-dim
           [&_svg]:size-4

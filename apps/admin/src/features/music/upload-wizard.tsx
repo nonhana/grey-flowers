@@ -199,10 +199,7 @@ export const UploadWizard = () => {
             onFile={(target) => void startWithFile(target)}
             onRejected={() => setError('请选择音频文件。')}
           >
-            <FileUp
-              aria-hidden="true"
-              className="size-4 shrink-0 text-accent-text"
-            />
+            <FileUp aria-hidden className="size-4 shrink-0 text-accent-text" />
             <span className="truncate">
               {isParsing || saving ? file?.name : '拖入音频文件，或点击选择'}
             </span>
@@ -305,7 +302,7 @@ export const UploadWizard = () => {
                 </Alert>
               )}
               <Button
-                icon={<ImagePlus aria-hidden="true" />}
+                icon={<ImagePlus aria-hidden />}
                 onPress={() => setPickerOpen(true)}
                 size="sm"
               >
@@ -322,7 +319,7 @@ export const UploadWizard = () => {
 
             <div className="flex justify-end">
               <Button
-                icon={<Upload aria-hidden="true" />}
+                icon={<Upload aria-hidden />}
                 isDisabled={!canSave}
                 isLoading={saving}
                 tone="solid"

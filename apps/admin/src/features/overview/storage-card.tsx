@@ -64,7 +64,7 @@ export const StorageCard = ({
  */
 export const StorageCardSkeleton = ({ className }: { className?: string }) => (
   <Panel
-    aria-hidden="true"
+    aria-hidden
     className={cn(
       `
         flex animate-content-in flex-col gap-3.5 p-4

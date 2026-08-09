@@ -68,7 +68,7 @@ const StatusMark = ({
 
 const BrandLine = () => (
   <span className="flex items-center gap-2 font-mono text-base text-accent-text">
-    <Flower2 aria-hidden="true" className="size-5" />
+    <Flower2 aria-hidden className="size-5" />
     Grey Flowers
     <span className="text-2xs text-ink-dim">Admin</span>
   </span>
@@ -86,7 +86,7 @@ const LoadingScreen = () => (
   <Stage>
     <div className="grid gap-4 text-center" aria-live="polite">
       <StatusMark tone="waiting">
-        <RefreshCw aria-hidden="true" />
+        <RefreshCw aria-hidden />
       </StatusMark>
       <Headline>正在确认管理权限</Headline>
     </div>
@@ -142,7 +142,7 @@ const LoginScreen = ({
         {error ? <Alert tone="danger">{error}</Alert> : null}
         <Button
           className="mt-1 w-full"
-          icon={<LockKeyhole aria-hidden="true" />}
+          icon={<LockKeyhole aria-hidden />}
           isLoading={isSubmitting}
           size="lg"
           tone="solid"
@@ -162,7 +162,7 @@ const ForbiddenScreen = () => {
     <Stage>
       <div className="grid gap-4 text-center" role="alert">
         <StatusMark tone="warning">
-          <ShieldX aria-hidden="true" />
+          <ShieldX aria-hidden />
         </StatusMark>
         <Headline>此账户没有后台权限</Headline>
         <Muted>请改用具有管理员权限的账户登录。</Muted>
@@ -184,13 +184,13 @@ const NetworkErrorScreen = ({ error }: { error: string }) => {
     <Stage>
       <div className="grid gap-4 text-center" role="alert">
         <StatusMark tone="error">
-          <CloudOff aria-hidden="true" />
+          <CloudOff aria-hidden />
         </StatusMark>
         <Headline>暂时无法连接身份服务</Headline>
         <Muted>{error}</Muted>
         <Button
           className="mt-1 justify-self-center"
-          icon={<RefreshCw aria-hidden="true" />}
+          icon={<RefreshCw aria-hidden />}
           onPress={() => void retry()}
         >
           重试

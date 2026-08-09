@@ -120,7 +120,7 @@ export const ComposeMenu = ({
               tabIndex={open ? 0 : -1}
               to={item.to}
             >
-              <item.icon aria-hidden="true" className="size-5" />
+              <item.icon aria-hidden className="size-5" />
             </Link>
           </motion.span>
         ))}
@@ -146,7 +146,7 @@ export const ComposeMenu = ({
             className="grid place-items-center"
             transition={spring}
           >
-            <Plus aria-hidden="true" className="size-5" />
+            <Plus aria-hidden className="size-5" />
           </motion.span>
         </motion.button>
       </div>

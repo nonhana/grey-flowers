@@ -46,7 +46,7 @@ const DAYS_OPTIONS: readonly OverviewTrendDays[] = ['7', '14', '30'];
 
 /** 加载骨架照抄真实图表的三段结构（读数行 / 图区 / 日期行），落地时不跳。 */
 const PlotSkeleton = () => (
-  <div aria-hidden="true" className="flex min-h-0 flex-1 flex-col gap-2.5">
+  <div aria-hidden className="flex min-h-0 flex-1 flex-col gap-2.5">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
       <Skeleton className="h-[1.6em] w-24 text-md" />
       <Skeleton className="h-[1.45em] w-40 text-2xs" />
@@ -133,10 +133,7 @@ export const TrendCard = ({ className }: { className?: string }) => {
               {METRIC_LABELS[option]}
             </FilterChip>
           ))}
-          <span
-            aria-hidden="true"
-            className="mx-0.5 h-4 w-px shrink-0 bg-rule"
-          />
+          <span aria-hidden className="mx-0.5 h-4 w-px shrink-0 bg-rule" />
           {DAYS_OPTIONS.map((option) => (
             <FilterChip
               isSelected={days === option}
@@ -159,7 +156,7 @@ export const TrendCard = ({ className }: { className?: string }) => {
                 重试
               </Button>
             }
-            icon={<CloudOff aria-hidden="true" />}
+            icon={<CloudOff aria-hidden />}
             title="没能连上趋势"
           >
             {error}

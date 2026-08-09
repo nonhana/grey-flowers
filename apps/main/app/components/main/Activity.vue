@@ -170,7 +170,7 @@ function handleCardSelect(item: ActivityItem) {
     </template>
 
     <div v-if="isBootstrapping || loadingInitial" class="m-inline-[calc(50%-50vw)] max-w-[100vw] w-[100vw]">
-      <div class="activity-rail-track pointer-events-none select-none" aria-hidden="true">
+      <div class="activity-rail-track pointer-events-none select-none" aria-hidden>
         <MainActivitySkeletonCard v-for="i in skeletonCards" :key="i" />
       </div>
     </div>
@@ -246,7 +246,7 @@ function handleCardSelect(item: ActivityItem) {
         <div
           ref="loadMoreTrigger"
           class="flex flex-[0_0_3rem] items-center self-stretch justify-center"
-          aria-hidden="true"
+          aria-hidden
         >
           <LoaderCircle
             v-if="loadingMore"

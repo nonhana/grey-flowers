@@ -28,7 +28,7 @@ import {
 
 /** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位。 */
 const CategoryRowSkeleton = () => (
-  <div aria-hidden="true" className="flex items-center gap-4 px-4 py-3">
+  <div aria-hidden className="flex items-center gap-4 px-4 py-3">
     <Skeleton className="size-12 shrink-0 rounded-control" />
     <div className="min-w-0 flex-1">
       <Skeleton className="h-[1.6em] w-40 text-md" />
@@ -158,11 +158,7 @@ export const CategoriesPage = () => {
     <PageBody scroll="child" width="narrow">
       <PageHeader
         actions={
-          <Button
-            icon={<Plus aria-hidden="true" />}
-            onPress={openCreate}
-            tone="solid"
-          >
+          <Button icon={<Plus aria-hidden />} onPress={openCreate} tone="solid">
             新建分类
           </Button>
         }
@@ -181,14 +177,14 @@ export const CategoriesPage = () => {
           <EmptyState
             action={
               <Button
-                icon={<Plus aria-hidden="true" />}
+                icon={<Plus aria-hidden />}
                 onPress={openCreate}
                 tone="solid"
               >
                 新建分类
               </Button>
             }
-            icon={<FolderTree aria-hidden="true" />}
+            icon={<FolderTree aria-hidden />}
             title="还没有分类"
           >
             分类是文章的主干目录，会显示在主站的导航里。没有分类的文章会归入「未分类」。
@@ -213,10 +209,7 @@ export const CategoriesPage = () => {
                       src={category.cover}
                     />
                   ) : (
-                    <ImagePlus
-                      aria-hidden="true"
-                      className="size-4 text-ink-dim"
-                    />
+                    <ImagePlus aria-hidden className="size-4 text-ink-dim" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -234,7 +227,7 @@ export const CategoriesPage = () => {
                     size="sm"
                     tone="quiet"
                   >
-                    <Pencil aria-hidden="true" />
+                    <Pencil aria-hidden />
                   </IconButton>
                   <IconButton
                     label={`删除分类 ${category.name}`}
@@ -242,7 +235,7 @@ export const CategoriesPage = () => {
                     size="sm"
                     tone="warnish"
                   >
-                    <Trash2 aria-hidden="true" />
+                    <Trash2 aria-hidden />
                   </IconButton>
                 </div>
               </div>
@@ -284,7 +277,7 @@ export const CategoriesPage = () => {
             ) : null}
             <div className="flex items-center gap-2">
               <Button
-                icon={<ImagePlus aria-hidden="true" />}
+                icon={<ImagePlus aria-hidden />}
                 onPress={() => setPickerOpen(true)}
                 size="sm"
               >
@@ -302,7 +295,7 @@ export const CategoriesPage = () => {
                   }
                   size="sm"
                 >
-                  <X aria-hidden="true" />
+                  <X aria-hidden />
                 </IconButton>
               ) : null}
             </div>

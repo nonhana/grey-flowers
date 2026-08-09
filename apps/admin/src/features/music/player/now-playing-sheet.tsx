@@ -37,12 +37,8 @@ const LOOP_ICON: Record<LoopMode, typeof Repeat> = {
 };
 
 const VolumeIcon = ({ muted, volume }: { muted: boolean; volume: number }) => {
-  if (muted || volume === 0) return <VolumeX aria-hidden="true" />;
-  return volume < 0.7 ? (
-    <Volume1 aria-hidden="true" />
-  ) : (
-    <Volume2 aria-hidden="true" />
-  );
+  if (muted || volume === 0) return <VolumeX aria-hidden />;
+  return volume < 0.7 ? <Volume1 aria-hidden /> : <Volume2 aria-hidden />;
 };
 
 /** 移动端全屏「正在播放」面板。 */
@@ -104,7 +100,7 @@ export const NowPlayingSheet = ({
                 src={track.cover}
               />
             ) : (
-              <Disc3 aria-hidden="true" className="size-12 text-ink-dim" />
+              <Disc3 aria-hidden className="size-12 text-ink-dim" />
             )}
           </div>
 
@@ -122,7 +118,7 @@ export const NowPlayingSheet = ({
 
           <div className="flex items-center justify-center gap-3">
             <IconButton label="上一首" isDisabled={!hasPrev} onPress={prev}>
-              <SkipBack aria-hidden="true" />
+              <SkipBack aria-hidden />
             </IconButton>
             <IconButton
               label={isPlaying ? '暂停' : '播放'}
@@ -130,15 +126,15 @@ export const NowPlayingSheet = ({
               tone="solid"
             >
               {isLoading ? (
-                <Loader2 aria-hidden="true" className="animate-spin" />
+                <Loader2 aria-hidden className="animate-spin" />
               ) : isPlaying ? (
-                <Pause aria-hidden="true" />
+                <Pause aria-hidden />
               ) : (
-                <Play aria-hidden="true" />
+                <Play aria-hidden />
               )}
             </IconButton>
             <IconButton label="下一首" isDisabled={!hasNext} onPress={next}>
-              <SkipForward aria-hidden="true" />
+              <SkipForward aria-hidden />
             </IconButton>
           </div>
 
@@ -168,13 +164,13 @@ export const NowPlayingSheet = ({
               onPress={cycleLoopMode}
               size="sm"
             >
-              <LoopIcon aria-hidden="true" />
+              <LoopIcon aria-hidden />
             </IconButton>
           </div>
 
           <Button
             className="w-full"
-            icon={<X aria-hidden="true" />}
+            icon={<X aria-hidden />}
             onPress={() => {
               onOpenChange(false);
               stop();

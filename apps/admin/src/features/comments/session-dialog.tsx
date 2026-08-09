@@ -124,7 +124,7 @@ export const SessionDialog = ({
               rel="noreferrer noopener"
               target="_blank"
             >
-              <ExternalLink aria-hidden="true" className="size-3" />
+              <ExternalLink aria-hidden className="size-3" />
             </a>
             <span className="ml-auto font-mono text-2xs text-ink-dim">
               共 {sessionCount} 条

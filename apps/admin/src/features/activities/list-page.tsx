@@ -32,7 +32,7 @@ const PAGE_SIZE = 10;
  */
 const ActivityCardSkeleton = () => (
   <div
-    aria-hidden="true"
+    aria-hidden
     className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
   >
     <div className="grid gap-1.5">
@@ -166,7 +166,7 @@ export const ActivitiesPage = () => {
                 hidden
                 md:flex
               "
-              icon={<PenLine aria-hidden="true" />}
+              icon={<PenLine aria-hidden />}
               onPress={openCreate}
               tone="solid"
             >
@@ -208,7 +208,7 @@ export const ActivitiesPage = () => {
                 重试
               </Button>
             }
-            icon={<CloudOff aria-hidden="true" />}
+            icon={<CloudOff aria-hidden />}
             title="没能连上动态"
           >
             {' '}
@@ -221,7 +221,7 @@ export const ActivitiesPage = () => {
                 <Button onPress={() => setQuery('')}>清除搜索</Button>
               ) : (
                 <Button
-                  icon={<PenLine aria-hidden="true" />}
+                  icon={<PenLine aria-hidden />}
                   onPress={openCreate}
                   tone="solid"
                 >
@@ -229,7 +229,7 @@ export const ActivitiesPage = () => {
                 </Button>
               )
             }
-            icon={<MessageSquareText aria-hidden="true" />}
+            icon={<MessageSquareText aria-hidden />}
             title={hasQuery ? '没有匹配的动态' : '还没有动态'}
           >
             {hasQuery
