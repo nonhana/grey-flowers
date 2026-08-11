@@ -66,7 +66,7 @@ export const ApiDelayControl = () => {
       {open ? (
         <div
           className="
-            absolute left-0 bottom-full z-50 mb-2 grid w-64 gap-2.5
+            absolute bottom-full left-0 z-50 mb-2 grid w-64 gap-2.5
             rounded-panel bg-case-raised p-3 shadow-float
           "
         >

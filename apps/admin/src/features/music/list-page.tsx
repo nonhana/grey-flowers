@@ -42,11 +42,11 @@ const MusicCardSkeleton = () => (
   <div
     aria-hidden
     className="
-      flex h-full flex-col overflow-hidden rounded-panel border
-      border-rule bg-case-raised
+      flex h-full flex-col overflow-hidden rounded-panel border border-rule
+      bg-case-raised
     "
   >
-    <Skeleton className="min-h-[10.5rem] w-full flex-1 rounded-none" />
+    <Skeleton className="min-h-42 w-full flex-1 rounded-none" />
     <div className="grid gap-1 px-3 py-2.5">
       <Skeleton className="h-[1.55em] w-1/2 text-base" />
       <MetaLine>

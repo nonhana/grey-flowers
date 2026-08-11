@@ -121,8 +121,8 @@ const AssetCardSkeleton = () => (
   <div
     aria-hidden
     className="
-      flex h-full flex-col overflow-hidden rounded-panel border
-      border-rule bg-case-raised
+      flex h-full flex-col overflow-hidden rounded-panel border border-rule
+      bg-case-raised
     "
   >
     <Skeleton className="min-h-28 w-full flex-1 rounded-none" />

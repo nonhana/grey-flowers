@@ -47,7 +47,7 @@ export const FileDrop = ({
     <label
       className={cn(
         `
-          flex cursor-pointer items-center gap-3 rounded-control border min-h-16
+          flex min-h-16 cursor-pointer items-center gap-3 rounded-control border
           border-dashed border-edge bg-well px-3 text-base text-ink-dim
         `,
         `

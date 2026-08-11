@@ -6,7 +6,10 @@ import type {
   MusicUpdateInput,
 } from '@grey-flowers/contracts';
 
-import { musicAdminResponseSchema, musicListResponseSchema } from '@grey-flowers/contracts';
+import {
+  musicAdminResponseSchema,
+  musicListResponseSchema,
+} from '@grey-flowers/contracts';
 
 import type { Http } from './http.js';
 

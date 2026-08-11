@@ -1,9 +1,10 @@
-import { useState } from 'react';
 import type {
   KeyboardEvent as ReactKeyboardEvent,
   PointerEvent as ReactPointerEvent,
   RefObject,
 } from 'react';
+
+import { useState } from 'react';
 
 /**
  * 把组件的某条边变成可拖拽调整尺寸的把手。

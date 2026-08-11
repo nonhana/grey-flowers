@@ -78,7 +78,11 @@ describe('resolveRailSize · 键盘（keyboard）', () => {
 
   it('折叠态：End 展开到最大宽度', () => {
     expect(
-      resolveRailSize({ collapsed: true, width: 300 }, RAIL_SIZE.max, 'keyboard'),
+      resolveRailSize(
+        { collapsed: true, width: 300 },
+        RAIL_SIZE.max,
+        'keyboard',
+      ),
     ).toEqual({ collapsed: false, width: RAIL_SIZE.max });
   });
 

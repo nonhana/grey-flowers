@@ -42,7 +42,7 @@ export const MusicCard = ({
     >
       <div
         className="
-          relative grid min-h-[10.5rem] flex-1 place-items-center overflow-hidden
+          relative grid min-h-42 flex-1 place-items-center overflow-hidden
           border-b border-rule bg-well
         "
       >
