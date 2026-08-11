@@ -9,8 +9,8 @@ Grey Flowers is a pnpm monorepo (`pnpm@11.19.0`, `pnpm-workspace.yaml`, `catalog
 | `apps/main` (`@grey-flowers/main`)               | Public Nuxt 4 SSR rendering layer           | Pages, layouts, MDC rendering, SEO, static markdown pages                               | Nitro → `apps/main/.output/`       |
 | `apps/api` (`@grey-flowers/api`)                 | Sole business data access & operation entry | Hono routes, auth/authorization, Zod validation, error mapping, use cases, transactions | `tsdown` → `dist/`                 |
 | `apps/admin` (`@grey-flowers/admin`)             | Sole blog operations console                | React UI, article editor, asset/media management                                        | `vite build` → `dist/`             |
-| `packages/contracts` (`@grey-flowers/contracts`) | Cross-process transport contract            | Zod DTOs, error codes, envelope types                                                   | `tsc` → `dist/`                    |
-| `packages/db` (`@grey-flowers/db`)               | Prisma persistence infrastructure           | Schema, migrations, generated client, `createPrismaClient`                              | `tsc` → `dist/` + generated client |
+| `packages/contracts` (`@grey-flowers/contracts`) | Cross-process transport contract            | Zod DTOs, error codes, envelope types                                                   | `tsdown` → `dist/`                  |
+| `packages/db` (`@grey-flowers/db`)               | Prisma persistence infrastructure           | Schema, migrations, generated client, `createPrismaClient`                              | `tsdown` → `dist/`（自包含 generated client） |
 
 The root `package.json` owns orchestration (`pnpm build`, `pnpm lint`, `pnpm typecheck`, `pnpm fmt`, `pnpm prisma:*`) and deployment workflow config. It has no application runtime dependencies.
 

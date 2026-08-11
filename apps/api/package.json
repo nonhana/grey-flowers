@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "pino-pretty": "catalog:api",
-    "tsdown": "catalog:api",
+    "tsdown": "catalog:",
     "tsx": "catalog:",
     "vitest": "catalog:api"
   }

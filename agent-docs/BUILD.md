@@ -43,9 +43,9 @@ There is no root `pnpm dev` script — use the per-app `dev:main` / `dev:api` / 
 
 `pnpm build` runs `pnpm -r --workspace-concurrency=1 run build` (topological order: contracts → db → api, with admin and main after their deps):
 
-- `packages/contracts` → `dist/` (tsc, `tsc -p tsconfig.json`).
-- `packages/db` → `dist/` (tsc) after Prisma `generate` has produced `packages/db/prisma/generated/`.
-- `apps/api` → `dist/` via `tsdown` (`dist/main.mjs`, `dist/app.mjs`, `.d.ts`). Prisma and `@grey-flowers/db` stay external to the bundle.
+- `packages/contracts` → `dist/` via `tsdown` (unbundle ESM, `dist/index.mjs` + `.d.mts`). Zod 保持外部依赖。
+- `packages/db` → `dist/` via `tsdown` (unbundle ESM, `dist/index.mjs` + `.d.mts`) after Prisma `generate` has produced `packages/db/prisma/generated/`; tsdown 将 generated client 编译进 `dist/prisma/generated/`（dist 自包含）。
+- `apps/api` → `dist/` via `tsdown` (`dist/main.mjs`, `dist/app.mjs`, `.d.mts`). Prisma and `@grey-flowers/db` stay external to the bundle.
 - `apps/main` → `apps/main/.output/` via Nuxt Nitro. No longer depends on `@grey-flowers/db` at runtime.
 - `apps/admin` → `dist/` via Vite; `VITE_API_ORIGIN`/`VITE_MAIN_ORIGIN` are defined by `apps/admin/vite.config.ts` from the root `.env`, not from a separate admin env file.
 

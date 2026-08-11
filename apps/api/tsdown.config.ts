@@ -20,5 +20,4 @@ export default defineConfig({
     ],
   },
   format: 'esm',
-  sourcemap: true,
 });
