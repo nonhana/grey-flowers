@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="vite-plugin-pwa/client" />
 
 interface ImportMetaEnv {
   /** 调试：所有接口统一延迟（ms）。localStorage 与 URL ?apiDelay= 可覆盖。 */

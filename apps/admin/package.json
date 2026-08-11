@@ -51,10 +51,14 @@
     "@tailwindcss/vite": "catalog:admin",
     "@types/react": "catalog:admin",
     "@types/react-dom": "catalog:admin",
+    "@vite-pwa/assets-generator": "catalog:admin",
     "@vitejs/plugin-react": "catalog:admin",
     "babel-plugin-react-compiler": "catalog:admin",
+    "sharp": "catalog:admin",
+    "sharp-ico": "catalog:admin",
     "tailwindcss": "catalog:admin",
     "vite": "catalog:admin",
+    "vite-plugin-pwa": "catalog:admin",
     "vitest": "catalog:admin"
   }
 }

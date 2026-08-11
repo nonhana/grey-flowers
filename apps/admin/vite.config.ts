@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 import { themeInitScript } from './vite/theme-script-plugin.js';
 
@@ -31,10 +32,31 @@ export default defineConfig(({ mode }) => {
       react(),
       themeInitScript(),
       tailwindcss(),
-      // react-compiler 的唯一注入通道：plugin-react 6 的 react() 只负责 JSX(oxc)，
-      // compiler 需经 reactCompilerPreset + @rolldown/plugin-babel 应用（无重复转换）。
       babel({
         presets: [reactCompilerPreset()],
+      }),
+      VitePWA({
+        registerType: 'prompt',
+        pwaAssets: {
+          config: true,
+        },
+        manifest: {
+          name: 'Grey Flowers Admin',
+          short_name: 'Grey Admin',
+          description: 'Grey Flowers 运营工作台',
+          lang: 'zh-CN',
+          display: 'standalone',
+          start_url: '/',
+          scope: '/',
+          theme_color: '#175A96',
+          background_color: '#EDF1F4',
+        },
+        workbox: {
+          navigateFallback: '/index.html',
+        },
+        devOptions: {
+          enabled: false,
+        },
       }),
     ],
     resolve: {

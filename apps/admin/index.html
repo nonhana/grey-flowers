@@ -21,6 +21,15 @@
       scripts/theme-init.ts 并内联进本 <head>，保证深色用户首帧不白闪。
       不要在 index.html 里手写主题脚本 —— 改 scripts/theme-init.ts。
     -->
+
+    <!--
+      PWA：iOS 安装 meta（manifest、theme-color、favicon/apple-touch-icon links
+      由 vite-plugin-pwa 构建时自动注入，此处不要手写以免重复）。
+      决策见 wiki/plans/2026-08-10-admin-pwa-refactor.md D8/D9。
+    -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Grey Admin" />
   </head>
   <body>
     <!--
