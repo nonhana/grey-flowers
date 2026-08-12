@@ -1,0 +1,94 @@
+name: Deploy Api
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'apps/api/**'
+      - 'packages/contracts/**'
+      - 'packages/db/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24.18.0'
+
+jobs:
+  gate:
+    name: Quality Gates
+    uses: ./.github/workflows/gate.yml
+    secrets:
+      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+  build-and-deploy:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+      - name: Build api (topological)
+        run: pnpm -F @grey-flowers/api... run build
+
+      # Injected workspace deps make the bundle self-contained (packed dist
+      # inside .deploy/node_modules/.pnpm). Do NOT pass --legacy: it leaves
+      # `@grey-flowers/db` / `@grey-flowers/contracts` as symlinks pointing
+      # back into the monorepo, which break on the server.
+      - name: Prepare deploy bundle
+        run: |
+          pnpm -F @grey-flowers/api deploy --prod --frozen-lockfile --ignore-scripts .deploy
+          cp scripts/deploy-api.sh .deploy/deploy-api.sh
+
+      - name: Show artifact info
+        run: |
+          echo "===== Deploy Bundle ====="
+          du -sh .deploy/
+          ls -lah .deploy/dist/
+          echo ""
+          echo "===== Workspace deps (must be real files, not dangling links) ====="
+          ls -la .deploy/node_modules/@grey-flowers/
+
+      - name: Upload deploy bundle to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: .deploy/**
+          target: ${{ secrets.API_DEPLOY_PATH }}
+          overwrite: true
+
+      # Runs the deploy logic as `bash <file>` so the server's login shell
+      # (may be fish) never parses the script — sshd executes remote commands
+      # with the user's login shell.
+      - name: Deploy artifact and restart PM2
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: API_DEPLOY_PATH
+          script: bash "$API_DEPLOY_PATH/.deploy/deploy-api.sh"
+        env:
+          API_DEPLOY_PATH: ${{ secrets.API_DEPLOY_PATH }}

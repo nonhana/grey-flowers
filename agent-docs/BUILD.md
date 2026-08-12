@@ -51,9 +51,17 @@ There is no root `pnpm dev` script — use the per-app `dev:main` / `dev:api` / 
 
 ## Deployment
 
-Pushing `master` (or the `article_published` repository dispatch) invokes `.github/workflows/deploy.yml`: it runs the quality gates (`pnpm test && pnpm typecheck && pnpm lint`) first, then builds the workspace with `pnpm build`, copies only `apps/main/.output/` and `apps/main/ecosystem.config.cjs` to the VPS, then PM2 reloads `grey-flowers` running `.output/server/index.mjs` on port `2408` (`ecosystem.config.cjs` `port: 2408`).
+Server-side deploy logic lives in `scripts/deploy-api.sh` / `scripts/deploy-main.sh`: each is shipped inside the deploy bundle and invoked by the workflow as `bash <file>`, so the VPS login shell (e.g. fish) never parses the deploy logic — sshd executes remote commands with the user's login shell.
 
-The workflow does not run `pnpm prisma:migrate:deploy`; the deploy script's SSH step only moves artifacts and reloads PM2. Apply a reviewed migration separately before relying on a schema change in production (notably the session refresh-rotation column). The API and admin apps are built but not deployed by this workflow.
+All deploys are gated: each of `.github/workflows/deploy-{api,admin,main}.yml` starts a `gate` job invoking the reusable `.github/workflows/gate.yml` (install → `pnpm fmt:check` → `pnpm lint` → `pnpm typecheck` → `pnpm test`), and only builds when it passes. `.github/workflows/ci.yml` runs the same gate on PRs only.
+
+- **api** (`deploy-api.yml`): builds `@grey-flowers/api` (topological), then `pnpm deploy` (injected workspace deps, no `--legacy`) produces a self-contained bundle — `dist/` + production `node_modules/` + `package.json` — which is scp'd to `API_DEPLOY_PATH` on the server and swapped in by the SSH step before `pm2 startOrReload` with a curl health check.
+- **admin** (`deploy-admin.yml`): `vite build` → `rsync --delete` of `apps/admin/dist/` to `ADMIN_DEPLOY_PATH` (static files, served by the VPS web server).
+- **main** (`deploy-main.yml`): Nuxt build → only `apps/main/.output/` is scp'd to `MAIN_DEPLOY_PATH`, then PM2 reloads `grey-flowers`. Runs on `master` pushes touching `apps/main`/`packages/contracts` (or the `article_published` repository dispatch).
+
+`ecosystem.config.cjs` and `.env` are **not shipped from the repo and are not in the repository** — they live only on the server, hand-maintained per app directory (the historical in-repo copies are still reachable via `git history` if you need a starting template). The API's server-side config may reference a `wait_ready` mode — `apps/api/src/main.ts` emits the PM2 `ready` signal after listen.
+
+No workflow runs `pnpm prisma:migrate:deploy`; the SSH steps only move artifacts and reload PM2. Apply a reviewed migration separately before relying on a schema change in production (notably the session refresh-rotation column).
 
 ## 测试数据库种子
 
