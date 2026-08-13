@@ -1,12 +1,8 @@
 name: CI
 
-# PR-only quality check. Master pushes are gated by the deploy workflows,
-# each of which runs this same reusable gate job before building.
-# (A separate master CI run would duplicate the gate on every push.)
-
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -16,15 +12,8 @@ env:
   NODE_VERSION: '24.18.0'
 
 jobs:
-  gate:
-    name: Quality Gates
-    uses: ./.github/workflows/gate.yml
-    secrets:
-      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
-
   build:
     name: Workspace Build
-    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

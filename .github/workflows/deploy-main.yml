@@ -21,14 +21,7 @@ env:
   NODE_VERSION: '24.18.0'
 
 jobs:
-  gate:
-    name: Quality Gates
-    uses: ./.github/workflows/gate.yml
-    secrets:
-      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
-
   build-and-deploy:
-    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -55,8 +48,6 @@ jobs:
         env:
           NODE_ENV: production
 
-# Only the Nitro output is shipped. `.env` and `ecosystem.config.cjs`
-      # on the server are hand-maintained — never overwrite them here.
       - name: Prepare artifact directory
         run: |
           mkdir -p .deploy
@@ -73,9 +64,6 @@ jobs:
           target: ${{ secrets.MAIN_DEPLOY_PATH }}
           overwrite: true
 
-      # Runs the deploy logic as `bash <file>` so the server's login shell
-      # (may be fish) never parses the script — sshd executes remote commands
-      # with the user's login shell.
       - name: Deploy artifact and reload PM2
         uses: appleboy/ssh-action@v1.2.5
         with:

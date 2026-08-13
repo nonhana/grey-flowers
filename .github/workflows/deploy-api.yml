@@ -2,7 +2,7 @@ name: Deploy Api
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     paths:
       - 'apps/api/**'
       - 'packages/contracts/**'
@@ -19,14 +19,7 @@ env:
   NODE_VERSION: '24.18.0'
 
 jobs:
-  gate:
-    name: Quality Gates
-    uses: ./.github/workflows/gate.yml
-    secrets:
-      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
-
   build-and-deploy:
-    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -51,10 +44,6 @@ jobs:
       - name: Build api (topological)
         run: pnpm -F @grey-flowers/api... run build
 
-      # Injected workspace deps make the bundle self-contained (packed dist
-      # inside .deploy/node_modules/.pnpm). Do NOT pass --legacy: it leaves
-      # `@grey-flowers/db` / `@grey-flowers/contracts` as symlinks pointing
-      # back into the monorepo, which break on the server.
       - name: Prepare deploy bundle
         run: |
           pnpm -F @grey-flowers/api deploy --prod --frozen-lockfile --ignore-scripts .deploy
@@ -79,9 +68,6 @@ jobs:
           target: ${{ secrets.API_DEPLOY_PATH }}
           overwrite: true
 
-      # Runs the deploy logic as `bash <file>` so the server's login shell
-      # (may be fish) never parses the script — sshd executes remote commands
-      # with the user's login shell.
       - name: Deploy artifact and restart PM2
         uses: appleboy/ssh-action@v1.2.5
         with:

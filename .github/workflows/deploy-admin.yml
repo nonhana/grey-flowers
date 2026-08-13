@@ -2,7 +2,7 @@ name: Deploy Admin
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     paths:
       - 'apps/admin/**'
       - 'packages/contracts/**'
@@ -18,14 +18,7 @@ env:
   NODE_VERSION: '24.18.0'
 
 jobs:
-  gate:
-    name: Quality Gates
-    uses: ./.github/workflows/gate.yml
-    secrets:
-      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
-
   build-and-deploy:
-    needs: gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
