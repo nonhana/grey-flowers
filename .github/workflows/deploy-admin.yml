@@ -36,7 +36,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm -F @grey-flowers/admin... install --frozen-lockfile
 
       - name: Build admin
         run: pnpm -F @grey-flowers/admin... run build
