@@ -1,11 +1,11 @@
 {
-"name": "@grey-flowers/db",
- "private": true,
- "type": "module",
- "files": [
-  "dist"
- ],
- "exports": {
+  "name": "@grey-flowers/db",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
     ".": {
       "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
