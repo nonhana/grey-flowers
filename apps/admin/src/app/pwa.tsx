@@ -3,7 +3,11 @@ import { toast } from 'sonner';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 export const PwaBridge = () => {
-  const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW();
+  const {
+    offlineReady: [offlineReady],
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
 
   useEffect(() => {
     if (offlineReady) {
