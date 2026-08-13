@@ -2,22 +2,57 @@
 
 ## Current automation
 
-This repository has no test framework, `test` script, test-file convention, watch command, or coverage threshold. No `*.test.*` or `*.spec.*` files are present.
+`apps/api` and `apps/admin` each run a **vitest** suite (`src/**/*.test.ts`, `environment: 'node'`, no DB / no network). `apps/main`, `packages/contracts`, and `packages/db` have no unit-test framework yet.
 
-Use the existing regression gate for every code change:
+What is covered today:
+
+- **`apps/api`** — env parsing and derivation (`env.test.ts`), rate limiter window + key-bound eviction, `resolveClientIp` trusted-proxy-hop matrix, restricted-markdown sanitizer allow/reject matrix, preview token mint/verify/expiry/cross-key, refresh reuse policy (`refresh-policy.test.ts`), refresh credential + access token round-trips (`tokens.test.ts`), the envelope/status-code contract and validation-field mapping (`http/errors.test.ts`), request parsers, slug/wordcount/markdown/pagination/prisma-error helpers.
+- **`apps/admin`** — the article editor store (`store/article-editor.test.ts`: autosave/`flushNow` drain semantics, conflict and offline gating, version restore), plus the display formatters and API error-message mapping.
+
+Test doubles are minimal on purpose: `apps/api` builds environments through the real `readApiEnvironment` factory (`src/testing/environment.ts`) instead of `as ApiEnvironment` casts, and the admin store test replaces only `apiClient`, keeping the real `instanceof`-based error predicates.
+
+Use the regression gate for every code change:
 
 ```sh
-pnpm typecheck && pnpm lint && pnpm build
+pnpm test && pnpm typecheck && pnpm lint && pnpm build
 ```
 
-For a focused check, run `pnpm typecheck` or `pnpm lint`. The lint configuration intentionally ignores `prisma/**/*`, so generated Prisma code is not linted by this command.
+- `pnpm test` = `vitest run` for `apps/api` and `apps/admin`.
+- `pnpm typecheck` = root `tsc -p tsconfig.json --noEmit` (root `*.ts` only) + per-package `typecheck`. Nuxt `nuxt typecheck` for `apps/main`, `tsc --noEmit` for the others.
+- `pnpm lint` = ESLint (Antfu) for `apps/main`; oxlint for `apps/api`, `apps/admin`, `packages/contracts`, `packages/db`. Generated Prisma code under `packages/db/prisma/generated/` is not linted.
+- `pnpm fmt:check` = oxfmt for every workspace except `apps/main` (ESLint owns formatting there); `pnpm fmt` rewrites in place.
+- Do not report a suite as passing when only static checks have run.
+
+## Writing tests here
+
+- Assert the behaviour, not that the call returned. A test whose assertions still pass after you delete the branch under test is hollow green — the `keepExcerpt` case in `restricted-markdown.test.ts` is the worked example of what that looks like and how it was fixed.
+- Verify a regression test actually fails against the old code before keeping it. `article-editor.test.ts` was written that way: reverting `article-editor.ts` to the pre-fix version turns three of its cases red.
+- Reset mocks with `vi.resetAllMocks()` in `beforeEach` when the suite uses `mockImplementationOnce`; `clearAllMocks` leaves the queued implementations behind and they leak into the next case.
 
 ## Prerequisites
 
-`pnpm build` imports the server environment and needs the complete `.env` described in [BUILD.md](./BUILD.md). Do not report a test suite as passing when only these static checks have run.
+`pnpm build` and `pnpm dev:*` import application environments and need the complete root `.env` described in [BUILD.md](./BUILD.md) (`HANA_DATABASE_URL`, API/auth/R2 secrets, mail). The API process exits at startup if the environment is invalid.
+
+## 测试数据
+
+测试数据库数据由 `packages/db/prisma/seed.mts` 提供（见 [BUILD.md](./BUILD.md) 的
+「测试数据库种子」）。运行 `pnpm prisma:reset` 即可获得覆盖全部表的真实分页/检索
+数据。管理后台唯一管理员：
+
+| Role | Username | Email | Password |
+| --- | --- | --- | --- |
+| Admin | `nonhana` | `nonhana@outlook.com` | `20021209xiang` |
+
+用邮箱 `nonhana@outlook.com` 在管理后台登录界面登入。
 
 ## Change-specific smoke checks
 
-- For an API change, use the development server and verify the response envelope's `success`, `payload`, and error fields.
-- For a UI change, check both color modes and a narrow viewport; the site is SSR-rendered and uses responsive UnoCSS utilities.
-- For Prisma changes, run `pnpm prisma:generate` before type checking.
+- **API change** — run `pnpm dev:api`, then verify the envelope: `{ success: true, data, requestId }` on success, `{ success: false, error: { code, message, fields? }, requestId }` on failure, with the correct HTTP status for the code (see [API_CONVENTIONS.md](./API_CONVENTIONS.md)). Admin calls additionally need a valid bearer token and an allowed origin.
+- **Admin UI change** — run `pnpm dev:admin`, exercise the flow at desktop and narrow viewport widths, and in both App color modes. The admin is a React 19 + TanStack Router SPA; check the failure and empty states, not just the happy path.
+- **Main UI change** — the site is SSR-rendered; verify both color modes and a narrow viewport, and that unpublished articles stay hidden from public routes except the token-gated preview.
+- **Prisma change** — run `pnpm prisma:generate` before type checking. Do not run `pnpm prisma:push` or `pnpm prisma:migrate:deploy` as a validation shortcut.
+- **Cross-workspace / contract change** — change `packages/contracts`, then `pnpm build` and check that consumers in `apps/api`, `apps/admin`, and `apps/main` all compile against the new DTOs.
+
+## Runtime regression check for database-backed routes
+
+Start the built main app from `apps/main/.output/` with the complete environment (plus a running `apps/api`), then request a page and `/rss.xml`. `/rss.xml` reads published articles through the API (`/public/articles/list`), so it needs the API running, not the database directly.

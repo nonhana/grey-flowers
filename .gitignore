@@ -19,6 +19,9 @@ logs
 .idea
 .omx
 
+# 设计验收时的临时截图，不入库
+.impeccable-shots
+
 # Local env files
 .env
 .env.*

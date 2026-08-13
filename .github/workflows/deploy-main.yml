@@ -1,0 +1,88 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'apps/main/**'
+      - 'packages/contracts/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - article_published
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24.18.0'
+
+jobs:
+  gate:
+    name: Quality Gates
+    uses: ./.github/workflows/gate.yml
+    secrets:
+      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+  build-and-deploy:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+      - name: Build main
+        run: pnpm -F @grey-flowers/main... run build
+        env:
+          NODE_ENV: production
+
+# Only the Nitro output is shipped. `.env` and `ecosystem.config.cjs`
+      # on the server are hand-maintained — never overwrite them here.
+      - name: Prepare artifact directory
+        run: |
+          mkdir -p .deploy
+          cp -r apps/main/.output .deploy/.output
+          cp scripts/deploy-main.sh .deploy/deploy-main.sh
+
+      - name: Upload build artifacts to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: .deploy/**
+          target: ${{ secrets.MAIN_DEPLOY_PATH }}
+          overwrite: true
+
+      # Runs the deploy logic as `bash <file>` so the server's login shell
+      # (may be fish) never parses the script — sshd executes remote commands
+      # with the user's login shell.
+      - name: Deploy artifact and reload PM2
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: MAIN_DEPLOY_PATH
+          script: bash "$MAIN_DEPLOY_PATH/.deploy/deploy-main.sh"
+        env:
+          MAIN_DEPLOY_PATH: ${{ secrets.MAIN_DEPLOY_PATH }}

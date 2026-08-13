@@ -1,0 +1,49 @@
+{
+  "name": "@grey-flowers/api",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/app.ts",
+      "default": "./dist/app.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "node --env-file-if-exists=../../.env --import tsx --watch src/main.ts",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "start": "node dist/main.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "catalog:api",
+    "@aws-sdk/s3-request-presigner": "catalog:api",
+    "@grey-flowers/contracts": "workspace:*",
+    "@grey-flowers/db": "workspace:*",
+    "@hono/node-server": "catalog:api",
+    "@hono/zod-validator": "catalog:api",
+    "@nuxtjs/mdc": "catalog:api",
+    "bcryptjs": "catalog:",
+    "es-toolkit": "catalog:api",
+    "hono": "catalog:api",
+    "jose": "catalog:api",
+    "pino": "catalog:api",
+    "pinyin-pro": "catalog:api",
+    "rehype-sanitize": "catalog:api",
+    "resend": "catalog:api",
+    "zod": "catalog:api"
+  },
+  "devDependencies": {
+    "pino-pretty": "catalog:api",
+    "tsdown": "catalog:",
+    "tsx": "catalog:",
+    "vitest": "catalog:api"
+  }
+}

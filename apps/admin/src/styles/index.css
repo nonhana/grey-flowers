@@ -1,0 +1,451 @@
+@import 'tailwindcss';
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Grey Flowers · Admin —— 设计 token 的单一来源
+
+   排字房法则（The Composing Room）
+   ─────────────────────────────────────────────────────────────────────────
+   后台只有两种物质，任何组件必须明确属于其中之一：
+
+     字盘 (case)  控制台层：侧栏、列表、筛选、控件、元数据、状态。
+                  按格对齐、表格化数字、紧行高、拉丁数据走等宽。
+
+     纸  (paper)  写作与长文阅读层。黑体、68ch 行宽、行高 1.9、
+                  抬升面不被任何边框切割。
+
+   派生规则
+     · 强调色只有 petal-blue 一族。「已发布」也用蓝，不引入第二个语义色系。
+     · 抬升只声明一次：要么描边，要么投影，不能又描边又投影。
+     · 控制台内不铺网格底纹；网格只属于 auth stage（.gf-stage-grid）。
+     · 类型尺度固定 rem，不做流体缩放（Operate register）。
+
+   结构
+     1. @theme        —— token → Tailwind utility 的映射（引用第 2 节的变量）
+     2. :root / dark  —— 两套天光下的同一座花园
+     3. base          —— 全局默认与统一焦点环
+     4. utilities     —— 少量无法由 utility 组合表达的具名类
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. token → utility 映射 ──────────────────────────────────────────────
+   这里只做转发，真实取值在第 2 节按主题给出，
+   因此 bg-case / text-ink 这类 utility 天生跟随 data-theme 切换。 */
+
+@theme {
+  /* 表面（由深到浅：字盘 → 画布 → 纸） */
+  --color-case: var(--gf-case);
+  --color-case-raised: var(--gf-case-raised);
+  --color-canvas: var(--gf-canvas);
+  --color-paper: var(--gf-paper);
+  --color-well: var(--gf-well);
+
+  /* 线 */
+  --color-rule: var(--gf-rule);
+  --color-edge: var(--gf-edge);
+  --color-edge-hover: var(--gf-edge-hover);
+
+  /* 墨（三级，不再更多） */
+  --color-ink-strong: var(--gf-ink-strong);
+  --color-ink: var(--gf-ink);
+  --color-ink-dim: var(--gf-ink-dim);
+
+  /* 强调：唯一的交互色族 */
+  --color-accent: var(--gf-accent);
+  --color-accent-hover: var(--gf-accent-hover);
+  --color-accent-on: var(--gf-accent-on);
+  --color-accent-text: var(--gf-accent-text);
+  --color-accent-wash: var(--gf-accent-wash);
+  --color-accent-wash-hover: var(--gf-accent-wash-hover);
+  --color-accent-rule: var(--gf-accent-rule);
+
+  /* 状态：错误与警告。成功态复用强调蓝。 */
+  --color-danger: var(--gf-danger);
+  --color-danger-hover: var(--gf-danger-hover);
+  --color-danger-on: var(--gf-danger-on);
+  --color-danger-text: var(--gf-danger-text);
+  --color-danger-wash: var(--gf-danger-wash);
+  --color-danger-rule: var(--gf-danger-rule);
+  --color-warn-text: var(--gf-warn-text);
+  --color-warn-wash: var(--gf-warn-wash);
+  --color-warn-rule: var(--gf-warn-rule);
+
+  /* 焦点与遮罩 */
+  --color-focus: var(--gf-focus);
+  --color-scrim: var(--gf-scrim);
+
+  /* 字族。JetBrains Mono 无 CJK，故中文回退到 Noto Sans SC：
+     同一个标签里拉丁与数字是等宽的、中文是黑体的，这是刻意的。 */
+  --font-sans:
+    'Noto Sans SC', 'Noto Sans', 'Noto Sans JP', -apple-system, 'PingFang SC',
+    'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'Noto Sans SC', ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+
+  /* 类型尺度：固定 rem，步进 ~1.15 */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.45;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.45;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.55;
+  --text-md: 1rem;
+  --text-md--line-height: 1.6;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.4;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.3;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 1.25;
+
+  /* 圆角：控件小、面板中、浮层大 */
+  --radius-control: 8px;
+  --radius-panel: 14px;
+  --radius-sheet: 18px;
+
+  /* 投影：只给真正浮起来的东西。浮层不描边，描边的不投影。
+     case-down / case-up 是字盘压在纸上的那道边 —— 字盘与纸相接时
+     用投影而不是描边，因为「抬升面不被任何边框切割」。 */
+  --shadow-case-down:
+    0 1px 3px var(--gf-shadow-near), 0 6px 14px -8px var(--gf-shadow-far);
+  --shadow-case-up:
+    0 -1px 3px var(--gf-shadow-near), 0 -6px 14px -8px var(--gf-shadow-far);
+  --shadow-float:
+    0 2px 6px var(--gf-shadow-near), 0 18px 44px -14px var(--gf-shadow-far);
+
+  /* 时长与动效。Operate register：150–250ms，只报告状态，不表演。 */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-scrim-in: gf-fade-in 180ms ease-out;
+  --animate-scrim-out: gf-fade-out 140ms ease-in;
+  --animate-sheet-in: gf-sheet-in 240ms var(--ease-out-quint);
+  --animate-sheet-out: gf-sheet-out 160ms ease-in;
+  --animate-dialog-in: gf-dialog-in 200ms var(--ease-out-quint);
+  --animate-dialog-out: gf-dialog-out 140ms ease-in;
+  --animate-pop-in: gf-pop-in 140ms var(--ease-out-quint);
+  /* 趋势柱自基线长起。这是 Report Don't Perform Rule 里唯一被许可的编排：
+     单根仍在 200ms 带内，错峰只是把同一个动作沿时间轴摊开，
+     错峰窗口由组件按天数封顶（见 charts.tsx 的 STAGGER_WINDOW）。 */
+  --animate-bar-rise: gf-bar-rise 200ms var(--ease-out-quint) backwards;
+  /* 列表骨架 ↔ 内容落地：一次手势内纯透明度收场（无错峰），
+     与 Item 级同构骨架配套 —— 同构保证不跳，fade 掩盖剩余亚像素差。 */
+  --animate-content-in: gf-fade-in 140ms ease-out;
+}
+
+@keyframes gf-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes gf-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes gf-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes gf-sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes gf-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+@keyframes gf-dialog-out {
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+  }
+}
+
+@keyframes gf-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* transform-origin 由柱子自己声明为 bottom —— 缩放必须钉在基线上，
+   否则柱子是从中心涨开而不是从零轴长出来的。 */
+@keyframes gf-bar-rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+/* ── 2. 两套天光下的同一座花园 ───────────────────────────────────────────── */
+
+:root {
+  /* 白天。两种物质不只差在明度，也差在色温：
+     字盘偏冷（金属与铅字），纸偏暖（棉浆）。这一点温差比明度差更早被眼睛读到。 */
+  --gf-case: oklch(0.925 0.01 244);
+  --gf-case-raised: oklch(0.972 0.005 242);
+  --gf-canvas: oklch(0.955 0.006 242);
+  --gf-paper: oklch(0.997 0.004 92);
+  --gf-well: oklch(0.945 0.012 240);
+
+  --gf-rule: oklch(0.855 0.012 242);
+  --gf-edge: oklch(0.78 0.018 242);
+  --gf-edge-hover: oklch(0.66 0.045 244);
+
+  --gf-ink-strong: oklch(0.24 0.03 252);
+  --gf-ink: oklch(0.34 0.022 250);
+  /* 0.44 而不是 0.46：字盘沉下去之后，最淡的一级墨要跟着沉，
+     才能在 case 上维持 4.5:1。 */
+  --gf-ink-dim: oklch(0.44 0.019 248);
+
+  --gf-accent: oklch(0.46 0.116 250);
+  --gf-accent-hover: oklch(0.4 0.11 250);
+  --gf-accent-on: oklch(0.99 0.004 250);
+  --gf-accent-text: oklch(0.44 0.115 250);
+  --gf-accent-wash: oklch(0.93 0.03 240);
+  --gf-accent-wash-hover: oklch(0.9 0.04 240);
+  --gf-accent-rule: oklch(0.7 0.075 248);
+
+  --gf-danger: oklch(0.5 0.17 25);
+  --gf-danger-hover: oklch(0.44 0.165 25);
+  --gf-danger-on: oklch(0.99 0.004 25);
+  --gf-danger-text: oklch(0.45 0.17 25);
+  --gf-danger-wash: oklch(0.955 0.025 25);
+  --gf-danger-rule: oklch(0.72 0.11 25);
+  --gf-warn-text: oklch(0.45 0.1 70);
+  --gf-warn-wash: oklch(0.955 0.035 80);
+  --gf-warn-rule: oklch(0.74 0.085 75);
+
+  --gf-focus: oklch(0.5 0.13 250);
+  --gf-scrim: oklch(0.24 0.03 252 / 42%);
+
+  --gf-shadow-near: oklch(0.35 0.04 250 / 10%);
+  --gf-shadow-far: oklch(0.3 0.05 250 / 22%);
+
+  --gf-grid-line: oklch(0.73 0.034 251 / 20%);
+}
+
+html[data-theme='dark'] {
+  /* 夜里：台灯照在纸上，纸依旧是房间里最亮的一块。
+     纸面对齐品牌的 Night Soil（oklch 0.27），机房层再依次沉下去。 */
+  --gf-case: oklch(0.19 0.012 252);
+  --gf-case-raised: oklch(0.245 0.012 252);
+  --gf-canvas: oklch(0.22 0.012 252);
+  /* 只留一丝暖 —— 再多就从「台灯下的纸」变成第二个色系（土黄）了。 */
+  --gf-paper: oklch(0.269 0.004 84);
+  --gf-well: oklch(0.18 0.012 252);
+
+  --gf-rule: oklch(0.32 0.014 250);
+  --gf-edge: oklch(0.4 0.018 250);
+  --gf-edge-hover: oklch(0.54 0.035 248);
+
+  --gf-ink-strong: oklch(0.95 0.006 245);
+  --gf-ink: oklch(0.87 0.009 245);
+  --gf-ink-dim: oklch(0.7 0.013 245);
+
+  --gf-accent: oklch(0.63 0.115 248);
+  --gf-accent-hover: oklch(0.69 0.108 248);
+  --gf-accent-on: oklch(0.16 0.03 252);
+  --gf-accent-text: oklch(0.79 0.082 244);
+  --gf-accent-wash: oklch(0.31 0.045 246);
+  --gf-accent-wash-hover: oklch(0.36 0.052 246);
+  --gf-accent-rule: oklch(0.48 0.07 248);
+
+  --gf-danger: oklch(0.58 0.17 25);
+  --gf-danger-hover: oklch(0.64 0.16 25);
+  --gf-danger-on: oklch(0.15 0.02 25);
+  --gf-danger-text: oklch(0.79 0.125 25);
+  --gf-danger-wash: oklch(0.28 0.055 25);
+  --gf-danger-rule: oklch(0.5 0.13 25);
+  --gf-warn-text: oklch(0.83 0.1 78);
+  --gf-warn-wash: oklch(0.28 0.045 75);
+  --gf-warn-rule: oklch(0.5 0.085 75);
+
+  --gf-focus: oklch(0.72 0.1 248);
+  --gf-scrim: oklch(0.12 0.02 252 / 62%);
+
+  --gf-shadow-near: oklch(0 0 0 / 30%);
+  --gf-shadow-far: oklch(0 0 0 / 45%);
+}
+
+/* ── 通知（Sonner）牌面 ──────────────────────────────────────────────────
+   Sonner 的样式变量按 data-sonner-theme 分两套默认值；我们用 #root 定位
+   （ID 特异性稳定胜过库自身的类选择器，不依赖脚本注入顺序），并直接引用
+   上面的 --gf-* token —— 变量在用时才代换，因此一张牌面天然跟随 data-theme
+   切换，不用为每个主题各写一份。
+
+   One Accent Rule：成功是 petal-blue（wash/rule/text），不是绿色。
+   Declared Once Rule：toast 保留 hairline 描边，去掉 Sonner 自带的投影。 */
+
+#root [data-sonner-toaster] {
+  --normal-bg: var(--gf-case-raised);
+  --normal-border: var(--gf-rule);
+  --normal-text: var(--gf-ink);
+  --success-bg: var(--gf-accent-wash);
+  --success-border: var(--gf-accent-rule);
+  --success-text: var(--gf-accent-text);
+  --info-bg: var(--gf-accent-wash);
+  --info-border: var(--gf-accent-rule);
+  --info-text: var(--gf-accent-text);
+  --warning-bg: var(--gf-warn-wash);
+  --warning-border: var(--gf-warn-rule);
+  --warning-text: var(--gf-warn-text);
+  --error-bg: var(--gf-danger-wash);
+  --error-border: var(--gf-danger-rule);
+  --error-text: var(--gf-danger-text);
+  font-family: var(--font-sans);
+}
+
+#root [data-sonner-toast][data-styled='true'] {
+  box-shadow: none;
+}
+
+/* ── 3. base ─────────────────────────────────────────────────────────────── */
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  html,
+  body {
+    overflow: hidden;
+  }
+
+  body {
+    min-width: 320px;
+    margin: 0;
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  /* 统一焦点环：一处定义，组件不必各自重复。
+     :where() 保持 0 特异性，个别组件仍可覆盖。 */
+  :where(
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    summary,
+    [tabindex]
+  ):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [data-disabled] {
+    cursor: not-allowed;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-wash);
+    color: var(--color-ink-strong);
+  }
+
+  /* 字盘层的数字必须能上下对齐 */
+  :where(.font-mono) {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* 滚动条槽必须透明。默认的浅灰轨道会在纸面右缘拉出一条通高的冷灰竖线 ——
+     那正是「抬升面不被任何边框切割」要拒绝的东西。槽透明之后，
+     滚动条落在谁身上就是谁的颜色。 */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-edge) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-color: var(--color-edge);
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-edge-hover);
+  }
+}
+
+/* ── 4. 具名类 ───────────────────────────────────────────────────────────── */
+
+/* 网格底纹只属于 auth stage —— 那里品牌在说话；控制台里它只会
+   把每一处布局缝隙暴露成「没做完」。 */
+@utility gf-stage-grid {
+  background-image:
+    linear-gradient(var(--gf-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gf-grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center;
+}
+
+/* 夜里不铺网格。主站 DESIGN.md 的原话是「白天纸压在淡网格上，夜里只剩焦墨」，
+   这条例外沿用的是那条规则，就不能只沿用一半。 */
+html[data-theme='dark'] .gf-stage-grid {
+  background-image: none;
+}
+
+/* 隐藏滚动轨道但保留滚动，只用于横向工具条这种不需要可见轨道的场合。 */
+@utility gf-scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── 5. 减动效降级 ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    /* 只压时长不压延迟，错峰入场会退化成「一串几乎瞬时的闪」——
+       比原动画更难受。延迟必须一起归零。 */
+    animation-delay: 0.01ms !important;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rewriteRelativeImportExtensions": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.mts",
+    "scripts/**/*.ts",
+    "scripts/**/*.mts",
+    "prisma/**/*.ts",
+    "prisma/**/*.mts"
+  ]
+}

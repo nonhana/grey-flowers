@@ -1,0 +1,52 @@
+name: CI
+
+# PR-only quality check. Master pushes are gated by the deploy workflows,
+# each of which runs this same reusable gate job before building.
+# (A separate master CI run would duplicate the gate on every push.)
+
+on:
+  pull_request:
+    branches: [ master ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24.18.0'
+
+jobs:
+  gate:
+    name: Quality Gates
+    uses: ./.github/workflows/gate.yml
+    secrets:
+      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+  build:
+    name: Workspace Build
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+      - name: Build workspace (topological)
+        run: pnpm build
+        env:
+          NODE_ENV: production

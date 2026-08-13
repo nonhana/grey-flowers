@@ -1,0 +1,85 @@
+name: Deploy Admin
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'apps/admin/**'
+      - 'packages/contracts/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-admin
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24.18.0'
+
+jobs:
+  gate:
+    name: Quality Gates
+    uses: ./.github/workflows/gate.yml
+    secrets:
+      HANA_DATABASE_URL: ${{ secrets.HANA_DATABASE_URL }}
+
+  build-and-deploy:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build admin
+        run: pnpm -F @grey-flowers/admin... run build
+
+      - name: Show build artifacts info
+        run: |
+          echo "===== Build Artifacts ====="
+          ls -lah apps/admin/dist/
+          echo ""
+          echo "===== Total Size ====="
+          du -sh apps/admin/dist/
+
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='stats.html' \
+            apps/admin/dist/ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.ADMIN_DEPLOY_PATH }}/
+
+      - name: Deployment success notice
+        if: success()
+        run: |
+          echo "Admin deployment successful!"
+          echo "Deploy path: ${{ secrets.ADMIN_DEPLOY_PATH }}"
+          echo "Time: $(date '+%Y-%m-%d %H:%M:%S')"
+
+      - name: Deployment failure notice
+        if: failure()
+        run: |
+          echo "Admin deployment failed!"
+          echo "Check logs for details."

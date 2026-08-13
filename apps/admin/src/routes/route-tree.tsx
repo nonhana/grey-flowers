@@ -1,0 +1,194 @@
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from '@tanstack/react-router';
+
+import { ConsoleShell } from '@/app/shell/console-shell.js';
+import { parseStatusFilter } from '@/features/articles/display.js';
+import { parseAssetStatusFilter } from '@/features/assets/display.js';
+
+import { lazyPage } from './lazy-page.js';
+
+const rootRoute = createRootRoute({ component: ConsoleShell });
+
+const indexRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/overview/overview-page.js'),
+    'OverviewPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/',
+});
+
+const articlesListRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/articles/list-page.js'),
+    'ArticlesListPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/articles',
+  // 「全部」是无查询串的规范 URL，草稿与已发布各自带一个 status。
+  // 这样侧栏子项可以深链，而普通的「去文章列表」不必拖着查询串走。
+  validateSearch: (search: Record<string, unknown>) => {
+    const status = parseStatusFilter(search.status);
+    return status === 'all' ? {} : { status };
+  },
+});
+
+const newArticleRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/articles/new-article-page.js'),
+    'NewArticlePage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/articles/new',
+});
+
+const articleWorkspaceRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/articles/workspace-page.js'),
+    'ArticleWorkspacePage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/articles/$articleId',
+  // 写作要独占视口：外壳收起移动端的拇指栏，把滚动交还给纸面。
+  staticData: { fullBleed: true },
+});
+
+const tagsRoute = createRoute({
+  ...lazyPage(() => import('@/features/taxonomy/tags-page.js'), 'TagsPage'),
+  getParentRoute: () => rootRoute,
+  path: '/tags',
+});
+
+const categoriesRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/taxonomy/categories-page.js'),
+    'CategoriesPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/categories',
+});
+
+const commentsRoute = createRoute({
+  ...lazyPage(() => import('@/features/comments/list-page.js'), 'CommentsPage'),
+  getParentRoute: () => rootRoute,
+  path: '/comments',
+});
+
+const usersRoute = createRoute({
+  ...lazyPage(() => import('@/features/users/list-page.js'), 'UsersPage'),
+  getParentRoute: () => rootRoute,
+  path: '/users',
+});
+
+const activitiesRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/activities/list-page.js'),
+    'ActivitiesPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/activities',
+});
+
+const newActivityRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/activities/compose-page.js'),
+    'ActivityComposePage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/activities/new',
+  // 全文写作独占视口：收起移动端拇指栏，把滚动交还给纸面。
+  staticData: { fullBleed: true },
+});
+
+const editActivityRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/activities/compose-page.js'),
+    'ActivityComposePage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/activities/$activityId/edit',
+  staticData: { fullBleed: true },
+});
+
+const assetsListRoute = createRoute({
+  ...lazyPage(() => import('@/features/assets/list-page.js'), 'AssetsListPage'),
+  getParentRoute: () => rootRoute,
+  path: '/assets',
+  // 待清理深链从概览进来后回到这一页，URL 进入可复位（沿用文章 status 模式）。
+  validateSearch: (search: Record<string, unknown>) => {
+    const status = parseAssetStatusFilter(search.status);
+    return status === 'all' ? {} : { status };
+  },
+});
+
+const assetsDetailRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/assets/detail-page.js'),
+    'AssetsDetailPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/assets/$assetId',
+});
+
+const musicListRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/music/list-page.js'),
+    'MusicLibraryPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/music',
+  // 缺元数据深链：TanStack 默认 parseSearch 会把 ?incomplete=true JSON 解析成
+  // 布尔 true，这里统一归一为布尔 true（round-trip 稳定，不会 `"true"` 双重编码）。
+  validateSearch: (search: Record<string, unknown>) =>
+    search.incomplete === true || search.incomplete === 'true'
+      ? { incomplete: true }
+      : {},
+});
+
+const musicDetailRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/music/detail-page.js'),
+    'MusicDetailPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/music/$musicId',
+});
+
+const musicUploadRoute = createRoute({
+  ...lazyPage(
+    () => import('@/features/music/upload-page.js'),
+    'MusicUploadPage',
+  ),
+  getParentRoute: () => rootRoute,
+  path: '/music/upload',
+});
+
+const routeTree = rootRoute.addChildren([
+  activitiesRoute,
+  articleWorkspaceRoute,
+  articlesListRoute,
+  assetsDetailRoute,
+  assetsListRoute,
+  categoriesRoute,
+  commentsRoute,
+  editActivityRoute,
+  indexRoute,
+  musicDetailRoute,
+  musicListRoute,
+  musicUploadRoute,
+  newActivityRoute,
+  newArticleRoute,
+  tagsRoute,
+  usersRoute,
+]);
+
+export const router = createRouter({ routeTree });
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
