@@ -18,10 +18,17 @@ export const PwaBridge = () => {
   useEffect(() => {
     if (!needRefresh) return;
     toast('新版本可用', {
+      id: 'pwa-need-refresh',
       action: {
         label: '刷新',
         onClick: () => {
-          void updateServiceWorker(true);
+          void navigator.serviceWorker.getRegistration().then((reg) => {
+            if (!reg || !reg.waiting) {
+              window.location.reload();
+              return;
+            }
+            void updateServiceWorker(true);
+          });
         },
       },
       duration: Infinity,

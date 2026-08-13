@@ -131,15 +131,15 @@ export default defineConfig({
 
 `minimal-2023` preset 输出（全部进 `public/`）：
 
-| 文件                           | 用途                                      |
-| ------------------------------ | ----------------------------------------- |
-| `favicon.ico`                  | 站点 favicon（48×48 透明底）              |
-| `favicon.svg` | 站点 SVG favicon（透明底，`sizes="any"`）；**仅 SVG 源图时生成**（直接复制源图），PNG 源图不产出该文件 |
-| `pwa-64x64.png`                | 兼容小尺寸                                |
-| `pwa-192x192.png`              | manifest any 图标                         |
-| `pwa-512x512.png`              | manifest any 图标                         |
-| `maskable-icon-512x512.png`    | manifest maskable 图标                    |
-| `apple-touch-icon-180x180.png` | iOS 安装图标                              |
+| 文件                           | 用途                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `favicon.ico`                  | 站点 favicon（48×48 透明底）                                                                           |
+| `favicon.svg`                  | 站点 SVG favicon（透明底，`sizes="any"`）；**仅 SVG 源图时生成**（直接复制源图），PNG 源图不产出该文件 |
+| `pwa-64x64.png`                | 兼容小尺寸                                                                                             |
+| `pwa-192x192.png`              | manifest any 图标                                                                                      |
+| `pwa-512x512.png`              | manifest any 图标                                                                                      |
+| `maskable-icon-512x512.png`    | manifest maskable 图标                                                                                 |
+| `apple-touch-icon-180x180.png` | iOS 安装图标                                                                                           |
 
 > preset 具体产物以 `@vite-pwa/assets-generator@1.x` 实际输出为准；实施时若文件名不同，同步更新 manifest 配置与插件 head 注入结果。生成结果必须 git 提交（图标是品牌资产，不应每次构建依赖生成器）。
 
@@ -214,12 +214,12 @@ VitePWA({
 /// <reference types="vite-plugin-pwa/client" />
 ```
 
-`src/app/pwa.tsx`（新增，约 30 行）：
+`src/app/pwa.tsx`（新增，约 40 行）：
 
 ```tsx
-import { useRegisterSW } from 'virtual:pwa-register/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 
 /**
  * PWA 桥接：离线可用提示（一次性）与新版本确认刷新提示。
@@ -227,7 +227,11 @@ import { toast } from 'sonner';
  * 只提示、不强制，避免编辑/保存过程中被 service worker 突然 reload。
  */
 export const PwaBridge = () => {
-  const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW();
+  const {
+    offlineReady: [offlineReady],
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
 
   useEffect(() => {
     if (offlineReady) {
@@ -238,9 +242,21 @@ export const PwaBridge = () => {
   useEffect(() => {
     if (!needRefresh) return;
     toast('新版本可用', {
+      id: 'pwa-need-refresh',
       action: {
         label: '刷新',
-        onClick: () => updateServiceWorker(true),
+        onClick: () => {
+          void navigator.serviceWorker.getRegistration().then((reg) => {
+            // 无 waiting SW 时 updateServiceWorker 只是 no-op（SKIP_WAITING
+            // 无人接收、不会触发 controllerchange reload），此时直接刷新才能
+            // 兑现「点了就要刷新」。
+            if (!reg || !reg.waiting) {
+              window.location.reload();
+              return;
+            }
+            void updateServiceWorker(true);
+          });
+        },
       },
       duration: Infinity,
     });
@@ -249,6 +265,8 @@ export const PwaBridge = () => {
   return null;
 };
 ```
+
+> **实施发现（2026-08-13）**：`useRegisterSW()` 在 `vite-plugin-pwa@1.3.0` 返回的 `offlineReady` / `needRefresh` 是 `[boolean, setter]` 元组而非 boolean（见包内 `react.d.ts`），须解构取元组第一项。另：toast 加 `id` 去重（prompt 模式首次加载时 `wasWaitingBeforeRegister` 与 installed→waiting 两条事件路径可能各触发一次提示）；「刷新」按钮在无 waiting SW 时兜底直接 `location.reload()`（`updateServiceWorker` 依赖 waiting 存在，缺失时是 no-op）。
 
 `src/app/providers.tsx`：在 `AppProviders` 的组合内挂 `<PwaBridge />`（与既有 Provider 并列）。PWA 属于应用级 runtime，放在 `app/` 层符合 [React Frontend 架构设计](../design/2026-08-01-react-frontend-architecture.md) 的归属纪律（`app/` 只放会话、导航与真正跨 feature 的运行时组合）。
 
