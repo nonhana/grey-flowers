@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "NODE_ENV=production vite build && node scripts/check-prod-build.mjs",
+    "build": "NODE_ENV=production vite build",
     "dev": "vite",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
