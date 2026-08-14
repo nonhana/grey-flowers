@@ -5,13 +5,10 @@ import { cn } from 'cnfast';
 import { Disc3, Info, Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
 import { formatDuration } from '@/lib/format.js';
-import {
-  AssetImage,
-  buttonClass,
-  IconButton,
-  MetaLine,
-  StatusReadout,
-} from '@/ui/index.js';
+import { buttonClass, IconButton } from '@/ui/button.js';
+import { StatusReadout } from '@/ui/feedback.js';
+import { AssetImage } from '@/ui/image.js';
+import { MetaLine } from '@/ui/surface.js';
 
 export const MusicCard = ({
   isCurrent,

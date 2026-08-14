@@ -8,19 +8,11 @@ import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
-import {
-  Alert,
-  Button,
-  ConfirmDialog,
-  controlClass,
-  EmptyState,
-  FilterChip,
-  IconButton,
-  PageBody,
-  PageHeader,
-  RowStack,
-  Skeleton,
-} from '@/ui/index.js';
+import { Button, IconButton } from '@/ui/button.js';
+import { Alert, EmptyState, Skeleton } from '@/ui/feedback.js';
+import { controlClass, FilterChip } from '@/ui/form.js';
+import { ConfirmDialog } from '@/ui/overlay.js';
+import { PageBody, PageHeader, RowStack } from '@/ui/surface.js';
 
 /** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳。 */
 const TagRowSkeleton = () => (

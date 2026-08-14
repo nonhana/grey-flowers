@@ -31,7 +31,7 @@ import {
 } from '@/features/articles/editor/markdown-ops.js';
 import { paperHighlight } from '@/features/articles/editor/paper-highlight.js';
 import { paperTheme } from '@/features/articles/editor/paper-theme.js';
-import { IconButton } from '@/ui/index.js';
+import { IconButton } from '@/ui/button.js';
 
 /*
  * 动态正文的 Markdown 是受限子集：schema 拒绝标题 / HTML / 图片 / 表格，

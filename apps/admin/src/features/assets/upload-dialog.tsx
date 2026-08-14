@@ -14,7 +14,11 @@ import { toast } from 'sonner';
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { AUDIO_ACCEPT_MAP, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
-import { Alert, AppDialog, Button, FieldLabel, FileDrop } from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { FileDrop } from '@/ui/file-drop.js';
+import { FieldLabel } from '@/ui/form.js';
+import { AppDialog } from '@/ui/overlay.js';
 
 import { assetErrorMessage, purposeLabels, purposeOptions } from './display.js';
 

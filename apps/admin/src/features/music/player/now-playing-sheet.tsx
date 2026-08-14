@@ -17,7 +17,9 @@ import {
 import { useEffect } from 'react';
 
 import { usePlayerStore, type LoopMode } from '@/store/player.js';
-import { AssetImage, BottomSheet, Button, IconButton } from '@/ui/index.js';
+import { Button, IconButton } from '@/ui/button.js';
+import { AssetImage } from '@/ui/image.js';
+import { BottomSheet } from '@/ui/overlay.js';
 
 import { SeekRow } from './seek-row.js';
 import { TrackSlider } from './track-slider.js';

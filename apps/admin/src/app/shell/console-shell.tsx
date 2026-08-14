@@ -2,23 +2,19 @@ import { Link, Outlet, useMatches } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import {
   FileText,
-  FolderTree,
-  Images,
   LayoutDashboard,
-  MessagesSquare,
   MoreHorizontal,
-  Music2,
   PenLine,
-  Tags,
-  Users,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type ComponentType } from 'react';
 
-import { ComposeMenu } from '@/app/shell/compose-menu.js';
 import { MusicPlayer } from '@/features/music/player/music-player.js';
-import { BottomSheet } from '@/ui/index.js';
 
-import { AccountBlock, ConsoleRail, navRowClass } from './console-rail.js';
+import type { ComposeMenuProps } from './compose-menu.js';
+import type { MoreSheetProps } from './more-sheet.js';
+
+import { ComposeFab } from './compose-fab.js';
+import { ConsoleRail } from './console-rail.js';
 
 const tabClass = cn(
   'flex h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control',
@@ -56,70 +52,6 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
     </button>
   </nav>
 );
-const MoreSheet = ({
-  isOpen,
-  onOpenChange,
-}: {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}) => (
-  <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange} title="更多">
-    <div className="grid gap-1 px-4 pt-1 pb-4">
-      <Link
-        className={navRowClass}
-        onClick={() => onOpenChange(false)}
-        to="/assets"
-      >
-        <Images aria-hidden />
-        资产
-      </Link>
-      <Link
-        className={navRowClass}
-        onClick={() => onOpenChange(false)}
-        to="/music"
-      >
-        <Music2 aria-hidden />
-        音乐库
-      </Link>
-      <Link
-        className={navRowClass}
-        onClick={() => onOpenChange(false)}
-        to="/categories"
-      >
-        <FolderTree aria-hidden />
-        分类
-      </Link>
-      <Link
-        className={navRowClass}
-        onClick={() => onOpenChange(false)}
-        to="/comments"
-      >
-        <MessagesSquare aria-hidden />
-        评论
-      </Link>
-      <Link
-        className={navRowClass}
-        onClick={() => onOpenChange(false)}
-        to="/users"
-      >
-        <Users aria-hidden />
-        用户
-      </Link>
-      <Link
-        className={navRowClass}
-        onClick={() => onOpenChange(false)}
-        to="/tags"
-      >
-        <Tags aria-hidden />
-        标签
-      </Link>
-      <div className="mt-3 border-t border-rule pt-3">
-        <AccountBlock layout="sheet" />
-      </div>
-    </div>
-  </BottomSheet>
-);
-
 /**
  * 控制台外壳。
  *
@@ -130,6 +62,28 @@ const MoreSheet = ({
 export const ConsoleShell = () => {
   const [composeOpen, setComposeOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  // MoreSheet 首次打开时才懒加载；加载后保持挂载，关闭动画完整走完（交接 P2）。
+  const [MoreSheet, setMoreSheet] =
+    useState<ComponentType<MoreSheetProps> | null>(null);
+  const openMore = () => {
+    setMoreOpen(true);
+    if (!MoreSheet) {
+      void import('./more-sheet.js').then((mod) =>
+        setMoreSheet(() => mod.MoreSheet),
+      );
+    }
+  };
+  // ComposeMenu（motion 展开层）由 ComposeFab 悬停/聚焦/pointerdown 预取后懒加载；
+  // open 状态仍在 shell 持有，首次点击不会丢（交接 P2）。
+  const [ComposeMenu, setComposeMenu] =
+    useState<ComponentType<ComposeMenuProps> | null>(null);
+  const prefetchComposeMenu = () => {
+    if (!ComposeMenu) {
+      void import('./compose-menu.js').then((mod) =>
+        setComposeMenu(() => mod.ComposeMenu),
+      );
+    }
+  };
   const matches = useMatches();
   const isFullBleed = matches.some(
     (match) => (match.staticData as { fullBleed?: boolean }).fullBleed === true,
@@ -150,12 +104,21 @@ export const ConsoleShell = () => {
         {isFullBleed ? null : (
           <>
             <MusicPlayer composeMenuOpen={composeOpen} />
-            <ComposeMenu onOpenChange={setComposeOpen} open={composeOpen} />
-            <MobileTabBar onMore={() => setMoreOpen(true)} />
+            <ComposeFab
+              onPrefetch={prefetchComposeMenu}
+              onToggle={() => setComposeOpen((open) => !open)}
+              open={composeOpen}
+            />
+            {ComposeMenu ? (
+              <ComposeMenu onOpenChange={setComposeOpen} open={composeOpen} />
+            ) : null}
+            <MobileTabBar onMore={openMore} />
           </>
         )}
       </div>
-      <MoreSheet isOpen={moreOpen} onOpenChange={setMoreOpen} />
+      {MoreSheet ? (
+        <MoreSheet isOpen={moreOpen} onOpenChange={setMoreOpen} />
+      ) : null}
     </div>
   );
 };

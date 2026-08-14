@@ -10,15 +10,11 @@ import { useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
-import {
-  Button,
-  EmptyState,
-  FilterChip,
-  Panel,
-  SectionLabel,
-  Skeleton,
-  TrendPlot,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { TrendPlot } from '@/ui/charts.js';
+import { EmptyState, Skeleton } from '@/ui/feedback.js';
+import { FilterChip } from '@/ui/form.js';
+import { Panel, SectionLabel } from '@/ui/surface.js';
 
 const METRIC_OPTIONS: readonly OverviewTrendMetric[] = [
   'articles',

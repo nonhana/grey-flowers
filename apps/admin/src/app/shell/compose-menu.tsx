@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 
 import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
-import { PenLine, Plus, SquarePen } from 'lucide-react';
+import { PenLine, SquarePen } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect } from 'react';
 
@@ -23,8 +23,13 @@ const nearestBottom = 56 + CHILD_GAP;
 const stackStep = CHILD_SIZE + CHILD_GAP;
 
 /**
- * 移动端统一的圆形悬浮发布菜单：单一圆形 +，展开丝滑弹出两个纯图标圆形
- * （发布动态 / 发布文章）。发布是这台机器上最频繁的动作，入口只有一个。
+ * 移动端发布的展开弹层（motion 部分，懒加载）：透明遮罩 + 两个纯图标圆形
+ * （发布动态 / 发布文章）spring 逐层弹出。发布是这台机器上最频繁的动作，
+ * 入口只有一个。
+ *
+ * FAB 触发器在 compose-fab.tsx（入口链常驻，无 motion），由 ConsoleShell
+ * 懒加载本模块并在 FAB 悬停/聚焦/pointerdown 时预取（交接 P2）——motion 依赖
+ * 只留在懒模块里。
  *
  * 用「常驻 DOM + animate 切换」而不是 AnimatePresence 挂载动画：
  * Admin 开了 React Compiler，motion 的挂载期初始动画会被跳过
@@ -34,13 +39,12 @@ const stackStep = CHILD_SIZE + CHILD_GAP;
  * 展开态由 ConsoleShell 持有：音乐悬浮按钮需要在菜单展开时让位隐藏，
  * 两个组件共享同一份状态，避免各管各的互相遮挡。
  */
-export const ComposeMenu = ({
-  onOpenChange,
-  open,
-}: {
+export interface ComposeMenuProps {
   onOpenChange: (open: boolean) => void;
   open: boolean;
-}) => {
+}
+
+export const ComposeMenu = ({ onOpenChange, open }: ComposeMenuProps) => {
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -124,31 +128,6 @@ export const ComposeMenu = ({
             </Link>
           </motion.span>
         ))}
-
-        <motion.button
-          aria-expanded={open}
-          aria-haspopup="menu"
-          aria-label={open ? '收起发布菜单' : '发布新内容'}
-          className={cn(
-            'absolute inset-x-0 bottom-0 grid size-12 place-items-center',
-            'pointer-events-auto',
-            'rounded-full bg-accent text-accent-on',
-            'shadow-float transition-colors duration-150',
-            'hover:bg-accent-hover',
-            open && 'bg-accent-hover',
-          )}
-          onClick={() => onOpenChange(!open)}
-          whileTap={{ scale: 0.92 }}
-          type="button"
-        >
-          <motion.span
-            animate={{ rotate: open ? 45 : 0 }}
-            className="grid place-items-center"
-            transition={spring}
-          >
-            <Plus aria-hidden className="size-5" />
-          </motion.span>
-        </motion.button>
       </div>
     </>
   );

@@ -1,7 +1,8 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 
-import { IconButton, PageBody, PageHeader } from '@/ui/index.js';
+import { IconButton } from '@/ui/button.js';
+import { PageBody, PageHeader } from '@/ui/surface.js';
 
 import { UploadWizard } from './upload-wizard.js';
 

@@ -16,7 +16,8 @@ import {
 } from 'lucide-react';
 
 import { usePlayerStore, type LoopMode } from '@/store/player.js';
-import { AssetImage, IconButton } from '@/ui/index.js';
+import { IconButton } from '@/ui/button.js';
+import { AssetImage } from '@/ui/image.js';
 
 import { SeekRow } from './seek-row.js';
 import { TrackSlider } from './track-slider.js';

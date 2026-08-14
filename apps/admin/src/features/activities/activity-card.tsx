@@ -4,7 +4,9 @@ import { cn } from 'cnfast';
 import { Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
 import { formatDateTime } from '@/lib/format.js';
-import { AssetImage, IconButton, MetaLine } from '@/ui/index.js';
+import { IconButton } from '@/ui/button.js';
+import { AssetImage } from '@/ui/image.js';
+import { MetaLine } from '@/ui/surface.js';
 
 import { activityContentPreview, activityImageGridClass } from './display.js';
 

@@ -7,16 +7,12 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatDuration } from '@/lib/format.js';
-import {
-  AppDialog,
-  AssetImage,
-  Button,
-  EmptyState,
-  Paginator,
-  SearchInput,
-  Skeleton,
-  StatusReadout,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
+import { SearchInput } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
+import { AppDialog } from '@/ui/overlay.js';
+import { Paginator } from '@/ui/paginator.js';
 
 const PAGE_SIZE = 20;
 const SELECT_LIMIT = 10;

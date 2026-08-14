@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { SectionLabel, Skeleton } from '@/ui/index.js';
+import { Skeleton } from '@/ui/feedback.js';
+import { SectionLabel } from '@/ui/surface.js';
 
 /**
  * 计数抽屉。

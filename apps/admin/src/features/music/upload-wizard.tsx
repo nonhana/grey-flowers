@@ -1,6 +1,7 @@
+import type * as MusicMetadata from 'music-metadata';
+
 import { useNavigate } from '@tanstack/react-router';
 import { FileUp, ImagePlus, Upload } from 'lucide-react';
-import { parseBlob } from 'music-metadata';
 import { useEffect, useState } from 'react';
 import { Form, ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
@@ -10,16 +11,12 @@ import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept.js';
-import {
-  Alert,
-  AssetImage,
-  Button,
-  FieldLabel,
-  FileDrop,
-  MetaLine,
-  Panel,
-  TextField,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { FileDrop } from '@/ui/file-drop.js';
+import { FieldLabel, TextField } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
+import { MetaLine, Panel } from '@/ui/surface.js';
 
 type Phase = 'idle' | 'parsing' | 'ready';
 
@@ -48,6 +45,11 @@ const EMPTY_FORM: WizForm = {
 
 const fallbackTitle = (name: string) =>
   name.replace(/\.[^/.]+$/, '') || '未命名';
+
+// music-metadata 体积大且多数上传页访问者未必拖文件（交接 P2）：
+// 不随上传页静态加载，改为解析前动态 import；拖入/聚焦 dropzone 时预取以抵消等待。
+let parserPromise: Promise<typeof MusicMetadata> | null = null;
+const prefetchParser = () => (parserPromise ??= import('music-metadata'));
 
 export const UploadWizard = () => {
   const navigate = useNavigate();
@@ -99,6 +101,7 @@ export const UploadWizard = () => {
     };
 
     try {
+      const { parseBlob } = await prefetchParser();
       const { common, format } = await parseBlob(target);
       const picture = common.picture?.[0];
       const embedded = picture
@@ -193,24 +196,33 @@ export const UploadWizard = () => {
     <div className="grid gap-5">
       <Panel className="p-5">
         <div className="grid gap-4">
-          <FileDrop
-            accept={AUDIO_ACCEPT_MAP}
-            busy={isParsing || saving}
-            onFile={(target) => void startWithFile(target)}
-            onRejected={() => setError('请选择音频文件。')}
+          <div
+            // 拖入/聚焦时预取 music-metadata parser，打开文件后的解析等待最小化
+            onDragEnter={() => void prefetchParser()}
+            onPointerEnter={() => void prefetchParser()}
           >
-            <FileUp aria-hidden className="size-4 shrink-0 text-accent-text" />
-            <span className="truncate">
-              {isParsing || saving ? file?.name : '拖入音频文件，或点击选择'}
-            </span>
-            <span className="ml-auto shrink-0 font-mono text-2xs">
-              {isParsing
-                ? '正在解析元数据…'
-                : file
-                  ? `已选择 · ${(file.size / 1024 / 1024).toFixed(1)} MB`
-                  : 'MP3 / FLAC / WAV / OGG / AAC'}
-            </span>
-          </FileDrop>
+            <FileDrop
+              accept={AUDIO_ACCEPT_MAP}
+              busy={isParsing || saving}
+              onFile={(target) => void startWithFile(target)}
+              onRejected={() => setError('请选择音频文件。')}
+            >
+              <FileUp
+                aria-hidden
+                className="size-4 shrink-0 text-accent-text"
+              />
+              <span className="truncate">
+                {isParsing || saving ? file?.name : '拖入音频文件，或点击选择'}
+              </span>
+              <span className="ml-auto shrink-0 font-mono text-2xs">
+                {isParsing
+                  ? '正在解析元数据…'
+                  : file
+                    ? `已选择 · ${(file.size / 1024 / 1024).toFixed(1)} MB`
+                    : 'MP3 / FLAC / WAV / OGG / AAC'}
+              </span>
+            </FileDrop>
+          </div>
 
           {saving ? (
             <ProgressBar

@@ -5,7 +5,10 @@ import { toast } from 'sonner';
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
-import { Alert, AppDialog, Button, TextAreaField } from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { TextAreaField } from '@/ui/form.js';
+import { AppDialog } from '@/ui/overlay.js';
 
 const MD_HINT =
   'MD 支持：**粗体**、*斜体*、~~删除线~~、[链接](url)、> 引用、- 列表、`代码` · 不支持标题/表格/图片/HTML · 最多 2048 字';

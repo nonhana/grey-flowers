@@ -6,13 +6,10 @@ import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { toastError } from '@/lib/toast.js';
-import {
-  Alert,
-  AppDialog,
-  Button,
-  SelectField,
-  TextField,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { SelectField, TextField } from '@/ui/form.js';
+import { AppDialog } from '@/ui/overlay.js';
 
 const ROLE_OPTIONS = ['USER', 'ADMIN'] as const;
 

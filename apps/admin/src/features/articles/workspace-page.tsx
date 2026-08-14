@@ -23,17 +23,10 @@ import { apiClient } from '@/app/api/index.js';
 import { useIsDesktop } from '@/hooks/use-media-query.js';
 import { formatDateTime } from '@/lib/format.js';
 import { useArticleEditor } from '@/store/article-editor.js';
-import {
-  Alert,
-  AppDialog,
-  BottomSheet,
-  Button,
-  buttonClass,
-  Hint,
-  IconButton,
-  SidePanel,
-  StatusReadout,
-} from '@/ui/index.js';
+import { Button, buttonClass, IconButton } from '@/ui/button.js';
+import { Alert, StatusReadout } from '@/ui/feedback.js';
+import { Hint } from '@/ui/hint.js';
+import { AppDialog, BottomSheet, SidePanel } from '@/ui/overlay.js';
 
 import { CodeMirrorPane } from './editor/code-mirror-pane.js';
 import { InspectorPane } from './editor/inspector-pane.js';

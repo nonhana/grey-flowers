@@ -9,19 +9,11 @@ import { toast } from 'sonner';
 import { apiClient } from '@/app/api/index.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format.js';
-import {
-  AssetImage,
-  Button,
-  buttonClass,
-  ConfirmDialog,
-  IconButton,
-  PageBody,
-  PageHeader,
-  Panel,
-  SectionLabel,
-  Skeleton,
-  StatusReadout,
-} from '@/ui/index.js';
+import { Button, buttonClass, IconButton } from '@/ui/button.js';
+import { Skeleton, StatusReadout } from '@/ui/feedback.js';
+import { AssetImage } from '@/ui/image.js';
+import { ConfirmDialog } from '@/ui/overlay.js';
+import { PageBody, PageHeader, Panel, SectionLabel } from '@/ui/surface.js';
 
 import {
   assetErrorMessage,

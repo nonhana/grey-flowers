@@ -17,13 +17,9 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatCount, formatHours } from '@/lib/format.js';
-import {
-  Button,
-  buttonClass,
-  EmptyState,
-  PageBody,
-  PageHeader,
-} from '@/ui/index.js';
+import { Button, buttonClass } from '@/ui/button.js';
+import { EmptyState } from '@/ui/feedback.js';
+import { PageBody, PageHeader } from '@/ui/surface.js';
 
 import { CadenceCard } from './cadence-card.js';
 import {

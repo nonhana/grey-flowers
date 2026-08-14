@@ -5,14 +5,10 @@ import { CloudOff } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 
 import { apiClient } from '@/app/api/index.js';
-import {
-  Button,
-  CalendarHeatmap,
-  EmptyState,
-  Panel,
-  SectionLabel,
-  Skeleton,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { CalendarHeatmap } from '@/ui/charts.js';
+import { EmptyState, Skeleton } from '@/ui/feedback.js';
+import { Panel, SectionLabel } from '@/ui/surface.js';
 
 /** 骨架照抄热力图的三段结构（读数行 / 月份标签 + 7 行日格 / 无），落地时不跳。
  *  网格用与真实相同的 53 列 × auto+7 行模板：格高 = 列宽（aspect-square），

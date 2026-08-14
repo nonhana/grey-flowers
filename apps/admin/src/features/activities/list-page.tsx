@@ -10,17 +10,12 @@ import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
-import {
-  Button,
-  ConfirmDialog,
-  EmptyState,
-  MetaLine,
-  PageBody,
-  PageHeader,
-  Paginator,
-  SearchInput,
-  Skeleton,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { EmptyState, Skeleton } from '@/ui/feedback.js';
+import { SearchInput } from '@/ui/form.js';
+import { ConfirmDialog } from '@/ui/overlay.js';
+import { Paginator } from '@/ui/paginator.js';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
 
 import { ActivityCard } from './activity-card.js';
 

@@ -5,14 +5,7 @@ import { X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { FocusScope, mergeProps, useDialog, useModalOverlay } from 'react-aria';
-import {
-  Dialog,
-  Heading,
-  Modal,
-  ModalOverlay,
-  Tooltip as AriaTooltip,
-  TooltipTrigger,
-} from 'react-aria-components';
+import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components';
 import { Sheet } from 'react-modal-sheet';
 import {
   type OverlayTriggerState,
@@ -496,33 +489,4 @@ export const ConfirmDialog = ({
       </Dialog>
     </Modal>
   </ModalOverlay>
-);
-
-/* ─────────────────────────────── 工具提示 ─────────────────────────────── */
-
-export const Hint = ({
-  children,
-  label,
-  placement = 'bottom',
-}: {
-  children: ReactNode;
-  label: string;
-  placement?: 'top' | 'bottom' | 'left' | 'right';
-}) => (
-  <TooltipTrigger delay={350}>
-    {children}
-    <AriaTooltip
-      className={cn(
-        'rounded-control bg-ink-strong px-2 py-1 font-mono text-2xs text-canvas',
-        `
-          shadow-float
-          data-entering:animate-pop-in
-        `,
-      )}
-      offset={6}
-      placement={placement}
-    >
-      {label}
-    </AriaTooltip>
-  </TooltipTrigger>
 );

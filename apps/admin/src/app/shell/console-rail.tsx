@@ -26,7 +26,8 @@ import { ThemeToggle } from '@/app/theme/theme-toggle.js';
 import { useResizableEdge } from '@/hooks/use-resizable-edge.js';
 import { RAIL_SIZE, resolveRailSize } from '@/lib/rail-size.js';
 import { useAuth } from '@/store/auth.js';
-import { buttonClass, Hint, IconButton } from '@/ui/index.js';
+import { buttonClass, IconButton } from '@/ui/button.js';
+import { Hint } from '@/ui/hint.js';
 
 import { ApiDelayControl } from './api-delay-control.js';
 

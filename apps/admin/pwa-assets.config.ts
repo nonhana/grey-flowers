@@ -5,5 +5,5 @@ import {
 
 export default defineConfig({
   preset: minimal2023Preset,
-  images: ['public/logo.png'],
+  images: ['pwa-source/logo.png'],
 });

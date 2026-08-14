@@ -7,7 +7,9 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ChevronRight } from 'lucide-react';
 
-import { Panel, RankBars, SectionLabel, Skeleton } from '@/ui/index.js';
+import { RankBars } from '@/ui/charts.js';
+import { Skeleton } from '@/ui/feedback.js';
+import { Panel, SectionLabel } from '@/ui/surface.js';
 
 /**
  * 一个排行段：标题（深链到该维度的管理页）+ 排行条 + 尾注。

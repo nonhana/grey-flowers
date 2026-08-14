@@ -10,7 +10,10 @@ import {
 import { useState } from 'react';
 
 import { formatDateTime } from '@/lib/format.js';
-import { AssetImage, IconButton, MetaLine, Skeleton } from '@/ui/index.js';
+import { IconButton } from '@/ui/button.js';
+import { Skeleton } from '@/ui/feedback.js';
+import { AssetImage } from '@/ui/image.js';
+import { MetaLine } from '@/ui/surface.js';
 
 import { commentPageUrl } from './display.js';
 

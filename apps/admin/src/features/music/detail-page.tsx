@@ -9,19 +9,17 @@ import { apiClient } from '@/app/api/index.js';
 import { formatDateTime, formatDuration } from '@/lib/format.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
+import { Button, buttonClass } from '@/ui/button.js';
+import { Skeleton, StatusReadout } from '@/ui/feedback.js';
+import { AssetImage } from '@/ui/image.js';
+import { ConfirmDialog } from '@/ui/overlay.js';
 import {
-  AssetImage,
-  Button,
-  buttonClass,
-  ConfirmDialog,
   MetaLine,
   PageBody,
   PageHeader,
   Panel,
   SectionLabel,
-  Skeleton,
-  StatusReadout,
-} from '@/ui/index.js';
+} from '@/ui/surface.js';
 
 import { EditMusicDialog } from './edit-dialog.js';
 

@@ -15,7 +15,7 @@ import {
   Table2,
 } from 'lucide-react';
 
-import { IconButton } from '@/ui/index.js';
+import { IconButton } from '@/ui/button.js';
 
 import {
   insertInline,

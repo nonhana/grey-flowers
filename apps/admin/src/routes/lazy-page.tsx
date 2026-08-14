@@ -1,6 +1,7 @@
 import { lazyRouteComponent } from '@tanstack/react-router';
 
-import { PageBody, Skeleton } from '@/ui/index.js';
+import { Skeleton } from '@/ui/feedback.js';
+import { PageBody } from '@/ui/surface.js';
 
 /**
  * 路由 chunk 懒加载期间的通用页骨架：标题位 + 行列表位，

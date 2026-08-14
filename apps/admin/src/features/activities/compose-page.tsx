@@ -13,15 +13,11 @@ import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
-import {
-  Alert,
-  AppDialog,
-  AssetImage,
-  Button,
-  buttonClass,
-  FieldLabel,
-  IconButton,
-} from '@/ui/index.js';
+import { Button, buttonClass, IconButton } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { FieldLabel } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
+import { AppDialog } from '@/ui/overlay.js';
 
 import { ActivityEditor } from './activity-editor.js';
 import {

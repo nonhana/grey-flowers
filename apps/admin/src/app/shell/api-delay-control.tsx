@@ -2,7 +2,8 @@ import { Gauge } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { readApiDelayMs, writeApiDelayMs } from '@/app/api/delay.js';
-import { Button, buttonClass, controlClass, IconButton } from '@/ui/index.js';
+import { Button, buttonClass, IconButton } from '@/ui/button.js';
+import { controlClass } from '@/ui/form.js';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
 

@@ -12,16 +12,11 @@ import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
-import {
-  Button,
-  EmptyState,
-  MetaLine,
-  PageBody,
-  PageHeader,
-  Paginator,
-  SearchInput,
-  SelectField,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { EmptyState } from '@/ui/feedback.js';
+import { SearchInput, SelectField } from '@/ui/form.js';
+import { Paginator } from '@/ui/paginator.js';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
 
 import { UserDeleteConfirm } from './delete-confirm.js';
 import { UserDetailDialog } from './detail-dialog.js';

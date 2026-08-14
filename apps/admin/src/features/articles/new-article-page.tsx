@@ -5,15 +5,10 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import {
-  Alert,
-  Button,
-  IconButton,
-  PageBody,
-  PageHeader,
-  Panel,
-  TextField,
-} from '@/ui/index.js';
+import { Button, IconButton } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { TextField } from '@/ui/form.js';
+import { PageBody, PageHeader, Panel } from '@/ui/surface.js';
 
 import { articleErrorMessage } from './display.js';
 

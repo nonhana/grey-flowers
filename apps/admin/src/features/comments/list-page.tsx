@@ -37,20 +37,12 @@ import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
-import {
-  BottomSheet,
-  Button,
-  ConfirmDialog,
-  EmptyState,
-  IconButton,
-  MetaLine,
-  PageBody,
-  PageHeader,
-  Paginator,
-  SearchInput,
-  TextField,
-  controlClass,
-} from '@/ui/index.js';
+import { Button, IconButton } from '@/ui/button.js';
+import { EmptyState } from '@/ui/feedback.js';
+import { SearchInput, TextField, controlClass } from '@/ui/form.js';
+import { BottomSheet, ConfirmDialog } from '@/ui/overlay.js';
+import { Paginator } from '@/ui/paginator.js';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
 
 import { CommentCard, CommentCardSkeleton } from './comment-card.js';
 import { ReplyDialog, type ReplyTarget } from './reply-dialog.js';

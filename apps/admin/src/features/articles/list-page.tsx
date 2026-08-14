@@ -8,21 +8,11 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatDateTime } from '@/lib/format.js';
-import {
-  Alert,
-  Button,
-  buttonClass,
-  EmptyState,
-  FilterChip,
-  MetaLine,
-  PageBody,
-  PageHeader,
-  Paginator,
-  PublishBadge,
-  RowStack,
-  SearchInput,
-  Skeleton,
-} from '@/ui/index.js';
+import { Button, buttonClass } from '@/ui/button.js';
+import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback.js';
+import { FilterChip, SearchInput } from '@/ui/form.js';
+import { Paginator } from '@/ui/paginator.js';
+import { MetaLine, PageBody, PageHeader, RowStack } from '@/ui/surface.js';
 
 import type { ArticleStatusFilter } from './display.js';
 

@@ -2,10 +2,12 @@ import type { OverviewStorage } from '@grey-flowers/contracts';
 
 import { cn } from 'cnfast';
 
-import type { ShareSegment } from '@/ui/index.js';
+import type { ShareSegment } from '@/ui/charts.js';
 
 import { formatBytes } from '@/lib/format.js';
-import { Panel, SectionLabel, ShareBar, Skeleton } from '@/ui/index.js';
+import { ShareBar } from '@/ui/charts.js';
+import { Skeleton } from '@/ui/feedback.js';
+import { Panel, SectionLabel } from '@/ui/surface.js';
 
 /**
  * 存储构成。读数抽屉已经给了资产的**数量**（图片 1191 · 音频 280），

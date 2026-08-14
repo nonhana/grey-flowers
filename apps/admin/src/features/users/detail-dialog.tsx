@@ -11,15 +11,12 @@ import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatDateTime } from '@/lib/format.js';
 import { pageUrl } from '@/lib/page-url.js';
-import {
-  AppDialog,
-  AssetImage,
-  Button,
-  EmptyState,
-  MetaLine,
-  Paginator,
-  Skeleton,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { EmptyState, Skeleton } from '@/ui/feedback.js';
+import { AssetImage } from '@/ui/image.js';
+import { AppDialog } from '@/ui/overlay.js';
+import { Paginator } from '@/ui/paginator.js';
+import { MetaLine } from '@/ui/surface.js';
 
 const COMMENT_PAGE_SIZE = 10;
 

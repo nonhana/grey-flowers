@@ -8,15 +8,10 @@ import { Button as AriaButton } from 'react-aria-components';
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatBytes } from '@/lib/format.js';
-import {
-  Alert,
-  AppDialog,
-  AssetImage,
-  Button,
-  EmptyState,
-  Skeleton,
-  Spinner,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert, EmptyState, Skeleton, Spinner } from '@/ui/feedback.js';
+import { AssetImage } from '@/ui/image.js';
+import { AppDialog } from '@/ui/overlay.js';
 
 const ASSET_PAGE_SIZE = 12;
 

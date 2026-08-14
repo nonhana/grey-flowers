@@ -4,7 +4,8 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ChevronRight, FileText, Images, Music2 } from 'lucide-react';
 
-import { SectionLabel, Skeleton } from '@/ui/index.js';
+import { Skeleton } from '@/ui/feedback.js';
+import { SectionLabel } from '@/ui/surface.js';
 
 interface PendingMeta {
   icon: typeof FileText;

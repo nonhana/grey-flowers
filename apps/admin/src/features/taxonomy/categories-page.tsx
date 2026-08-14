@@ -9,22 +9,12 @@ import { apiClient, isApiRequestError } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
-import {
-  Alert,
-  AppDialog,
-  AssetImage,
-  Button,
-  ConfirmDialog,
-  controlClass,
-  EmptyState,
-  FieldLabel,
-  IconButton,
-  PageBody,
-  PageHeader,
-  RowStack,
-  Skeleton,
-  TextField,
-} from '@/ui/index.js';
+import { Button, IconButton } from '@/ui/button.js';
+import { Alert, EmptyState, Skeleton } from '@/ui/feedback.js';
+import { controlClass, FieldLabel, TextField } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
+import { AppDialog, ConfirmDialog } from '@/ui/overlay.js';
+import { PageBody, PageHeader, RowStack } from '@/ui/surface.js';
 
 /** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位。 */
 const CategoryRowSkeleton = () => (

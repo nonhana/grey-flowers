@@ -14,15 +14,12 @@ import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
-import {
-  Alert,
-  AppDialog,
-  AssetImage,
-  Button,
-  FieldLabel,
-  MetaLine,
-  TextField,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { FieldLabel, TextField } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
+import { AppDialog } from '@/ui/overlay.js';
+import { MetaLine } from '@/ui/surface.js';
 
 interface EditForm {
   album: string;

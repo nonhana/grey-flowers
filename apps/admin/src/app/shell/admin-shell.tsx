@@ -14,7 +14,9 @@ import { Form } from 'react-aria-components';
 
 import { router } from '@/routes/route-tree.js';
 import { useAuth } from '@/store/auth.js';
-import { Alert, Button, TextField } from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { Alert } from '@/ui/feedback.js';
+import { TextField } from '@/ui/form.js';
 
 /**
  * Auth stage 是控制台里唯一保留网格底纹的地方 —— 这里品牌在说话，

@@ -56,13 +56,14 @@ Service Worker 只能在 secure context 注册（HTTPS 或 localhost）。admin 
 | D1  | 部署拓扑       | VPS nginx 静态托管`https://admin.caelum.moe`（与主站同一台 VPS）；TLS 用 certbot。API CORS 白名单已含该域名，**无需改 `apps/api`**                                                                                                                            |
 | D2  | 插件选型       | `vite-plugin-pwa@^1.3.0`（generateSW 模式，Workbox 内核）+ `@vite-pwa/assets-generator@^1.0.0` 图标生成                                                                                                                                                       |
 | D3  | 图标来源       | 新设计专用图标，源图由用户提供（SVG 或 ≥512px PNG）；同一源图经生成器产出站点 favicon 与 PWA 全套图标                                                                                                                                                         |
-| D4  | 缓存策略       | **只预缓存 app shell**（构建产物 JS/CSS/HTML/自托管字体）；**API 请求一律不缓存**（不配 runtimeCaching → Workbox 对未知请求默认 networkOnly）。理由：① 服务端是数据 SSOT，缓存旧数据会误导操作者；② 天然避免把带 `Authorization` 的响应或业务数据落进 SW 缓存 |
+| D4  | 缓存策略       | **只预缓存 app shell**（入口接管 HTML + 入口静态 JS 闭包 + CSS + 自托管 WOFF2 + 安装图标）；**API 请求一律不缓存**。理由：① 服务端是数据 SSOT，缓存旧数据会误导操作者；② 天然避免把带 `Authorization` 的响应或业务数据落进 SW 缓存。详见 D11 的精确构成 |
 | D5  | 更新策略       | `registerType: 'prompt'`：检测到新版本后提示操作者「刷新以更新」，确认后才 `updateServiceWorker()`。不做 autoUpdate——避免编辑/保存过程中被 SW 突然 reload 丢状态                                                                                              |
 | D6  | 主题色         | `theme_color: #175A96`（petal-blue 强调色）、`background_color: #EDF1F4`（浅色画布，贴近启动首帧底色）；`theme-color` meta 由 pwaAssets 集成自动注入 head（`injectThemeColor` 默认 true），`index.html` 不手写                                                |
 | D7  | 外部资源不缓存 | Google Fonts（Noto Sans SC 分片投递）不做 SW 缓存：跨域缓存增加复杂度，离线时降级系统字体可接受（CJK 可读性不受影响）；JetBrains Mono 子集已在 dist 内、随 app shell 预缓存                                                                                   |
 | D8  | iOS 专项       | iOS 不读 manifest icons，必须额外提供`apple-touch-icon`（180×180）与 `apple-mobile-web-app-*` meta；安装入口是「分享 → 添加到主屏幕」（无 `beforeinstallprompt`）                                                                                             |
 | D9  | 名称           | `name: "Grey Flowers Admin"`、`short_name: "Grey Admin"`（≤9 字符避免被系统截断）、`lang: "zh-CN"`、`display: "standalone"`、`start_url`/`scope` 均为 `/`（相对路径，与部署子路径兼容）                                                                       |
 | D10 | 更新提示 UI    | 用既有`sonner` toast 呈现：`offlineReady`（一次性「已可离线使用」）与 `needRefresh`（「新版本可用，刷新」+ 确认按钮）；挂载点在 `AppProviders` 内新建 `PwaBridge` 组件，不污染页面 feature                                                                    |
+| D11 | 预缓存精确构成 | **预缓存 = 入口闭包 + 自托管字体 + 安装图标**，不是「全部构建 JS」。默认 Workbox glob 会把全部懒路由 JS（约 2.2 MB raw）在安装期一次性预缓存——违背离线即用且体感可控的初衷。改为：① 入口静态依赖闭包（`index.html` 的 script + modulepreload 集合）、必要 CSS；② 自托管 WOFF2（JetBrains Mono 子集，`dist/assets/*.woff2`）；③ 安装图标与 favicon（`/favicon.ico`、`/pwa-64|192|512.png`、`/maskable-icon-512x512.png`、`/apple-touch-icon-180x180.png`）。**同源 hashed 懒路由 JS 不进预缓存**，首次访问后由 runtime `CacheFirst`（内容寻址、不可变）接管；API、跨域外部字体、带授权响应一律不缓存 |
 
 ## 4. 目标结构（变更清单）
 
@@ -109,9 +110,13 @@ VPS nginx                        # admin.caelum.moe 站点配置（仓库内留�
 
 **源图要求（用户提供）**：**推荐 SVG**（任意尺寸无损缩放，且是唯一能产出 SVG favicon 的源格式）；若提供 PNG 需 ≥512×512。主体图形居中且直径不超过画布的 80%（maskable 安全区要求，Android 自适应图标会裁剪边缘）。正方形源图最佳（`fit: contain` 等比缩放，非正方形会在画布内留白）。
 
-**已确认的源图（2026-08-10 用户提供）**：`apps/admin/public/logo.png`（1408×1408 正方形 RGB PNG，满足 ≥512×512 要求）。PNG 源 → 生成器**不产出** `favicon.svg`（仅 SVG 源才复制产出），站点 favicon 只有 `favicon.ico`，见下方产物表。
+**已确认的源图（2026-08-10 用户提供）**：`apps/admin/pwa-source/logo.png`（1408×1408 正方形 RGB PNG，满足 ≥512×512 要求）。PNG 源 → 生成器**不产出** `favicon.svg`（仅 SVG 源才复制产出），站点 favicon 只有 `favicon.ico`，见下方产物表。
 
-源图存放：`apps/admin/public/logo.png`。站点 favicon 由生成器从源图输出（`favicon.ico`），`index.html` 不直接引用源图。
+源图存放：`apps/admin/pwa-source/logo.png`——**在 `public/` 之外**，避免 Vite 把 2.97 MB 源图原样拷贝进 `dist`（部署瘦身，见 `wiki/design/2026-08-10-admin-build-optimization-report.md` 交接 P0）。站点 favicon 由生成器从源图输出（`favicon.ico`），`index.html` 不直接引用源图。
+
+> 源图移出 `public/` 后，**生成的图标仍落在 `dist/` 根**（URL 保持 `/favicon.ico` 等）：`vite.config.ts` 通过 `pwaAssets.integration.publicDir` 指向 `pwa-source/`，让插件按「源图相对 public 根」推导输出目录。`public/` 下已提交的生成图标继续由 Vite 拷贝进 `dist`，与插件构建期写入保持一致（2026-08-13 实施确认）。
+
+> 单独跑 `npx pwa-assets-generator` 时（不复用插件的 `publicDir` 覆盖），生成图标默认落到**源图同目录** `pwa-source/`；如需更新仓库内已提交的 `public/` 图标，需把 `pwa-source/` 的新产物复制回 `public/`。
 
 > 注：该源图主体占满画布，maskable 安全区（中央 80%）可能不足；生成后需目检 `maskable-icon-512x512.png` 与 `apple-touch-icon-180x180.png`，若裁剪观感不可接受，需用户后续提供留白更充分的版本（不阻塞本轮改造）。
 
@@ -125,7 +130,7 @@ import {
 
 export default defineConfig({
   preset: minimal2023Preset,
-  images: ['public/logo.png'],
+  images: ['pwa-source/logo.png'],
 });
 ```
 
@@ -159,6 +164,13 @@ VitePWA({
     // 并默认注入 head 中的 favicon/apple-touch-icon links 与 theme-color meta
     // （includeHtmlHeadLinks 与 injectThemeColor 默认均为 true）
     config: true,
+    integration: {
+      // 源图在 public/ 之外（pwa-source/）。vite-plugin-pwa 按「源图相对
+      // publicDir 的路径」推导 dist 内图标输出目录；这里把 publicDir 指到
+      // 源图所在目录，使生成图标仍落在 dist 根，URL 保持 /favicon.ico 等
+      // （见 5.2；head/manifest 的 URL 由 basePath + preset 名决定，与源图位置无关）。
+      publicDir: path.join(import.meta.dirname, 'pwa-source'),
+    },
   },
   manifest: {
     name: 'Grey Flowers Admin',
@@ -174,8 +186,60 @@ VitePWA({
   },
   workbox: {
     navigateFallback: '/index.html', // SPA：未知路径回退到 app shell
-    // 不配置 runtimeCaching：API 请求（/auth、/articles 等）与外部字体一律 networkOnly，不缓存
-    // globPatterns 保持插件默认（构建产物即 app shell）
+    // D11：预缓存 = 入口闭包 + CSS + html + 自托管 WOFF2 + 安装图标；
+    // 懒路由 JS 首次访问后 runtime CacheFirst；API/外部字体/授权响应不缓存。
+    globPatterns: ['**/*.{js,css,html}', '**/*.{woff2,png,ico,webmanifest}'],
+    manifestTransforms: [
+      // 以 built index.html 的入口静态闭包为白名单，过滤掉全部懒路由 JS；
+      // 保留 WOFF2（自托管字体）与安装图标、manifest、入口闭包。
+      async (manifestEntries) => {
+        const html = readFileSync(
+          path.join(import.meta.dirname, 'dist', 'index.html'),
+          'utf8',
+        );
+        const closure = [
+          ...html.matchAll(/\/assets\/[^"'>]+\.(?:js|css)/g),
+        ].map((m) => m[0].replace(/^\//, ''));
+        const keep = new Set(['index.html', ...closure]);
+        const icons = new Set([
+          'favicon.ico',
+          'pwa-64x64.png',
+          'pwa-192x192.png',
+          'pwa-512x512.png',
+          'maskable-icon-512x512.png',
+          'apple-touch-icon-180x180.png',
+          // manifest.webmanifest 不入 glob/白名单：vite-plugin-pwa 会在
+          // additionalManifestEntries 里带上内容 hash 版本的 manifest 条目。
+        ]);
+        const manifest = manifestEntries.filter((entry) => {
+          if (keep.has(entry.url) || icons.has(entry.url)) return true;
+          // workbox-window.prod.es5-*.js：PWA 注册/更新检测运行时模块，由入口
+          // 动态 import（不在 index.html 静态闭包），但每次加载都要用，属 app shell。
+          if (
+            entry.url.startsWith('assets/workbox-window.')
+            && entry.url.endsWith('.js')
+          ) return true;
+          return entry.url.endsWith('.woff2');
+        });
+        return { manifest };
+      },
+    ],
+    runtimeCaching: [
+      {
+        // 同源 hashed 懒路由 JS：首次访问后 CacheFirst（内容寻址、不可变）。
+        // API（跨域 api.caelum.moe）与外部字体不在同源 /assets/ 下，不被命中。
+        urlPattern: ({ url, request }) =>
+          url.origin === self.location.origin
+          && request.destination === 'script'
+          && url.pathname.startsWith('/assets/'),
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'grey-flowers-lazy-js',
+          expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+          cacheableResponse: { statuses: [0, 200] },
+        },
+      },
+    ],
   },
   devOptions: {
     enabled: false, // 开发模式不启用 SW，避免调试干扰；PWA 验证走 build + preview
@@ -186,7 +250,8 @@ VitePWA({
 关键语义（对应 D4/D5）：
 
 - `registerType: 'prompt'` → 新版本只提示不强制（经 `virtual:pwa-register` 集成注册，注册逻辑内联进构建产物，不产出独立 `registerSW.js`）。
-- 不配置 `runtimeCaching` → Workbox 只处理预缓存清单（app shell），其余请求直连网络。API 响应、`Authorization` 头、业务数据**不会**进入任何缓存。
+- 预缓存清单经 `manifestTransforms` 收窄为「入口闭包 + WOFF2 + 安装图标」（D11）：默认 glob 的 74 个懒路由 JS **不再安装期预缓存**，由 `runtimeCaching` 的 CacheFirst 在首次访问后接管；同源 `/assets/*.js` 之外的请求（API、外部字体、授权业务响应）**不会**进入任何缓存。
+- 不配置任何 `runtimeCaching` 规则覆盖 API → Workbox 对未知请求默认 networkOnly。API 跨源（`https://api.caelum.moe`），即使同源逻辑也不受 `urlPattern` 的 `url.origin === self.location.origin` 约束之外影响。
 - `navigateFallback` 仅作用于同源导航请求；API 是跨源（`https://api.caelum.moe`），不受影响。
 
 ### 5.4 index.html
@@ -343,9 +408,11 @@ server {
 ### 7.1 本地（build + preview，localhost）
 
 - `pnpm build`（admin）产物包含：`sw.js`、`manifest.webmanifest`、全套图标 PNG、`index.html` 注入的 manifest link 与 PWA meta（注册经虚拟模块内联，无独立 `registerSW.js`）。
+- **预缓存收窄（D11）**：`sw.js` 内联清单只含入口闭包（`index.html` 中 script + modulepreload 集合）、CSS、自托管 WOFF2、安装图标与 manifest——**不含**未访问的懒路由 JS；预缓存清单 raw 体积从约 2.2 MB 降到入口闭包量级。
 - `pnpm -F @grey-flowers/admin preview` 后 Chrome DevTools → Application 面板：Manifest 有效、Service Worker 注册成功、无 installability 报错。
-- 断网（DevTools offline）刷新：app shell 正常加载；API 请求明确失败并走既有错误 UI（不出现缓存旧数据）。
+- 断网（DevTools offline）刷新：app shell 正常加载；**已访问过的路由**可打开（其懒路由 JS 已由 runtime CacheFirst 缓存）；**未访问过的路由**呈现明确失败态而非陈旧内容；API 请求明确失败并走既有错误 UI（不出现缓存旧数据）。
 - 触发一次新版本（改产物再 build/preview）：出现「新版本可用」提示，确认后刷新到新版本。
+- DevTools → Cache Storage：仅见 SW 预缓存与 lazy-js 两类缓存，无 API 响应体、无含 `Authorization` 的条目。
 - `pnpm typecheck && pnpm lint`（admin）通过。
 
 ### 7.2 真机（部署后，`https://admin.caelum.moe`）
@@ -358,7 +425,7 @@ server {
 
 ## 8. 待用户提供 / 不在本文决定
 
-- **图标源图**——✅ 已于 2026-08-10 提供：`apps/admin/public/logo.png`（1408×1408 PNG）。maskable 安全区观感待生成后目检，若需留白更充分的版本属后续优化，不阻塞实施。
+- **图标源图**——✅ 已于 2026-08-10 提供：`apps/admin/public/logo.png`（1408×1408 PNG），2026-08-13 移入 `apps/admin/pwa-source/logo.png`（见 §5.2）。maskable 安全区观感待生成后目检，若需留白更充分的版本属后续优化，不阻塞实施。
 - **VPS 现场确认**：nginx 与 certbot 是否已就绪、nginx 服务方式（systemd/直接进程）。
 - **DNS 配置**：`admin.caelum.moe` A 记录（用户有 Cloudflare 面板权限可自行配置）。
 - 图标的具体视觉设计由用户提供，本文不定义图形方案。

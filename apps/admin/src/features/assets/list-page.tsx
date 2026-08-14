@@ -13,18 +13,12 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
 import { formatBytes, formatDateTime } from '@/lib/format.js';
-import {
-  AssetImage,
-  Button,
-  EmptyState,
-  MetaLine,
-  PageBody,
-  PageHeader,
-  Paginator,
-  SelectField,
-  Skeleton,
-  StatusReadout,
-} from '@/ui/index.js';
+import { Button } from '@/ui/button.js';
+import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
+import { SelectField } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
+import { Paginator } from '@/ui/paginator.js';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
 
 import {
   mediaTypeLabels,

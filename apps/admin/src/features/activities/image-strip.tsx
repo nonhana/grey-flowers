@@ -4,7 +4,9 @@ import { cn } from 'cnfast';
 import { ImagePlus, Images, X } from 'lucide-react';
 import { ProgressBar } from 'react-aria-components';
 
-import { FieldLabel, AssetImage, Button, IconButton } from '@/ui/index.js';
+import { Button, IconButton } from '@/ui/button.js';
+import { FieldLabel } from '@/ui/form.js';
+import { AssetImage } from '@/ui/image.js';
 
 export const MAX_IMAGES = 9;
 
