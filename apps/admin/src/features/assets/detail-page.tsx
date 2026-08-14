@@ -240,7 +240,7 @@ export const AssetsDetailPage = () => {
 
         <Panel className="grid gap-2 p-4">
           <SectionLabel>公开地址</SectionLabel>
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             <code
               className="
                 min-w-0 flex-1 truncate rounded-control bg-well px-3 py-2.5
