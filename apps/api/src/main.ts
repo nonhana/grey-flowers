@@ -17,7 +17,6 @@ const server = serve(
     dependencies.logger.info(
       `🚀 server listening on http://localhost:${info.port}`,
     );
-    // Signals PM2 (wait_ready) that startup completed. No-op outside PM2.
     process.send?.('ready');
   },
 );

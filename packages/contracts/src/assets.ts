@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema } from './auth.js';
+import {
+  apiSuccessSchema,
+  nonNegativeIntSchema,
+  positiveIntSchema,
+} from './common.js';
 
 export const assetPurposeSchema = z.enum([
   'ARTICLE_COVER',
@@ -25,12 +29,12 @@ export const assetStatusSchema = z.enum([
 
 export type AssetStatus = z.infer<typeof assetStatusSchema>;
 
-const assetSize = z.number().int().min(0);
-const dimensions = z.number().int().positive().optional();
+const assetSize = nonNegativeIntSchema;
+const dimensions = positiveIntSchema.optional();
 
 export const assetDtoSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     purpose: assetPurposeSchema,
     mediaType: assetMediaTypeSchema,
     status: assetStatusSchema,
@@ -38,7 +42,7 @@ export const assetDtoSchema = z
     byteSize: assetSize,
     width: dimensions,
     height: dimensions,
-    durationMs: z.number().int().positive().optional(),
+    durationMs: positiveIntSchema.optional(),
     storageKey: z.string().min(1),
     deliveryUrl: z.url(),
     createdAt: z.iso.datetime(),
@@ -109,7 +113,7 @@ export const assetUploadUrlInputSchema = z
     /** 声明 MIME（normalize 后必须命中 purpose 白名单）。 */
     contentType: z.string().trim().min(1).max(100),
     /** 声明大小（字节）；可选，presign 阶段预检，confirm 阶段以对象实际大小为准。 */
-    size: z.number().int().positive().optional(),
+    size: positiveIntSchema.optional(),
   })
   .strict();
 
@@ -120,7 +124,7 @@ export const assetUploadUrlDataSchema = z
     uploadUrl: z.url(),
     /** 受管 storage key；confirm 阶段原样回传。 */
     key: z.string().min(1),
-    maxBytes: z.number().int().positive(),
+    maxBytes: positiveIntSchema,
   })
   .strict();
 
@@ -138,12 +142,11 @@ export const assetConfirmInputSchema = z
   .object({
     key: z.string().min(1).max(500),
     /** 实际大小（字节）；必须与对象 ContentLength 一致。 */
-    size: z.number().int().positive(),
-    /** 可选媒体元数据：音频时长（ms），由前端解析后上报。 */
-    durationMs: z.number().int().positive().optional(),
-    /** 可选媒体元数据：图片宽高（px），由前端解析后上报。 */
-    width: z.number().int().positive().max(16384).optional(),
-    height: z.number().int().positive().max(16384).optional(),
+    size: positiveIntSchema,
+    /** 音频时长（ms），由前端解析后上报。 */
+    durationMs: positiveIntSchema.optional(),
+    width: positiveIntSchema.max(16384).optional(),
+    height: positiveIntSchema.max(16384).optional(),
   })
   .strict();
 
@@ -151,7 +154,7 @@ export type AssetConfirmInput = z.infer<typeof assetConfirmInputSchema>;
 
 export const assetConfirmResponseSchema = apiSuccessSchema(assetDtoSchema);
 
-export type AssetConfirmData = z.infer<typeof assetConfirmResponseSchema>;
+export type AssetConfirmData = z.infer<typeof assetDtoSchema>;
 export type AssetConfirmResponse = z.infer<typeof assetConfirmResponseSchema>;
 
 export const assetSetStatusInputSchema = z
@@ -164,12 +167,13 @@ export type AssetSetStatusInput = z.infer<typeof assetSetStatusInputSchema>;
 
 export const assetSetStatusResponseSchema = apiSuccessSchema(assetDtoSchema);
 
-export type AssetSetStatusData = z.infer<typeof assetSetStatusResponseSchema>;
+export type AssetSetStatusData = z.infer<typeof assetDtoSchema>;
 export type AssetSetStatusResponse = z.infer<
   typeof assetSetStatusResponseSchema
 >;
 
 export const assetDeleteResponseSchema = apiSuccessSchema(assetDtoSchema);
 
-export type AssetDeleteData = z.infer<typeof assetDeleteResponseSchema>;
+export type AssetDeleteData = z.infer<typeof assetDtoSchema>;
+
 export type AssetDeleteResponse = z.infer<typeof assetDeleteResponseSchema>;

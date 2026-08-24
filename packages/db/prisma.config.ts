@@ -6,6 +6,6 @@ export default defineConfig({
     url: env('HANA_DATABASE_URL'),
   },
   migrations: {
-    seed: 'node --env-file-if-exists=../../.env --import tsx prisma/seed.mts',
+    seed: 'node --env-file-if-exists=../../.env --import tsx scripts/seed.mts',
   },
 });

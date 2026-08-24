@@ -17,7 +17,6 @@ import { MetaLine } from '@/ui/surface.js';
 
 import { commentPageUrl } from './display.js';
 
-/** 单个评论的正文行：头像 + 作者/邮箱 Pin + 时间 + path 外链 + 内容 + 操作。 */
 export const CommentBody = ({
   actions,
   author,
@@ -49,7 +48,6 @@ export const CommentBody = ({
 
   return (
     <div className="min-w-0 flex-1">
-      {/* 作者 + 角色 Pin + 时间 */}
       <div className="flex min-w-0 items-center gap-2">
         <span
           className={cn(
@@ -87,7 +85,6 @@ export const CommentBody = ({
         </span>
       </div>
 
-      {/* path 面包屑 + 在访客页打开 */}
       <MetaLine className="mt-1.5">
         <span
           className="max-w-56 truncate font-mono text-2xs text-ink-dim"
@@ -110,7 +107,6 @@ export const CommentBody = ({
         </a>
       </MetaLine>
 
-      {/* 回复引用行 */}
       {comment.replyToComment ? (
         <p
           className="
@@ -131,7 +127,6 @@ export const CommentBody = ({
         </p>
       ) : null}
 
-      {/* 正文 */}
       {comment.content ? (
         <p
           className={cn(
@@ -152,7 +147,6 @@ export const CommentBody = ({
         </button>
       ) : null}
 
-      {/* 操作 */}
       <MetaLine className="mt-2">
         <span className="flex shrink-0 gap-1">
           {actions.onOpenSession ? (
@@ -280,7 +274,6 @@ export const CommentCardSkeleton = () => (
           <Skeleton className="h-[1.45em] w-40 text-2xs" />
           <Skeleton className="ml-auto h-[1.45em] w-24 text-2xs" />
         </div>
-        {/* path 面包屑 + 外链位 */}
         <MetaLine className="mt-1.5">
           <Skeleton className="h-[1.45em] w-56 text-2xs" />
           <Skeleton className="h-[1.45em] w-4 text-2xs" />
@@ -291,7 +284,6 @@ export const CommentCardSkeleton = () => (
           <Skeleton className="h-[1.625em] w-4/5 text-base" />
           <Skeleton className="h-[1.625em] w-2/3 text-base" />
         </div>
-        {/* 操作位：三个 sm 图标按钮 */}
         <MetaLine className="mt-2">
           <span className="flex shrink-0 gap-1">
             <Skeleton className="size-8 rounded-control" />

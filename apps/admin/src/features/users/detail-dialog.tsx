@@ -20,7 +20,6 @@ import { MetaLine } from '@/ui/surface.js';
 
 const COMMENT_PAGE_SIZE = 10;
 
-/** 评论区历史条目：path 面包屑 + 回复引用 + 时间 + 外链 + 正文。 */
 const CommentRow = ({ comment }: { comment: CommentAdmin }) => (
   <article className="grid gap-1.5">
     <MetaLine>
@@ -160,7 +159,6 @@ export const UserDetailDialog = ({
     >
       {user ? (
         <div className="grid gap-5">
-          {/* 资料头 */}
           <div className="flex min-w-0 items-center gap-4">
             <span
               className="
@@ -224,7 +222,6 @@ export const UserDetailDialog = ({
             </div>
           </div>
 
-          {/* 评论历史 */}
           <section aria-busy={loading} className="grid gap-4">
             <h3 className="font-mono text-xs text-ink-dim">评论历史</h3>
 

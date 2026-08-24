@@ -66,7 +66,6 @@ export const MusicPickerDialog = ({
     }
   });
 
-  // 搜索防抖 300ms
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);

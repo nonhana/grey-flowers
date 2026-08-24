@@ -1,16 +1,11 @@
 import type { ResizeSource } from '@/hooks/use-resizable-edge.js';
 
 /**
- * 侧栏尺寸状态机的领域常量与纯函数。
- *
- * 拆在 lib 里是为了让状态机脱离 React 组件模块图独立单测：
- * console-rail.tsx 顶层会拉起 auth store 等副作用，测试环境无法承载。
+ * 侧栏尺寸状态机（独立模块以便脱离 React 组件图单测：console-rail.tsx
+ * 顶层会拉起 auth store 等副作用，测试环境承载不了）。
  */
 
-/**
- * 折叠态宽度（图标列）与非折叠态最小宽度。X/Y 之间是钳制带：
- * 拖拽展开在 Y 触发、折叠在 X 触发，阈值分离避免在边界附近抖动。
- */
+/** 折叠态/最小宽度钳制带：拖拽展开在 Y 触发、折叠在 X 触发，阈值分离防抖动。 */
 export const RAIL_SIZE = {
   collapsed: 56,
   min: 208,
@@ -25,9 +20,9 @@ export interface RailSize {
 }
 
 /**
- * 侧栏尺寸状态机。target 的语义随来源不同：
- * - pointer：鼠标距 rail 左缘的距离（连续，折叠只在到达 X 时触发）；
- * - keyboard：目标宽度（步进可穿过钳制带，低于最小宽度即折叠）。
+ * 侧栏尺寸状态机。target 语义随来源：
+ * pointer = 鼠标距 rail 左缘的距离（连续，折叠只在到达 X 时触发）；
+ * keyboard = 目标宽度（步进可穿过钳制带，低于最小宽度即折叠）。
  */
 export const resolveRailSize = (
   current: RailSize,

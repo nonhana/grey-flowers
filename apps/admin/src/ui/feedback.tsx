@@ -17,9 +17,7 @@ const ALERT_ICON: Record<Tone, typeof Info> = {
   info: Info,
 };
 
-/**
- * 提示条。用整块淡底 + 1px 描边区分，不用彩色粗左边条 —— 那是装饰不是信息。
- */
+/** 提示条：整块淡底 + 1px 描边，不用彩色粗左边条（装饰不是信息）。 */
 export const Alert = ({
   action,
   children,
@@ -50,9 +48,7 @@ export const Alert = ({
   );
 };
 
-/**
- * 空状态要教会界面怎么用，而不是说「这里没有东西」。
- */
+/** 空状态要教界面怎么用，而不是说「这里没有东西」。 */
 export const EmptyState = ({
   action,
   children,
@@ -111,9 +107,7 @@ export const Spinner = ({
   </span>
 );
 
-/**
- * 发布状态。文字本身已经说清楚，颜色只是补强，不作为唯一信号。
- */
+/** 发布状态：文字说清，颜色只作补强，不作为唯一信号。 */
 export const PublishBadge = ({ published }: { published: boolean }) => (
   <span
     className={cn(
@@ -147,10 +141,7 @@ const READOUT_TONE: Record<ReadoutTone, string> = {
   err: 'border-danger-rule bg-danger-wash text-danger-text',
 };
 
-/**
- * 状态读数屏：一次只报一个值。
- * 取代原先那一排各说各话的 chip。
- */
+/** 状态读数屏：一次只报一个值（取代原先一排各说各话的 chip）。 */
 export const StatusReadout = ({
   icon,
   label,

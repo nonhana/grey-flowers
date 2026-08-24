@@ -12,7 +12,6 @@ defineEmits<{
 
 <template>
   <div v-if="images.length > 0" class="relative w-full overflow-hidden rounded-xl">
-    <!-- Single image -->
     <div v-if="images.length === 1" class="aspect-[16/9]">
       <HanaLazyImg
         :src="images[0]!"
@@ -25,7 +24,6 @@ defineEmits<{
       />
     </div>
 
-    <!-- Two images -->
     <div v-else-if="images.length === 2" class="grid grid-cols-2 aspect-[16/9] gap-1">
       <HanaLazyImg
         v-for="(image, index) in images"
@@ -40,7 +38,6 @@ defineEmits<{
       />
     </div>
 
-    <!-- Three images -->
     <div v-else-if="images.length === 3" class="grid grid-cols-2 aspect-[16/9] gap-1">
       <HanaLazyImg
         class="row-span-2"
@@ -65,7 +62,6 @@ defineEmits<{
       />
     </div>
 
-    <!-- Four images -->
     <div v-else-if="images.length === 4" class="grid grid-cols-2 aspect-[16/9] gap-1">
       <HanaLazyImg
         v-for="(image, index) in images"

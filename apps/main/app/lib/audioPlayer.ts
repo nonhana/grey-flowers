@@ -1,11 +1,11 @@
 import type { Track } from '#shared/types/activity'
 
 export type PlaybackState
-  = | 'idle' // 未加载任何音频
-    | 'loading' // 音频正在加载
-    | 'playing' // 正在播放
-    | 'paused' // 播放已暂停
-    | 'error' // 播放错误
+  = | 'idle'
+    | 'loading'
+    | 'playing'
+    | 'paused'
+    | 'error'
 
 export interface PlayerState {
   currentTrack: Track | null
@@ -22,7 +22,6 @@ export type Listener = (state: PlayerState) => void
 export class AudioPlayer {
   private static instance: AudioPlayer
 
-  // 获取单例
   public static getInstance(): AudioPlayer {
     if (!AudioPlayer.instance) {
       AudioPlayer.instance = new AudioPlayer()
@@ -38,7 +37,6 @@ export class AudioPlayer {
     this.audio = new Audio()
     this.state = this.getInitialState()
 
-    // 初始化状态
     this.audio.volume = this.state.volume
     this.audio.muted = this.state.isMuted
 
@@ -46,7 +44,6 @@ export class AudioPlayer {
     this.clearMediaSession()
   }
 
-  /** 重置播放器状态 */
   public reset(): void {
     this.audio.pause()
     this.audio.currentTime = 0
@@ -57,12 +54,10 @@ export class AudioPlayer {
     this.updateState(this.getIdleState())
   }
 
-  /** 停止播放并清空当前曲目 */
   public stop(): void {
     this.reset()
   }
 
-  /** 订阅播放器状态变化 */
   public subscribe(listener: Listener): () => void {
     this.listeners.add(listener)
     listener(this.state)
@@ -72,7 +67,6 @@ export class AudioPlayer {
     }
   }
 
-  /** 加载一首新歌并开始播放 */
   public async loadAndPlay(track: Track): Promise<void> {
     this.reset()
     this.updateState({ currentTrack: track, playbackState: 'loading' })
@@ -89,7 +83,6 @@ export class AudioPlayer {
     }
   }
 
-  /** 加载一首新歌 */
   public load(track: Track): void {
     this.reset()
     this.updateState({ currentTrack: track, playbackState: 'loading' })
@@ -98,19 +91,16 @@ export class AudioPlayer {
     this.audio.load()
   }
 
-  /** 播放当前加载的音频 */
   public play(): void {
     if (this.state.currentTrack) {
       this.audio.play().catch(e => console.error('Play failed:', e))
     }
   }
 
-  /** 暂停播放 */
   public pause(): void {
     this.audio.pause()
   }
 
-  /** 切换播放/暂停状态 */
   public togglePlayPause(): void {
     if (this.state.isPlaying) {
       this.pause()
@@ -120,31 +110,26 @@ export class AudioPlayer {
     }
   }
 
-  /** 跳转到指定播放时间 */
   public seek(time: number): void {
     this.audio.currentTime = time
     this.updateState({ currentTime: time }) // 立即同步状态，实现伪双向绑定
   }
 
-  /** 设置音量 */
   public setVolume(volume: number): void {
     const clampedVolume = Math.max(0, Math.min(1, volume))
     this.audio.volume = clampedVolume
     this.updateState({ volume: clampedVolume })
   }
 
-  /** 设置静音状态 */
   public setMuted(muted: boolean): void {
     this.audio.muted = muted
     this.updateState({ isMuted: muted })
   }
 
-  /** 切换静音状态 */
   public toggleMuted(): void {
     this.setMuted(!this.audio.muted)
   }
 
-  /** 获取当前播放器状态的快照 */
   public getState(): PlayerState {
     return { ...this.state }
   }
@@ -162,7 +147,6 @@ export class AudioPlayer {
     }
   }
 
-  // 更新 Media Session 元数据
   public updateMediaSessionMetadata(track: Track) {
     if (!('mediaSession' in navigator))
       return
@@ -185,7 +169,6 @@ export class AudioPlayer {
     }
   }
 
-  // 注册 Media Session 事件处理器
   public registerMediaSessionHandlers(handlers: {
     onPlay: () => void
     onPause: () => void
@@ -219,7 +202,6 @@ export class AudioPlayer {
     }
   }
 
-  // 更新 Media Session 的播放状态
   public updateMediaSessionPauseStatus(isPaused: boolean) {
     if (!('mediaSession' in navigator))
       return
@@ -232,7 +214,6 @@ export class AudioPlayer {
     }
   }
 
-  /** 获取初始状态 */
   private getInitialState(): PlayerState {
     return {
       ...this.getIdleState(),
@@ -241,7 +222,6 @@ export class AudioPlayer {
     }
   }
 
-  /** 获取空闲态的播放状态 */
   private getIdleState(): Omit<PlayerState, 'volume' | 'isMuted'> {
     return {
       currentTrack: null,
@@ -252,18 +232,15 @@ export class AudioPlayer {
     }
   }
 
-  /** 更新状态并通知所有订阅者 */
   private updateState(newState: Partial<PlayerState>): void {
     this.state = { ...this.state, ...newState }
     this.notify()
   }
 
-  /** 通知所有订阅者状态已更新 */
   private notify(): void {
     this.listeners.forEach(listener => listener(this.state))
   }
 
-  /** 绑定所有 audio 元素的原生事件 */
   private attachEvents(): void {
     this.audio.addEventListener('play', this.handlePlay)
     this.audio.addEventListener('playing', this.handlePlaying)

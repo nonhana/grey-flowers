@@ -164,7 +164,7 @@ export default defineConfig({
       },
     },
     {
-      files: ['./*.{ts,mts}'],
+      files: ['./*.{ts,mts}', '**/scripts/*.{ts,mts}'],
       env: { node: true },
       rules: {
         'no-console': 'off',

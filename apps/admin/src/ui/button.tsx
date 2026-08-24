@@ -5,13 +5,9 @@ import { Loader2 } from 'lucide-react';
 import { Button as AriaButton } from 'react-aria-components';
 
 /**
- * 字盘层的按钮。整个后台只有这五种，没有第六种。
- *
- *   solid   —— 提交。一屏之内至多一枚，它就是这一屏的目的。
- *   quiet   —— 次级操作。有形但不争。
- *   ghost   —— 工具条、图标动作。静止时只是文字。
- *   danger  —— 破坏性动作的确认端。
- *   warnish —— 破坏性动作的入口（描边，不实心，避免误触感）。
+ * 字盘层按钮，共五种 tone：
+ * solid 提交（一屏至多一枚）、quiet 次级、ghost 工具条/图标、
+ * danger 破坏性确认端、warnish 破坏性入口（描边防误触）。
  */
 export type ButtonTone = 'solid' | 'quiet' | 'ghost' | 'danger' | 'warnish';
 

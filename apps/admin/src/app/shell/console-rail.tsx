@@ -105,8 +105,6 @@ const subRowClass = cn(
   'data-[status=active]:font-medium data-[status=active]:text-accent-text',
 );
 
-/* ─────────────────────── 侧栏区块 ─────────────────────── */
-
 const STORAGE_KEY = 'gf.admin.rail';
 
 const loadRailSize = (): RailSize => {
@@ -245,8 +243,6 @@ export const AccountBlock = ({
     </div>
   );
 };
-
-/* ─────────────────────── 侧栏本体 ─────────────────────── */
 
 export const ConsoleRail = () => {
   const [size, setSize] = useState<RailSize>(loadRailSize);

@@ -11,12 +11,7 @@ import { RankBars } from '@/ui/charts.js';
 import { Skeleton } from '@/ui/feedback.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
 
-/**
- * 一个排行段：标题（深链到该维度的管理页）+ 排行条 + 尾注。
- *
- * 行级不做深链：文章列表当前只认 ?status，没有分类/标签筛选，
- * 编一个点不动的链接比不给链接更糟。段标题去 /categories、/tags 是真的能走。
- */
+/** 排行段：行级不做深链（文章列表只认 ?status，点不动的链接比没有更糟），段标题可深链。 */
 const RankSection = ({
   footnote,
   group,
@@ -59,12 +54,7 @@ const restNote = (group: OverviewRankGroup, unit: string) =>
     ? `其余 ${group.totalItems - group.items.length} 个 · ${group.restCount} ${unit}`
     : '';
 
-/**
- * 内容构成：分类与标签的文章数排行。回答「我到底在写什么」。
- *
- * 计数来自 Category/Tag 的 articleCount 物化列，口径是**全部文章（含草稿）**，
- * 与读数抽屉里的「已发布 640」不是同一个分母 —— 卡头标注「含草稿」讲清楚这件事。
- */
+/** 内容构成排行。计数来自 articleCount 物化列（含草稿口径），卡头标「含草稿」讲清分母。 */
 export const CompositionCard = ({
   className,
   composition,
@@ -134,10 +124,7 @@ const RankRowsSkeleton = ({ rows }: { rows: number }) => (
   </div>
 );
 
-/**
- * 与真实构成卡同构的骨架：卡头 + 两段排行（分类 5 行 / 标签 6 行，与 API 的
- * RANK_TAKE 一致）+ 尾注位。落地时卡高与真实逐段相等。
- */
+/** 构成卡骨架：分类 5 行 / 标签 6 行（对齐 RANK_TAKE），落地卡高逐段相等。 */
 export const CompositionCardSkeleton = ({
   className,
 }: {

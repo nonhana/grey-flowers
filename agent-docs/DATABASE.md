@@ -54,4 +54,4 @@ The article-search migration creates the `pg_trgm` extension plus partial GIN in
 
 Prisma configuration reads `HANA_DATABASE_URL` from the environment (`prisma.config.ts`, always available because every package loads the root `.env`). Use a disposable local database for schema experiments and inspect the target before any schema-mutating command.
 
-`packages/db` contains no application environment validation, request handling, authorization, query policy, or business mutation logic. Business rules, transactions, and projection-to-DTO maps live in `apps/api` modules. The seed script (`prisma/seed.mts`) is destructive (`deleteMany` then re-seed) and exits early unless the target is a local/development database.
+`packages/db` contains no application environment validation, request handling, authorization, query policy, or business mutation logic. Business rules, transactions, and projection-to-DTO maps live in `apps/api` modules. The seed script (`scripts/seed.mts`) is destructive (`deleteMany` then re-seed) and exits early unless the target is a local/development database.

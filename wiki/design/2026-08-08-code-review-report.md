@@ -198,7 +198,7 @@
 | `apps/admin/src/ui/overlay.tsx`                                                | 528     | 修重复   | 先消 BottomSheet 两道重复（~70 行），再议 SidePanel 单调用者                                                                                                                       |
 | `apps/admin/src/store/article-editor.ts`                                       | 488     | 修重复   | 核心问题不是行数而是 save payload ×3（S10）                                                                                                                                        |
 | `apps/admin/src/features/articles/editor/inspector-pane.tsx`                   | 467     | 合理     | VersionList（~85 行）可抽（可选）                                                                                                                                                  |
-| `packages/db/prisma/seed.mts`                                                  | 1033    | 合理     | 数据种子的长度合理；补缺元数据音乐行（INCR）                                                                                                                                       |
+| `packages/db/scripts/seed.mts`                                                 | 1033    | 合理     | 数据种子的长度合理；补缺元数据音乐行（INCR）                                                                                                                                       |
 | `apps/api/src/modules/activities/activity-markdown.ts` / `comments.service.ts` | 342/420 | 合理     | 大小可辩护；消毒管道去重见 S6                                                                                                                                                      |
 
 ---

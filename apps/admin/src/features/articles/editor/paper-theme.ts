@@ -1,11 +1,8 @@
 import { EditorView } from '@codemirror/view';
 
 /**
- * 纸面。
- *
- * 这里刻意没有行号：行号是代码编辑器的度量，写文章时它只是把视线
- * 从第一个字往右推了三格。行宽锁在 68ch，字号 17px、行高 1.9，
- * 底部留 45vh 让最后一行也能滚到视线中央。
+ * 纸面主题：刻意无行号（行号是代码编辑器的度量）、行宽 68ch、
+ * 底部 45vh 留白让末行能滚到视线中央。
  */
 export const paperTheme = EditorView.theme({
   '&': {

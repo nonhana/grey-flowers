@@ -16,28 +16,16 @@ const MENU_ITEMS = [
   to: ComponentProps<typeof Link>['to'];
 }>;
 
-// 子按钮从最靠近主按钮往上叠：FAB(56) + 间距(12) + 子按钮(48)。
+// 子按钮从主按钮往上叠：FAB(56) + 间距(12) + 子按钮(48)。
 const CHILD_GAP = 12;
 const CHILD_SIZE = 48;
 const nearestBottom = 56 + CHILD_GAP;
 const stackStep = CHILD_SIZE + CHILD_GAP;
 
 /**
- * 移动端发布的展开弹层（motion 部分，懒加载）：透明遮罩 + 两个纯图标圆形
- * （发布动态 / 发布文章）spring 逐层弹出。发布是这台机器上最频繁的动作，
- * 入口只有一个。
- *
- * FAB 触发器在 compose-fab.tsx（入口链常驻，无 motion），由 ConsoleShell
- * 懒加载本模块并在 FAB 悬停/聚焦/pointerdown 时预取（交接 P2）——motion 依赖
- * 只留在懒模块里。
- *
- * 用「常驻 DOM + animate 切换」而不是 AnimatePresence 挂载动画：
- * Admin 开了 React Compiler，motion 的挂载期初始动画会被跳过
- * （实测 A/B：rotate 这类挂载后切换的动画正常，AnimatePresence 新挂载卡在 initial）。
- * 子按钮绝对定位，收起时不占布局，也不会拦截点击。
- *
- * 展开态由 ConsoleShell 持有：音乐悬浮按钮需要在菜单展开时让位隐藏，
- * 两个组件共享同一份状态，避免各管各的互相遮挡。
+ * 移动端发布展开弹层（motion 懒加载部分）：遮罩 + 两个纯图标圆形弹簧弹出。
+ * 用「常驻 DOM + animate」而非 AnimatePresence（React Compiler 下挂载动画被跳过，
+ * 实测卡 initial）；展开态由 ConsoleShell 持有，供音乐按钮让位共享。
  */
 export interface ComposeMenuProps {
   onOpenChange: (open: boolean) => void;

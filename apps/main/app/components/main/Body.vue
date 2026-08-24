@@ -27,10 +27,8 @@ const secondaryArticleCards = computed(() => articleCards.value.slice(1))
 
 <template>
   <div class="flex flex-col gap-12">
-    <!-- 最近动态 -->
     <MainActivity />
 
-    <!-- 最近文章 -->
     <HanaInfoCard title="最近文章" :icon="Newspaper">
       <div v-if="featuredArticle" class="grid gap-6 2xl:grid-cols-3 md:grid-cols-2">
         <ArticleCard

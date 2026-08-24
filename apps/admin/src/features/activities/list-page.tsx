@@ -62,7 +62,6 @@ export const ActivitiesPage = () => {
   const [error, setError] = useState('');
   const deleteDialog = useDialog<ActivityAdmin>();
 
-  // 搜索防抖 300ms
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);

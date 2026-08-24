@@ -7,11 +7,7 @@ import { controlClass } from '@/ui/form.js';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
 
-/**
- * 调试控件：统一接口延迟（ms），改完立即生效，刷新保留。
- * 仅开发模式渲染（生产构建被 tree-shake 掉）。
- * URL 查询参数 `?apiDelay=` 优先级更高，浮层里如实标注。
- */
+/** 调试控件：接口延迟（ms）改完即生效、刷新保留；仅开发模式渲染（生产 tree-shake 掉）。 */
 export const ApiDelayControl = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(() => readApiDelayMs());

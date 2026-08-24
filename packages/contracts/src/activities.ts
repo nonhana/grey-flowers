@@ -1,29 +1,26 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema } from './auth.js';
+import {
+  apiSuccessSchema,
+  nonNegativeIntSchema,
+  positiveIntSchema,
+} from './common.js';
 import { musicTrackSchema } from './music.js';
-
-// ============ 图片输入项：受管资产 或 外部 URL（遗留图片保留，不重写） ============
 
 export const activityImageItemSchema = z
   .union([
-    z.object({ assetId: z.number().int().positive() }).strict(),
+    z.object({ assetId: positiveIntSchema }).strict(),
     z.object({ url: z.url() }).strict(),
   ])
   .describe('受管资产或外部 URL，条目顺序即展示顺序');
 
 export type ActivityImageItem = z.infer<typeof activityImageItemSchema>;
 
-// ============ 创建输入 ============
-
 export const activityCreateInputSchema = z
   .object({
     content: z.string().max(8192, '动态内容不能超过 8192 个字符').default(''),
     images: z.array(activityImageItemSchema).max(9, '最多 9 张图片').optional(),
-    musicIds: z
-      .array(z.number().int().positive())
-      .max(12, '最多 12 首音乐')
-      .optional(),
+    musicIds: z.array(positiveIntSchema).max(12, '最多 12 首音乐').optional(),
   })
   .strict();
 
@@ -33,22 +30,15 @@ export const activityUpdateInputSchema = z
   .object({
     content: z.string().max(8192, '动态内容不能超过 8192 个字符').optional(),
     images: z.array(activityImageItemSchema).max(9, '最多 9 张图片').optional(),
-    musicIds: z
-      .array(z.number().int().positive())
-      .max(12, '最多 12 首音乐')
-      .optional(),
+    musicIds: z.array(positiveIntSchema).max(12, '最多 12 首音乐').optional(),
   })
   .strict();
 
 export type ActivityUpdateInput = z.infer<typeof activityUpdateInputSchema>;
 
-// ============ 管理 DTO（列表/详情同款；Admin 不渲染 AST → 无 contentMarkdown） ============
-
 export const activityImageOutputSchema = z
   .object({
-    /** 受管资产 id；外部 URL 为 null */
-    assetId: z.number().int().positive().nullable(),
-    /** 展示 URL */
+    assetId: positiveIntSchema.nullable(),
     url: z.url(),
   })
   .strict();
@@ -57,7 +47,7 @@ export type ActivityImageOutput = z.infer<typeof activityImageOutputSchema>;
 
 export const activityAdminSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     content: z.string(),
     images: z.array(activityImageOutputSchema),
     /** 顺序 = music.id asc */
@@ -83,7 +73,7 @@ export type ActivityListQuery = z.infer<typeof activityListQuerySchema>;
 export const activityListDataSchema = z
   .object({
     items: z.array(activityAdminSchema),
-    total: z.number().int().min(0),
+    total: nonNegativeIntSchema,
     page: z.number().int().min(1),
     pageSize: z.number().int().min(1).max(100),
   })
@@ -102,18 +92,14 @@ export const activityAdminResponseSchema =
 export type ActivityAdminData = z.infer<typeof activityAdminSchema>;
 export type ActivityAdminResponse = z.infer<typeof activityAdminResponseSchema>;
 
-// ============ 公开 DTO（主站 ActivityItem 逐字段对齐；列表与详情同款） ============
-
 export const activityPublicSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     content: z.string(),
-    /** mdc AST（hast body/data/...）Json 透传 */
     contentMarkdown: z.any().nullable(),
-    /** 裸 URL 数组（主站唯一读源） */
     images: z.array(z.url()),
     music: z.array(musicTrackSchema),
-    commentCount: z.number().int().min(0),
+    commentCount: nonNegativeIntSchema,
     publishedAt: z.iso.datetime(),
     editedAt: z.iso.datetime(),
   })
@@ -124,7 +110,7 @@ export type ActivityPublic = z.infer<typeof activityPublicSchema>;
 export const activityPublicListDataSchema = z
   .object({
     items: z.array(activityPublicSchema),
-    total: z.number().int().min(0),
+    total: nonNegativeIntSchema,
     page: z.number().int().min(1),
     pageSize: z.number().int().min(1).max(100),
   })

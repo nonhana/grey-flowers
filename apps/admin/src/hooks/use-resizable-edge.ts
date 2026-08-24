@@ -7,15 +7,10 @@ import type {
 import { useState } from 'react';
 
 /**
- * 把组件的某条边变成可拖拽调整尺寸的把手。
- *
- * 只负责手势与几何：pointer 拖拽、方向换算、min/max 钳制、键盘调节，
- * 以及拖拽期间的文本选择抑制。吸附/阈值/折叠等业务状态机由调用方在
- * onResize 里根据 meta.raw（未钳制的原始建议尺寸）自行处理。
- *
- * 尺寸方向约定：edge 为 right/bottom 时，把手向外拖（+x/+y）尺寸增大；
- * left/top 相反。键盘方向与边无关：ArrowLeft/Up 减小，ArrowRight/Down 增大，
- * Home 到 min，End 到 max。
+ * 把组件某条边变成可拖拽调整尺寸的把手：只负责手势与几何
+ * （pointer 拖拽、方向换算、min/max 钳制、键盘调节、拖拽期文本选择抑制）；
+ * 吸附/阈值/折叠等业务状态机由调用方在 onResize 里用 meta.raw（未钳制建议值）自行处理。
+ * 方向：right/bottom 向外拖（+x/+y）尺寸增大，left/top 相反；键盘 Arrow→大、Home→min、End→max。
  */
 export type ResizeEdge = 'top' | 'right' | 'bottom' | 'left';
 

@@ -24,8 +24,6 @@ const scrimClass = cn(
   `,
 );
 
-/* ─────────────────────────── 底部抽屉（移动端） ─────────────────────────── */
-
 interface BottomSheetProps {
   children: ReactNode;
   isOpen: boolean;
@@ -106,10 +104,7 @@ const BottomSheetContents = ({
   );
 };
 
-/**
- * 移动端的 sheet。交互、滚动与虚拟键盘避让由 react-modal-sheet 处理；
- * React Aria 负责模态语义、焦点和关闭行为。
- */
+/** 移动端 sheet：react-modal-sheet 管交互/滚动/键盘避让，React Aria 管模态语义。 */
 export const BottomSheet = ({
   children,
   isOpen,
@@ -136,13 +131,7 @@ export const BottomSheet = ({
   );
 };
 
-/* ─────────────────────────── 侧栏面板（桌面） ─────────────────────────── */
-
-/**
- * 桌面端的 sheet 不是浮层，是布局的一列：它推入时挤压纸面的页边，
- * 而不改变正文行宽 —— 所以查看元数据时正文一个字都不会重排。
- * 内层固定宽度，只让外层宽度过渡，避免过渡期间文字回流。
- */
+/** 桌面端 sheet 是布局的一列：挤压纸面页边而不改正文行宽；内层定宽防回流。 */
 export const SidePanel = ({
   children,
   isOpen,
@@ -173,12 +162,9 @@ export const SidePanel = ({
   </aside>
 );
 
-/* ─────────────────────────────── 对话框 ─────────────────────────────── */
-
 /**
- * AppDialog 的移动端底抽屉本体：react-modal-sheet 的标准行为（拖拽柄、回弹、
- * 背板、键盘避让、焦点圈定）都在这里。抽屉行为绝不手写 —— 旧的手写 CSS sheet
- * 动画在内容异步加载/高度变化时会闪。
+ * 移动端底抽屉本体：拖拽/回弹/背板/键盘避让/焦点圈定全走 react-modal-sheet，
+ * 抽屉动画不手写（旧的手写 CSS 在内容异步加载时闪）。
  */
 const AppDialogSheetContents = ({
   children,
@@ -284,11 +270,7 @@ const AppDialogSheetContents = ({
   );
 };
 
-/**
- * 在对话框树卸载（即退出动画结束后）触发一次 onExited 的哨兵。
- * 它渲染 null，只负责把「动画真的结束了」这一信号交给使用者，
- * 让内容数据可以在动画期间保留、动画结束后再清理。
- */
+/** 哨兵：对话框树卸载（退出动画结束）时触发一次 onExited，供动画期间保留数据。 */
 const ExitSignaler = ({ onExited }: { onExited?: () => void }) => {
   const onExitedRef = useRef(onExited);
   useEffect(() => {
@@ -429,9 +411,7 @@ export const AppDialog = ({
   );
 };
 
-/**
- * 确认框。破坏性动作必须先用操作者自己的话说清后果，再执行。
- */
+/** 确认框：破坏性动作必须先让操作者看清后果再执行。 */
 export const ConfirmDialog = ({
   confirmLabel,
   isDestructive = false,

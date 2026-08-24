@@ -38,13 +38,8 @@ const PENDING_META: Record<string, PendingMeta> = {
 };
 
 /**
- * 待处理：一条横贯的待办带，不是右侧那根空了八成的立柱。
- *
- * 最多三项，是「该去做的事」而不是参考资料，所以它排在计数与趋势之间、
- * 靠近页顶，把整幅宽度还给下面的趋势图。与计数抽屉同一套 `gap-px` 格眼语言，
- * 但格子是链接：hover 时整格上蓝、标签与箭头同时变色，一眼分得出可点。
- *
- * 全零时不摆一个巨大的虚线空框——好消息只值一行。
+ * 待办带：最多三项、排在页顶下方，把整幅宽度还给趋势图；
+ * 全零时不摆空框——好消息只值一行。
  */
 export const PendingPanel = ({
   className,
@@ -128,10 +123,7 @@ export const PendingPanel = ({
   );
 };
 
-/**
- * 与真实待办带同构的骨架：标签 + 三格（图标 / 文案 / 计数 / 箭头）。
- * 格高与真实一致（py-3.5 + 计数行 25.6px 主导），落地时整带不跳。
- */
+/** 与真实待办带同构的骨架（标签 + 三格），落地时整带不跳。 */
 export const PendingPanelSkeleton = () => (
   <section aria-hidden className="grid animate-content-in gap-2">
     <SectionLabel>待处理</SectionLabel>

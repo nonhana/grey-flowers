@@ -52,13 +52,7 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
     </button>
   </nav>
 );
-/**
- * 控制台外壳。
- *
- * 高度链在这里被真正接上：html / body / #root 都是 100%，
- * 外壳用 flex-row，侧栏作为 flex 子项自动拉伸到底 —— 这是旧实现里
- * 侧栏只有内容高、底下露出网格的根因。
- */
+/** 控制台外壳：html/body/#root 全 100%，外壳 flex-row 让侧栏拉伸到底。 */
 export const ConsoleShell = () => {
   const [composeOpen, setComposeOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);

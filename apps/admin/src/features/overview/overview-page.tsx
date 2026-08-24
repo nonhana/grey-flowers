@@ -35,15 +35,7 @@ import {
 import { StorageCard, StorageCardSkeleton } from './storage-card.js';
 import { TrendCard } from './trend-card.js';
 
-/**
- * 运营概览：一只计数抽屉 + 一条待办带 + 一张趋势图，都是既有字段的只读投影。
- *
- * 三条横带而不是「六卡 + 图 + 右侧立柱」：右侧立柱只装得下三行链接，
- * 桌面上八成是空的，同时还把趋势图挤成一条窄缝。待办带上提、趋势图吃满整幅宽，
- * 页面就只剩「有多少 / 该做什么 / 走势如何」这三句话。
- *
- * 计数与趋势是两次独立请求，错误互不阻塞（每区各自重试）。
- */
+/** 运营概览：计数抽屉 + 待办带 + 趋势图，三条横带布局；计数与趋势独立请求、错误互不阻塞。 */
 export const OverviewPage = () => {
   const [data, setData] = useState<OverviewData | null>(null);
   const [loading, setLoading] = useState(true);

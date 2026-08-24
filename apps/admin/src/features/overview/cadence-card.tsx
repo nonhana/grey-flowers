@@ -10,9 +10,7 @@ import { CalendarHeatmap } from '@/ui/charts.js';
 import { EmptyState, Skeleton } from '@/ui/feedback.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
 
-/** 骨架照抄热力图的三段结构（读数行 / 月份标签 + 7 行日格 / 无），落地时不跳。
- *  网格用与真实相同的 53 列 × auto+7 行模板：格高 = 列宽（aspect-square），
- *  卡宽变化时骨架与真实同比例伸缩，任何视口下高度都一致。 */
+/** 骨架同 53 列 × auto+7 行网格，卡宽变化时与真实同比例伸缩，任何视口高度一致。 */
 const HeatmapSkeleton = () => (
   <div aria-hidden className="grid gap-2.5">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -47,12 +45,8 @@ const HeatmapSkeleton = () => (
 );
 
 /**
- * 发布节奏：近 12 个月的逐日发布密度。
- *
- * 它和趋势柱图不是一回事 —— 柱图看的是近 14/30 天的量，这张看的是一整年的分布。
- * 「今年断更过没有」「哪几个月最勤」只有这张答得了，而且不需要点任何东西。
- *
- * 单独一次请求：365 天的数据比 /overview 重，不该拖慢首屏的读数抽屉。
+ * 发布节奏：近一年的逐日分布（柱图看量，这张看分布/断更）。
+ * 单独一次请求，不拖慢首屏读数抽屉。
  */
 export const CadenceCard = ({ className }: { className?: string }) => {
   const [data, setData] = useState<OverviewCalendarData | null>(null);

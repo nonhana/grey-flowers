@@ -43,7 +43,6 @@ const VolumeIcon = ({ muted, volume }: { muted: boolean; volume: number }) => {
   return volume < 0.7 ? <Volume1 aria-hidden /> : <Volume2 aria-hidden />;
 };
 
-/** 移动端全屏「正在播放」面板。 */
 export const NowPlayingSheet = ({
   isOpen,
   onOpenChange,

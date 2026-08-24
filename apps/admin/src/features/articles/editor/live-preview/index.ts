@@ -4,11 +4,7 @@ import { livePreviewPlugin } from './decorations.js';
 import { linkClickHandler } from './link-click.js';
 import { uploadField } from './upload-state.js';
 
-/**
- * 「纸面」的所见即所得层：正文图片就地渲染、粘贴上传的幽灵占位、
- * 可点链接与块级观感（引用/表格/代码块）。文档本身仍是纯 Markdown——
- * 这里只改“看起来”，不改原文，MDC 指令原样穿过。
- */
+/** 纸面所见即所得层：只改“看起来”，不改文档（MDC 指令原样穿过）。 */
 export const livePreview = (): Extension[] => [
   uploadField,
   livePreviewPlugin,

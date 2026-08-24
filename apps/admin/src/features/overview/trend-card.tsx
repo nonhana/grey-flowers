@@ -59,12 +59,8 @@ const PlotSkeleton = () => (
 );
 
 /**
- * 趋势卡：一张逐日柱状图，度量（文章/评论/动态/用户）与天数（7/14/30）图内切换。
- * 计数与趋势是两次独立请求，本卡只负责自己的加载/失败/空数据态。
- * Panel 是纵向 flex，图表区 flex-1 撑满父级剩余高度（桌面一屏无底部空白）。
- *
- * TrendPlot 按 metric|days 换 key：换的是同一批柱子的值，重挂载让入场编排重演，
- * 同时把悬停/键盘游标一并归位到最新一天——切了度量还停在旧游标上是错的。
+ * 趋势卡：度量与天数图内切换；独立请求只负责自己的态。
+ * TrendPlot 按 metric|days 换 key 重演入场编排，并把游标归位到最新一天。
  */
 export const TrendCard = ({ className }: { className?: string }) => {
   const [metric, setMetric] = useState<OverviewTrendMetric>('articles');

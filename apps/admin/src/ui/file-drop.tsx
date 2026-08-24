@@ -5,14 +5,8 @@ import { useId } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 /**
- * 通用文件投放控件：点击或拖入文件都会触发 onFile。
- *
- * - 拖入可接受文件时高亮描边/底色，拖入不可接受文件时切危险色；
- * - 点击由原生 label 激活打开选择器（noClick + htmlFor），避免与
- *   dropzone 根节点 onClick 双开对话框；
- * - busy 时点击与拖放同时失效（pointer-events 兜底 + disabled 语义）。
- *
- * accept 用 lib/media-accept.ts 里的 *_ACCEPT_MAP（MIME 通配 + 扩展名表）。
+ * 通用文件投放控件：点击或拖入触发 onFile；拖入可接受文件高亮、不可接受切危险色；
+ * busy 时点击与拖放失效。accept 用 lib/media-accept.ts 的 *_ACCEPT_MAP。
  */
 export const FileDrop = ({
   accept,

@@ -8,7 +8,6 @@ import { Skeleton } from '@/ui/feedback.js';
 import { AssetImage } from '@/ui/image.js';
 import { MetaLine } from '@/ui/surface.js';
 
-/** 用户列表卡片：头像 + 用户名/邮箱/ADMIN Pin + 注册时间 + 「N 条评论」角标 + 操作。 */
 export const UserCard = ({
   actions,
   user,

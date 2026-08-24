@@ -3,14 +3,7 @@ import type { ReactNode } from 'react';
 import { Skeleton } from '@/ui/feedback.js';
 import { SectionLabel } from '@/ui/surface.js';
 
-/**
- * 计数抽屉。
- *
- * 六个并列的数不是六张卡。六张同尺寸的描边圆角卡片会把「一行读数」说成
- * 「一副牌」——这正是 PRODUCT.md 点名拒绝的 homogeneous card mush。
- * 字盘的列表原语是一只描边抽屉，内部靠发丝分格：`gap-px` 露出容器底色
- * 就是那些发丝，格子换行时分隔线自动跟着走，不用手写 border 方向。
- */
+/** 计数抽屉（不是六张卡——那是 PRODUCT.md 拒绝的 card mush）：gap-px 露出底色做发丝分格。 */
 export const ReadoutDrawer = ({ children }: { children: ReactNode }) => (
   <div
     className="
@@ -24,11 +17,7 @@ export const ReadoutDrawer = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-/**
- * 一个格眼：标签、数、副行。
- * 数用 text-xl 而不是 text-2xl —— 2xl 是页标题的尺寸，六个数并排顶到那一档，
- * 页面的主语就被抢走了（DESIGN.md：标题必须是这一屏最大的东西）。
- */
+/** 格眼：数用 text-xl 而非 text-2xl——2xl 是页标题档位，标题必须是这屏最大的东西。 */
 export const ReadoutCell = ({
   icon,
   label,
@@ -64,11 +53,7 @@ export const ReadoutCell = ({
   </div>
 );
 
-/**
- * 骨架与真实格眼同高同节奏：label 行（含图标位）、数值行、副行按两行占位。
- * 副行取最大高度 —— 网格整排高度由最高格决定，内容落地后至少一格占满两行，
- * 排高即保持不变。
- */
+/** 骨架副行按两行占位：网格排高由最高格决定，落地后至少一格占满两行，高度不变。 */
 export const ReadoutDrawerSkeleton = () => (
   <ReadoutDrawer>
     {Array.from({ length: 6 }, (_, index) => (

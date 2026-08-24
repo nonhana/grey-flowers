@@ -52,7 +52,6 @@ export class TaxonomyService {
     private readonly environment: ApiEnvironment,
   ) {}
 
-  /** 管理读：分类列表 */
   async listCategories(): Promise<CategoryListData> {
     const rows = await this.prisma.category.findMany({
       orderBy: { name: 'asc' },
@@ -61,7 +60,6 @@ export class TaxonomyService {
     return { items: rows.map(toCategoryAdmin) };
   }
 
-  /** 管理写：新建分类 */
   async createCategory(input: CategorySaveInput): Promise<CategoryAdmin> {
     const { cover, coverAssetId } = await normalizeCategoryCover(
       this.prisma,
@@ -88,7 +86,6 @@ export class TaxonomyService {
     }
   }
 
-  /** 管理写：更新分类（改名唯一冲突 CONFLICT） */
   async updateCategory(
     id: number,
     input: CategorySaveInput,
@@ -121,7 +118,6 @@ export class TaxonomyService {
     return toCategoryAdmin(row);
   }
 
-  /** 管理写：删除分类（有文章时 CONFLICT） */
   async deleteCategory(id: number): Promise<{ id: number }> {
     const existing = await this.prisma.category.findUnique({
       select: {
@@ -137,7 +133,6 @@ export class TaxonomyService {
     return { id };
   }
 
-  /** 管理读：标签列表（?unused=true 时只返回零引用标签） */
   async listTags(query: TagListQuery): Promise<TagListData> {
     const rows = await this.prisma.tag.findMany({
       orderBy: { articleCount: 'desc' },
@@ -147,7 +142,6 @@ export class TaxonomyService {
     return { items: rows.map(toTagAdmin) };
   }
 
-  /** 管理写：新建标签 */
   async createTag(input: TagCreateInput): Promise<TagAdmin> {
     try {
       const row = await this.prisma.tag.create({
@@ -174,7 +168,6 @@ export class TaxonomyService {
     return { id };
   }
 
-  /** 公开读：标签（已发布语义；计数只在已发布文章上统计） */
   async listPublicTags(): Promise<PublicTagListData> {
     const rows = await this.prisma.tag.findMany({
       orderBy: { name: 'asc' },
@@ -186,7 +179,6 @@ export class TaxonomyService {
     return { items: rows.map(toPublicTag) };
   }
 
-  /** 公开读：分类（已发布语义；计数只在已发布文章上统计） */
   async listPublicCategories(): Promise<PublicCategoryListData> {
     const rows = await this.prisma.category.findMany({
       orderBy: { name: 'asc' },

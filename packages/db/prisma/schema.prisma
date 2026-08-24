@@ -89,16 +89,16 @@ model User {
 }
 
 model Session {
-  id                     String               @id @default(cuid())
-  userId                 Int
-  refreshSecretHash      String
-  previousRefreshSecretHash String?           // 上一次轮换前的 hash：refresh 轮换 + 重用检测
-  createdAt              DateTime             @default(now())
-  lastUsedAt             DateTime             @default(now())
-  expiresAt              DateTime
-  revokedAt              DateTime?
-  revokeReason           SessionRevokeReason?
-  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                        String               @id @default(cuid())
+  userId                    Int
+  refreshSecretHash         String
+  previousRefreshSecretHash String? // 上一次轮换前的 hash：refresh 轮换 + 重用检测
+  createdAt                 DateTime             @default(now())
+  lastUsedAt                DateTime             @default(now())
+  expiresAt                 DateTime
+  revokedAt                 DateTime?
+  revokeReason              SessionRevokeReason?
+  user                      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, revokedAt, expiresAt])
   @@index([expiresAt])
@@ -126,11 +126,11 @@ model Comment {
 }
 
 model UserMessage {
-  id         Int      @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   receiverId Int
   commentId  Int
-  comment    Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  receiver   User     @relation(fields: [receiverId], references: [id])
+  comment    Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  receiver   User    @relation(fields: [receiverId], references: [id])
 
   @@unique([receiverId, commentId])
 }
@@ -147,7 +147,7 @@ model Activity {
 }
 
 model Music {
-  id            Int               @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   title         String
   src           String
   sourceAssetId Int?
@@ -156,10 +156,10 @@ model Music {
   artist        String
   cover         String
   coverAssetId  Int?
-  createdAt     DateTime          @default(now()) // 入库时间，供库排序与展示
+  createdAt     DateTime        @default(now()) // 入库时间，供库排序与展示
   activities    ActivityMusic[]
-  sourceAsset   Asset?            @relation("MusicSourceAsset", fields: [sourceAssetId], references: [id], onDelete: Restrict)
-  coverAsset    Asset?            @relation("MusicCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
+  sourceAsset   Asset?          @relation("MusicSourceAsset", fields: [sourceAssetId], references: [id], onDelete: Restrict)
+  coverAsset    Asset?          @relation("MusicCoverAsset", fields: [coverAssetId], references: [id], onDelete: Restrict)
 
   @@index([sourceAssetId])
   @@index([coverAssetId])

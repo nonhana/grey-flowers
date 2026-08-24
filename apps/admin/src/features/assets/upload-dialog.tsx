@@ -39,7 +39,7 @@ export const UploadDialog = ({
   const [phase, setPhase] = useState<Phase>('idle');
   const [error, setError] = useState('');
 
-  // 对话框关闭后重置表单：在渲染期、受条件保护地调整 state（React 官方推荐模式）
+  // 对话框关闭后重置表单：渲染期受条件保护地重置(state)
   useDerivedReset(open, () => {
     if (!open) {
       setPurpose(null);

@@ -17,7 +17,7 @@
 1. 通用 JSON 体积上限按 INCR 原语义保留（见 INCR① 的 DEFER 说明）。
 2. 冒烟期间发现两处**前序复审未覆盖的存量运行时问题**（非本次返工引入）：
    - `@lucide/vue` 在 `.output`（dev/prod NODE_ENV 均复现）SSR 渲染文章页崩溃（`useLucideProps(...)` 解构 undefined）；dev 服务渲染正常 —— 属构建产物/依赖解析问题，文档化并给出下钻方向，未在本次范围外扩境修复。
-   - `prisma/seed.mts` 以裸 `to`（如 `article-630`）造数据，与 `normalizeArticleTo` 的规范形 `/articles/<slug>` 不一致，导致种子文章无法经主站详情契约打开（测试数据问题，非代码契约缺陷）。
+   - `scripts/seed.mts` 以裸 `to`（如 `article-630`）造数据，与 `normalizeArticleTo` 的规范形 `/articles/<slug>` 不一致，导致种子文章无法经主站详情契约打开（测试数据问题，非代码契约缺陷）。
 
 ### 四轴评分（返工后）
 

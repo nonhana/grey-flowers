@@ -19,3 +19,4 @@
 
 - Unless absolutely necessary, use arrow functions rather than regular functions for function definitions.
 - When writing React code, you must adhere to `react-compiler` best practices and avoid introducing `useCallback`, `useMemo`, and the like unless necessary.
+- Write brief, unambiguous single-line comments only where truly necessary; avoid excessive commenting, and treat the code itself as the Single Source of Truth (SSOT). Examples include ESLint rule overrides or the purpose of a general-purpose utility function, hook, or composable.

@@ -30,7 +30,6 @@ const isMe = computed(() => userInfo.value?.userId === props.comment.author?.id)
 
 const isActive = computed(() => props.activeCommentId === props.comment.id)
 
-// Type Guard
 function isParentCommentItem(comment: Comment): comment is ParentCommentItem {
   return (comment as ParentCommentItem).children !== undefined
 }

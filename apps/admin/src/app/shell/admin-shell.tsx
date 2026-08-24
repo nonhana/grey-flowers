@@ -18,10 +18,7 @@ import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { TextField } from '@/ui/form.js';
 
-/**
- * Auth stage 是控制台里唯一保留网格底纹的地方 —— 这里品牌在说话，
- * 进了控制台之后网格就让位给工作面。
- */
+/** Auth stage 保留网格底纹（品牌在说话）；进入控制台后让位给工作面。 */
 const Stage = ({ children }: { children: ReactNode }) => (
   <section
     className="

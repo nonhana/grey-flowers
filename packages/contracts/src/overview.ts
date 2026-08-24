@@ -1,52 +1,48 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema } from './auth.js';
-
-// ============ 概览（只读投影，管理端） ============
-
-// —— 读数卡计数 ——
+import { apiSuccessSchema, nonNegativeIntSchema } from './common.js';
 
 export const overviewCountsSchema = z
   .object({
     articles: z
       .object({
-        published: z.number().int().min(0), // published = true
-        drafts: z.number().int().min(0), // published = false
-        wordTotal: z.number().int().min(0), // _sum.wordCount, published = true
+        published: nonNegativeIntSchema,
+        drafts: nonNegativeIntSchema,
+        wordTotal: nonNegativeIntSchema,
       })
       .strict(),
     activities: z
       .object({
-        total: z.number().int().min(0),
-        last30d: z.number().int().min(0), // publishedAt >= now-30d
+        total: nonNegativeIntSchema,
+        last30d: nonNegativeIntSchema,
       })
       .strict(),
     comments: z
       .object({
-        total: z.number().int().min(0),
-        parents: z.number().int().min(0), // level = PARENT
-        children: z.number().int().min(0), // level = CHILD
+        total: nonNegativeIntSchema,
+        parents: nonNegativeIntSchema,
+        children: nonNegativeIntSchema,
       })
       .strict(),
     users: z
       .object({
-        total: z.number().int().min(0),
-        joined30d: z.number().int().min(0), // createdAt >= now-30d
+        total: nonNegativeIntSchema,
+        joined30d: nonNegativeIntSchema,
       })
       .strict(),
     assets: z
       .object({
-        total: z.number().int().min(0), // status != 'DELETED'
-        images: z.number().int().min(0),
-        audio: z.number().int().min(0),
-        pendingCleanup: z.number().int().min(0), // status = PENDING_CLEANUP
+        total: nonNegativeIntSchema, // status != 'DELETED'
+        images: nonNegativeIntSchema,
+        audio: nonNegativeIntSchema,
+        pendingCleanup: nonNegativeIntSchema,
       })
       .strict(),
     music: z
       .object({
-        total: z.number().int().min(0),
-        missingMetadata: z.number().int().min(0), // artist='' OR album=''
-        secondsTotal: z.number().int().min(0), // _sum.seconds
+        total: nonNegativeIntSchema,
+        missingMetadata: nonNegativeIntSchema, // artist='' OR album=''
+        secondsTotal: nonNegativeIntSchema,
       })
       .strict(),
   })
@@ -67,20 +63,17 @@ export type OverviewPendingKey = z.infer<typeof overviewPendingKeySchema>;
 export const overviewPendingItemSchema = z
   .object({
     key: overviewPendingKeySchema,
-    count: z.number().int().min(0),
+    count: nonNegativeIntSchema,
   })
   .strict();
 
 export type OverviewPendingItem = z.infer<typeof overviewPendingItemSchema>;
 
-// —— 内容构成：分类 / 标签排行 ——
-// 条宽用 count / max(items) 表达排名，不给标签算「占比」：一篇文章可挂多个标签，
-// sum(tag.articleCount) > 文章总数，任何以它为分母的百分比都是假的。
-
+// 排行不设百分比：sum(tag.articleCount) > 文章总数，任何占比都没有分母意义
 export const overviewRankItemSchema = z
   .object({
     name: z.string().min(1),
-    count: z.number().int().min(0),
+    count: nonNegativeIntSchema,
   })
   .strict();
 
@@ -88,12 +81,10 @@ export type OverviewRankItem = z.infer<typeof overviewRankItemSchema>;
 
 export const overviewRankGroupSchema = z
   .object({
-    /** 按 count 降序、同分按 name 升序的前 N 项 */
     items: z.array(overviewRankItemSchema),
-    /** 该维度的全部项数，用于「其余 N 项」 */
-    totalItems: z.number().int().min(0),
-    /** 未进入 items 的项的计数之和 */
-    restCount: z.number().int().min(0),
+    /** 维度全部项数，用于「其余 N 项」 */
+    totalItems: nonNegativeIntSchema,
+    restCount: nonNegativeIntSchema,
   })
   .strict();
 
@@ -104,25 +95,20 @@ export const overviewCompositionSchema = z
     categories: overviewRankGroupSchema,
     tags: overviewRankGroupSchema,
     /** categoryId = null 的文章数——分类维度的「未分类」桶 */
-    uncategorized: z.number().int().min(0),
+    uncategorized: nonNegativeIntSchema,
   })
   .strict();
 
 export type OverviewComposition = z.infer<typeof overviewCompositionSchema>;
 
-// —— 存储构成：三段互斥，和为 status != DELETED 的总字节 ——
-// byteSize 在库里是 BigInt；个人站的总量远在 2^53 以内，映射层收敛为 number。
-
+// 存储构成：三段互斥，和为 status != DELETED 的总字节。
+// byteSize 在库里是 BigInt；个人站总量远在 2^53 以内，映射层收敛为 number。
 export const overviewStorageSchema = z
   .object({
-    /** status = AVAILABLE 且 mediaType = IMAGE */
-    imageBytes: z.number().int().min(0),
-    /** status = AVAILABLE 且 mediaType = AUDIO */
-    audioBytes: z.number().int().min(0),
-    /** status = PENDING_CLEANUP（横切状态，不再分媒体类型） */
-    pendingBytes: z.number().int().min(0),
-    /** 上面三段之和 */
-    totalBytes: z.number().int().min(0),
+    imageBytes: nonNegativeIntSchema,
+    audioBytes: nonNegativeIntSchema,
+    pendingBytes: nonNegativeIntSchema,
+    totalBytes: nonNegativeIntSchema,
   })
   .strict();
 
@@ -140,8 +126,6 @@ export const overviewDataSchema = z
 export type OverviewData = z.infer<typeof overviewDataSchema>;
 export const overviewResponseSchema = apiSuccessSchema(overviewDataSchema);
 export type OverviewResponse = z.infer<typeof overviewResponseSchema>;
-
-// —— 趋势查询：metric/days 是查询串，经 z.enum 严格校验 ——
 
 export const overviewTrendMetricSchema = z.enum([
   'articles',
@@ -169,7 +153,7 @@ export type OverviewTrendQuery = z.infer<typeof overviewTrendQuerySchema>;
 export const overviewTrendPointSchema = z
   .object({
     date: z.string(),
-    count: z.number().int().min(0),
+    count: nonNegativeIntSchema,
   })
   .strict();
 
@@ -181,8 +165,7 @@ export const overviewTrendDataSchema = z
     days: overviewTrendDaysSchema,
     /** 窗口内每一天一个点，未命中填 0；长度恒等于 days */
     points: z.array(overviewTrendPointSchema),
-    /** 窗口内合计（调试/角标用） */
-    total: z.number().int().min(0),
+    total: nonNegativeIntSchema,
   })
   .strict();
 
@@ -201,8 +184,8 @@ export const overviewCalendarDaySchema = z
     /** 服务端本地日 'YYYY-MM-DD' */
     date: z.string(),
     /** published = true 的文章；草稿的 publishedAt 是建档时间，不算发布 */
-    articles: z.number().int().min(0),
-    activities: z.number().int().min(0),
+    articles: nonNegativeIntSchema,
+    activities: nonNegativeIntSchema,
   })
   .strict();
 
@@ -212,10 +195,10 @@ export const overviewCalendarDataSchema = z
   .object({
     /** 窗口内每一天一个点，含零值；长度恒为 365，末项为今天 */
     days: z.array(overviewCalendarDaySchema),
-    articlesTotal: z.number().int().min(0),
-    activitiesTotal: z.number().int().min(0),
+    articlesTotal: nonNegativeIntSchema,
+    activitiesTotal: nonNegativeIntSchema,
     /** 单日 (articles + activities) 的最大值，供前端分档与角标 */
-    peak: z.number().int().min(0),
+    peak: nonNegativeIntSchema,
   })
   .strict();
 

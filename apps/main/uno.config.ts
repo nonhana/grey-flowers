@@ -248,15 +248,12 @@ export default defineConfig({
         }
 
         :root {
-          /* 背景网格颜色 */
           --background-grid-color: oklch(0.91 0.011 234.83 / 0.6);
           --background-grid-color-dark: oklch(0.27 0 0);
 
-          /* 选中文字颜色 */
           --selection-color: oklch(0.93 0.0358 205.23);
           --selection-color-dark: oklch(0.5 0.1102 250.04);
 
-          /* 进度条颜色 */
           --indicator-color: oklch(0.5 0.1102 250.04);
           --indicator-color-dark: oklch(0.84 0.0632 214.03);
         }

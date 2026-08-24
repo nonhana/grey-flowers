@@ -1,116 +1,28 @@
 import { z } from 'zod';
 
-export const apiErrorCodeSchema = z.enum([
-  'VALIDATION_FAILED',
-  'AUTH_INVALID_CREDENTIALS',
-  'AUTH_REQUIRED',
-  'AUTH_FORBIDDEN',
-  'NOT_FOUND',
-  'CONFLICT',
-  'ARTICLE_STALE',
-  'INTERNAL_ERROR',
-  'ASSET_PAYLOAD_TOO_LARGE',
-  'UNSUPPORTED_MEDIA_TYPE',
-  'UPLOAD_FAILED',
-  'ASSET_REFERENCED',
-  'RATE_LIMITED',
-]);
-
-export type ApiErrorCode = z.infer<typeof apiErrorCodeSchema>;
-
-const apiValidationFieldsSchema = z.record(z.string(), z.array(z.string()));
-
-export const apiFailureSchema = z
-  .object({
-    success: z.literal(false),
-    error: z
-      .object({
-        code: apiErrorCodeSchema,
-        message: z.string(),
-        fields: apiValidationFieldsSchema.optional(),
-      })
-      .strict(),
-    requestId: z.uuid(),
-  })
-  .strict()
-  .superRefine(({ error }, context) => {
-    if (error.code !== 'VALIDATION_FAILED' && error.fields !== undefined) {
-      context.addIssue({
-        code: 'custom',
-        message: 'Only VALIDATION_FAILED may include fields',
-        path: ['error', 'fields'],
-      });
-    }
-  });
-
-export type ApiFailure = z.infer<typeof apiFailureSchema>;
-
-export interface ApiSuccess<TData> {
-  success: true;
-  data: TData;
-  requestId: string;
-}
-
-export type ApiEnvelope<TData> = ApiSuccess<TData> | ApiFailure;
-
-export const apiSuccessSchema = <TData extends z.ZodType>(
-  dataSchema: TData,
-) => {
-  return z
-    .object({
-      success: z.literal(true),
-      data: dataSchema,
-      requestId: z.uuid(),
-    })
-    .strict();
-};
-
-export const apiEnvelopeSchema = <TData extends z.ZodType>(
-  dataSchema: TData,
-) => {
-  return z.union([apiSuccessSchema(dataSchema), apiFailureSchema]);
-};
-
-/** 角色枚举：users.ts 管理编辑复用（与 auth principal 角色对齐）。 */
-export const userRoleSchema = z.enum(['USER', 'ADMIN']);
-
-export type UserRole = z.infer<typeof userRoleSchema>;
-
-export const usernameSchema = z
-  .string()
-  .min(1, { message: 'Username must not be empty' })
-  .max(16, { message: 'Username must not exceed 16 characters' });
-
-export const emailInputSchema = z
-  .email({ message: 'Invalid email format' })
-  .trim();
-
-export const emailSchema = z.email();
-
-export const siteSchema = z.url({ message: 'Invalid site URL' });
+import {
+  apiSuccessSchema,
+  positiveIntSchema,
+  userRoleSchema,
+} from './common.js';
+import {
+  emailInputSchema,
+  emailSchema,
+  publicUserSchema,
+  siteSchema,
+  usernameSchema,
+} from './users.js';
 
 const passwordSchema = z
   .string()
-  .min(8, { message: 'Password must be at least 8 characters' })
-  .max(32, { message: 'Password must not exceed 32 characters' });
-
-export const publicUserSchema = z
-  .object({
-    id: z.number().int().positive(),
-    email: emailSchema,
-    username: usernameSchema,
-    avatar: z.string(),
-    site: siteSchema.nullable(),
-  })
-  .strict();
-
-export type PublicUser = z.infer<typeof publicUserSchema>;
+  .min(8, { message: '密码至少有 8 位' })
+  .max(32, { message: '密码不能超过 32 位' });
 
 export const principalSchema = z
   .object({
-    userId: z.number().int().positive(),
+    userId: positiveIntSchema,
     sessionId: z.string().min(1),
-    role: z.enum(['USER', 'ADMIN']),
+    role: userRoleSchema,
     email: emailSchema,
     username: usernameSchema,
     avatar: z.string(),
@@ -144,14 +56,13 @@ export type AuthRegisterResponse = z.infer<typeof authRegisterResponseSchema>;
 
 export const authLoginInputSchema = z
   .object({
-    account: z.string().min(1, { message: 'Account must not be empty' }),
-    password: z.string().min(1, { message: 'Password must not be empty' }),
+    account: z.string().min(1, { message: '账号不能为空' }),
+    password: z.string().min(1, { message: '密码不能为空' }),
   })
   .strict();
 
 export type AuthLoginInput = z.infer<typeof authLoginInputSchema>;
 
-/** access token 有效期（秒）。API 签名与响应 DTO 共用这一个值，杜绝两侧漂移。 */
 export const ACCESS_TOKEN_TTL_SECONDS = 900;
 
 export const authLoginDataSchema = z
@@ -213,7 +124,7 @@ export const authUpdateMeInputSchema = z
     site: siteSchema.nullable().optional(),
     currentPassword: z
       .string()
-      .min(1, { message: 'Current password must not be empty' })
+      .min(1, { message: '当前密码不能为空' })
       .optional(),
     newPassword: passwordSchema.optional(),
   })
@@ -222,7 +133,7 @@ export const authUpdateMeInputSchema = z
     ({ currentPassword, newPassword }) =>
       (currentPassword === undefined) === (newPassword === undefined),
     {
-      message: 'Current password and new password must be provided together',
+      message: '当前密码和新密码必须同时填写',
       path: ['newPassword'],
     },
   );

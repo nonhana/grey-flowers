@@ -19,21 +19,21 @@ There is no separate `.env` inside the apps; run `pnpm dev:admin` from the repo 
 
 ## Commands (run from the repository root)
 
-| Task | Command |
-| --- | --- |
-| Install | `pnpm install` |
-| Development (main Nuxt) | `pnpm dev:main` |
-| Development (API) | `pnpm dev:api` (`tsx --watch src/main.ts`, listens on `API_PORT`) |
-| Development (admin) | `pnpm dev:admin` (Vite, listens on `ADMIN_PORT`) |
-| Production build (whole workspace) | `pnpm build` |
-| Serve built main artifact | `pnpm -F @grey-flowers/main run preview` |
-| Type check | `pnpm typecheck` (root `tsc --noEmit` + per-package) |
-| Unit tests | `pnpm test` (vitest for `apps/api` + `apps/admin`, no DB / no network) |
-| Lint / fix | `pnpm lint` / `pnpm lint:fix` |
-| Format / check | `pnpm fmt` / `pnpm fmt:check` |
-| Prisma regeneration | `pnpm prisma:generate` |
-| Local schema sync (no migration) | `pnpm prisma:push` |
-| Apply committed migrations | `pnpm prisma:migrate:deploy` |
+| Task                               | Command                                                                |
+| ---------------------------------- | ---------------------------------------------------------------------- |
+| Install                            | `pnpm install`                                                         |
+| Development (main Nuxt)            | `pnpm dev:main`                                                        |
+| Development (API)                  | `pnpm dev:api` (`tsx --watch src/main.ts`, listens on `API_PORT`)      |
+| Development (admin)                | `pnpm dev:admin` (Vite, listens on `ADMIN_PORT`)                       |
+| Production build (whole workspace) | `pnpm build`                                                           |
+| Serve built main artifact          | `pnpm -F @grey-flowers/main run preview`                               |
+| Type check                         | `pnpm typecheck` (root `tsc --noEmit` + per-package)                   |
+| Unit tests                         | `pnpm test` (vitest for `apps/api` + `apps/admin`, no DB / no network) |
+| Lint / fix                         | `pnpm lint` / `pnpm lint:fix`                                          |
+| Format / check                     | `pnpm fmt` / `pnpm fmt:check`                                          |
+| Prisma regeneration                | `pnpm prisma:generate`                                                 |
+| Local schema sync (no migration)   | `pnpm prisma:push`                                                     |
+| Apply committed migrations         | `pnpm prisma:migrate:deploy`                                           |
 
 There is no root `pnpm dev` script — use the per-app `dev:main` / `dev:api` / `dev:admin`.
 
@@ -70,7 +70,7 @@ pnpm prisma:reset   # 一键清空 + 重建迁移 + 自动灌入 seed 数据
 pnpm prisma:seed    # 在既有库上重灌（幂等，先逆序清空全表）
 ```
 
-seed 位于 `packages/db/prisma/seed.mts`，覆盖全部 14 个模型并造出大规模、差异化的
+seed 位于 `packages/db/scripts/seed.mts`，覆盖全部 14 个模型并造出大规模、差异化的
 测试数据（文章标题 trgm 检索、评论内容/路径/作者/日期区间筛选、资产 purpose 目录/
 媒体类型/状态、音乐/用户/活动检索等）。唯一管理员：`nonhana / nonhana@outlook.com`
 密码 `20021209xiang`。`pnpm prisma:reset` 会先重放迁移再跑 seed，一条命令到位。

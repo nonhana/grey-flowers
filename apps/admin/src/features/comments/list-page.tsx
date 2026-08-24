@@ -305,7 +305,6 @@ export const CommentsPage = () => {
   }>();
   const batchDialog = useDialog<number[]>();
 
-  // 全部筛选输入统一防抖 300ms；任一变化回到第一页。
   useEffect(() => {
     const timer = setTimeout(() => {
       setFilters(draft);

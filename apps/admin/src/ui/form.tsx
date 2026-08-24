@@ -17,10 +17,7 @@ import {
   Button as AriaButton,
 } from 'react-aria-components';
 
-/**
- * 输入控件的公共外观。字号锁定 1rem —— 低于 16px 时 iOS Safari 会在聚焦时
- * 自动放大页面，那会让移动端长写体验直接报废。
- */
+/** 输入控件公共外观。字号锁 1rem——低于 16px 时 iOS Safari 聚焦会放大页面。 */
 export const controlClass = cn(
   'min-h-11 w-full rounded-control border border-edge bg-well px-3 py-2',
   'text-md text-ink-strong transition-colors outline-none',

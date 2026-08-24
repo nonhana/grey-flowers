@@ -1,33 +1,11 @@
-/**
- * Grey Flowers 测试数据库种子脚本。
- *
- * 覆盖全部 14 个模型，并针对 `apps/api` 各列表端点的真实筛选/检索字段
- * （文章标题 trgm 检索、评论内容/路径/作者/日期区间 contains、资产
- * purpose 目录前缀/媒体类型/状态、音乐标题/艺术家/专辑、用户角色/用户名/
- * 邮箱、活动内容 contains、标签 unused、分类/标签 articleCount）造出
- * 大规模且差异化的数据，用于验证后台管理分页与检索的真实效果。
- *
- * 用法：
- *   - `pnpm prisma:reset`  → 一键清空 + 重建迁移 + 自动灌入本种子
- *   - `pnpm prisma:seed`   → 在既有库上重灌（幂等：先逆序清空全表）
- *   - 单跑脚本：`node --env-file-if-exists=../../.env --import tsx prisma/seed.mts`
- *
- * 唯一管理员：username `nonhana` / email `nonhana@outlook.com` /
- * 密码 `20021209xiang`（bcrypt cost 10）。其余用户为假造测试数据，共用一个
- * 预计算哈希（登录作为一种密码即可，全部非管理员）。
- *
- * 安全：本脚本会先 `deleteMany` 清空全部表，只能在本地/测试库运行。
- * 遇到指向非本地测试库（非 localhost/127.0.0.1）的 `HANA_DATABASE_URL`
- * 会直接退出，防止误连生产库造成灾难。
- */
-/* oxlint-disable no-use-before-define -- 文本池常量集中在文件底部便于维护；函数体内引用在运行时早已初始化。 */
+/* oxlint-disable no-use-before-define */
 import bcrypt from 'bcryptjs';
 import { createHash, randomUUID } from 'node:crypto';
 
-import type { Prisma } from '../src/index.js';
+import type { Prisma } from '../src/index.ts';
 
-import { isLocalDatabaseUrl } from '../scripts/guard-local-db.mts';
-import { createPrismaClient } from '../src/index.js';
+import { createPrismaClient } from '../src/index.ts';
+import { isLocalDatabaseUrl } from './guard-local-db.mts';
 
 const PASSWORD_COST = 10;
 

@@ -2,7 +2,6 @@ import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
 import { createVNode, render } from 'vue'
 import Dialog from '~/components/hana/Dialog.vue'
 
-// 基础 Dialog 配置
 interface BaseDialogOptions {
   title?: string
   width?: string
@@ -14,12 +13,10 @@ interface BaseDialogOptions {
   navigationMode?: OverlayNavigationMode
 }
 
-// 声明式调用 Dialog 的选项
 interface DialogDeclarativeOptions extends BaseDialogOptions {
   modelValue?: boolean
 }
 
-// 编程式调用 Dialog 的选项
 interface DialogProgrammaticOptions extends BaseDialogOptions {
   content?: string
   showOkButton?: boolean

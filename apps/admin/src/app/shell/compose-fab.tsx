@@ -2,11 +2,8 @@ import { cn } from 'cnfast';
 import { Plus } from 'lucide-react';
 
 /**
- * 移动端统一的发布悬浮按钮（FAB，md:hidden）：单一圆形 +。
- *
- * 入口链常驻版本，不带 motion —— 展开菜单（motion 弹层，含 spring 逐层弹出）
- * 由 ConsoleShell 懒加载。这里在悬停 / 聚焦 / pointerdown 时触发 onPrefetch，
- * 让首次展开不用等网络（交接 P2）。微交互（按下缩放、展开旋转）用 CSS 等价实现。
+ * 移动端发布 FAB（md:hidden）：常驻入口链不带 motion，展开菜单由 shell 懒加载；
+ * 悬停/聚焦/pointerdown 触发 onPrefetch，首次展开不等网络。
  */
 export const ComposeFab = ({
   onPrefetch,

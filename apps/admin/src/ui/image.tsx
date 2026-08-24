@@ -2,13 +2,7 @@ import { cn } from 'cnfast';
 import { ImageOff } from 'lucide-react';
 import { useState } from 'react';
 
-/**
- * 资产缩略图。
- *
- * 交付地址可能因为对象过期、网络不通或本地环境没连上对象存储而加载不出来；
- * 那时浏览器默认画的破图图标会让整块布局看起来像坏了。这里换成一个明确的
- * 「读不到这张图」状态 —— 是信息，不是故障。
- */
+/** 资产缩略图：加载失败换成明确的「读不到这张图」状态，而不是浏览器破图图标。 */
 export const AssetImage = ({
   alt,
   className,

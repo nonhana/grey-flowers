@@ -33,11 +33,7 @@ import { paperHighlight } from '@/features/articles/editor/paper-highlight.js';
 import { paperTheme } from '@/features/articles/editor/paper-theme.js';
 import { IconButton } from '@/ui/button.js';
 
-/*
- * 动态正文的 Markdown 是受限子集：schema 拒绝标题 / HTML / 图片 / 表格，
- * 只有加粗、斜体、链接、列表、引用与代码块落得进白名单 —— 工具条只放这些。
- * 与文章编辑器同源的纸面主题，行内图片一律不走（图片在下方图库区，不在正文里）。
- */
+// 动态正文是受限 Markdown 子集（schema 拒标题/HTML/图片/表格），工具条只放白名单内。
 const FORMAT_ACTIONS = [
   {
     icon: Bold,

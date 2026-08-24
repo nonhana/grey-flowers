@@ -17,11 +17,7 @@ export interface MoreSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
-/**
- * 移动端「更多」侧拉面板：溢出主 Tab 之外的导航项。
- * 独立模块由 ConsoleShell 首次打开时懒加载（交接 P2）——
- * BottomSheet 链条（react-modal-sheet/motion）不随入口 shell 打包。
- */
+/** 移动端「更多」侧拉面板：BottomSheet 链路由 ConsoleShell 首次打开时懒加载。 */
 export const MoreSheet = ({ isOpen, onOpenChange }: MoreSheetProps) => (
   <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange} title="更多">
     <div className="grid gap-1 px-4 pt-1 pb-4">

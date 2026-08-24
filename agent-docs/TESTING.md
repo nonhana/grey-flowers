@@ -35,12 +35,12 @@ pnpm test && pnpm typecheck && pnpm lint && pnpm build
 
 ## 测试数据
 
-测试数据库数据由 `packages/db/prisma/seed.mts` 提供（见 [BUILD.md](./BUILD.md) 的
+测试数据库数据由 `packages/db/scripts/seed.mts` 提供（见 [BUILD.md](./BUILD.md) 的
 「测试数据库种子」）。运行 `pnpm prisma:reset` 即可获得覆盖全部表的真实分页/检索
 数据。管理后台唯一管理员：
 
-| Role | Username | Email | Password |
-| --- | --- | --- | --- |
+| Role  | Username  | Email                 | Password        |
+| ----- | --------- | --------------------- | --------------- |
 | Admin | `nonhana` | `nonhana@outlook.com` | `20021209xiang` |
 
 用邮箱 `nonhana@outlook.com` 在管理后台登录界面登入。

@@ -18,10 +18,7 @@ const STAGGER_MAX_STEP = 12;
 const barCapFor = (length: number) =>
   length <= 7 ? 56 : length <= 14 ? 36 : 20;
 
-/**
- * 选一个「整」步长，让纵轴刻度是能直接读出来的数（0/10/20/30 而不是 0/8/16/24）。
- * 计数恒为整数，故步长下限锁 1，不产生 0.5 这种读不出来的格。
- */
+/** 「整」步长刻度（0/10/20 而非 0/8/16），步长下限锁 1。 */
 const scaleOf = (max: number) => {
   if (max <= 0) return { ticks: [0, 1], top: 1 };
 
@@ -64,19 +61,7 @@ const monthDay = (date: string) => {
 
 /**
  * 逐日趋势图（自绘 DOM + CSS，零依赖）。
- *
- * 属于**字盘**：柱子落在 `well` 凹面里，被发丝刻度线打成格，纵轴与读数走 mono
- * tabular——它是抽屉里的一页账，不是浮在面板上的一组彩色形状。
- *
- * 三处关键取舍：
- * · 不用 SVG 拉伸。原实现 `preserveAspectRatio="none"` 会把圆角压扁、把 1px
- *   基线放大成灰板砖。这里用 DOM 盒子按百分比定高，1px 永远是 1px。
- * · 零值日画基线短横而不是留空。0 是一个值，缺口才是「没数据」。
- * · 整列都是命中区，所以 0 值那天也指得到。
- *
- * 动效：柱子 `scaleY` 自基线长起，自左向右错峰——排字工把铅字一颗颗落进手托。
- * 单根 200ms 仍在 Report Don't Perform 的带内，错峰窗口硬封顶 160ms。
- * 换度量/天数时由父级换 key 重演；`prefers-reduced-motion` 下时长与延迟一起归零。
+ * 不用 SVG 拉伸（1px 基线和圆角会变形）；值≠0 才立柱、0 只画基线短横。
  */
 export const TrendPlot = ({
   ariaLabel,
@@ -97,8 +82,7 @@ export const TrendPlot = ({
   const last = points.length - 1;
   const activeIndex = hoverIndex ?? cursorIndex ?? last;
   const active = points[activeIndex];
-  /** 读数默认停在最新一天，但格子高亮只在真的有人在指的时候出现——
-      静息态没人在指，却常驻一块蓝格子，那是噪声不是状态。 */
+  /** 读数默认停最新一天，但高亮只在真的有人在指时出现。 */
   const isPointing = hoverIndex !== null || cursorIndex !== null;
 
   // DTO 保证 points.length === days，这里只是不让一个空数组把整页打白。
@@ -221,8 +205,7 @@ export const TrendPlot = ({
                         absolute bottom-0 w-[58%] origin-bottom animate-bar-rise
                         transition-colors duration-150
                       `,
-                      // 柱子方顶、不圆角：圆的是抽屉（well 的 rounded-control），
-                      // 铅字本身是方的。也省下一个体系外的半径值。
+                      // 柱方顶不圆角：圆的是带半径的 well 凹面，铅字本身是方的。
                       isEmpty
                         ? 'h-0.5 bg-edge'
                         : isActive
@@ -272,14 +255,8 @@ export const TrendPlot = ({
 };
 
 /**
- * 排行条。回答「哪个最多」——排序本身就是答案，第一行即结论。
- *
- * 条宽是 count / max，不是占比：一篇文章可挂多个标签，
- * sum(articleCount) > 文章总数，任何以它为分母的百分数都是假的。
- * 全部单一 accent 色——区分靠位置与名称，不靠色相，因此不需要第二个色系。
- *
- * 三列走 subgrid：名称列由整表最长的名字定宽，各行严丝合缝对齐，
- * 而不是每行各算各的。字盘要的就是这种按格对齐。
+ * 排行条：条宽是 count / max 而非占比（标签总和 > 文章数，占比无分母意义）。
+ * 三列走 subgrid，名称列由整表最长的名字定宽。
  */
 export const RankBars = ({
   ariaLabel,
@@ -306,9 +283,7 @@ export const RankBars = ({
           <span className="truncate text-base text-ink" title={item.name}>
             {item.name}
           </span>
-          {/* 槽是 well 凹面，条是方头的——和趋势图的铅字同一套几何。
-              厚度与 ShareBar 对齐（同一种「横向量值条」，不该有两个厚度）：
-              6px 在整幅宽的卡里会细成一条下划线，读不出「条」。 */}
+          {/* 槽是 well 凹面，条是方头的——同趋势图的铅字几何；厚度与 ShareBar 对齐。 */}
           <span aria-hidden className="h-2.5 w-full bg-well">
             <span
               className="block h-full bg-accent"
@@ -330,12 +305,7 @@ export const RankBars = ({
 const CAL_LOCALE = 'zh-CN';
 const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日'] as const;
 
-/**
- * 四档明度。取值必须在 `well` 底上分得开：
- * 白天 well 0.945 → 0.90 / 0.70 / 0.46，夜里 well 0.18 → 0.36 / 0.48 / 0.63。
- * 这也是为什么第一档用 accent-wash-hover 而不是 accent-wash——
- * 后者白天是 0.93，压在 0.945 的 well 上等于没画。
- */
+/** 四档明度，取值必须在 well 底上分得开（第一档用 wash-hover 而非 wash）。 */
 const LEVEL_FILL = [
   'bg-well',
   'bg-accent-wash-hover',
@@ -343,10 +313,7 @@ const LEVEL_FILL = [
   'bg-accent',
 ] as const;
 
-/**
- * 绝对阈值而不是四分位数。个人站的日发布量极度右偏（大量 0–1，偶有 5+），
- * 四分位在这种分布上会把 1 和 4 挤进同一档，等于没分。
- */
+/** 绝对阈值而非四分位：日发布量右偏，四分位会把 1 和 4 挤进同一档。 */
 const levelOf = (count: number) =>
   count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : 3;
 
@@ -354,18 +321,8 @@ const levelOf = (count: number) =>
 const MIN_LABEL_GAP = 4;
 
 /**
- * 发布节奏日历热力图。
- *
- * 和趋势柱图性质不同：那张是一维时间序列（近 14/30 天的量），
- * 这张是二维时间密度（近一年的分布）——「今年断更过没有」只有这张答得了。
- * 一格一天、按列成周、按格对齐，这是「排字房」北极星最字面的一次实现。
- *
- * 几个刻意的取舍：
- * · 不画星期标签。读数行已经报出「8/8 周五」，而 7 行从周一起是通用约定；
- *   为了两三个字去处理「标签列与网格行必须同高」的对齐，是给 chrome 让路。
- * · 列宽 `minmax(9px, 1fr)`：桌面上撑满面板不出滚动条，窄屏自动退到 9px 并横滚。
- * · 挂载后滚到最右——一年里最该先看的是最近这几周。
- * · 不做入场编排。DESIGN.md 里那一次错峰是趋势柱专属的，第二次就成了滥用。
+ * 发布节奏日历热力图（近一年逐日分布）。
+ * 不画星期标签（读数行已报周几）、列宽 minmax(9px, 1fr)、挂载后滚到最右。
  */
 export const CalendarHeatmap = ({
   ariaLabel,
@@ -395,8 +352,7 @@ export const CalendarHeatmap = ({
   const padStart = getDayOfWeek(first, CAL_LOCALE);
   const columns = Math.ceil((padStart + days.length) / 7);
 
-  // 月份标签落在该月首日所在列的顶格上方。用列顶日期判月，最多差 6 天，
-  // 视觉上无感，换来的是不必为每列再解析一次日期。
+  // 月份标签落在该月首日所在列的顶格上方；用列顶日期判月，省去逐列解析日期。
   const labels = new Map<number, string>();
   let previousMonth = -1;
   let lastLabelColumn = -MIN_LABEL_GAP;
@@ -534,11 +490,8 @@ const SHARE_FILL: Record<ShareSegment['tone'], string> = {
 };
 
 /**
- * 占比条。三段互斥、和为整体——这是这套色板里唯一能成立的 part-to-whole 图：
- * 三档明度在 10px 高的横条上完全可辨，而六阶蓝的饼图不行。
- *
- * 图例与色块同色且各自带数值，颜色只是补强（The Colour Is Never Alone）。
- * 零值段不渲染：0 宽的段会退化成一条分不清是段还是缝的细丝。
+ * 占比条（三段互斥、和为整体）：「图例同色 + 数值」补强（Colour Is Never Alone）；
+ * 零值段不渲染，避免退化成细丝。
  */
 export const ShareBar = ({
   ariaLabel,

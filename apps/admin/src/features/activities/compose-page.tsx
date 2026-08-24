@@ -61,7 +61,6 @@ export const ActivityComposePage = () => {
     setLoadError('');
   }
 
-  // 编辑模式：拉取并预填。
   useEffect(() => {
     if (editingId === null) return;
     let cancelled = false;

@@ -15,7 +15,7 @@ Every endpoint returns one of two shapes with `requestId`:
 ```
 
 - Rendered by `createSuccess` / `createFailure` and routed through `handleError` in `apps/api/src/http/errors.ts`. Do not invent a per-module response shape.
-- `fields` appears only for validation failures (400); `code` is one of `ApiErrorCode` from `packages/contracts` (`@grey-flowers/contracts`, `auth.ts`).
+- `fields` appears only for validation failures (400); `code` is one of `ApiErrorCode` from `packages/contracts` (`@grey-flowers/contracts`, `common.ts`).
 
 ## Error codes → HTTP status
 

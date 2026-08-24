@@ -9,14 +9,7 @@ import { ShareBar } from '@/ui/charts.js';
 import { Skeleton } from '@/ui/feedback.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
 
-/**
- * 存储构成。读数抽屉已经给了资产的**数量**（图片 1191 · 音频 280），
- * 这里给的是**体积** —— 「该不该清」只有体积答得了：
- * 11 个待清理资产占 40% 空间是信号，占 0.1% 就不是。
- *
- * 三段互斥且和为总量，所以能画成 part-to-whole。三档明度在 10px 高的横条上
- * 完全分得开，这是这套单一色板里唯一站得住的占比图。
- */
+/** 存储构成看体积（「该不该清」只有体积答得了）；三段互斥和为总量，可画 part-to-whole。 */
 export const StorageCard = ({
   className,
   storage,
@@ -60,10 +53,7 @@ export const StorageCard = ({
   );
 };
 
-/**
- * 与真实存储卡同构的骨架：卡头 + 量值条 h-2.5 + 三行图例。
- * 图例行高与真实一致（text-base lh 1.55 主导），落地时卡高不跳。
- */
+/** 存储卡骨架：卡头 + 量值条 + 三行图例，图例行高与真实一致，落地不跳。 */
 export const StorageCardSkeleton = ({ className }: { className?: string }) => (
   <Panel
     aria-hidden

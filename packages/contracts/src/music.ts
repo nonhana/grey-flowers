@@ -1,32 +1,33 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema } from './auth.js';
+import {
+  apiSuccessSchema,
+  nonNegativeIntSchema,
+  positiveIntSchema,
+} from './common.js';
 
-const musicTotal = z.number().int().min(0);
+const musicTotal = nonNegativeIntSchema;
 const musicPage = z.number().int().min(1);
 const musicPageSize = z.number().int().min(1).max(100);
 
-// ============ 公开读 DTO —— 与主站 `Track`（activity.d.ts）一字不差 ============
-
+// 公开读 DTO 与主站 `Track`（activity.d.ts）一字不差
 export const musicTrackSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     title: z.string().min(1),
     artist: z.string(),
     album: z.string(),
     src: z.url(),
-    seconds: z.number().int().min(0),
+    seconds: nonNegativeIntSchema,
     cover: z.url(),
   })
   .strict();
 
 export type MusicTrack = z.infer<typeof musicTrackSchema>;
 
-// ============ 资产摘要 —— 供 Admin 跳资产详情 ============
-
 export const musicAssetSummarySchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     storageKey: z.string().min(1),
     deliveryUrl: z.url(),
   })
@@ -34,14 +35,12 @@ export const musicAssetSummarySchema = z
 
 export type MusicAssetSummary = z.infer<typeof musicAssetSummarySchema>;
 
-// ============ 管理 DTO ============
-
 export const musicAdminSchema = musicTrackSchema
   .extend({
-    sourceAssetId: z.number().int().positive().nullable(),
-    coverAssetId: z.number().int().positive().nullable(),
+    sourceAssetId: positiveIntSchema.nullable(),
+    coverAssetId: positiveIntSchema.nullable(),
     /** 被多少条动态引用（多对多 ActivityMusic）。 */
-    activityCount: z.number().int().min(0),
+    activityCount: nonNegativeIntSchema,
     createdAt: z.iso.datetime(),
     /** activityCount > 0 的派生。 */
     inActivity: z.boolean(),
@@ -84,19 +83,17 @@ export const musicAdminResponseSchema = apiSuccessSchema(musicAdminSchema);
 export type MusicAdminData = z.infer<typeof musicAdminSchema>;
 export type MusicAdminResponse = z.infer<typeof musicAdminResponseSchema>;
 
-// ============ 创建/更新 —— seconds 由前端解析后上报（解析唯一一次，发生在客户端） ============
-
+// 创建/更新：seconds 由前端解析后上报（解析唯一一次，发生在客户端）
 export const musicCreateInputSchema = z
   .object({
     title: z.string().trim().min(1).max(200),
     artist: z.string().trim().max(200).optional(),
     album: z.string().trim().max(200).optional(),
     /** 时长（秒），前端 music-metadata 解析结果；0 表示未知。 */
-    seconds: z.number().int().min(0).max(86_400),
+    seconds: nonNegativeIntSchema.max(86_400),
     /** 受管音源（MUSIC_SOURCE），必填。 */
-    sourceAssetId: z.number().int().positive(),
-    /** 受管封面（MUSIC_COVER）。 */
-    coverAssetId: z.number().int().positive().optional(),
+    sourceAssetId: positiveIntSchema,
+    coverAssetId: positiveIntSchema.optional(),
     /** 外部封面 URL；与 coverAssetId 互斥归一。 */
     cover: z.url().optional(),
   })
@@ -107,8 +104,6 @@ export type MusicCreateInput = z.infer<typeof musicCreateInputSchema>;
 export const musicUpdateInputSchema = musicCreateInputSchema.partial();
 
 export type MusicUpdateInput = z.infer<typeof musicUpdateInputSchema>;
-
-// ============ 公开读 —— 同 Track 形状 ============
 
 export const musicPublicListDataSchema = z
   .object({

@@ -5,11 +5,8 @@ import { Button as AriaButton } from 'react-aria-components';
 import { IconButton } from './button.js';
 
 /**
- * 页码序列：首尾两页 + 当前页附近的滑动窗口，跳过的区间用省略号占位。
- *
- *   总页数 20、当前 6、siblings 1 → [1, …, 5, 6, 7, …, 20]
- *
- * 页数本身装得下窗口时就全部展开——一个 5 页的列表不值得戴省略号。
+ * 页码序列：首尾两页 + 当前页附近滑动窗口，跳过的区间用省略号占位；
+ * 总页数装得下窗口时全部展开（页数少不值得戴省略号）。
  */
 const buildPageItems = (
   totalPages: number,
@@ -62,11 +59,7 @@ export interface PaginatorProps {
   className?: string;
 }
 
-/**
- * 字盘层的分页器。总页数 ≤ 1 时整组不渲染——单页不值得占一条导航。
- * 结构：左侧计数（可选）＋ 上一页 · 页码（可折叠为省略号）· 下一页。
- * 计数和上一页/下一页都在 mono 下，货架数字对齐直。
- */
+/** 分页器。总页数 ≤ 1 不渲染；结构 = 可选计数 + 上一页 · 页码 · 下一页。 */
 export const Paginator = ({
   page,
   totalPages,

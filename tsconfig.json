@@ -4,7 +4,7 @@
     "moduleResolution": "NodeNext",
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2024",
+    "target": "esnext",
     "types": ["node"],
     "noUnusedLocals": true
   },

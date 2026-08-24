@@ -10,7 +10,6 @@ export const useHeaderStatusStore = defineStore('headerStatus', () => {
     hidden.value = status
   }
 
-  // effects
   let lastScrollY = 0
   watch(() => uiInfoStore.scrollTop, (newTop) => {
     if (route.name === ARTICLE_DETAIL_PAGE) {

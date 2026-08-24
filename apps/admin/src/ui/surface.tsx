@@ -12,12 +12,8 @@ const WIDTH: Record<PageWidth, string> = {
 };
 
 /**
- * 页面容器。默认在内容区内滚动；列表页将滚动所有权移交给子级 items 区域。
- * 底部 padding 按滚动模式区分：
- * - body（内容区自滚）：预留悬浮层高度（FAB / 音乐按钮列），否则滚动到底时
- *   最后一行会被永久压在悬浮层下面。
- * - child（列表页）：滚动发生在子级 items 区，底部只剩静态元素（分页器），
- *   只需留安全区与呼吸间距；悬浮按钮列由底部组件自行让位。
+ * 页面容器：默认内容区自滚；列表页把滚动权移交子级 items 区。
+ * 底部 padding 按滚动模式区别——自滚须预留悬浮层高度，否则末行被压住。
  */
 export const PageBody = ({
   children,
@@ -104,9 +100,7 @@ export const Panel = ({
   </section>
 );
 
-/**
- * 字盘：靠发丝分隔线切格，而不是靠一堆同尺寸卡片堆叠。
- */
+/** 字盘：靠发丝分隔线切格，而不是堆同尺寸卡片。 */
 export const RowStack = ({
   children,
   className,

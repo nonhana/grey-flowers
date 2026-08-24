@@ -1,8 +1,11 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema } from './auth.js';
-
-// ============ 层级与作者投影 ============
+import {
+  apiSuccessSchema,
+  nonNegativeIntSchema,
+  positiveIntSchema,
+  userRoleSchema,
+} from './common.js';
 
 export const commentLevelSchema = z.enum(['PARENT', 'CHILD']);
 
@@ -11,7 +14,7 @@ export type CommentLevel = z.infer<typeof commentLevelSchema>;
 /** 公开：与主站公开 select 逐字段一致（无 email）。 */
 export const commentAuthorPublicSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     username: z.string(),
     site: z.string().nullable(),
     avatar: z.string(),
@@ -20,15 +23,14 @@ export const commentAuthorPublicSchema = z
 
 export type CommentAuthorPublic = z.infer<typeof commentAuthorPublicSchema>;
 
-/** 管理：运营需联系作者。 */
 export const commentAuthorAdminSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     username: z.string(),
     email: z.string(),
     avatar: z.string(),
     site: z.string().nullable(),
-    role: z.enum(['USER', 'ADMIN']),
+    role: userRoleSchema,
   })
   .strict();
 
@@ -36,9 +38,9 @@ export type CommentAuthorAdmin = z.infer<typeof commentAuthorAdminSchema>;
 
 export const commentParentRefSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     content: z.string(),
-    authorId: z.number().int().positive(),
+    authorId: positiveIntSchema,
   })
   .strict();
 
@@ -46,7 +48,7 @@ export type CommentParentRef = z.infer<typeof commentParentRefSchema>;
 
 export const commentReplyToUserSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     username: z.string(),
   })
   .strict();
@@ -55,21 +57,18 @@ export type CommentReplyToUser = z.infer<typeof commentReplyToUserSchema>;
 
 export const commentReplyToCommentSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     content: z.string(),
   })
   .strict();
 
 export type CommentReplyToComment = z.infer<typeof commentReplyToCommentSchema>;
 
-// ============ 单条评论 DTO（公开） ============
-
 export const commentPublicSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     path: z.string(),
     content: z.string(),
-    /** mdc AST Json 透传（主站渲染） */
     contentMarkdown: z.any().nullable(),
     level: commentLevelSchema,
     author: commentAuthorPublicSchema,
@@ -92,11 +91,9 @@ export const commentPublicTreeSchema = commentPublicSchema
 
 export type CommentPublicTree = z.infer<typeof commentPublicTreeSchema>;
 
-// ============ 单条评论 DTO（管理，无 contentMarkdown） ============
-
 export const commentAdminSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     path: z.string(),
     content: z.string(),
     level: commentLevelSchema,
@@ -115,13 +112,11 @@ export const commentAdminTreeSchema = commentAdminSchema
   .extend({
     children: z.array(commentAdminSchema),
     /** 供删除确认披露 */
-    childrenCount: z.number().int().min(0),
+    childrenCount: nonNegativeIntSchema,
   })
   .strict();
 
 export type CommentAdminTree = z.infer<typeof commentAdminTreeSchema>;
-
-// ============ 输入 ============
 
 export const commentCreateInputSchema = z
   .object({
@@ -131,9 +126,9 @@ export const commentCreateInputSchema = z
       .trim()
       .min(1, '评论内容不能为空')
       .max(2048, '评论内容不能超过 2048 字'),
-    parentId: z.number().int().positive().optional(),
-    replyToUserId: z.number().int().positive().optional(),
-    replyToCommentId: z.number().int().positive().optional(),
+    parentId: positiveIntSchema.optional(),
+    replyToUserId: positiveIntSchema.optional(),
+    replyToCommentId: positiveIntSchema.optional(),
   })
   .strict();
 
@@ -154,7 +149,7 @@ export type CommentReplyInput = z.infer<typeof commentReplyInputSchema>;
 export const commentsBatchDeleteInputSchema = z
   .object({
     ids: z
-      .array(z.number().int().positive())
+      .array(positiveIntSchema)
       .min(1, '请提供要删除的评论 ID')
       .max(100, '单次最多删除 100 条评论'),
   })
@@ -164,26 +159,19 @@ export type CommentsBatchDeleteInput = z.infer<
   typeof commentsBatchDeleteInputSchema
 >;
 
-// ============ 删除结果（含级联披露） ============
-
 export const commentDeleteResultSchema = z
   .object({
-    /** 实际删除总数（含级联子树） */
-    deleted: z.number().int().min(0),
-    /** 其中级联删除的子评论数 */
-    cascade: z.number().int().min(0),
+    deleted: nonNegativeIntSchema,
+    cascade: nonNegativeIntSchema,
   })
   .strict();
 
 export type CommentDeleteResult = z.infer<typeof commentDeleteResultSchema>;
 
-// ============ 列表查询（管理） ============
-
 export const commentListQuerySchema = z
   .object({
     /** content contains insensitive */
     search: z.string().max(50).optional(),
-    /** path contains insensitive（保留旧语义） */
     path: z.string().max(300).optional(),
     authorId: z.coerce.number().int().positive().optional(),
     /** publishedAt >= startDate 当日 00:00（本地时区由 API 校准） */
@@ -200,7 +188,7 @@ export type CommentListQuery = z.infer<typeof commentListQuerySchema>;
 export const commentListDataSchema = z
   .object({
     items: z.array(commentAdminTreeSchema),
-    total: z.number().int().min(0),
+    total: nonNegativeIntSchema,
     page: z.number().int().min(1),
     pageSize: z.number().int().min(1).max(100),
   })
@@ -224,12 +212,10 @@ export const commentDeleteResponseSchema = apiSuccessSchema(
 
 export type CommentDeleteResponse = z.infer<typeof commentDeleteResponseSchema>;
 
-// ============ 公开读 ============
-
 export const commentCountSchema = z
   .object({
-    totalCount: z.number().int().min(0),
-    parentCount: z.number().int().min(0),
+    totalCount: nonNegativeIntSchema,
+    parentCount: nonNegativeIntSchema,
   })
   .strict();
 

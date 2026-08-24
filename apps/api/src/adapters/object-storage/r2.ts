@@ -13,10 +13,6 @@ export interface HeadObjectResult {
   size: number;
 }
 
-/**
- * 对象存储接口：上传走浏览器直传（presign → PUT → confirm），
- * 服务端只保留签名、校验与清理能力。
- */
 export interface ObjectStorage {
   deleteObject(key: string): Promise<void>;
   headObject(key: string): Promise<HeadObjectResult>;
@@ -42,7 +38,6 @@ export class R2ObjectStorage implements ObjectStorage {
     });
   }
 
-  /** 生成一次性 PUT URL（短时效），密钥不出服务端。 */
   async presignUpload(input: {
     contentType: string;
     key: string;

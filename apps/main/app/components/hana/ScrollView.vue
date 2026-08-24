@@ -25,7 +25,7 @@ const containerHeight = ref(0)
 const containerWidth = ref(0)
 const contentHeight = ref(0)
 const contentWidth = ref(0)
-const scrollOffset = ref(0) // 滚动偏移量，内部维护
+const scrollOffset = ref(0)
 
 const isRight = computed(() => scrollBarPos.value === 'right')
 const isBottom = computed(() => scrollBarPos.value === 'bottom')
@@ -198,7 +198,6 @@ defineExpose({
       </div>
     </div>
 
-    <!-- 滚动条 -->
     <div
       class="absolute rounded bg-hana-blue-100 hidden md:block dark:bg-hana-black-800"
       :class="[

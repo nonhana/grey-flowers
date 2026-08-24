@@ -8,7 +8,6 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 
-// 文章总数
 const { data: fetchedCount } = await useFetch('/api/articles/count')
 const count = computed(() => fetchedCount.value ? fetchedCount.value.payload ?? 0 : 0)
 
@@ -39,13 +38,11 @@ function syncQueryToState() {
   curYear.value = yearFromQuery || defaultYear
   curMonth.value = monthFromQuery || defaultMonth
 
-  // 更新到最新的查询参数
   if (!yearFromQuery || !monthFromQuery) {
     updateQuery({ year: curYear.value!, month: curMonth.value! })
   }
 }
 
-// 更新查询参数
 function updateQuery(params: { year?: string, month?: string }) {
   const newQuery = { ...route.query, ...params }
   if (JSON.stringify(route.query) !== JSON.stringify(newQuery)) {

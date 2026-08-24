@@ -1,19 +1,21 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema } from './auth.js';
-
-// ============ 公开读 DTO（主站，只含已发布） ============
+import {
+  apiSuccessSchema,
+  nonNegativeIntSchema,
+  positiveIntSchema,
+} from './common.js';
 
 export const articleCardSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     to: z.string().min(1),
     title: z.string().min(1),
     description: z.string().nullable(),
     cover: z.string(),
     publishedAt: z.iso.datetime(),
     editedAt: z.iso.datetime(),
-    wordCount: z.number().int().min(0),
+    wordCount: nonNegativeIntSchema,
     tags: z.array(z.string().min(1)),
     category: z.string().nullable(),
   })
@@ -78,7 +80,7 @@ export const articleListQuerySchema = z
     category: z.string().min(1).max(50).optional(),
     month: z
       .string()
-      .regex(/^\d{4}-\d{2}$/, { message: 'Month must be YYYY-MM' })
+      .regex(/^\d{4}-\d{2}$/, { message: '月份须为 YYYY-MM 格式' })
       .optional(),
     page: pageQuery,
     pageSize: publicPageSizeQuery,
@@ -93,7 +95,7 @@ export const articleFilterQuerySchema = z
     category: z.string().min(1).max(50).optional(),
     month: z
       .string()
-      .regex(/^\d{4}-\d{2}$/, { message: 'Month must be YYYY-MM' })
+      .regex(/^\d{4}-\d{2}$/, { message: '月份须为 YYYY-MM 格式' })
       .optional(),
   })
   .strict();
@@ -134,50 +136,47 @@ export const articlePreviewQuerySchema = z
 
 export type ArticlePreviewQuery = z.infer<typeof articlePreviewQuerySchema>;
 
-// ============ 管理 DTO（ADMIN，含草稿） ============
-
 export const articleAdminSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     to: z.string().min(1),
     title: z.string().min(1),
     description: z.string().nullable(),
     cover: z.string(),
-    coverAssetId: z.number().int().positive().nullable(),
+    coverAssetId: positiveIntSchema.nullable(),
     alt: z.string(),
-    categoryId: z.number().int().positive().nullable(),
+    categoryId: positiveIntSchema.nullable(),
     category: z.string().nullable(),
     tags: z.array(z.string().min(1)),
     published: z.boolean(),
     publishedAt: z.iso.datetime(),
     editedAt: z.iso.datetime(),
-    wordCount: z.number().int().min(0),
-    revision: z.number().int().min(0),
+    wordCount: nonNegativeIntSchema,
+    revision: nonNegativeIntSchema,
     content: z.string(),
-    inlineAssetIds: z.array(z.number().int().positive()),
+    inlineAssetIds: z.array(positiveIntSchema),
   })
   .strict();
 
 export type ArticleAdmin = z.infer<typeof articleAdminSchema>;
 
-/** 管理列表项：无 content / inlineAssetIds */
 export const articleListAdminSchema = z
   .object({
-    id: z.number().int().positive(),
+    id: positiveIntSchema,
     to: z.string().min(1),
     title: z.string().min(1),
     description: z.string().nullable(),
     cover: z.string(),
-    coverAssetId: z.number().int().positive().nullable(),
+    coverAssetId: positiveIntSchema.nullable(),
     alt: z.string(),
-    categoryId: z.number().int().positive().nullable(),
+    categoryId: positiveIntSchema.nullable(),
     category: z.string().nullable(),
     tags: z.array(z.string().min(1)),
     published: z.boolean(),
     publishedAt: z.iso.datetime(),
     editedAt: z.iso.datetime(),
-    wordCount: z.number().int().min(0),
-    revision: z.number().int().min(0),
+    wordCount: nonNegativeIntSchema,
+    revision: nonNegativeIntSchema,
   })
   .strict();
 
@@ -189,20 +188,20 @@ const slugSchema = z
   .regex(
     /^\/*[a-z0-9]+(?:-[a-z0-9]+)*$|^\/articles\/[a-z0-9]+(?:-[a-z0-9]+)*$/,
     {
-      message: 'Slug must be lowercase letters, digits and hyphens',
+      message: '固定链接只能包含小写字母、数字和连字符',
     },
   )
   .max(200);
 
 export const articleCreateInputSchema = z
   .object({
-    title: z.string().trim().min(1, { message: 'Title must not be empty' }),
+    title: z.string().trim().min(1, { message: '标题不能为空' }),
     slug: slugSchema.optional(),
     description: z.string().max(500).optional(),
     cover: z.string().max(1000).optional(),
-    coverAssetId: z.number().int().positive().nullable().optional(),
+    coverAssetId: positiveIntSchema.nullable().optional(),
     alt: z.string().max(200).optional(),
-    categoryId: z.number().int().positive().nullable().optional(),
+    categoryId: positiveIntSchema.nullable().optional(),
     tags: z.array(z.string().trim().min(1).max(50)).max(20).optional(),
     content: z.string().optional(),
     published: z.boolean().optional(),
@@ -213,13 +212,13 @@ export type ArticleCreateInput = z.infer<typeof articleCreateInputSchema>;
 
 export const articleSaveInputSchema = z
   .object({
-    expectedRevision: z.number().int().min(0),
-    title: z.string().trim().min(1, { message: 'Title must not be empty' }),
+    expectedRevision: nonNegativeIntSchema,
+    title: z.string().trim().min(1, { message: '标题不能为空' }),
     description: z.string().max(500).nullable().optional(),
     cover: z.string().max(1000).optional(),
-    coverAssetId: z.number().int().positive().nullable().optional(),
+    coverAssetId: positiveIntSchema.nullable().optional(),
     alt: z.string().max(200).optional(),
-    categoryId: z.number().int().positive().nullable().optional(),
+    categoryId: positiveIntSchema.nullable().optional(),
     tags: z.array(z.string().trim().min(1).max(50)).max(20).optional(),
     content: z.string().optional(),
     publishedAt: z.iso.datetime().optional(),
@@ -246,7 +245,7 @@ export type ArticleListAdminQuery = z.infer<typeof articleListAdminQuerySchema>;
 export const articleListAdminDataSchema = z
   .object({
     items: z.array(articleListAdminSchema),
-    total: z.number().int().min(0),
+    total: nonNegativeIntSchema,
     page: z.number().int().min(1),
     pageSize: z.number().int().min(1).max(50),
   })
@@ -264,7 +263,7 @@ export type ArticleListAdminResponse = z.infer<
 export const articleListDataSchema = z
   .object({
     items: z.array(articleCardSchema),
-    total: z.number().int().min(0),
+    total: nonNegativeIntSchema,
     page: z.number().int().min(1),
     pageSize: z.number().int().min(1).max(50),
   })
@@ -283,7 +282,7 @@ export const articleDetailResponseSchema =
 export type ArticleDetailResponse = z.infer<typeof articleDetailResponseSchema>;
 
 export const articleCountDataSchema = z
-  .object({ count: z.number().int().min(0) })
+  .object({ count: nonNegativeIntSchema })
   .strict();
 
 export const articleCountResponseSchema = apiSuccessSchema(
@@ -327,12 +326,12 @@ export type ArticleNoBodyInput = z.infer<typeof articleNoBodyInputSchema>;
 
 export const articleSnapshotSchema = z
   .object({
-    id: z.number().int().positive(),
-    revision: z.number().int().min(0),
+    id: positiveIntSchema,
+    revision: nonNegativeIntSchema,
     title: z.string().min(1),
     description: z.string().nullable(),
     content: z.string(),
-    wordCount: z.number().int().min(0),
+    wordCount: nonNegativeIntSchema,
     createdAt: z.iso.datetime(),
   })
   .strict();
@@ -359,7 +358,7 @@ export type ArticleSnapshotListResponse = z.infer<
 export const previewTokenDataSchema = z
   .object({
     token: z.string().min(1),
-    expiresIn: z.number().int().positive(),
+    expiresIn: positiveIntSchema,
   })
   .strict();
 

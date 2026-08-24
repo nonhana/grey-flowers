@@ -3,13 +3,13 @@ import type { Track } from '#shared/types/activity'
 import { Pause, Play, SkipBack, SkipForward, Square } from '@lucide/vue'
 
 const props = defineProps<{
-  music: Track[] // 一个音乐卡片包含多个歌曲
+  music: Track[]
 }>()
 
 const { $audioPlayer } = useNuxtApp()
 
-const curMusicIndex = ref(0) // 当前卡片选中的歌曲索引
-const curMusic = computed(() => props.music[curMusicIndex.value]!) // 当前卡片选中的歌曲
+const curMusicIndex = ref(0)
+const curMusic = computed(() => props.music[curMusicIndex.value]!)
 
 const globalCurTrack = shallowRef<Track | null>(null)
 const globalCurTime = ref(0)
@@ -21,7 +21,6 @@ onUnmounted($audioPlayer.subscribe((state) => {
   globalIsPlaying.value = state.isPlaying
 }))
 
-// 当前卡片选中的歌曲是否正在播放
 const isCurTrackActive = computed(() => globalCurTrack.value?.id === curMusic.value.id)
 
 const isPlaying = computed(() => isCurTrackActive.value && globalIsPlaying.value)
@@ -39,21 +38,19 @@ watch(curMusic, (newTrack, oldTrack) => {
   }
 })
 
-const inputtingProgress = ref(0) // 用户正在拖动进度条滑块时的进度
-const isSeeking = ref(false) // 是否正在拖拽进度条滑块
+const inputtingProgress = ref(0)
+const isSeeking = ref(false)
 
 const currentProgress = computed(() =>
   isSeeking.value ? inputtingProgress.value : (currentTime.value / curMusic.value.seconds),
 )
 const progressPercent = computed(() => Math.round((currentProgress.value || 0) * 100))
 
-// 拖拽进度条，触发 input 事件
 function handleInput(e: Event) {
   const target = e.target as HTMLInputElement
   inputtingProgress.value = target.valueAsNumber
 }
 
-// 松开进度条滑块，触发 change 事件（submit）
 function handleChange(e: Event) {
   const target = e.target as HTMLInputElement
   inputtingProgress.value = target.valueAsNumber
@@ -85,7 +82,6 @@ function stepMusic(type: 'prev' | 'next') {
     curMusicIndex.value < props.music.length - 1 && curMusicIndex.value++
 }
 
-// 格式化秒数为 mm:ss 格式
 function formatSeconds(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = Math.floor(totalSeconds % 60)
