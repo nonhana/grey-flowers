@@ -2,18 +2,7 @@
 import type { HanaImgViewerProps } from 'hana-img-viewer'
 import { HanaImgViewer } from 'hana-img-viewer'
 
-type ProseImgProps = Pick<
-  HanaImgViewerProps,
-  | 'src'
-  | 'alt'
-  | 'previewSrc'
-  | 'containerClass'
-  | 'containerStyle'
-  | 'thumbnailClass'
-  | 'thumbnailStyle'
->
-
-const props = defineProps<ProseImgProps>()
+const props = defineProps<Pick<HanaImgViewerProps, 'src' | 'alt' | 'previewSrc'>>()
 const img = useImage()
 
 function withLeadingSlash(path: string): string {
@@ -80,10 +69,9 @@ const viewerPreviewSrc = computed(() => {
 
 <template>
   <HanaImgViewer
-    v-bind="{
-      ...props,
-      src: thumbnailSrc,
-      previewSrc: viewerPreviewSrc,
-    }"
+    as="span"
+    :src="thumbnailSrc"
+    :preview-src="viewerPreviewSrc"
+    :alt="props.alt"
   />
 </template>

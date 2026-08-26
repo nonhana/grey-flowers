@@ -35,7 +35,7 @@
     "typescript-language-server": "catalog:"
   },
   "engines": {
-    "node": ">=24.18.0 <25.0.0"
+    "node": ">=24.19.0"
   },
-  "packageManager": "pnpm@11.21.0"
+  "packageManager": "pnpm@11.23.0"
 }

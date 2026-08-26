@@ -48,7 +48,7 @@ PC 游戏主要有 **APEX** 和 **MHWI**，每天不开几把排位打几只金�
 
 我最喜欢的画师是 [ちふり](https://www.pixiv.net/users/12818930)，最喜欢的作曲家是 **Ólafur Arnalds**，最喜欢的角色是 **明日方舟的拉普兰德** 。
 
-::proseImg{src="https://static-r2.caelum.moe/prev_avatar.webp" alt="用了三年的拉狗狗头像" thumbnail-class="mx-auto" thumbnail-style="width: 200px;"}
+::proseImg{src="https://static-r2.caelum.moe/prev_avatar.webp" alt="用了三年的拉狗狗头像" class="mx-auto" style="width: 200px;"}
 ::
 
 ### 做过什么？
