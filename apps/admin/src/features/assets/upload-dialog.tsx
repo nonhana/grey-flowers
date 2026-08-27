@@ -13,7 +13,12 @@ import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { useDerivedReset } from '@/hooks/use-derived-reset.js';
-import { AUDIO_ACCEPT_MAP, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
+import { usePasteFiles } from '@/hooks/use-paste-files.js';
+import {
+  AUDIO_ACCEPT_MAP,
+  fileMatchesAccept,
+  IMAGE_ACCEPT_MAP,
+} from '@/lib/media-accept.js';
 import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { FileDrop } from '@/ui/file-drop.js';
@@ -53,6 +58,28 @@ export const UploadDialog = ({
   const acceptMap =
     purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT_MAP : IMAGE_ACCEPT_MAP;
   const acceptLabel = purpose === 'MUSIC_SOURCE' ? '音频' : '图片';
+
+  usePasteFiles({
+    enabled: open && phase !== 'uploading',
+    onFiles: (files) => {
+      setPhase('idle');
+      if (purpose === null) {
+        setFile(null);
+        setError('先选择上传用途，再粘贴文件。');
+        return;
+      }
+      const accepted = files.filter((item) =>
+        fileMatchesAccept(acceptMap, item),
+      );
+      if (accepted.length === 0) {
+        setFile(null);
+        setError(`剪贴板里没有可上传的${acceptLabel}文件。`);
+        return;
+      }
+      setFile(accepted[0]);
+      setError('');
+    },
+  });
 
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
 
@@ -146,7 +173,7 @@ export const UploadDialog = ({
           >
             <FileUp aria-hidden className="size-4 shrink-0 text-accent-text" />
             <span className="truncate">
-              {file ? file.name : '选择要上传的文件'}
+              {file ? file.name : '选择要上传的文件或直接粘贴'}
             </span>
             <span className="ml-auto shrink-0 font-mono text-2xs">
               {file

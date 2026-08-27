@@ -10,9 +10,10 @@ import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { usePasteFiles } from '@/hooks/use-paste-files.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
-import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
+import { fileMatchesAccept, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
 import { Button, buttonClass, IconButton } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { FieldLabel } from '@/ui/form.js';
@@ -231,6 +232,17 @@ export const ActivityComposePage = () => {
     onDrop: (acceptedFiles) => {
       addUploads(acceptedFiles);
       setDragActive(false);
+    },
+  });
+
+  // 剪贴板只允许粘贴图片
+  usePasteFiles({
+    enabled: !loading,
+    onFiles: (files) => {
+      const imageFiles = files.filter((file) =>
+        fileMatchesAccept(IMAGE_ACCEPT_MAP, file),
+      );
+      if (imageFiles.length > 0) addUploads(imageFiles);
     },
   });
 
