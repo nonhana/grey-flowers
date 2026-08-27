@@ -68,7 +68,6 @@ export const ReadoutDrawerSkeleton = () => (
         <Skeleton className="h-[1.3em] w-16 text-xl" />
         <div className="grid">
           <Skeleton className="h-[1.375em] w-full text-2xs" />
-          <Skeleton className="h-[1.375em] w-3/4 text-2xs" />
         </div>
       </div>
     ))}
