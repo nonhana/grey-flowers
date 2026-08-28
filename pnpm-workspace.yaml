@@ -173,3 +173,5 @@ minimumReleaseAgeExclude:
   - react-aria@3.51.0
   - react-stately@3.49.0
   - hana-img-viewer@5.1.0 || 5.1.1
+patchedDependencies:
+  nuxt-og-image@6.7.8: patches/nuxt-og-image@6.7.8.patch

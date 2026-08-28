@@ -333,6 +333,9 @@ catalogs:
       specifier: ^4.4.3
       version: 4.4.3
 
+patchedDependencies:
+  nuxt-og-image@6.7.8: 233a771853eaf3d0f63ba2c3b7bc935be801f0cbc7f3ebcdc741e67d64cb76a0
+
 importers:
 
   .:
@@ -648,7 +651,7 @@ importers:
         version: 5.1.1(vue@3.5.41(typescript@6.0.3))
       nuxt-og-image:
         specifier: catalog:main
-        version: 6.7.8(60b81f919ee06d5c5b002f1c29a1ed68)
+        version: 6.7.8(patch_hash=233a771853eaf3d0f63ba2c3b7bc935be801f0cbc7f3ebcdc741e67d64cb76a0)(60b81f919ee06d5c5b002f1c29a1ed68)
       pinia:
         specifier: catalog:main
         version: 4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.41(typescript@6.0.3))
@@ -12336,7 +12339,7 @@ snapshots:
       '@nuxtjs/sitemap': 8.5.0(@nuxt/schema@4.5.2)(magic-string@1.2.2)(magicast@0.5.4)(nuxt@4.5.2(ff919c525b38ad890aa0a9928c931b16))(oxc-parser@0.131.0)(rolldown@1.2.5)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.5)(rollup@4.62.4)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.4(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(vue@3.5.41(typescript@6.0.3))(zod@4.4.3)
       nuxt: 4.5.2(ff919c525b38ad890aa0a9928c931b16)
       nuxt-link-checker: 5.3.0(@nuxt/schema@4.5.2)(db0@0.3.4(@electric-sql/pglite@0.4.3)(mysql2@3.15.3))(idb-keyval@6.3.0)(ioredis@5.11.1(supports-color@10.2.2))(magicast@0.5.4)(nuxt@4.5.2(ff919c525b38ad890aa0a9928c931b16))(oxc-parser@0.131.0)(rolldown@1.2.5)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.5)(rollup@4.62.4)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.4(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(vue@3.5.41(typescript@6.0.3))(zod@4.4.3)
-      nuxt-og-image: 6.7.8(60b81f919ee06d5c5b002f1c29a1ed68)
+      nuxt-og-image: 6.7.8(patch_hash=233a771853eaf3d0f63ba2c3b7bc935be801f0cbc7f3ebcdc741e67d64cb76a0)(60b81f919ee06d5c5b002f1c29a1ed68)
       nuxt-schema-org: 6.3.0(8e7b054837915edabbb5bfd75a1c2551)
       nuxt-seo-utils: 8.4.2(80019e01048c7496fa46fed93adfd298)
       nuxt-site-config: 4.2.3(@nuxt/schema@4.5.2)(magic-string@1.2.2)(magicast@0.5.4)(nuxt@4.5.2(ff919c525b38ad890aa0a9928c931b16))(oxc-parser@0.131.0)(rolldown@1.2.5)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.5)(rollup@4.62.4)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.4(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(vue@3.5.41(typescript@6.0.3))(zod@4.4.3)
@@ -17608,7 +17611,7 @@ snapshots:
       - vue
       - zod
 
-  nuxt-og-image@6.7.8(60b81f919ee06d5c5b002f1c29a1ed68):
+  nuxt-og-image@6.7.8(patch_hash=233a771853eaf3d0f63ba2c3b7bc935be801f0cbc7f3ebcdc741e67d64cb76a0)(60b81f919ee06d5c5b002f1c29a1ed68):
     dependencies:
       '@clack/prompts': 1.7.0
       '@nuxt/kit': 4.5.2(magic-string@1.2.2)(magicast@0.5.4)(oxc-parser@0.143.0)(rolldown@1.2.5)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.5)(rollup@4.62.4)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.4(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.26)))

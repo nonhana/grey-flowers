@@ -1,0 +1,31 @@
+diff --git a/dist/runtime/server/og-image/font-subsets.js b/dist/runtime/server/og-image/font-subsets.js
+index 19e3fcef9898062da09c55e1ce709416622b6c1f..e401b31af4a0a821e235f19d650d9e0bfd973a3d 100644
+--- a/dist/runtime/server/og-image/font-subsets.js
++++ b/dist/runtime/server/og-image/font-subsets.js
+@@ -1,3 +1,13 @@
++function stableSubsetSuffix(f) {
++  const s = String(f.src || f.localPath || "");
++  let h1 = 5381, h2 = 2166136261;
++  for (let i = 0; i < s.length; i++) {
++    const c = s.charCodeAt(i);
++    h1 = (((h1 << 5) + h1) ^ c) >>> 0;
++    h2 = Math.imul(h2 ^ c, 16777619) >>> 0;
++  }
++  return (BigInt(h1) << 32n | BigInt(h2)).toString(36);
++}
+ export function renameSubsetFonts(fonts) {
+   const groups = /* @__PURE__ */ new Map();
+   for (const f of fonts) {
+@@ -19,10 +29,11 @@ export function renameSubsetFonts(fonts) {
+     changed = true;
+     for (let i = 0; i < members.length; i++) {
+       const f = members[i];
++      const suffix = f.src || f.localPath ? stableSubsetSuffix(f) : `idx${i}`;
+       result.push({
+         ...f,
+         originalFamily: f.originalFamily || f.family,
+-        family: `${f.family}__${i}`
++        family: `${f.family}__${suffix}`
+       });
+     }
+   }
