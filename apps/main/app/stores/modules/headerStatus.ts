@@ -21,6 +21,10 @@ export const useHeaderStatusStore = defineStore('headerStatus', () => {
       }
       lastScrollY = newTop
     }
+    else {
+      setHidden(false)
+      lastScrollY = 0
+    }
   })
 
   return {
