@@ -1,12 +1,17 @@
 import type { ArticleAdmin, ArticleSaveInput } from '@grey-flowers/contracts';
 
+import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ApiNetworkError, ApiRequestError } from '@/app/api/errors.js';
 import { articlesKeys } from '@/app/server-state/articles.js';
 import { queryClient } from '@/app/server-state/client.js';
 
-import { createArticleEditorStore } from './article-editor.js';
+import {
+  createArticleEditorStore,
+  toDraft,
+  type RestoreCandidate,
+} from './article-editor.js';
 
 const api = vi.hoisted(() => ({
   detail: vi.fn(),
@@ -18,9 +23,13 @@ const api = vi.hoisted(() => ({
 }));
 
 const idb = vi.hoisted(() => ({
-  del: vi.fn(() => Promise.resolve()),
-  get: vi.fn(() => Promise.resolve(undefined)),
-  set: vi.fn(() => Promise.resolve()),
+  del: vi.fn<(key: string) => Promise<void>>(() => Promise.resolve()),
+  get: vi.fn<(key: string) => Promise<unknown>>(() =>
+    Promise.resolve(undefined),
+  ),
+  set: vi.fn<(key: string, value: unknown) => Promise<void>>(() =>
+    Promise.resolve(),
+  ),
 }));
 
 vi.mock('idb-keyval', () => idb);
@@ -82,15 +91,18 @@ const flushMicrotasks = () =>
     setTimeout(resolve, 0);
   });
 
-const requestError = (code: 'ARTICLE_STALE') =>
-  new ApiRequestError(
+const requestError = (code: 'ARTICLE_STALE' | 'AUTH_REQUIRED') => {
+  const status = code === 'ARTICLE_STALE' ? 409 : 401;
+  const message = code === 'ARTICLE_STALE' ? 'stale' : '需要重新登录。';
+  return new ApiRequestError(
     {
       success: false,
-      error: { code, message: 'stale' },
+      error: { code, message },
       requestId: 'test',
     },
-    409,
+    status,
   );
+};
 
 const savedContentOf = (call: number) =>
   (api.save.mock.calls[call]?.[1] as ArticleSaveInput | undefined)?.content;
@@ -219,6 +231,8 @@ describe('article-editor · flushNow 落盘门控', () => {
     expect(api.save).toHaveBeenCalledTimes(1);
     expect(store.getState().phase).toBe('conflict');
     expect(store.getState().conflict?.server.revision).toBe(9);
+    // 冲突分支也幂等落恢复槽（M12）
+    expect(idb.set).toHaveBeenCalledTimes(1);
   });
 
   it('离线落盘失败时拒绝发布，并把草稿写进本地恢复槽', async () => {
@@ -318,5 +332,126 @@ describe('article-editor · 缓存一致性', () => {
     expect(
       queryClient.getQueryState(articlesKeys.list(listQuery))?.isInvalidated,
     ).toBe(true);
+  });
+});
+
+describe('article-editor · S4 保存链与恢复', () => {
+  it('AUTH_REQUIRED 保存失败也把最新草稿写进恢复槽（M12）', async () => {
+    const store = await createLoadedStore();
+    api.save.mockRejectedValue(requestError('AUTH_REQUIRED'));
+
+    store.getState().updateDraft({ content: 'v1' });
+    await store.getState().flushNow();
+
+    expect(store.getState().phase).toBe('idle');
+    expect(store.getState().lastError).toBe('需要重新登录。');
+    expect(idb.set).toHaveBeenCalledTimes(1);
+    const slot = idb.set.mock.calls[0]?.[1] as RestoreCandidate;
+    expect(slot.draft.content).toBe('v1');
+  });
+
+  it('通用保存失败也写恢复槽，与离线分支同口径（M12）', async () => {
+    const store = await createLoadedStore();
+    api.save.mockRejectedValue(new Error('boom'));
+
+    store.getState().updateDraft({ content: 'v1' });
+    await store.getState().flushNow();
+
+    expect(store.getState().phase).toBe('idle');
+    expect(idb.set).toHaveBeenCalledTimes(1);
+  });
+
+  it('发布请求在途期间敲字：结果不覆盖草稿、不清脏（M11）', async () => {
+    const store = await createLoadedStore();
+    api.save.mockResolvedValue(articleAt(2, 'typed'));
+    const published = defer<ArticleAdmin>();
+    api.publish.mockImplementationOnce(() => published.promise);
+
+    store.getState().updateDraft({ content: 'typed' });
+    await store.getState().flushNow();
+
+    const publishing = store.getState().publish();
+    // 让 publish 走到「已发出发布请求、已捕获 current 草稿」的窗口
+    await flushMicrotasks();
+    // 发布请求在途期间用户继续敲字
+    store.getState().updateDraft({ content: 'typed-during-publish' });
+    published.resolve(articleAt(3, 'typed'));
+    const result = await publishing;
+
+    expect(result).not.toBeNull();
+    // 服务端内容不含在途键入，但本地草稿与脏态都必须保住
+    expect(store.getState().draft?.content).toBe('typed-during-publish');
+    expect(store.getState().dirty).toBe(true);
+    expect(store.getState().phase).toBe('idle');
+    // 新 revision 已同步，续保存不会拿旧版本号撞锁
+    expect(store.getState().revision).toBe(3);
+  });
+
+  it('版本列表加载失败不误报发布成功为失败（M10）', async () => {
+    const store = await createLoadedStore();
+    api.snapshots.mockRejectedValue(new Error('boom'));
+    api.publish.mockResolvedValue(articleAt(2, 'v0'));
+
+    const result = await store.getState().publish();
+
+    expect(result).not.toBeNull();
+    expect(toast.error).toHaveBeenCalledWith('版本列表加载失败。');
+  });
+
+  it('存在恢复槽且内容与当前稿不同时展示，时钟不再参与判定（M13）', async () => {
+    // savedAt = 1970：旧实现里必然被时钟比较拒绝
+    api.detail.mockResolvedValue(articleAt(1, 'v0'));
+    idb.get.mockResolvedValue({
+      draft: { ...toDraft(articleAt(1, 'v0')), content: '本地未落盘' },
+      savedAt: 1,
+    });
+    const store = createArticleEditorStore(ARTICLE_ID);
+    await store.getState().reload();
+
+    expect(store.getState().restoreCandidate?.draft.content).toBe('本地未落盘');
+  });
+
+  it('槽内容与当前稿一致时不展示恢复条（M13）', async () => {
+    api.detail.mockResolvedValue(articleAt(1, 'v0'));
+    idb.get.mockResolvedValue({
+      draft: toDraft(articleAt(1, 'v0')),
+      savedAt: Date.now(),
+    });
+    const store = createArticleEditorStore(ARTICLE_ID);
+    await store.getState().reload();
+
+    expect(store.getState().restoreCandidate).toBeNull();
+  });
+  it('放弃恢复删除本地槽（M13）', async () => {
+    api.detail.mockResolvedValue(articleAt(1, 'v0'));
+    idb.get.mockResolvedValue({
+      draft: { ...toDraft(articleAt(1, 'v0')), content: '本地未落盘' },
+      savedAt: 1,
+    });
+    const store = createArticleEditorStore(ARTICLE_ID);
+    await store.getState().reload();
+    expect(store.getState().restoreCandidate).not.toBeNull();
+
+    await store.getState().discardRestored();
+
+    expect(idb.del).toHaveBeenCalledWith(`gf.article-draft.${ARTICLE_ID}`);
+    expect(store.getState().restoreCandidate).toBeNull();
+  });
+
+  it('采用服务端解决冲突后删除恢复槽，弃稿不再复活（M13）', async () => {
+    const store = await createLoadedStore();
+    api.save.mockRejectedValue(requestError('ARTICLE_STALE'));
+    api.detail.mockResolvedValue(articleAt(9, 'server'));
+
+    store.getState().updateDraft({ content: 'v1' });
+    await store.getState().flushNow();
+    expect(store.getState().phase).toBe('conflict');
+    // M12：进入冲突时已落了恢复槽
+    expect(idb.set).toHaveBeenCalledTimes(1);
+
+    await store.getState().resolveConflict('take-server');
+
+    expect(store.getState().draft?.content).toBe('server');
+    expect(idb.del).toHaveBeenCalledWith(`gf.article-draft.${ARTICLE_ID}`);
   });
 });

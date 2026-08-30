@@ -144,6 +144,9 @@ const buildSavePayload = (
 export const createArticleEditorStore = (articleId: number | null) => {
   let savingPromise: Promise<void> | null = null;
   let pendingAgain = false;
+  // 防抖句柄前置声明：saveOnce 的冲突分支要 cancel 排队保存（观察项），
+  // 真正的 debounce 在 persist 之后初始化。
+  let scheduleSave: { (): void; cancel: () => void } | null = null;
 
   return createStore<ArticleEditorState & ArticleEditorActions>()(
     (set, get) => {
@@ -188,6 +191,9 @@ export const createArticleEditorStore = (articleId: number | null) => {
           return true;
         } catch (error) {
           if (isApiRequestError(error, 'ARTICLE_STALE')) {
+            // 进入冲突态就掐掉排队的防抖保存：弹窗期间自燃的那次保存会
+            // 再次撞锁，把刚拉到的 conflict.server 偷换成更旧的版本。
+            scheduleSave?.cancel();
             set({ phase: 'conflict', lastError: null });
             // 拉取服务端版本失败仍保持冲突态，由用户显式 retryConflict 重试。
             try {
@@ -201,13 +207,6 @@ export const createArticleEditorStore = (articleId: number | null) => {
             }
           } else if (isApiNetworkError(error)) {
             set({ phase: 'offline', lastError: null });
-            // 存「此刻最新」的草稿而非请求开始时的快照：请求在途期间的输入
-            // 不因一次离线失败而丢字，后续保存链 / reload 恢复能接到最新稿。
-            const latest = get().draft ?? current;
-            await idbSet(draftKey(articleId), {
-              draft: latest,
-              savedAt: Date.now(),
-            } satisfies RestoreCandidate).catch(() => undefined);
           } else {
             set({
               lastError: isApiRequestError(error)
@@ -215,6 +214,17 @@ export const createArticleEditorStore = (articleId: number | null) => {
                 : '保存失败，请重试。',
               phase: 'idle',
             });
+          }
+          // 失败分支统一幂等落恢复槽（M12）：无论冲突/离线/鉴权过期/通用
+          // 失败，都存「此刻最新」的草稿而非请求开始时的快照 —— 请求在途
+          // 期间的输入不因一次失败而丢字。失败态本身由上面的分支按各自
+          // 语义设置；成功路径与 resolveConflict(keep-mine) 成功会删槽。
+          const latest = get().draft ?? current;
+          if (latest !== null) {
+            await idbSet(draftKey(articleId), {
+              draft: latest,
+              savedAt: Date.now(),
+            } satisfies RestoreCandidate).catch(() => undefined);
           }
           return false;
         }
@@ -251,7 +261,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         return savingPromise;
       };
 
-      const scheduleSave = debounce(() => void persist(), AUTOSAVE_DELAY_MS);
+      scheduleSave = debounce(() => void persist(), AUTOSAVE_DELAY_MS);
 
       const reload = async () => {
         if (articleId === null) return;
@@ -268,8 +278,14 @@ export const createArticleEditorStore = (articleId: number | null) => {
             lastError: null,
           });
 
+          // 恢复判定只看内容（M13）：存在槽且槽内草稿与当前稿不同才展示
+          // 恢复条，不再比较客户端 savedAt 与服务端时钟 —— 两边时钟都
+          // 不可信；内容一致（含无槽）时不展示，槽留给成功落盘或放弃恢复清走。
           const stored = await idbGet<RestoreCandidate>(draftKey(articleId));
-          if (stored && stored.savedAt > Date.parse(loaded.editedAt)) {
+          const sameAsLoaded =
+            stored !== undefined &&
+            JSON.stringify(stored.draft) === JSON.stringify(toDraft(loaded));
+          if (stored && !sameAsLoaded) {
             set({ restoreCandidate: stored });
           } else {
             set({ restoreCandidate: null });
@@ -295,7 +311,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
           dirty: true,
           phase: phase === 'saved' || phase === 'idle' ? 'idle' : phase,
         });
-        scheduleSave();
+        scheduleSave?.();
       };
 
       /**
@@ -306,7 +322,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
       const flushNow = async (): Promise<boolean> => {
         if (articleId === null || get().draft === null) return false;
 
-        scheduleSave.cancel();
+        scheduleSave?.cancel();
         if (get().dirty || savingPromise !== null) await persist();
         return get().phase === 'saved' && !get().dirty;
       };
@@ -316,7 +332,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         if (articleId !== null) {
           void del(draftKey(articleId)).catch(() => undefined);
         }
-        scheduleSave();
+        scheduleSave?.();
       };
 
       const discardRestored = async () => {
@@ -366,6 +382,9 @@ export const createArticleEditorStore = (articleId: number | null) => {
         } else {
           sync(conflictState.server);
           set({ phase: 'saved', conflict: null });
+          // 采用服务端 = 明确放弃本地稿（M13）：M12 起冲突分支也落了恢复槽，
+          // 不删槽的话下次 reload 会把用户已主动丢弃的旧稿再端出来。
+          await del(draftKey(articleId)).catch(() => undefined);
         }
       };
 
@@ -386,10 +405,19 @@ export const createArticleEditorStore = (articleId: number | null) => {
         }
       };
 
+      /**
+       * 版本列表是次要数据：加载失败不抛给调用方（publish/unpublish/
+       * restoreVersion 的主操作不能因此被误报失败），保留旧列表并给一条
+       * 非阻塞 toast，用户可随时按「加载版本快照」重试（M10）。
+       */
       const loadVersions = async () => {
         if (articleId === null) return;
-        const data = await apiClient.articles.snapshots(articleId);
-        set({ versions: data.items });
+        try {
+          const data = await apiClient.articles.snapshots(articleId);
+          set({ versions: data.items });
+        } catch {
+          toast.error('版本列表加载失败。');
+        }
       };
 
       const restoreVersion = async (snapshot: ArticleSnapshot) => {
@@ -423,10 +451,18 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved) return null;
 
+        const current = get().draft;
         try {
           const result = await apiClient.articles.publish(articleId);
-          sync(result);
-          set({ phase: 'saved' });
+          // 发布请求在途期间又改了稿（M11）：只同步服务端状态与新 revision，
+          // 不覆盖草稿、不清脏 —— 用户键入的内容和脏态都保住，续保存会
+          // 以新 revision 落盘。沿用 saveOnce 的 dirty: get().draft !== current 口径。
+          if (current !== null && get().draft !== current) {
+            set({ article: result, revision: result.revision, phase: 'idle' });
+          } else {
+            sync(result);
+            set({ phase: 'saved' });
+          }
           await loadVersions();
           // 发布态变化影响文章列表、taxonomy 计数与 overview 统计。
           await invalidateArticlesAfterMutation();
@@ -444,10 +480,15 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved) return null;
 
+        const current = get().draft;
         try {
           const result = await apiClient.articles.unpublish(articleId);
-          sync(result);
-          set({ phase: 'saved' });
+          if (current !== null && get().draft !== current) {
+            set({ article: result, revision: result.revision, phase: 'idle' });
+          } else {
+            sync(result);
+            set({ phase: 'saved' });
+          }
           await loadVersions();
           await invalidateArticlesAfterMutation();
           toast.success('文章已下架。');
@@ -554,6 +595,26 @@ export const useArticleEditor = (articleId: number | null) => {
   const sync = useStore(store, (s) => s.sync);
   const unpublish = useStore(store, (s) => s.unpublish);
   const updateDraft = useStore(store, (s) => s.updateDraft);
+
+  // 关页/刷新前尽力落盘（L-24）：pagehide 是浏览器卸载页面前最后的事件
+  // 钩子，同步的外部系统是「页面生命周期 + 服务端草稿」。
+  useEffect(() => {
+    const onPageHide = () => {
+      void store.getState().flushNow();
+    };
+    window.addEventListener('pagehide', onPageHide);
+    return () => window.removeEventListener('pagehide', onPageHide);
+  }, [store]);
+
+  // 离线失败后恢复联网自动续存（L-22）：把外部网络的恢复转成一次落盘。
+  useEffect(() => {
+    const onOnline = () => {
+      const state = store.getState();
+      if (state.phase === 'offline') void state.flushNow();
+    };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, [store]);
 
   // 进入编辑器即拉取一次文章与离线恢复候选。
   useEffect(() => {

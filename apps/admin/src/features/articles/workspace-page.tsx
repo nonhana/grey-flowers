@@ -339,7 +339,7 @@ const WorkspacePage = ({
           className="shrink-0 rounded-none border-x-0 border-t-0"
           tone="warn"
         >
-          本机存着一份更新的未保存草稿（
+          本机存着一份未保存的本地草稿（
           {formatDateTime(restoreCandidate.savedAt)}
           ）。
         </Alert>
