@@ -13,6 +13,7 @@ import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 
 import { assetsListOptions } from '@/app/server-state/assets.js';
+import { useClampPage } from '@/hooks/use-clamp-page.js';
 import { formatBytes, formatDateTime } from '@/lib/format.js';
 import { Button } from '@/ui/button.js';
 import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
@@ -156,6 +157,8 @@ export const AssetsListPage = () => {
   };
   const assetsQuery = useQuery(assetsListOptions(listQuery));
   const data = assetsQuery.data;
+  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  useClampPage(page, setPage, data, PAGE_SIZE);
   const loading = assetsQuery.isFetching;
   const error = assetsQuery.error;
 

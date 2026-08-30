@@ -14,6 +14,7 @@ import {
   invalidateUsersAfterMutation,
   usersListOptions,
 } from '@/app/server-state/users.js';
+import { useClampPage } from '@/hooks/use-clamp-page.js';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
@@ -67,6 +68,8 @@ export const UsersPage = () => {
   };
   const usersQuery = useQuery(usersListOptions(listQuery));
   const data = usersQuery.data;
+  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  useClampPage(page, setPage, data, PAGE_SIZE);
   const loading = usersQuery.isFetching;
   const error = usersQuery.error ? '无法加载用户，请稍后重试。' : '';
 

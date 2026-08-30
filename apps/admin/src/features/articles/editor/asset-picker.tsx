@@ -60,7 +60,13 @@ export const AssetPickerDialog = ({
     ...assetsPickerOptions(purpose, session),
     enabled: open,
   });
-  const items = pickerQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  // 按 id 去重（Map）：并发页返回重叠窗口时同一条目只渲染一次。
+  const itemsById = new Map(
+    pickerQuery.data?.pages
+      .flatMap((page) => page.items)
+      .map((asset) => [asset.id, asset] as const) ?? [],
+  );
+  const items = [...itemsById.values()];
   const total = pickerQuery.data?.pages[0]?.total ?? 0;
 
   const error =

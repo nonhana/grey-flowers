@@ -253,8 +253,35 @@ const WorkspacePage = ({
     );
   }
 
-  if (!editor.draft || !options) return null;
+  // 分类/标签元数据加载失败（M9）：给出明确错误块与重试入口，
+  // 不再 return null 白屏；恢复后正常进入编辑器。
+  if (categoriesQuery.error || tagsQuery.error) {
+    return (
+      <div className="grid h-full place-items-center p-6">
+        <div className="grid max-w-sm justify-items-center gap-4 text-center">
+          <p className="text-md text-ink">
+            文章分类或标签加载失败，编辑器元数据不可用。
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              onPress={() => {
+                void categoriesQuery.refetch();
+                void tagsQuery.refetch();
+              }}
+            >
+              重试
+            </Button>
+            <Link className={buttonClass()} to="/articles">
+              <ArrowLeft aria-hidden className="size-4" />
+              返回文章列表
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
+  if (!editor.draft || !options) return null;
   const status = saveStatus(editor);
   const restoreCandidate = editor.restoreCandidate;
   const inspector = (

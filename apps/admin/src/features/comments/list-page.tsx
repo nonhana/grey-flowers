@@ -39,6 +39,7 @@ import {
   commentsListOptions,
   invalidateCommentsAfterMutation,
 } from '@/app/server-state/comments.js';
+import { useClampPage } from '@/hooks/use-clamp-page.js';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
@@ -311,9 +312,22 @@ export const CommentsPage = () => {
   if (prevFilters !== filters) {
     setPrevFilters(filters);
     setPage(1);
+    // 筛选提交即清空选择集（L-11）：跨筛选的选择没有意义还会误删。
+    setSelectedIds(new Set());
+  }
+  const [prevPage, setPrevPage] = useState(page);
+  if (prevPage !== page) {
+    setPrevPage(page);
+    // 翻页同样清空选择集（L-11）。
+    setSelectedIds(new Set());
   }
 
-  const authorId = Number.parseInt(filters.authorId, 10);
+  // authorId 严格解析：非纯数字一律视为未筛选，不做 parseInt 前缀解析。
+  const authorIdRaw = filters.authorId.trim();
+  const authorId = /^\d+$/.test(authorIdRaw)
+    ? Number.parseInt(authorIdRaw, 10)
+    : Number.NaN;
+
   const listQuery: CommentListQuery = {
     page,
     pageSize: PAGE_SIZE,
@@ -325,6 +339,8 @@ export const CommentsPage = () => {
   };
   const commentsQuery = useQuery(commentsListOptions(listQuery));
   const data = commentsQuery.data;
+  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  useClampPage(page, setPage, data, PAGE_SIZE);
   const loading = commentsQuery.isFetching;
   const error = commentsQuery.error ? '无法加载评论，请稍后重试。' : '';
 
@@ -347,6 +363,8 @@ export const CommentsPage = () => {
     mutationFn: (ids: number[]) => apiClient.comments.removeBatch(ids),
     onSuccess: async (result) => {
       toast.success(`已删除 ${result.deleted} 条评论。`);
+      // 批删成功后才清空选择集（L-11）：mutation 失败时选择保留可重试。
+      setSelectedIds(new Set());
       await invalidateCommentsAfterMutation();
     },
     onError: (cause) => {
@@ -387,7 +405,7 @@ export const CommentsPage = () => {
     const ids = batchDialog.data;
     if (!ids || ids.length === 0) return;
     batchDialog.dismiss();
-    setSelectedIds(new Set());
+    // 不在此处清空选择集：清空移入 removeBatchMutation.onSuccess（L-11）。
     removeBatchMutation.mutate(ids);
   };
 

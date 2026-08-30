@@ -7,6 +7,7 @@ import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 
 import { articlesListOptions } from '@/app/server-state/articles.js';
+import { useClampPage } from '@/hooks/use-clamp-page.js';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { formatDateTime } from '@/lib/format.js';
 import { Button, buttonClass } from '@/ui/button.js';
@@ -158,6 +159,8 @@ export const ArticlesListPage = () => {
   );
   const items = articlesQuery.data?.items ?? [];
   const total = articlesQuery.data?.total ?? 0;
+  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  useClampPage(page, setPage, articlesQuery.data, PAGE_SIZE);
   const loading = articlesQuery.isFetching;
   const error = articlesQuery.error;
 

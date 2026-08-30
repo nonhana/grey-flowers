@@ -12,6 +12,7 @@ import {
   invalidateMusicAfterMutation,
   musicListOptions,
 } from '@/app/server-state/music.js';
+import { useClampPage } from '@/hooks/use-clamp-page.js';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
@@ -88,6 +89,8 @@ export const MusicLibraryPage = () => {
   };
   const musicQuery = useQuery(musicListOptions(listQuery));
   const data = musicQuery.data;
+  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  useClampPage(page, setPage, data, PAGE_SIZE);
   const loading = musicQuery.isFetching;
   const error = musicQuery.error;
 
