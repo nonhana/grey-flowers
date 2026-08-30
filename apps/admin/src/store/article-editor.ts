@@ -16,10 +16,8 @@ import {
   isApiNetworkError,
   isApiRequestError,
 } from '@/app/api/index.js';
-import {
-  invalidateArticlesAfterMutation,
-  markAssetsStaleAfterArticleRemoval,
-} from '@/app/server-state/articles.js';
+import { invalidateArticlesAfterMutation } from '@/app/server-state/articles.js';
+import { markAssetsStale } from '@/app/server-state/assets.js';
 import { toastError } from '@/lib/toast.js';
 
 export interface ArticleDraft {
@@ -464,7 +462,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
           set({ article: null });
           // 删除级联：列表/计数全失效；被删文章的评论与资产引用投影同步过期。
           await invalidateArticlesAfterMutation();
-          markAssetsStaleAfterArticleRemoval();
+          markAssetsStale();
           toast.success('文章已删除。');
           return true;
         } catch (error) {

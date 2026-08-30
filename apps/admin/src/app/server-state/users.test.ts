@@ -21,6 +21,7 @@ vi.mock('@/app/api/index.js', () => ({ apiClient: { users: usersApi } }));
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
+import { assetsRoot, commentsRoot, usersRoot } from './roots.js';
 import {
   invalidateUsersAfterMutation,
   usersDetailOptions,
@@ -31,8 +32,7 @@ import {
 describe('usersKeys', () => {
   it('detail key 由用户 id 与评论分页组成', () => {
     expect(usersKeys.detail(3, 1, 10)).toEqual([
-      'admin',
-      'users',
+      ...usersRoot,
       'detail',
       3,
       { commentPage: 1, commentPageSize: 10 },
@@ -82,10 +82,9 @@ describe('invalidateUsersAfterMutation', () => {
     const listQuery = { page: 1, pageSize: 20 };
     queryClient.setQueryData(usersKeys.list(listQuery), []);
     queryClient.setQueryData(usersKeys.detail(3, 1, 10), {});
-    queryClient.setQueryData(['admin', 'comments', 'list', listQuery], []);
+    queryClient.setQueryData([...commentsRoot, 'list', listQuery], []);
     queryClient.setQueryData(overviewKeys.counts, {});
-    queryClient.setQueryData(['admin', 'assets', 'list', { page: 1 }], []);
-
+    queryClient.setQueryData([...assetsRoot, 'list', { page: 1 }], []);
     await invalidateUsersAfterMutation();
 
     expect(
@@ -95,14 +94,14 @@ describe('invalidateUsersAfterMutation', () => {
       queryClient.getQueryState(usersKeys.detail(3, 1, 10))?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'comments', 'list', listQuery])
+      queryClient.getQueryState([...commentsRoot, 'list', listQuery])
         ?.isInvalidated,
     ).toBe(true);
     expect(queryClient.getQueryState(overviewKeys.counts)?.isInvalidated).toBe(
       true,
     );
     expect(
-      queryClient.getQueryState(['admin', 'assets', 'list', { page: 1 }])
+      queryClient.getQueryState([...assetsRoot, 'list', { page: 1 }])
         ?.isInvalidated,
     ).toBe(false);
   });

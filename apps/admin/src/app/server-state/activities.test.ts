@@ -25,22 +25,17 @@ import {
 } from './activities.js';
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
+import { activitiesRoot, musicRoot } from './roots.js';
 
 describe('activityKeys', () => {
   it('list 与 detail 家族互不冲突', () => {
     const listQuery = { page: 1, pageSize: 10 };
     expect(activityKeys.list(listQuery)).toEqual([
-      'admin',
-      'activities',
+      ...activitiesRoot,
       'list',
       listQuery,
     ]);
-    expect(activityKeys.detail(7)).toEqual([
-      'admin',
-      'activities',
-      'detail',
-      7,
-    ]);
+    expect(activityKeys.detail(7)).toEqual([...activitiesRoot, 'detail', 7]);
     expect(activityKeys.list(listQuery)).not.toEqual(activityKeys.detail(7));
   });
 });
@@ -88,7 +83,7 @@ describe('invalidateActivitiesAfterMutation', () => {
       [],
     );
     queryClient.setQueryData(overviewKeys.calendar, []);
-    queryClient.setQueryData(['admin', 'music', 'list', { page: 1 }], []);
+    queryClient.setQueryData([...musicRoot, 'list', { page: 1 }], []);
 
     await invalidateActivitiesAfterMutation();
 
@@ -110,7 +105,7 @@ describe('invalidateActivitiesAfterMutation', () => {
       queryClient.getQueryState(overviewKeys.calendar)?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'music', 'list', { page: 1 }])
+      queryClient.getQueryState([...musicRoot, 'list', { page: 1 }])
         ?.isInvalidated,
     ).toBe(false);
   });

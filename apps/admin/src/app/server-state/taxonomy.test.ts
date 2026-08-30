@@ -12,6 +12,7 @@ const taxonomyApi = vi.hoisted(() => ({
 vi.mock('@/app/api/index.js', () => ({ apiClient: { taxonomy: taxonomyApi } }));
 
 import { queryClient } from './client.js';
+import { overviewRoot, taxonomyRoot, usersRoot } from './roots.js';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
@@ -21,14 +22,9 @@ import {
 
 describe('taxonomyKeys', () => {
   it('category/tag list 家族互不冲突', () => {
-    expect(taxonomyKeys.categories).toEqual([
-      'admin',
-      'taxonomy',
-      'categories',
-    ]);
+    expect(taxonomyKeys.categories).toEqual([...taxonomyRoot, 'categories']);
     expect(taxonomyKeys.tags(false)).toEqual([
-      'admin',
-      'taxonomy',
+      ...taxonomyRoot,
       'tags',
       { unused: false },
     ]);
@@ -71,9 +67,9 @@ describe('invalidateTaxonomyAfterMutation', () => {
     queryClient.setQueryData(taxonomyKeys.categories, [{ id: 1 }]);
     queryClient.setQueryData(taxonomyKeys.tags(false), [{ id: 1 }]);
     queryClient.setQueryData(taxonomyKeys.tags(true), []);
-    queryClient.setQueryData(['admin', 'overview', 'counts'], { counts: {} });
-    queryClient.setQueryData(['admin', 'overview', 'calendar'], { days: [] });
-    queryClient.setQueryData(['admin', 'users', 'list'], { items: [] });
+    queryClient.setQueryData([...overviewRoot, 'counts'], { counts: {} });
+    queryClient.setQueryData([...overviewRoot, 'calendar'], { days: [] });
+    queryClient.setQueryData([...usersRoot, 'list'], { items: [] });
 
     await invalidateTaxonomyAfterMutation();
 
@@ -87,14 +83,13 @@ describe('invalidateTaxonomyAfterMutation', () => {
       queryClient.getQueryState(taxonomyKeys.tags(true))?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'overview', 'counts'])?.isInvalidated,
+      queryClient.getQueryState([...overviewRoot, 'counts'])?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'overview', 'calendar'])
-        ?.isInvalidated,
+      queryClient.getQueryState([...overviewRoot, 'calendar'])?.isInvalidated,
     ).toBe(false);
     expect(
-      queryClient.getQueryState(['admin', 'users', 'list'])?.isInvalidated,
+      queryClient.getQueryState([...usersRoot, 'list'])?.isInvalidated,
     ).toBe(false);
   });
 });

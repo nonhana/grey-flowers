@@ -6,8 +6,7 @@ import { apiClient } from '@/app/api/index.js';
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
-
-const activitiesRoot = ['admin', 'activities'] as const;
+import { activitiesRoot } from './roots.js';
 
 export const activityKeys = {
   list: (query: ActivityListQuery) =>

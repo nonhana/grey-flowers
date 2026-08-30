@@ -6,8 +6,7 @@ import { apiClient } from '@/app/api/index.js';
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
-
-const musicRoot = ['admin', 'music'] as const;
+import { musicRoot } from './roots.js';
 
 export const musicKeys = {
   list: (query: MusicListQuery) => [...musicRoot, 'list', query] as const,

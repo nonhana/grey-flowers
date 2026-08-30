@@ -20,6 +20,7 @@ import {
   markAssetsStale,
 } from './assets.js';
 import { queryClient } from './client.js';
+import { overviewRoot, usersRoot } from './roots.js';
 
 const pageOf = (count: number, total: number): AssetListData => ({
   items: Array.from({ length: count }, (_, index) => ({
@@ -91,8 +92,8 @@ describe('invalidation', () => {
     queryClient.setQueryData(assetsKeys.list({ page: 1, pageSize: 12 }), []);
     queryClient.setQueryData(assetsKeys.detail(3), {});
     queryClient.setQueryData(assetsKeys.picker('ARTICLE_COVER', 1), []);
-    queryClient.setQueryData(['admin', 'overview', 'counts'], {});
-    queryClient.setQueryData(['admin', 'users', 'list'], []);
+    queryClient.setQueryData([...overviewRoot, 'counts'], {});
+    queryClient.setQueryData([...usersRoot, 'list'], []);
 
     await invalidateAssetsAfterMutation();
 
@@ -108,10 +109,10 @@ describe('invalidation', () => {
         ?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'overview', 'counts'])?.isInvalidated,
+      queryClient.getQueryState([...overviewRoot, 'counts'])?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'users', 'list'])?.isInvalidated,
+      queryClient.getQueryState([...usersRoot, 'list'])?.isInvalidated,
     ).toBe(false);
   });
 

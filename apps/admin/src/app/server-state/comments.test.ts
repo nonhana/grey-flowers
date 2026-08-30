@@ -18,13 +18,14 @@ import {
   invalidateCommentsAfterMutation,
 } from './comments.js';
 import { overviewKeys } from './overview.js';
+import { commentsRoot, musicRoot } from './roots.js';
 import { usersKeys } from './users.js';
 
 describe('commentsKeys', () => {
   it('list key 由规范化 query 对象组成且互不冲突', () => {
     const a = commentsKeys.list({ page: 1, pageSize: 20 });
     const b = commentsKeys.list({ page: 2, pageSize: 20 });
-    expect(a).toEqual(['admin', 'comments', 'list', { page: 1, pageSize: 20 }]);
+    expect(a).toEqual([...commentsRoot, 'list', { page: 1, pageSize: 20 }]);
     expect(a).not.toEqual(b);
     expect(
       commentsKeys.list({ page: 1, pageSize: 20, search: 'x' }),
@@ -64,7 +65,7 @@ describe('invalidateCommentsAfterMutation', () => {
       overviewKeys.trend({ metric: 'comments', days: '7' }),
       [],
     );
-    queryClient.setQueryData(['admin', 'music', 'list', { page: 1 }], []);
+    queryClient.setQueryData([...musicRoot, 'list', { page: 1 }], []);
 
     await invalidateCommentsAfterMutation();
 
@@ -84,7 +85,7 @@ describe('invalidateCommentsAfterMutation', () => {
       )?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'music', 'list', { page: 1 }])
+      queryClient.getQueryState([...musicRoot, 'list', { page: 1 }])
         ?.isInvalidated,
     ).toBe(false);
   });

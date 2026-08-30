@@ -18,17 +18,17 @@ import {
   overviewKeys,
   overviewTrendOptions,
 } from './overview.js';
+import { overviewRoot } from './roots.js';
 
 describe('overviewKeys', () => {
   it('统一以 [admin, overview] 为前缀', () => {
-    expect(overviewKeys.counts).toEqual(['admin', 'overview', 'counts']);
-    expect(overviewKeys.calendar).toEqual(['admin', 'overview', 'calendar']);
+    expect(overviewKeys.counts).toEqual([...overviewRoot, 'counts']);
+    expect(overviewKeys.calendar).toEqual([...overviewRoot, 'calendar']);
   });
 
   it('trend key 由规范化 query 对象组成且互不冲突', () => {
     expect(overviewKeys.trend({ metric: 'articles', days: '14' })).toEqual([
-      'admin',
-      'overview',
+      ...overviewRoot,
       'trend',
       { metric: 'articles', days: '14' },
     ]);

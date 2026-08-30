@@ -6,9 +6,7 @@ import { apiClient } from '@/app/api/index.js';
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
-import { usersRoot } from './users.js';
-
-const commentsRoot = ['admin', 'comments'] as const;
+import { commentsRoot, usersRoot } from './roots.js';
 
 export const commentsKeys = {
   list: (query: CommentListQuery) => [...commentsRoot, 'list', query] as const,

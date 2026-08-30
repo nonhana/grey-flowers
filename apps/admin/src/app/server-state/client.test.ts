@@ -5,6 +5,7 @@ import {
   createQueryClient,
   queryClient,
 } from './client.js';
+import { articlesRoot } from './roots.js';
 
 describe('createQueryClient', () => {
   it('默认不重试、不聚焦刷新、staleTime 0', () => {
@@ -20,11 +21,15 @@ describe('createQueryClient', () => {
 
 describe('clearAdminQueryCache', () => {
   it('清空单例缓存的全部查询数据', () => {
-    queryClient.setQueryData(['admin', 'probe'], { n: 1 });
-    expect(queryClient.getQueryData(['admin', 'probe'])).toEqual({ n: 1 });
+    queryClient.setQueryData([...articlesRoot, 'probe'], { n: 1 });
+    expect(queryClient.getQueryData([...articlesRoot, 'probe'])).toEqual({
+      n: 1,
+    });
 
     clearAdminQueryCache();
 
-    expect(queryClient.getQueryData(['admin', 'probe'])).toBeUndefined();
+    expect(
+      queryClient.getQueryData([...articlesRoot, 'probe']),
+    ).toBeUndefined();
   });
 });

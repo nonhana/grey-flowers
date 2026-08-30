@@ -23,20 +23,19 @@ import {
   musicListOptions,
   musicPickerOptions,
 } from './music.js';
+import { assetsRoot, musicRoot, overviewRoot } from './roots.js';
 
 describe('musicKeys', () => {
   it('list/detail/picker 家族互不冲突', () => {
     const listQuery = { page: 1, pageSize: 12 };
     expect(musicKeys.list(listQuery)).toEqual([
-      'admin',
-      'music',
+      ...musicRoot,
       'list',
       listQuery,
     ]);
-    expect(musicKeys.detail(3)).toEqual(['admin', 'music', 'detail', 3]);
+    expect(musicKeys.detail(3)).toEqual([...musicRoot, 'detail', 3]);
     expect(musicKeys.picker(1, listQuery)).toEqual([
-      'admin',
-      'music',
+      ...musicRoot,
       'picker',
       1,
       listQuery,
@@ -108,8 +107,8 @@ describe('invalidateMusicAfterMutation', () => {
     queryClient.setQueryData(musicKeys.list(listQuery), []);
     queryClient.setQueryData(musicKeys.picker(1, listQuery), []);
     queryClient.setQueryData(musicKeys.detail(3), {});
-    queryClient.setQueryData(['admin', 'overview', 'counts'], {});
-    queryClient.setQueryData(['admin', 'assets', 'list', { page: 1 }], []);
+    queryClient.setQueryData([...overviewRoot, 'counts'], {});
+    queryClient.setQueryData([...assetsRoot, 'list', { page: 1 }], []);
 
     await invalidateMusicAfterMutation();
 
@@ -123,10 +122,10 @@ describe('invalidateMusicAfterMutation', () => {
       true,
     );
     expect(
-      queryClient.getQueryState(['admin', 'overview', 'counts'])?.isInvalidated,
+      queryClient.getQueryState([...overviewRoot, 'counts'])?.isInvalidated,
     ).toBe(true);
     expect(
-      queryClient.getQueryState(['admin', 'assets', 'list', { page: 1 }])
+      queryClient.getQueryState([...assetsRoot, 'list', { page: 1 }])
         ?.isInvalidated,
     ).toBe(false);
   });

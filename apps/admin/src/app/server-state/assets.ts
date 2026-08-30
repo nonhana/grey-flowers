@@ -6,8 +6,7 @@ import { apiClient } from '@/app/api/index.js';
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
-
-const assetsRoot = ['admin', 'assets'] as const;
+import { assetsRoot } from './roots.js';
 
 /** Picker 每页条数与固定条件一起构成 key 的一部分。 */
 export const ASSET_PICKER_PAGE_SIZE = 12;

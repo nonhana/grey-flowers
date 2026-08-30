@@ -6,8 +6,7 @@ import { apiClient } from '@/app/api/index.js';
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
-
-export const usersRoot = ['admin', 'users'] as const;
+import { commentsRoot, usersRoot } from './roots.js';
 
 export const usersKeys = {
   list: (query: UserListQuery) => [...usersRoot, 'list', query] as const,
@@ -41,9 +40,7 @@ export const usersDetailOptions = (
 export const invalidateUsersAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: usersRoot }),
-    // 评论家族的 root 与 comments 模块保持一致；此处用字面量避免与
-    // comments 模块相互导入。
-    queryClient.invalidateQueries({ queryKey: ['admin', 'comments'] }),
+    queryClient.invalidateQueries({ queryKey: commentsRoot }),
     queryClient.invalidateQueries({ queryKey: overviewKeys.counts }),
     queryClient.invalidateQueries({ queryKey: overviewKeys.trendRoot }),
   ]);
