@@ -50,7 +50,7 @@ export interface HttpReadOptions {
 const abortError = () =>
   new DOMException('The operation was aborted.', 'AbortError');
 
-const isAbortError = (error: unknown): boolean =>
+export const isAbortError = (error: unknown): boolean =>
   error instanceof Error && error.name === 'AbortError';
 
 /** 取消不是网络故障：原样上抛，Query 据此静默结算，不进入页面错误态。 */
@@ -196,6 +196,7 @@ export const createHttp = (options: HttpOptions) => {
     body: Blob,
     contentType: string,
     onUploadProgress?: (progress: number) => void,
+    signal?: AbortSignal,
   ): Promise<void> => {
     const { promise, reject, resolve } = Promise.withResolvers<void>();
 
@@ -212,7 +213,8 @@ export const createHttp = (options: HttpOptions) => {
     }
 
     xhr.onerror = () => reject(new ApiNetworkError('Upload request failed'));
-    xhr.onabort = () => reject(new ApiNetworkError('Upload request aborted'));
+    // 取消口径与 rethrowIfAborted 一致：AbortError 形态上抛，不伪装成网络错误。
+    xhr.onabort = () => reject(abortError());
     xhr.onload = () => {
       // 2xx 即接收完成；R2 错误响应体为 XML，统一归一为网络错误。
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -221,6 +223,13 @@ export const createHttp = (options: HttpOptions) => {
         reject(new ApiNetworkError(`Upload failed with status ${xhr.status}`));
       }
     };
+
+    // 监听挂接前已取消：直接以取消形态失败，不发请求。
+    if (signal?.aborted) {
+      reject(abortError());
+      return promise;
+    }
+    signal?.addEventListener('abort', () => xhr.abort(), { once: true });
 
     xhr.send(body);
     return promise;

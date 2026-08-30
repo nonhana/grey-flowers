@@ -2,7 +2,7 @@ import type * as MusicMetadata from 'music-metadata';
 
 import { useNavigate } from '@tanstack/react-router';
 import { FileUp, ImagePlus, Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Form, ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
 
@@ -13,6 +13,7 @@ import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept.js';
+import { uploadSizeError } from '@/lib/upload-limits.js';
 import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { FileDrop } from '@/ui/file-drop.js';
@@ -62,10 +63,17 @@ export const UploadWizard = () => {
   const [embeddedCover, setEmbeddedCover] = useState<EmbeddedCover | null>(
     null,
   );
+  // 幂等重试（M7）：已成功直传的段记入 state，重试直接复用资产 id 不重传。
+  const [uploaded, setUploaded] = useState<{
+    coverAssetId: number | null;
+    sourceAssetId: number | null;
+  }>({ coverAssetId: null, sourceAssetId: null });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [error, setError] = useState('');
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
+  // 并发解析守卫（L-8）：只认最新一次选择，过期解析结果整体丢弃。
+  const latestFileRef = useRef<File | null>(null);
 
   // 内嵌封面 objectURL 跟随组件生命周期释放。
   useEffect(() => {
@@ -83,11 +91,20 @@ export const UploadWizard = () => {
       setError('请选择音频文件。');
       return;
     }
+    // 选入即校验（M15）：0 字节与超限音频不等一次必败请求。
+    const sizeError = uploadSizeError(target, 'MUSIC_SOURCE');
+    if (sizeError !== null) {
+      setError(sizeError);
+      return;
+    }
+    latestFileRef.current = target;
     setFile(target);
     setPhase('parsing');
     setProgress(0);
     setError('');
     setSaveError('');
+    // 新文件重新计费：上一次选择已完成的段不再沿用。
+    setUploaded({ coverAssetId: null, sourceAssetId: null });
 
     const degrade = (title: string) => {
       setForm({
@@ -105,6 +122,8 @@ export const UploadWizard = () => {
     try {
       const { parseBlob } = await prefetchParser();
       const { common, format } = await parseBlob(target);
+      // 过期解析：已有更新的选择在途，丢弃本次结果，不覆盖任何状态。
+      if (latestFileRef.current !== target) return;
       const picture = common.picture?.[0];
       const embedded = picture
         ? (() => {
@@ -129,6 +148,7 @@ export const UploadWizard = () => {
       setEmbeddedCover(embedded);
       setPhase('ready');
     } catch {
+      if (latestFileRef.current !== target) return;
       // 不可解析：降级为文件名标题，仍可手动补全后保存。
       degrade(fallbackTitle(target.name));
       setError('未能解析文件元数据，已用文件名作为标题，可手动补全。');
@@ -146,30 +166,51 @@ export const UploadWizard = () => {
     setSaveError('');
     setProgress(0);
 
+    // 幂等重试（M7）：本次运行内的段完成情况记入快照，已完成的段直接
+    // 复用资产 id，断网重试不重复直传、不制造孤儿资产。
+    const done = {
+      coverAssetId: uploaded.coverAssetId,
+      sourceAssetId: uploaded.sourceAssetId,
+    };
+    const remember = (patch: Partial<typeof done>) => {
+      Object.assign(done, patch);
+      setUploaded((current) => ({ ...current, ...patch }));
+    };
+
+    const uploadSource = async (): Promise<{ id: number }> => {
+      if (done.sourceAssetId !== null) return { id: done.sourceAssetId };
+      const asset = await apiClient.assets.upload(
+        { file, purpose: 'MUSIC_SOURCE' },
+        setProgress,
+        { durationMs: form.seconds * 1000 },
+      );
+      remember({ sourceAssetId: asset.id });
+      return asset;
+    };
+
     const uploadCover = async () => {
+      const existing = form.coverAssetId ?? done.coverAssetId;
+      if (existing !== null) return existing;
       if (!embeddedCover) return null;
       const coverFile = new File([embeddedCover.blob], 'cover', {
         type: embeddedCover.blob.type,
       });
-      return apiClient.assets.upload({
+      const asset = await apiClient.assets.upload({
         file: coverFile,
         purpose: 'MUSIC_COVER',
       });
+      remember({ coverAssetId: asset.id });
+      return asset.id;
     };
 
     try {
       // 音源直传（进度真实可感知）与内嵌封面上传并行。
-      const [sourceAsset, coverAsset] = await Promise.all([
-        apiClient.assets.upload(
-          { file, purpose: 'MUSIC_SOURCE' },
-          setProgress,
-          { durationMs: form.seconds * 1000 },
-        ),
+      const [sourceAsset, pickedCoverAssetId] = await Promise.all([
+        uploadSource(),
         uploadCover(),
       ]);
 
-      const coverAssetId =
-        form.coverAssetId ?? (coverAsset ? coverAsset.id : null);
+      const coverAssetId = form.coverAssetId ?? pickedCoverAssetId;
 
       await apiClient.music.create({
         album: form.album.trim(),
@@ -358,6 +399,9 @@ export const UploadWizard = () => {
             cover: asset.deliveryUrl,
             coverAssetId: asset.id,
           }));
+          // 换库封面即弃用内嵌封面（M8）：置空后 objectURL 由生命周期
+          // effect 释放，保存时不再上传注定被弃置的内嵌结果。
+          setEmbeddedCover(null);
           setPickerOpen(false);
         }}
         open={pickerOpen}

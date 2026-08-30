@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ArrowLeft, ExternalLink, Loader2, Music2, Trash2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
@@ -20,6 +20,7 @@ import { usePasteFiles } from '@/hooks/use-paste-files.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import { fileMatchesAccept, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
+import { uploadSizeError } from '@/lib/upload-limits.js';
 import { Button, buttonClass, IconButton } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { FieldLabel } from '@/ui/form.js';
@@ -54,7 +55,13 @@ const toComposerImage = (activity: ActivityAdmin): ComposerImage[] =>
 const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
   const navigate = useNavigate();
   const editingId = activity?.id ?? null;
-
+  // 卸载守卫（L-19）：卸载后的迟到上传结果不再触碰任何状态。
+  const disposedRef = useRef(false);
+  useEffect(() => {
+    return () => {
+      disposedRef.current = true;
+    };
+  }, []);
   const [content, setContent] = useState(activity?.content ?? '');
   const [images, setImages] = useState<ComposerImage[]>(
     activity ? toComposerImage(activity) : [],
@@ -98,24 +105,46 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
   const uploadOne = (id: string, file: File) => {
     void apiClient.assets
-      .upload({ file, purpose: 'ACTIVITY_IMAGE' }, (progress) =>
-        patchImage(id, { progress }),
-      )
+      .upload({ file, purpose: 'ACTIVITY_IMAGE' }, (progress) => {
+        if (disposedRef.current) return;
+        patchImage(id, { progress });
+      })
       .then((asset) => {
-        patchImage(id, {
-          assetId: asset.id,
-          progress: 1,
-          status: 'committed',
-          url: asset.deliveryUrl,
+        if (disposedRef.current) return;
+        setImages((current) => {
+          // 插入前校验图片仍在列表：已被用户移除的槽位不复活（L-19）。
+          if (!current.some((image) => image.id === id)) return current;
+          return current.map((image) =>
+            image.id === id
+              ? {
+                  ...image,
+                  assetId: asset.id,
+                  progress: 1,
+                  status: 'committed',
+                  url: asset.deliveryUrl,
+                }
+              : image,
+          );
         });
       })
-      .catch(() => patchImage(id, { error: '上传失败', status: 'error' }));
+      .catch(() => {
+        if (disposedRef.current) return;
+        patchImage(id, { error: '上传失败', status: 'error' });
+      });
   };
 
   const addUploads = (files: File[]) => {
     const slots = MAX_IMAGES - images.length;
     if (slots <= 0) return;
-    const batch = files.slice(0, slots).map((file) => ({
+    // 选入即校验（M15）：0 字节/超限图片直接拒收，不等必败请求；
+    // dropzone 拖入与剪贴板粘贴两个入口都汇到这里。
+    const sized = files.filter(
+      (file) => uploadSizeError(file, 'ACTIVITY_IMAGE') === null,
+    );
+    if (sized.length < files.length) {
+      setError('部分图片为空文件或超出 20 MB 上限，已拒收。');
+    }
+    const batch = sized.slice(0, slots).map((file) => ({
       assetId: null,
       error: '',
       file,

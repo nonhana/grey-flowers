@@ -2,7 +2,7 @@ import type { AssetPurpose } from '@grey-flowers/contracts';
 
 import { cn } from 'cnfast';
 import { FileUp, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import {
   ProgressBar,
   RadioButton,
@@ -11,6 +11,7 @@ import {
 } from 'react-aria-components';
 import { toast } from 'sonner';
 
+import { isAbortError } from '@/app/api/http.js';
 import { apiClient } from '@/app/api/index.js';
 import { invalidateAssetsAfterMutation } from '@/app/server-state/assets.js';
 import { usePasteFiles } from '@/hooks/use-paste-files.js';
@@ -19,6 +20,7 @@ import {
   fileMatchesAccept,
   IMAGE_ACCEPT_MAP,
 } from '@/lib/media-accept.js';
+import { uploadSizeError } from '@/lib/upload-limits.js';
 import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { FileDrop } from '@/ui/file-drop.js';
@@ -31,9 +33,11 @@ type Phase = 'idle' | 'uploading' | 'error';
 
 /** 单次打开会话内的表单：挂载即全新，关闭重开由外壳的 session key 重建。 */
 const UploadForm = ({
+  abortRef,
   onUploaded,
   setOpen,
 }: {
+  abortRef: RefObject<AbortController | null>;
   onUploaded: () => void;
   setOpen: (value: boolean) => void;
 }) => {
@@ -49,6 +53,8 @@ const UploadForm = ({
   usePasteFiles({
     enabled: true,
     onFiles: (files) => {
+      // 上传中粘贴闸门：不打断在途上传，也不悄悄换掉正在上传的文件（L-14）。
+      if (phase === 'uploading') return;
       setPhase('idle');
       if (purpose === null) {
         setFile(null);
@@ -63,22 +69,30 @@ const UploadForm = ({
         setError(`剪贴板里没有可上传的${acceptLabel}文件。`);
         return;
       }
+      const sizeError = uploadSizeError(accepted[0], purpose);
+      if (sizeError !== null) {
+        setFile(null);
+        setError(sizeError);
+        return;
+      }
       setFile(accepted[0]);
       setError('');
     },
   });
-
   const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
-
   const submit = async () => {
     if (purpose === null || file === null) return;
 
+    const controller = new AbortController();
+    abortRef.current = controller;
     setPhase('uploading');
     setProgress(0);
     setError('');
 
     try {
-      await apiClient.assets.upload({ file, purpose }, setProgress);
+      await apiClient.assets.upload({ file, purpose }, setProgress, undefined, {
+        signal: controller.signal,
+      });
       // 上传属于 mutation：失效 assets 全家族与 overview 计数，
       // 默认筛选下的当前列表也会立即重取。
       await invalidateAssetsAfterMutation();
@@ -88,9 +102,18 @@ const UploadForm = ({
       onUploaded();
       setOpen(false);
     } catch (cause) {
-      setError(assetErrorMessage(cause));
-      setPhase('error');
+      if (isAbortError(cause)) {
+        // 取消不是错误：无成功反馈、无回调、无导航，只留一条 info 管理预期。
+        toast.info('已取消上传');
+        setPhase('idle');
+        setProgress(0);
+      } else {
+        setError(assetErrorMessage(cause));
+        setPhase('error');
+      }
     }
+    // 不用 try/finally：React Compiler 尚不支持带 finally 的 try 语句。
+    if (abortRef.current === controller) abortRef.current = null;
   };
 
   return (
@@ -150,6 +173,17 @@ const UploadForm = ({
           accept={acceptMap}
           busy={phase === 'uploading'}
           onFile={(target) => {
+            // 上传中 FileDrop 已 busy 失效，此处只处理非上传中的选入。
+            const sizeError = uploadSizeError(
+              target,
+              purpose ?? 'ARTICLE_COVER',
+            );
+            if (sizeError !== null) {
+              setFile(null);
+              setPhase('idle');
+              setError(sizeError);
+              return;
+            }
             setFile(target);
             setPhase('idle');
             setError('');
@@ -227,6 +261,10 @@ export const UploadDialog = ({
   open: boolean;
   setOpen: (value: boolean) => void;
 }) => {
+  // 在途上传的取消柄：任何关闭路径与外壳卸载都掐断上传（L-3/H1）。
+  const abortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => abortRef.current?.abort(), []);
+
   // 每次 open 产生新的 session identity：keyed inner form 据此重建，
   // 同一入口快速重开也拿到全新表单（退出动画期间的数据不再复用）。
   const [session, setSession] = useState(0);
@@ -238,9 +276,25 @@ export const UploadDialog = ({
     setWasOpen(false);
   }
 
+  // 关闭即取消：取消按钮、Esc、遮罩、标题关闭钮全部经由这里。
+  const close = () => {
+    abortRef.current?.abort();
+    setOpen(false);
+  };
+
   return (
-    <AppDialog isOpen={open} onOpenChange={setOpen} size="md" title="上传资产">
-      <UploadForm key={session} onUploaded={onUploaded} setOpen={setOpen} />
+    <AppDialog
+      isOpen={open}
+      onOpenChange={(value) => (value ? setOpen(true) : close())}
+      size="md"
+      title="上传资产"
+    >
+      <UploadForm
+        abortRef={abortRef}
+        key={session}
+        onUploaded={onUploaded}
+        setOpen={close}
+      />
     </AppDialog>
   );
 };

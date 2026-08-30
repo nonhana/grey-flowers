@@ -3,15 +3,17 @@ import type { AssetDto, AssetPurpose } from '@grey-flowers/contracts';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import { Check, ImageUp, Images } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
+import { isAbortError } from '@/app/api/http.js';
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
 import {
   assetsPickerOptions,
   markAssetsStale,
 } from '@/app/server-state/assets.js';
 import { formatBytes } from '@/lib/format.js';
+import { uploadSizeError } from '@/lib/upload-limits.js';
 import { Button } from '@/ui/button.js';
 import { Alert, EmptyState, Skeleton, Spinner } from '@/ui/feedback.js';
 import { AssetImage } from '@/ui/image.js';
@@ -47,10 +49,12 @@ export const AssetPickerDialog = ({
   } else if (!open && wasOpen) {
     setWasOpen(false);
   }
-
   const [uploading, setUploading] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // 在途上传的取消柄：关闭对话框或外壳卸载都掐断上传，杜绝迟到回调（L-19）。
+  const uploadAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => uploadAbortRef.current?.abort(), []);
 
   const pickerQuery = useInfiniteQuery({
     ...assetsPickerOptions(purpose, session),
@@ -66,22 +70,38 @@ export const AssetPickerDialog = ({
         ? pickerQuery.error.message
         : '资产加载失败。'
       : null);
-
   const upload = async (file: File) => {
+    const sizeError = uploadSizeError(file, purpose);
+    if (sizeError !== null) {
+      setUploadError(sizeError);
+      return;
+    }
     setUploadError(null);
     setUploading(0);
+    const controller = new AbortController();
+    uploadAbortRef.current = controller;
     try {
       const asset = await apiClient.assets.upload(
         { file, purpose },
         (progress) => setUploading(Math.round(progress * 100)),
+        undefined,
+        { signal: controller.signal },
       );
-      markAssetsStale();
-      onSelect(asset);
+      // 上传成功但对话框已关闭/会话已取消：不幽灵回调插入（L-19）。
+      if (!controller.signal.aborted) {
+        markAssetsStale();
+        onSelect(asset);
+      }
     } catch (uploadError) {
-      setUploadError(
-        isApiRequestError(uploadError) ? uploadError.message : '上传失败。',
-      );
+      // 取消静默：不是错误态，也不 toast（关闭对话框本身就是用户意图）。
+      if (!isAbortError(uploadError) && !controller.signal.aborted) {
+        setUploadError(
+          isApiRequestError(uploadError) ? uploadError.message : '上传失败。',
+        );
+      }
     }
+    // 不用 try/finally：React Compiler 尚不支持带 finally 的 try 语句。
+    if (uploadAbortRef.current === controller) uploadAbortRef.current = null;
     setUploading(null);
   };
 
@@ -89,14 +109,15 @@ export const AssetPickerDialog = ({
     <AppDialog
       footer={
         onDone ? (
-          <Button onPress={onDone} tone="solid">
+          <Button isDisabled={uploading !== null} onPress={onDone} tone="solid">
             完成（已选 {selectionCount ?? 0}）
           </Button>
         ) : undefined
       }
       isOpen={open}
       onOpenChange={(isOpen) => {
-        if (!isOpen) onClose();
+        if (!isOpen) uploadAbortRef.current?.abort();
+        onClose();
       }}
       size="lg"
       title={title}

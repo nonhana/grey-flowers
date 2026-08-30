@@ -87,6 +87,7 @@ export const createAssetsApi = (http: Http) => {
       input: { file: File; purpose: AssetPurpose },
       onUploadProgress?: (progress: number) => void,
       metadata?: { durationMs?: number; width?: number; height?: number },
+      options?: HttpReadOptions,
     ): Promise<AssetDto> => {
       const contentType = contentTypeOf(input.file);
       const { uploadUrl, key } = await http.post('/assets/upload-url', {
@@ -97,6 +98,7 @@ export const createAssetsApi = (http: Http) => {
           size: input.file.size,
         },
         schema: assetUploadUrlResponseSchema,
+        signal: options?.signal,
       });
 
       await http.putUpload(
@@ -104,6 +106,7 @@ export const createAssetsApi = (http: Http) => {
         input.file,
         contentType,
         onUploadProgress,
+        options?.signal,
       );
 
       // 图片尺寸由前端解码上报（服务端不再解析媒体）。
@@ -128,6 +131,7 @@ export const createAssetsApi = (http: Http) => {
             : {}),
         },
         schema: assetConfirmResponseSchema,
+        signal: options?.signal,
       });
     },
     setStatus: (
