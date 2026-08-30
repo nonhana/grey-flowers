@@ -15,11 +15,14 @@ import {
   previewTokenResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 export const createArticlesApi = (http: Http) => {
   return {
-    list: (query: ArticleListAdminQuery): Promise<ArticleListAdminData> => {
+    list: (
+      query: ArticleListAdminQuery,
+      options?: HttpReadOptions,
+    ): Promise<ArticleListAdminData> => {
       const params = new URLSearchParams();
       params.set('page', String(query.page));
       params.set('pageSize', String(query.pageSize));
@@ -31,12 +34,14 @@ export const createArticlesApi = (http: Http) => {
         authenticated: true,
         schema: articleListAdminResponseSchema,
         searchParams: params,
+        signal: options?.signal,
       });
     },
-    detail: (id: number): Promise<ArticleAdmin> =>
+    detail: (id: number, options?: HttpReadOptions): Promise<ArticleAdmin> =>
       http.get(`/articles/${id}`, {
         authenticated: true,
         schema: articleAdminResponseSchema,
+        signal: options?.signal,
       }),
     create: (input: ArticleCreateInput): Promise<ArticleAdmin> =>
       http.post('/articles', {

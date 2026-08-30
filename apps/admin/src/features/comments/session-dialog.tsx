@@ -1,11 +1,13 @@
 import type { CommentAdmin, CommentAdminTree } from '@grey-flowers/contracts';
 
+import { useMutation } from '@tanstack/react-query';
 import { ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { invalidateCommentsAfterMutation } from '@/app/server-state/comments.js';
 import { toastError } from '@/lib/toast.js';
 import { Button } from '@/ui/button.js';
 import { TextAreaField } from '@/ui/form.js';
@@ -22,7 +24,6 @@ import { commentPageUrl } from './display.js';
  */
 export const SessionDialog = ({
   comment,
-  onChanged,
   onClose,
   onDelete,
   onExited,
@@ -30,7 +31,6 @@ export const SessionDialog = ({
   open,
 }: {
   comment: CommentAdminTree | null;
-  onChanged: () => void;
   onClose: () => void;
   onDelete: (target: CommentAdmin) => void;
   onExited?: () => void;
@@ -38,7 +38,6 @@ export const SessionDialog = ({
   open: boolean;
 }) => {
   const [quickContent, setQuickContent] = useState('');
-  const [sending, setSending] = useState(false);
 
   // 打开时同步内容（渲染期、受条件保护地调整 state）
   const [prevCommentId, setPrevCommentId] = useState<number | null>(null);
@@ -47,22 +46,26 @@ export const SessionDialog = ({
     setQuickContent('');
   }
 
-  const sendQuickReply = async () => {
+  const replyMutation = useMutation({
+    mutationFn: (body: string) => {
+      if (!comment) return Promise.reject(new Error('no comment'));
+      return apiClient.comments.reply(comment.id, { content: body });
+    },
+    onSuccess: async () => {
+      setQuickContent('');
+      toast.success(`已回复，将通知 ${comment?.author.username ?? '作者'}`);
+      await invalidateCommentsAfterMutation();
+    },
+    onError: (error) => {
+      toastError(error);
+    },
+  });
+
+  const sendQuickReply = () => {
     if (!comment) return;
     const body = quickContent.trim();
     if (!body) return;
-
-    setSending(true);
-    try {
-      await apiClient.comments.reply(comment.id, { content: body });
-      setQuickContent('');
-      onChanged();
-      toast.success(`已回复，将通知 ${comment.author.username}`);
-    } catch (error) {
-      toastError(error);
-    } finally {
-      setSending(false);
-    }
+    replyMutation.mutate(body);
   };
 
   const sessionCount = comment ? 1 + comment.childrenCount : 0;
@@ -88,7 +91,7 @@ export const SessionDialog = ({
             <div className="flex justify-end">
               <Button
                 isDisabled={!quickContent.trim()}
-                isLoading={sending}
+                isLoading={replyMutation.isPending}
                 size="sm"
                 tone="solid"
                 type="submit"

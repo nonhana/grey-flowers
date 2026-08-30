@@ -1,13 +1,18 @@
-import type { MusicAdmin, MusicListData } from '@grey-flowers/contracts';
+import type { MusicAdmin, MusicListQuery } from '@grey-flowers/contracts';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import {
+  invalidateMusicAfterMutation,
+  musicListOptions,
+} from '@/app/server-state/music.js';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
@@ -16,7 +21,7 @@ import { EmptyState, Skeleton } from '@/ui/feedback.js';
 import { FilterChip, SearchInput } from '@/ui/form.js';
 import { ConfirmDialog } from '@/ui/overlay.js';
 import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+import { PageBody, PageHeader } from '@/ui/surface.js';
 
 import { EditMusicDialog } from './edit-dialog.js';
 import { MusicCard } from './music-card.js';
@@ -42,20 +47,14 @@ const MusicCardSkeleton = () => (
   >
     <Skeleton className="min-h-42 w-full flex-1 rounded-none" />
     <div className="grid gap-1 px-3 py-2.5">
-      <Skeleton className="h-[1.55em] w-1/2 text-base" />
-      <MetaLine>
-        <Skeleton className="h-[1.45em] w-20 text-2xs" />
-        <Skeleton className="h-[1.45em] w-24 text-2xs" />
-        <Skeleton className="ml-auto h-[1.45em] w-10 text-2xs" />
-      </MetaLine>
-      <div className="mt-1.5 flex items-center justify-between gap-2">
-        <Skeleton className="h-[1.45em] w-14 text-2xs" />
-        <span className="flex shrink-0 gap-1.5">
-          <Skeleton className="size-8 rounded-control" />
-          <Skeleton className="size-8 rounded-control" />
-          <Skeleton className="size-8 rounded-control" />
-        </span>
-      </div>
+      <Skeleton className="h-[1.6em] w-4/5 text-md" />
+      <Skeleton className="h-[1.45em] w-3/5 text-2xs" />
+      <Skeleton className="h-[1.45em] w-2/5 text-2xs" />
+    </div>
+    <div className="mt-auto flex gap-1.5 px-3 pb-2.5">
+      <Skeleton className="size-8 rounded-control" />
+      <Skeleton className="size-8 rounded-control" />
+      <Skeleton className="size-8 rounded-control" />
     </div>
   </div>
 );
@@ -69,57 +68,43 @@ export const MusicLibraryPage = () => {
   const toggle = usePlayerStore((s) => s.toggle);
   const play = usePlayerStore((s) => s.play);
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [data, setData] = useState<MusicListData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const editDialog = useDialog<MusicAdmin>();
   const deleteDialog = useDialog<MusicAdmin>();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-      setPage(1);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
+  // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
+  const committedQuery = useDebouncedCommit(query, 300);
+  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
+  if (prevCommitted !== committedQuery) {
+    setPrevCommitted(committedQuery);
+    setPage(1);
+  }
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${debouncedQuery}|${String(incomplete)}|${String(page)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.music
-      .list({
-        page,
-        pageSize: PAGE_SIZE,
-        ...(debouncedQuery ? { search: debouncedQuery } : {}),
-        ...(incomplete ? { incomplete: 'true' } : {}),
-      })
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载音乐库，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedQuery, page, reloadKey, incomplete]);
+  const listQuery: MusicListQuery = {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(committedQuery ? { search: committedQuery } : {}),
+    ...(incomplete ? { incomplete: 'true' } : {}),
+  };
+  const musicQuery = useQuery(musicListOptions(listQuery));
+  const data = musicQuery.data;
+  const loading = musicQuery.isFetching;
+  const error = musicQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasQuery = debouncedQuery.length > 0;
+  const hasQuery = committedQuery.length > 0;
+
+  const removeMutation = useMutation({
+    mutationFn: (target: MusicAdmin) => apiClient.music.remove(target.id),
+    onSuccess: async (_data, target) => {
+      usePlayerStore.getState().removeTrack(target.id);
+      toast.success('已从音乐库删除。');
+      await invalidateMusicAfterMutation();
+    },
+    onError: (removeError) => {
+      toastError(removeError);
+    },
+  });
 
   const handlePlayToggle = (index: number) => {
     if (!data) return;
@@ -133,18 +118,11 @@ export const MusicLibraryPage = () => {
     }
   };
 
-  const remove = async () => {
+  const remove = () => {
     const target = deleteDialog.data;
     if (!target) return;
     deleteDialog.dismiss();
-    try {
-      await apiClient.music.remove(target.id);
-      usePlayerStore.getState().removeTrack(target.id);
-      setReloadKey((current) => current + 1);
-      toast.success('已从音乐库删除。');
-    } catch (removeError) {
-      toastError(removeError);
-    }
+    removeMutation.mutate(target);
   };
 
   return (
@@ -211,14 +189,12 @@ export const MusicLibraryPage = () => {
         ) : error ? (
           <EmptyState
             action={
-              <Button onPress={() => setReloadKey((current) => current + 1)}>
-                重试
-              </Button>
+              <Button onPress={() => void musicQuery.refetch()}>重试</Button>
             }
             icon={<CloudOff aria-hidden />}
             title="没能连上音乐库"
           >
-            {error}
+            无法加载音乐库，请稍后重试。
           </EmptyState>
         ) : data && data.items.length === 0 ? (
           <EmptyState
@@ -294,7 +270,6 @@ export const MusicLibraryPage = () => {
         music={editDialog.data}
         onClose={editDialog.dismiss}
         onExited={editDialog.clear}
-        onSaved={() => setReloadKey((current) => current + 1)}
         open={editDialog.isOpen}
       />
 

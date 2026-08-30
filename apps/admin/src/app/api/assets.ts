@@ -15,7 +15,7 @@ import {
   assetUploadUrlResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 const listSearchParams = (query: AssetListQuery) => {
   const params = new URLSearchParams();
@@ -63,16 +63,21 @@ const readImageSize = async (
 
 export const createAssetsApi = (http: Http) => {
   return {
-    list: (query: AssetListQuery): Promise<AssetListData> =>
+    list: (
+      query: AssetListQuery,
+      options?: HttpReadOptions,
+    ): Promise<AssetListData> =>
       http.get('/assets', {
         authenticated: true,
         schema: assetListResponseSchema,
         searchParams: listSearchParams(query),
+        signal: options?.signal,
       }),
-    detail: (id: number): Promise<AssetDetailData> =>
+    detail: (id: number, options?: HttpReadOptions): Promise<AssetDetailData> =>
       http.get(`/assets/${id}`, {
         authenticated: true,
         schema: assetDetailResponseSchema,
+        signal: options?.signal,
       }),
     /**
      * 受管资产直传：presign 签发 URL → 浏览器 PUT 到 R2（进度真实）→

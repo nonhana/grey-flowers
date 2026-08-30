@@ -15,7 +15,7 @@ import {
   userDeleteResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 const listSearchParams = (query: UserListQuery) => {
   const params = new URLSearchParams();
@@ -34,10 +34,14 @@ const detailSearchParams = (query: UserAdminDetailQuery) => {
 };
 
 export interface UsersApi {
-  list(query: UserListQuery): Promise<UserAdminListData>;
+  list(
+    query: UserListQuery,
+    options?: HttpReadOptions,
+  ): Promise<UserAdminListData>;
   detail(
     id: number,
     query?: UserAdminDetailQuery,
+    options?: HttpReadOptions,
   ): Promise<UserAdminDetailData>;
   update(id: number, input: UserUpdateInput): Promise<UserAdminSummary>;
   remove(id: number): Promise<UserDeleteResult>;
@@ -45,20 +49,26 @@ export interface UsersApi {
 
 export const createUsersApi = (http: Http): UsersApi => {
   return {
-    list: (query: UserListQuery): Promise<UserAdminListData> =>
+    list: (
+      query: UserListQuery,
+      options?: HttpReadOptions,
+    ): Promise<UserAdminListData> =>
       http.get('/users', {
         authenticated: true,
         schema: userAdminListResponseSchema,
         searchParams: listSearchParams(query),
+        signal: options?.signal,
       }),
     detail: (
       id: number,
       query?: UserAdminDetailQuery,
+      options?: HttpReadOptions,
     ): Promise<UserAdminDetailData> =>
       http.get(`/users/${id}`, {
         authenticated: true,
         schema: userAdminDetailResponseSchema,
         searchParams: query ? detailSearchParams(query) : undefined,
+        signal: options?.signal,
       }),
     update: (id: number, input: UserUpdateInput): Promise<UserAdminSummary> =>
       http.patch(`/users/${id}`, {

@@ -18,7 +18,7 @@ import {
   Tags,
   Users,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import type { RailSize } from '@/lib/rail-size.js';
 
@@ -247,11 +247,6 @@ export const AccountBlock = ({
 export const ConsoleRail = () => {
   const [size, setSize] = useState<RailSize>(loadRailSize);
   const railRef = useRef<HTMLElement>(null);
-  const sizeRef = useRef(size);
-
-  useEffect(() => {
-    sizeRef.current = size;
-  }, [size]);
 
   const { handleProps, isResizing } = useResizableEdge({
     ref: railRef,
@@ -269,7 +264,12 @@ export const ConsoleRail = () => {
         if (source === 'keyboard') saveRailSize(next);
         return next;
       }),
-    onResizeEnd: () => saveRailSize(sizeRef.current),
+    onResizeEnd: (final) =>
+      setSize((current) => {
+        const next = resolveRailSize(current, final, 'pointer');
+        saveRailSize(next);
+        return next;
+      }),
   });
 
   const toggle = () => {

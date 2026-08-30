@@ -14,7 +14,6 @@ import {
   VolumeX,
   X,
 } from 'lucide-react';
-import { useEffect } from 'react';
 
 import { usePlayerStore, type LoopMode } from '@/store/player.js';
 import { Button, IconButton } from '@/ui/button.js';
@@ -74,11 +73,6 @@ export const NowPlayingSheet = ({
   const toggleMute = usePlayerStore((s) => s.toggleMute);
   const setVolume = usePlayerStore((s) => s.setVolume);
   const stop = usePlayerStore((s) => s.stop);
-
-  // 曲目被清空（停止、删曲）而浮层还开着时，自动收起浮层。
-  useEffect(() => {
-    if (track === null && isOpen) onOpenChange(false);
-  }, [isOpen, onOpenChange, track]);
 
   const LoopIcon = LOOP_ICON[loopMode];
   const isPlaying = status === 'playing';

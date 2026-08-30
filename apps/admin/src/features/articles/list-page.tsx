@@ -1,12 +1,13 @@
 import type { ArticleListAdmin } from '@grey-flowers/contracts';
 
+import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import { articlesListOptions } from '@/app/server-state/articles.js';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { formatDateTime } from '@/lib/format.js';
 import { Button, buttonClass } from '@/ui/button.js';
 import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback.js';
@@ -135,58 +136,33 @@ export const ArticlesListPage = () => {
   const search = useSearch({ strict: false }) as { status?: unknown };
   const status = parseStatusFilter(search.status);
 
-  const [items, setItems] = useState<ArticleListAdmin[]>([]);
-  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const [reloadKey, setReloadKey] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // 每一次按键都发一次请求既浪费也让列表抖动，落后 250ms 再查。
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-      setPage(1);
-    }, 250);
-    return () => clearTimeout(timer);
-  }, [query]);
+  // 每一次按键都发一次请求既浪费也让列表抖动，落后 250ms 再查；
+  // 提交值一变，页码在渲染期回到第 1 页。
+  const committedQuery = useDebouncedCommit(query, 250);
+  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
+  if (prevCommitted !== committedQuery) {
+    setPrevCommitted(committedQuery);
+    setPage(1);
+  }
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  // 放进 effect 里会触发级联渲染。
-  const requestKey = `${status}|${debouncedQuery}|${String(page)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError(null);
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void apiClient.articles
-      .list({ page, pageSize: PAGE_SIZE, q: debouncedQuery, status })
-      .then((data) => {
-        if (cancelled) return;
-        setItems(data.items);
-        setTotal(data.total);
-      })
-      .catch((loadError: unknown) => {
-        if (cancelled) return;
-        setError(loadError instanceof Error ? loadError.message : '加载失败。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedQuery, page, reloadKey, status]);
+  const articlesQuery = useQuery(
+    articlesListOptions({
+      page,
+      pageSize: PAGE_SIZE,
+      q: committedQuery,
+      status,
+    }),
+  );
+  const items = articlesQuery.data?.items ?? [];
+  const total = articlesQuery.data?.total ?? 0;
+  const loading = articlesQuery.isFetching;
+  const error = articlesQuery.error;
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const isSearching = debouncedQuery.trim().length > 0;
-
+  const isSearching = committedQuery.trim().length > 0;
   return (
     <PageBody scroll="child">
       {/* 搜索是这一屏唯一的控件，跟标题同排；桌面端的状态筛选由侧栏子项承担。 */}
@@ -245,19 +221,16 @@ export const ArticlesListPage = () => {
         ) : error ? (
           <Alert
             action={
-              <Button
-                onPress={() => setReloadKey((current) => current + 1)}
-                size="sm"
-              >
+              <Button onPress={() => void articlesQuery.refetch()} size="sm">
                 重试
               </Button>
             }
           >
-            {error}
+            {error.message}
           </Alert>
         ) : items.length === 0 ? (
           isSearching ? (
-            <EmptySearch onClear={() => setQuery('')} query={debouncedQuery} />
+            <EmptySearch onClear={() => setQuery('')} query={committedQuery} />
           ) : (
             <EmptyArticles status={status} />
           )

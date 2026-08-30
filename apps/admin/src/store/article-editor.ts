@@ -16,6 +16,10 @@ import {
   isApiNetworkError,
   isApiRequestError,
 } from '@/app/api/index.js';
+import {
+  invalidateArticlesAfterMutation,
+  markAssetsStaleAfterArticleRemoval,
+} from '@/app/server-state/articles.js';
 import { toastError } from '@/lib/toast.js';
 
 export interface ArticleDraft {
@@ -177,6 +181,9 @@ export const createArticleEditorStore = (articleId: number | null) => {
             lastError: null,
           });
           await del(draftKey(articleId)).catch(() => undefined);
+          // 保存已落盘：文章列表/元数据缓存过期。计数与发布态不受 save 影响，
+          // 不失效 overview/taxonomy，避免自动保存期间的 refetch 风暴。
+          await invalidateArticlesAfterMutation();
           return true;
         } catch (error) {
           if (isApiRequestError(error, 'ARTICLE_STALE')) {
@@ -420,6 +427,8 @@ export const createArticleEditorStore = (articleId: number | null) => {
           sync(result);
           set({ phase: 'saved' });
           await loadVersions();
+          // 发布态变化影响文章列表、taxonomy 计数与 overview 统计。
+          await invalidateArticlesAfterMutation();
           toast.success('文章已发布。');
           return result;
         } catch (error) {
@@ -439,6 +448,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
           sync(result);
           set({ phase: 'saved' });
           await loadVersions();
+          await invalidateArticlesAfterMutation();
           toast.success('文章已下架。');
           return result;
         } catch (error) {
@@ -449,10 +459,12 @@ export const createArticleEditorStore = (articleId: number | null) => {
 
       const removeArticle = async (): Promise<boolean> => {
         if (articleId === null) return false;
-
         try {
           await apiClient.articles.remove(articleId);
           set({ article: null });
+          // 删除级联：列表/计数全失效；被删文章的评论与资产引用投影同步过期。
+          await invalidateArticlesAfterMutation();
+          markAssetsStaleAfterArticleRemoval();
           toast.success('文章已删除。');
           return true;
         } catch (error) {

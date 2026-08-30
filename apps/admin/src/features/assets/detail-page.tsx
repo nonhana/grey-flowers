@@ -1,12 +1,15 @@
-import type { AssetDetailData } from '@grey-flowers/contracts';
-
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ArrowLeft, Check, Copy, Music2, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import {
+  assetsDetailOptions,
+  invalidateAssetsAfterMutation,
+} from '@/app/server-state/assets.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format.js';
 import { Button, buttonClass, IconButton } from '@/ui/button.js';
@@ -21,11 +24,6 @@ import {
   purposeLabels,
   statusLabels,
 } from './display.js';
-
-type DetailState =
-  | { data: AssetDetailData; kind: 'ready' }
-  | { kind: 'error'; message: string }
-  | { kind: 'loading' };
 
 const Row = ({
   children,
@@ -45,138 +43,124 @@ const ReferenceRow = ({ count, label }: { count: number; label: string }) => (
     <span className="text-base text-ink-dim">{label}</span>
     <span
       className={cn(
-        'font-mono text-base tabular-nums',
+        'font-mono text-2xs',
         count > 0 ? 'text-accent-text' : 'text-ink-dim',
       )}
     >
-      {count}
+      {String(count)}
     </span>
   </div>
+);
+
+const DetailSkeleton = () => (
+  <PageBody>
+    {/* 与真实详情同构：页头位（返回/标题/状态读数）+ 图区 + 地址面板 + 元数据面板 */}
+    <div className="grid animate-content-in gap-4">
+      <div className="flex items-center gap-2">
+        <Skeleton className="size-10 shrink-0 rounded-control" />
+        <Skeleton className="h-7 w-32" />
+        <Skeleton className="ml-auto h-7 w-20 rounded-full" />
+      </div>
+      <Skeleton className="h-96 w-full rounded-panel" />
+      <div
+        className="
+          grid gap-2 rounded-panel border border-rule bg-case-raised p-4
+        "
+      >
+        <Skeleton className="h-[1.45em] w-16 text-2xs" />
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-10 flex-1 rounded-control" />
+          <Skeleton className="size-10 rounded-control" />
+        </div>
+      </div>
+      <div
+        className="
+          grid gap-2 rounded-panel border border-rule bg-case-raised p-4
+        "
+      >
+        <Skeleton className="h-[1.45em] w-16 text-2xs" />
+        <div className="divide-y divide-rule">
+          {Array.from({ length: 7 }, (_, index) => (
+            <div
+              className="flex items-center justify-between gap-4 py-2.5"
+              key={index}
+            >
+              <Skeleton className="h-[1.45em] w-10 text-2xs" />
+              <Skeleton className="h-[1.55em] w-32 text-base" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </PageBody>
 );
 
 export const AssetsDetailPage = () => {
   const { assetId } = useParams({ strict: false }) as { assetId: string };
   const id = Number(assetId);
-  const [state, setState] = useState<DetailState>({ kind: 'loading' });
-  const [version, setVersion] = useState(0);
+  const enabled = Number.isSafeInteger(id) && id > 0;
+  const detailQuery = useQuery({
+    ...assetsDetailOptions(id),
+    enabled,
+  });
   const [copied, setCopied] = useState(false);
-  const [busy, setBusy] = useState(false);
   const cleanupDialog = useDialog<void>();
   const deleteDialog = useDialog<void>();
 
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.assets
-      .detail(id)
-      .then((data) => {
-        if (!cancelled) setState({ data, kind: 'ready' });
-      })
-      .catch(() => {
-        if (!cancelled)
-          setState({ kind: 'error', message: '无法加载该资产。' });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [id, version]);
-
-  const runAction = async (action: 'cleanup' | 'delete' | 'restore') => {
-    setBusy(true);
-    const dismissConfirm = () => {
-      if (action === 'cleanup') cleanupDialog.dismiss();
-      if (action === 'delete') deleteDialog.dismiss();
-    };
-
-    try {
-      if (action === 'cleanup') {
-        await apiClient.assets.setStatus(id, 'PENDING_CLEANUP');
-        toast.success('已标记为待清理。');
-      } else if (action === 'restore') {
-        await apiClient.assets.setStatus(id, 'AVAILABLE');
-        toast.success('已恢复为可用。');
-      } else {
-        await apiClient.assets.remove(id);
-        toast.success('资产已删除。');
-      }
-      dismissConfirm();
-      setState({ kind: 'loading' });
-      setVersion((current) => current + 1);
-    } catch (cause) {
+  const statusMutation = useMutation({
+    mutationFn: (status: 'AVAILABLE' | 'PENDING_CLEANUP') =>
+      apiClient.assets.setStatus(id, status),
+    onSuccess: async (_data, status) => {
+      cleanupDialog.dismiss();
+      toast.success(
+        status === 'PENDING_CLEANUP' ? '已标记为待清理。' : '已恢复为可用。',
+      );
+      await invalidateAssetsAfterMutation();
+    },
+    onError: (cause) => {
       toast.error(assetErrorMessage(cause));
-      dismissConfirm();
-    } finally {
-      setBusy(false);
-    }
-  };
+      cleanupDialog.dismiss();
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => apiClient.assets.remove(id),
+    onSuccess: async () => {
+      deleteDialog.dismiss();
+      toast.success('资产已删除。');
+      await invalidateAssetsAfterMutation();
+    },
+    onError: (cause) => {
+      toast.error(assetErrorMessage(cause));
+      deleteDialog.dismiss();
+    },
+  });
+
+  const busy = statusMutation.isPending || deleteMutation.isPending;
 
   const copyDeliveryUrl = async () => {
-    if (state.kind !== 'ready') return;
-    await navigator.clipboard.writeText(state.data.asset.deliveryUrl);
+    if (!detailQuery.data) return;
+    await navigator.clipboard.writeText(detailQuery.data.asset.deliveryUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   };
 
-  if (state.kind === 'loading') {
-    return (
-      <PageBody>
-        {/* 与真实详情同构：页头位（返回/标题/状态读数）+ 图区 + 地址面板 + 元数据面板 */}
-        <div className="grid animate-content-in gap-4">
-          <div className="flex items-center gap-2">
-            <Skeleton className="size-10 shrink-0 rounded-control" />
-            <Skeleton className="h-7 w-32" />
-            <Skeleton className="ml-auto h-7 w-20 rounded-full" />
-          </div>
-          <Skeleton className="h-96 w-full rounded-panel" />
-          <div
-            className="
-              grid gap-2 rounded-panel border border-rule bg-case-raised p-4
-            "
-          >
-            <Skeleton className="h-[1.45em] w-16 text-2xs" />
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-10 flex-1 rounded-control" />
-              <Skeleton className="size-10 rounded-control" />
-            </div>
-          </div>
-          <div
-            className="
-              grid gap-2 rounded-panel border border-rule bg-case-raised p-4
-            "
-          >
-            <Skeleton className="h-[1.45em] w-16 text-2xs" />
-            <div className="divide-y divide-rule">
-              {Array.from({ length: 7 }, (_, index) => (
-                <div
-                  className="flex items-center justify-between gap-4 py-2.5"
-                  key={index}
-                >
-                  <Skeleton className="h-[1.45em] w-10 text-2xs" />
-                  <Skeleton className="h-[1.55em] w-32 text-base" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </PageBody>
-    );
+  if (!enabled || detailQuery.isFetching) {
+    return <DetailSkeleton />;
   }
 
-  if (state.kind === 'error') {
+  if (detailQuery.error || !detailQuery.data) {
     return (
       <PageBody>
         <div className="grid justify-items-center gap-4 py-16 text-center">
-          <p className="text-md text-ink-dim">{state.message}</p>
-          <Button onPress={() => setVersion((current) => current + 1)}>
-            重试
-          </Button>
+          <p className="text-md text-ink-dim">无法加载该资产。</p>
+          <Button onPress={() => void detailQuery.refetch()}>重试</Button>
         </div>
       </PageBody>
     );
   }
 
-  const { asset, references } = state.data;
+  const { asset, references } = detailQuery.data;
   const isAudio = asset.mediaType === 'AUDIO';
   const referenced = references.total > 0;
 
@@ -327,7 +311,7 @@ export const AssetsDetailPage = () => {
                 <>
                   <Button
                     isDisabled={busy}
-                    onPress={() => void runAction('restore')}
+                    onPress={() => void statusMutation.mutate('AVAILABLE')}
                   >
                     恢复为可用
                   </Button>
@@ -351,7 +335,7 @@ export const AssetsDetailPage = () => {
         isOpen={cleanupDialog.isOpen}
         message="待清理的资产不能再被新的内容引用，但已有引用不受影响。随时可以恢复。"
         onCancel={cleanupDialog.dismiss}
-        onConfirm={() => void runAction('cleanup')}
+        onConfirm={() => void statusMutation.mutate('PENDING_CLEANUP')}
         onExited={cleanupDialog.clear}
         title="标记为待清理？"
       />
@@ -361,7 +345,7 @@ export const AssetsDetailPage = () => {
         isOpen={deleteDialog.isOpen}
         message="R2 上的文件会立即移除，记录标记为已删除。此操作不可撤销。"
         onCancel={deleteDialog.dismiss}
-        onConfirm={() => void runAction('delete')}
+        onConfirm={() => void deleteMutation.mutate()}
         onExited={deleteDialog.clear}
         title="彻底删除这个资产？"
       />

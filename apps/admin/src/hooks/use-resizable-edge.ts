@@ -36,8 +36,8 @@ export interface UseResizableEdgeOptions {
   keyboardStep?: number;
   /** 尺寸变化回调。size 为钳制后的建议尺寸，meta 提供未钳制值与来源。 */
   onResize: (size: number, change: ResizeChange) => void;
-  /** 一次拖拽结束（pointerup / pointercancel） */
-  onResizeEnd?: () => void;
+  /** 一次拖拽结束（pointerup / pointercancel），size 为本次拖拽的最终尺寸 */
+  onResizeEnd?: (size: number) => void;
 }
 
 export interface ResizeHandleProps {
@@ -87,10 +87,12 @@ export const useResizableEdge = ({
     const horizontal = isHorizontal(edge);
     // right/bottom：正方向拖拽使尺寸增大；left/top 相反。
     const sign = edge === 'right' || edge === 'bottom' ? 1 : -1;
+    let lastRaw = startSize;
 
     const apply = (clientX: number, clientY: number) => {
       const delta = horizontal ? clientY - startY : clientX - startX;
       const raw = startSize + sign * delta;
+      lastRaw = raw;
       onResize(clamp(raw, min, max), { raw, source: 'pointer' });
     };
 
@@ -108,7 +110,7 @@ export const useResizableEdge = ({
       handle.removeEventListener('pointercancel', finish);
       document.body.style.userSelect = previousUserSelect;
       setIsResizing(false);
-      onResizeEnd?.();
+      onResizeEnd?.(clamp(lastRaw, min, max));
     };
 
     handle.addEventListener('pointermove', onPointerMove);

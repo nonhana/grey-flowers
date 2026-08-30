@@ -15,6 +15,11 @@ import type { MoreSheetProps } from './more-sheet.js';
 
 import { ComposeFab } from './compose-fab.js';
 import { ConsoleRail } from './console-rail.js';
+// 懒加载入口是模块级普通函数：React Compiler 不支持组件内的 import 表达式。
+const loadMoreSheet = () =>
+  import('./more-sheet.js').then((mod) => mod.MoreSheet);
+const loadComposeMenu = () =>
+  import('./compose-menu.js').then((mod) => mod.ComposeMenu);
 
 const tabClass = cn(
   'flex h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control',
@@ -62,9 +67,7 @@ export const ConsoleShell = () => {
   const openMore = () => {
     setMoreOpen(true);
     if (!MoreSheet) {
-      void import('./more-sheet.js').then((mod) =>
-        setMoreSheet(() => mod.MoreSheet),
-      );
+      void loadMoreSheet().then((component) => setMoreSheet(() => component));
     }
   };
   // ComposeMenu（motion 展开层）由 ComposeFab 悬停/聚焦/pointerdown 预取后懒加载；
@@ -73,8 +76,8 @@ export const ConsoleShell = () => {
     useState<ComponentType<ComposeMenuProps> | null>(null);
   const prefetchComposeMenu = () => {
     if (!ComposeMenu) {
-      void import('./compose-menu.js').then((mod) =>
-        setComposeMenu(() => mod.ComposeMenu),
+      void loadComposeMenu().then((component) =>
+        setComposeMenu(() => component),
       );
     }
   };

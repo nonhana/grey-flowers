@@ -1,17 +1,18 @@
 import type {
   AssetListData,
+  AssetListQuery,
   AssetMediaType,
   AssetPurpose,
   AssetStatus,
 } from '@grey-flowers/contracts';
 
+import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import { assetsListOptions } from '@/app/server-state/assets.js';
 import { formatBytes, formatDateTime } from '@/lib/format.js';
 import { Button } from '@/ui/button.js';
 import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
@@ -143,43 +144,20 @@ export const AssetsListPage = () => {
 
   const [filters, setFilters] = useState<FilterState>(EMPTY_FILTER);
   const [page, setPage] = useState(1);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [data, setData] = useState<AssetListData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [uploadOpen, setUploadOpen] = useState(false);
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${JSON.stringify(filters)}|${String(activeStatus)}|${String(page)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.assets
-      .list({
-        page,
-        pageSize: PAGE_SIZE,
-        ...filters,
-        ...(activeStatus ? { status: activeStatus } : {}),
-      })
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载资产库，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [filters, page, reloadKey, activeStatus]);
+  // 空筛选不进 key：undefined 字段按「未提供」归一。
+  const listQuery: AssetListQuery = {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(filters.purpose ? { purpose: filters.purpose } : {}),
+    ...(filters.mediaType ? { mediaType: filters.mediaType } : {}),
+    ...(activeStatus ? { status: activeStatus } : {}),
+  };
+  const assetsQuery = useQuery(assetsListOptions(listQuery));
+  const data = assetsQuery.data;
+  const loading = assetsQuery.isFetching;
+  const error = assetsQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter =
@@ -282,14 +260,12 @@ export const AssetsListPage = () => {
         ) : error ? (
           <EmptyState
             action={
-              <Button onPress={() => setReloadKey((current) => current + 1)}>
-                重试
-              </Button>
+              <Button onPress={() => void assetsQuery.refetch()}>重试</Button>
             }
             icon={<CloudOff aria-hidden />}
             title="没能连上资产库"
           >
-            {error}
+            无法加载资产库，请稍后重试。
           </EmptyState>
         ) : data && data.items.length === 0 ? (
           <EmptyState
@@ -336,7 +312,6 @@ export const AssetsListPage = () => {
       <UploadDialog
         onUploaded={() => {
           clearFilters();
-          setReloadKey((current) => current + 1);
         }}
         open={uploadOpen}
         setOpen={setUploadOpen}

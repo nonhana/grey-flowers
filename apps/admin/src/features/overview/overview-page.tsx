@@ -1,5 +1,4 @@
-import type { OverviewData } from '@grey-flowers/contracts';
-
+import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import {
   CloudOff,
@@ -12,10 +11,8 @@ import {
   Upload,
   Users,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
-import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import { overviewCountsOptions } from '@/app/server-state/overview.js';
 import { formatCount, formatHours } from '@/lib/format.js';
 import { Button, buttonClass } from '@/ui/button.js';
 import { EmptyState } from '@/ui/feedback.js';
@@ -37,36 +34,9 @@ import { TrendCard } from './trend-card.js';
 
 /** 运营概览：计数抽屉 + 待办带 + 趋势图，三条横带布局；计数与趋势独立请求、错误互不阻塞。 */
 export const OverviewPage = () => {
-  const [data, setData] = useState<OverviewData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [reloadKey, setReloadKey] = useState(0);
-
-  const requestKey = `counts|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.overview
-      .get()
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载概览，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
+  const { data, error, isFetching, refetch } = useQuery(
+    overviewCountsOptions(),
+  );
 
   const counts = data?.counts;
 
@@ -113,20 +83,16 @@ export const OverviewPage = () => {
           title="运营概览"
         />
 
-        <section aria-label="关键计数" aria-busy={loading}>
-          {loading ? (
+        <section aria-label="关键计数" aria-busy={isFetching}>
+          {isFetching ? (
             <ReadoutDrawerSkeleton />
           ) : error ? (
             <EmptyState
-              action={
-                <Button onPress={() => setReloadKey((current) => current + 1)}>
-                  重试
-                </Button>
-              }
+              action={<Button onPress={() => void refetch()}>重试</Button>}
               icon={<CloudOff aria-hidden />}
               title="没能连上概览"
             >
-              {error}
+              无法加载概览，请稍后重试。
             </EmptyState>
           ) : counts ? (
             <ReadoutDrawer>
@@ -170,7 +136,7 @@ export const OverviewPage = () => {
           ) : null}
         </section>
 
-        {loading ? (
+        {isFetching ? (
           <PendingPanelSkeleton />
         ) : data ? (
           <PendingPanel className="animate-content-in" items={data.pending} />
@@ -191,7 +157,7 @@ export const OverviewPage = () => {
               xl:col-span-7
             "
           />
-          {loading ? (
+          {isFetching ? (
             <CompositionCardSkeleton className="xl:col-span-5" />
           ) : data ? (
             <CompositionCard
@@ -212,7 +178,7 @@ export const OverviewPage = () => {
           "
         >
           <CadenceCard className="xl:col-span-8" />
-          {loading ? (
+          {isFetching ? (
             <StorageCardSkeleton className="xl:col-span-4" />
           ) : data ? (
             <StorageCard

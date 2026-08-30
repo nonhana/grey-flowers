@@ -15,14 +15,15 @@ import {
   tagResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 export const createTaxonomyApi = (http: Http) => {
   return {
-    listCategories: (): Promise<CategoryListData> =>
+    listCategories: (options?: HttpReadOptions): Promise<CategoryListData> =>
       http.get('/categories', {
         authenticated: true,
         schema: categoryListResponseSchema,
+        signal: options?.signal,
       }),
     createCategory: (input: CategorySaveInput): Promise<CategoryAdmin> =>
       http.post('/categories', {
@@ -44,13 +45,17 @@ export const createTaxonomyApi = (http: Http) => {
         authenticated: true,
         schema: categoryDeleteResponseSchema,
       }),
-    listTags: (unused?: boolean): Promise<TagListData> => {
+    listTags: (
+      unused?: boolean,
+      options?: HttpReadOptions,
+    ): Promise<TagListData> => {
       const params = new URLSearchParams();
       if (unused) params.set('unused', 'true');
       return http.get('/tags', {
         authenticated: true,
         schema: tagListResponseSchema,
         searchParams: params,
+        signal: options?.signal,
       });
     },
     createTag: (name: string): Promise<TagAdmin> =>

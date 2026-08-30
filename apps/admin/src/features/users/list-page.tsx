@@ -1,15 +1,20 @@
 import type {
-  UserAdminListData,
   UserAdminSummary,
+  UserListQuery,
   UserRole,
 } from '@grey-flowers/contracts';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { CloudOff, RotateCcw, Users } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import {
+  invalidateUsersAfterMutation,
+  usersListOptions,
+} from '@/app/server-state/users.js';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { Button } from '@/ui/button.js';
@@ -40,84 +45,57 @@ const EMPTY_FILTER: UserFilterDraft = { role: '', search: '' };
 
 export const UsersPage = () => {
   const [draft, setDraft] = useState<UserFilterDraft>(EMPTY_FILTER);
-  const [filters, setFilters] = useState<UserFilterDraft>(EMPTY_FILTER);
   const [page, setPage] = useState(1);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [data, setData] = useState<UserAdminListData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   const detailDialog = useDialog<UserAdminSummary>();
   const editDialog = useDialog<UserAdminSummary>();
   const deleteDialog = useDialog<UserAdminSummary>();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setFilters(draft);
-      setPage(1);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [draft]);
+  // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
+  const filters = useDebouncedCommit(draft, 300);
+  const [prevFilters, setPrevFilters] = useState(filters);
+  if (prevFilters !== filters) {
+    setPrevFilters(filters);
+    setPage(1);
+  }
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${JSON.stringify(filters)}|${String(page)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.users
-      .list({
-        page,
-        pageSize: PAGE_SIZE,
-        ...(filters.search ? { search: filters.search } : {}),
-        ...(filters.role ? { role: filters.role } : {}),
-      })
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载用户，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [filters, page, reloadKey]);
+  const listQuery: UserListQuery = {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(filters.search ? { search: filters.search } : {}),
+    ...(filters.role ? { role: filters.role } : {}),
+  };
+  const usersQuery = useQuery(usersListOptions(listQuery));
+  const data = usersQuery.data;
+  const loading = usersQuery.isFetching;
+  const error = usersQuery.error ? '无法加载用户，请稍后重试。' : '';
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter = filters.search !== '' || filters.role !== '';
 
-  const reload = () => setReloadKey((current) => current + 1);
-
-  const removeUser = async () => {
-    const target = deleteDialog.data;
-    if (!target) return;
-    deleteDialog.dismiss();
-    if (detailDialog.data?.id === target.id) detailDialog.dismiss();
-    if (editDialog.data?.id === target.id) editDialog.dismiss();
-    try {
-      const result = await apiClient.users.remove(target.id);
+  const removeMutation = useMutation({
+    mutationFn: (target: UserAdminSummary) => apiClient.users.remove(target.id),
+    onSuccess: async (result, target) => {
       const cascadeNote =
         result.cascade > 0 ? `（含 ${result.cascade} 条其他用户的回复）` : '';
       toast.success(
         `已删除用户「${target.username}」及 ${result.deleted} 条评论${cascadeNote}。`,
       );
-      reload();
-    } catch (cause) {
+      await invalidateUsersAfterMutation();
+    },
+    onError: (cause) => {
       // CONFLICT（删管理员 / 有资产快照）的消息由服务端中文 message 透出。
       toastError(cause);
-    }
-  };
+    },
+  });
 
-  const onSaved = () => {
-    reload();
+  const removeUser = () => {
+    const target = deleteDialog.data;
+    if (!target) return;
+    deleteDialog.dismiss();
+    if (detailDialog.data?.id === target.id) detailDialog.dismiss();
+    if (editDialog.data?.id === target.id) editDialog.dismiss();
+    removeMutation.mutate(target);
   };
 
   return (
@@ -188,7 +166,9 @@ export const UsersPage = () => {
           </div>
         ) : error ? (
           <EmptyState
-            action={<Button onPress={reload}>重试</Button>}
+            action={
+              <Button onPress={() => void usersQuery.refetch()}>重试</Button>
+            }
             icon={<CloudOff aria-hidden />}
             title="没能连上用户"
           >
@@ -247,17 +227,17 @@ export const UsersPage = () => {
         onClose={detailDialog.dismiss}
         onExited={detailDialog.clear}
         open={detailDialog.isOpen}
+        session={detailDialog.session}
         user={detailDialog.data}
       />
 
       <EditUserDialog
         onClose={editDialog.dismiss}
         onExited={editDialog.clear}
-        onSaved={onSaved}
         open={editDialog.isOpen}
+        session={editDialog.session}
         user={editDialog.data}
       />
-
       <UserDeleteConfirm
         isOpen={deleteDialog.isOpen}
         onCancel={deleteDialog.dismiss}

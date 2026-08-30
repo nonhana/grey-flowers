@@ -1,3 +1,6 @@
+import type { ArticleCreateInput } from '@grey-flowers/contracts';
+
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
@@ -5,6 +8,7 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { invalidateArticlesAfterMutation } from '@/app/server-state/articles.js';
 import { Button, IconButton } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { TextField } from '@/ui/form.js';
@@ -26,14 +30,28 @@ export const NewArticlePage = () => {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const trimmedSlug = slug.trim();
   const slugIsInvalid =
     trimmedSlug.length > 0 && !SLUG_PATTERN.test(trimmedSlug);
 
-  const create = async () => {
+  const createMutation = useMutation({
+    mutationFn: (input: ArticleCreateInput) => apiClient.articles.create(input),
+    onSuccess: async (article) => {
+      toast.success('草稿已创建。');
+      await invalidateArticlesAfterMutation();
+      await navigate({
+        params: { articleId: String(article.id) },
+        to: '/articles/$articleId',
+      });
+    },
+    onError: (createError) => {
+      setError(articleErrorMessage(createError));
+    },
+  });
+
+  const create = () => {
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
       setError('标题不能为空。');
@@ -44,27 +62,17 @@ export const NewArticlePage = () => {
       return;
     }
 
-    setSubmitting(true);
     setError(null);
-    try {
-      const article = await apiClient.articles.create({
-        content: '',
-        tags: [],
-        title: trimmedTitle,
-        ...(trimmedSlug ? { slug: trimmedSlug } : {}),
-        ...(description.trim() ? { description: description.trim() } : {}),
-      });
-      toast.success('草稿已创建。');
-      await navigate({
-        params: { articleId: String(article.id) },
-        to: '/articles/$articleId',
-      });
-    } catch (createError) {
-      setError(articleErrorMessage(createError));
-    } finally {
-      setSubmitting(false);
-    }
+    createMutation.mutate({
+      content: '',
+      tags: [],
+      title: trimmedTitle,
+      ...(trimmedSlug ? { slug: trimmedSlug } : {}),
+      ...(description.trim() ? { description: description.trim() } : {}),
+    });
   };
+
+  const submitting = createMutation.isPending;
 
   return (
     <PageBody width="narrow">

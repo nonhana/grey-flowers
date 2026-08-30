@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { cn } from 'cnfast';
 import { X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { FocusScope, mergeProps, useDialog, useModalOverlay } from 'react-aria';
 import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components';
 import { Sheet } from 'react-modal-sheet';
@@ -272,11 +272,11 @@ const AppDialogSheetContents = ({
 
 /** 哨兵：对话框树卸载（退出动画结束）时触发一次 onExited，供动画期间保留数据。 */
 const ExitSignaler = ({ onExited }: { onExited?: () => void }) => {
-  const onExitedRef = useRef(onExited);
-  useEffect(() => {
-    onExitedRef.current = onExited;
+  const signal = useEffectEvent(() => {
+    onExited?.();
   });
-  useEffect(() => () => onExitedRef.current?.(), []);
+  // 唯一的卸载清理 Effect：useEffectEvent 保证读到最新的 onExited。
+  useEffect(() => () => signal(), []);
   return null;
 };
 

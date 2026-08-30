@@ -11,6 +11,7 @@ import {
   isApiRequestError,
   setAccessToken,
 } from '@/app/api/index.js';
+import { clearAdminQueryCache } from '@/app/server-state/client.js';
 
 type AuthenticationState =
   | { status: 'checking' }
@@ -56,15 +57,16 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     }
 
     setAccessToken(null);
+    clearAdminQueryCache();
     set({ state: { status: 'forbidden' } });
   };
 
   const decideSessionExpired = () => {
     setAccessToken(null);
+    clearAdminQueryCache();
     set({ state: { status: 'unauthenticated' } });
     toast.error('登录已过期，请重新登录。');
   };
-
   const restoreSession = async () => {
     try {
       const accessToken = getAccessToken();
@@ -80,6 +82,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     } catch (error) {
       if (isApiRequestError(error, 'AUTH_FORBIDDEN')) {
         setAccessToken(null);
+        clearAdminQueryCache();
         set({ state: { status: 'forbidden' } });
         return;
       }
@@ -100,8 +103,9 @@ export const useAuthStore = create<AuthState>()((set, get) => {
   };
 
   const signIn = async (input: { account: string; password: string }) => {
+    // 登录前清掉上一主体可能残留的查询缓存。
+    clearAdminQueryCache();
     set({ isSubmitting: true });
-
     try {
       const response = await apiClient.auth.login(input);
       setAccessToken(response.accessToken);
@@ -109,6 +113,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     } catch (error) {
       if (isApiRequestError(error, 'AUTH_FORBIDDEN')) {
         setAccessToken(null);
+        clearAdminQueryCache();
         set({ state: { status: 'forbidden' } });
         return;
       }
@@ -137,11 +142,13 @@ export const useAuthStore = create<AuthState>()((set, get) => {
       set({ state: { status: 'unauthenticated', error: messageFor(error) } });
     } finally {
       setAccessToken(null);
+      clearAdminQueryCache();
       set({ isSigningOut: false });
     }
   };
 
   const useAnotherAccount = () => {
+    clearAdminQueryCache();
     set({ state: { status: 'unauthenticated' } });
   };
 

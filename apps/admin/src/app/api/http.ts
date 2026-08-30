@@ -39,7 +39,40 @@ export interface HttpRequestOptions<
   retryOnAuthRequired?: boolean;
   schema: TSchema;
   searchParams?: URLSearchParams;
+  signal?: AbortSignal;
 }
+
+/** 只读请求的可选项（Query 取消走这里）。 */
+export interface HttpReadOptions {
+  signal?: AbortSignal;
+}
+
+const abortError = () =>
+  new DOMException('The operation was aborted.', 'AbortError');
+
+const isAbortError = (error: unknown): boolean =>
+  error instanceof Error && error.name === 'AbortError';
+
+/** 取消不是网络故障：原样上抛，Query 据此静默结算，不进入页面错误态。 */
+const rethrowIfAborted = (error: unknown, signal: AbortSignal | undefined) => {
+  if (isAbortError(error) || signal?.aborted) {
+    throw isAbortError(error) ? error : abortError();
+  }
+};
+
+/** 调试延迟尊重取消：abort 时立即结束，不留挂起的 setTimeout。 */
+const delay = (ms: number, signal: AbortSignal | undefined) => {
+  if (signal?.aborted) return Promise.reject(abortError());
+
+  const { promise, reject, resolve } = Promise.withResolvers<void>();
+  const timer = setTimeout(resolve, ms);
+  const onAbort = () => {
+    clearTimeout(timer);
+    reject(abortError());
+  };
+  signal?.addEventListener('abort', onAbort, { once: true });
+  return promise;
+};
 
 type HttpMethod = 'get' | 'post' | 'patch' | 'delete';
 
@@ -89,7 +122,7 @@ export const createHttp = (options: HttpOptions) => {
     // 调试：统一延迟（0 时不引入任何开销）。每次请求前读，改完即生效。
     const delayMs = readApiDelayMs();
     if (delayMs > 0) {
-      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      await delay(delayMs, requestOptions.signal);
     }
 
     let response: Response;
@@ -103,8 +136,10 @@ export const createHttp = (options: HttpOptions) => {
           ? { Authorization: `Bearer ${options.getAccessToken()}` }
           : undefined,
         searchParams: requestOptions.searchParams,
+        signal: requestOptions.signal,
       });
     } catch (error) {
+      rethrowIfAborted(error, requestOptions.signal);
       throw new ApiNetworkError(error);
     }
 
@@ -112,7 +147,8 @@ export const createHttp = (options: HttpOptions) => {
 
     try {
       body = await response.json();
-    } catch {
+    } catch (error) {
+      rethrowIfAborted(error, requestOptions.signal);
       throw new ApiResponseError();
     }
 
@@ -208,6 +244,11 @@ export const createHttp = (options: HttpOptions) => {
         } catch {
           expireAccess();
           throw error;
+        }
+
+        // refresh 是共享 promise，不随单个 caller 取消；恢复后若调用方已取消，放弃重试。
+        if (requestOptions.signal?.aborted) {
+          throw abortError();
         }
 
         try {

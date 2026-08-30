@@ -11,7 +11,7 @@ import {
   activityListResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 const listSearchParams = (query: ActivityListQuery) => {
   const params = new URLSearchParams();
@@ -23,16 +23,21 @@ const listSearchParams = (query: ActivityListQuery) => {
 
 export const createActivitiesApi = (http: Http) => {
   return {
-    list: (query: ActivityListQuery): Promise<ActivityListData> =>
+    list: (
+      query: ActivityListQuery,
+      options?: HttpReadOptions,
+    ): Promise<ActivityListData> =>
       http.get('/activities', {
         authenticated: true,
         schema: activityListResponseSchema,
         searchParams: listSearchParams(query),
+        signal: options?.signal,
       }),
-    detail: (id: number): Promise<ActivityAdmin> =>
+    detail: (id: number, options?: HttpReadOptions): Promise<ActivityAdmin> =>
       http.get(`/activities/${id}`, {
         authenticated: true,
         schema: activityAdminResponseSchema,
+        signal: options?.signal,
       }),
     create: (input: ActivityCreateInput): Promise<ActivityAdmin> =>
       http.post('/activities', {

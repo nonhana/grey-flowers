@@ -35,6 +35,7 @@ export interface ComposeMenuProps {
 export const ComposeMenu = ({ onOpenChange, open }: ComposeMenuProps) => {
   const prefersReducedMotion = useReducedMotion();
 
+  // 外部系统同步：菜单开着时在 window 上监听 Escape 关闭（全局键盘监听）。
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {

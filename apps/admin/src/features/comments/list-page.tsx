@@ -1,10 +1,11 @@
 import type {
   CommentAdmin,
   CommentAdminTree,
-  CommentListData,
+  CommentListQuery,
 } from '@grey-flowers/contracts';
 
 import { parseDate } from '@internationalized/date';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import {
   CalendarDays,
@@ -15,7 +16,7 @@ import {
   MessagesSquare,
   RotateCcw,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Button as AriaButton,
   Calendar,
@@ -34,7 +35,11 @@ import {
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import {
+  commentsListOptions,
+  invalidateCommentsAfterMutation,
+} from '@/app/server-state/comments.js';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { Button, IconButton } from '@/ui/button.js';
@@ -288,12 +293,7 @@ const toReplyTarget = (comment: CommentAdmin): ReplyTarget => ({
 
 export const CommentsPage = () => {
   const [draft, setDraft] = useState<CommentFilterDraft>(EMPTY_FILTER);
-  const [filters, setFilters] = useState<CommentFilterDraft>(EMPTY_FILTER);
   const [page, setPage] = useState(1);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [data, setData] = useState<CommentListData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
@@ -305,49 +305,54 @@ export const CommentsPage = () => {
   }>();
   const batchDialog = useDialog<number[]>();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setFilters(draft);
-      setPage(1);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [draft]);
+  // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
+  const filters = useDebouncedCommit(draft, 300);
+  const [prevFilters, setPrevFilters] = useState(filters);
+  if (prevFilters !== filters) {
+    setPrevFilters(filters);
+    setPage(1);
+  }
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${JSON.stringify(filters)}|${String(page)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
+  const authorId = Number.parseInt(filters.authorId, 10);
+  const listQuery: CommentListQuery = {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(filters.search ? { search: filters.search } : {}),
+    ...(filters.path ? { path: filters.path } : {}),
+    ...(Number.isInteger(authorId) && authorId > 0 ? { authorId } : {}),
+    ...(filters.startDate ? { startDate: filters.startDate } : {}),
+    ...(filters.endDate ? { endDate: filters.endDate } : {}),
+  };
+  const commentsQuery = useQuery(commentsListOptions(listQuery));
+  const data = commentsQuery.data;
+  const loading = commentsQuery.isFetching;
+  const error = commentsQuery.error ? '无法加载评论，请稍后重试。' : '';
+
+  const removeMutation = useMutation({
+    mutationFn: (id: number) => apiClient.comments.remove(id),
+    onSuccess: async (result) => {
+      toast.success(
+        `已删除 ${result.deleted} 条评论${
+          result.cascade > 0 ? `（含 ${result.cascade} 条回复）` : ''
+        }。`,
+      );
+      await invalidateCommentsAfterMutation();
+    },
+    onError: (cause) => {
+      toastError(cause);
+    },
   });
 
-  useEffect(() => {
-    let cancelled = false;
-    const authorId = Number.parseInt(filters.authorId, 10);
-
-    apiClient.comments
-      .list({
-        page,
-        pageSize: PAGE_SIZE,
-        ...(filters.search ? { search: filters.search } : {}),
-        ...(filters.path ? { path: filters.path } : {}),
-        ...(Number.isInteger(authorId) && authorId > 0 ? { authorId } : {}),
-        ...(filters.startDate ? { startDate: filters.startDate } : {}),
-        ...(filters.endDate ? { endDate: filters.endDate } : {}),
-      })
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载评论，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [filters, page, reloadKey]);
+  const removeBatchMutation = useMutation({
+    mutationFn: (ids: number[]) => apiClient.comments.removeBatch(ids),
+    onSuccess: async (result) => {
+      toast.success(`已删除 ${result.deleted} 条评论。`);
+      await invalidateCommentsAfterMutation();
+    },
+    onError: (cause) => {
+      toastError(cause);
+    },
+  });
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter =
@@ -369,39 +374,21 @@ export const CommentsPage = () => {
     });
   };
 
-  const reload = () => setReloadKey((current) => current + 1);
-
-  const removeSingle = async () => {
+  const removeSingle = () => {
     const target = deleteDialog.data;
     if (!target) return;
     const { comment } = target;
     deleteDialog.dismiss();
     if (sessionDialog.data?.id === comment.id) sessionDialog.dismiss();
-    try {
-      const result = await apiClient.comments.remove(comment.id);
-      toast.success(
-        `已删除 ${result.deleted} 条评论${
-          result.cascade > 0 ? `（含 ${result.cascade} 条回复）` : ''
-        }。`,
-      );
-      reload();
-    } catch (cause) {
-      toastError(cause);
-    }
+    removeMutation.mutate(comment.id);
   };
 
-  const removeBatch = async () => {
+  const removeBatch = () => {
     const ids = batchDialog.data;
     if (!ids || ids.length === 0) return;
     batchDialog.dismiss();
     setSelectedIds(new Set());
-    try {
-      const result = await apiClient.comments.removeBatch(ids);
-      toast.success(`已删除 ${result.deleted} 条评论。`);
-      reload();
-    } catch (cause) {
-      toastError(cause);
-    }
+    removeBatchMutation.mutate(ids);
   };
 
   return (
@@ -483,7 +470,9 @@ export const CommentsPage = () => {
           </div>
         ) : error ? (
           <EmptyState
-            action={<Button onPress={reload}>重试</Button>}
+            action={
+              <Button onPress={() => void commentsQuery.refetch()}>重试</Button>
+            }
             icon={<CloudOff aria-hidden />}
             title="没能连上评论"
           >
@@ -560,7 +549,6 @@ export const CommentsPage = () => {
 
       <SessionDialog
         comment={sessionDialog.data}
-        onChanged={reload}
         onClose={sessionDialog.dismiss}
         open={sessionDialog.isOpen}
         onDelete={(target) =>
@@ -579,8 +567,8 @@ export const CommentsPage = () => {
       <ReplyDialog
         onClose={replyDialog.dismiss}
         onExited={replyDialog.clear}
-        onReplied={reload}
         open={replyDialog.isOpen}
+        session={replyDialog.session}
         target={replyDialog.data}
       />
 

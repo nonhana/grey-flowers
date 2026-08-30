@@ -18,5 +18,6 @@
   ```
 
 - Unless absolutely necessary, use arrow functions rather than regular functions for function definitions.
-- When writing React code, you must adhere to `react-compiler` best practices and avoid introducing `useCallback`, `useMemo`, and the like unless necessary.
-- Write brief, unambiguous single-line comments only where truly necessary; avoid excessive commenting, and treat the code itself as the Single Source of Truth (SSOT). Examples include ESLint rule overrides or the purpose of a general-purpose utility function, hook, or composable.
+- When writing React code, you must adhere to `react-compiler` best practices: do not hand-memoize with `useCallback`; `useMemo` is reserved for the article editor store factory identity. React Compiler owns function identity.
+- Server state goes through TanStack Query (`app/server-state/`); never rebuild `data/loading/error → load → reload → fetchSeq` request state machines in pages, and never call `queryClient.invalidateQueries` outside the per-domain server-state modules (auth cache clearing in `store/auth.ts` is the only exception).
+- `useEffect` is allowed only to synchronize an external system. The standing whitelist: debounce timer cleanup, document paste subscription, overlay exit-signal cleanup, the two PWA effects, CodeMirror action registration, calendar DOM scroll sync, object-URL revoke, compose-menu global Escape, and the article editor's initial server reload. Anything that merely mirrors one React state into another (render-time resets included) must be expressed as derivation, `useEffectEvent`, `useSyncExternalStore`, or Query keys instead.

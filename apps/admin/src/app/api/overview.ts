@@ -11,7 +11,7 @@ import {
   overviewTrendResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 const trendSearchParams = (query: OverviewTrendQuery) => {
   const params = new URLSearchParams();
@@ -22,26 +22,32 @@ const trendSearchParams = (query: OverviewTrendQuery) => {
 
 export interface OverviewApi {
   /** 近 365 天逐日发布量。单独一条：它比 get() 重，且只服务节奏图。 */
-  calendar(): Promise<OverviewCalendarData>;
-  get(): Promise<OverviewData>;
-  trends(query: OverviewTrendQuery): Promise<OverviewTrendData>;
+  calendar(options?: HttpReadOptions): Promise<OverviewCalendarData>;
+  get(options?: HttpReadOptions): Promise<OverviewData>;
+  trends(
+    query: OverviewTrendQuery,
+    options?: HttpReadOptions,
+  ): Promise<OverviewTrendData>;
 }
 
 export const createOverviewApi = (http: Http): OverviewApi => ({
-  calendar: () =>
+  calendar: (options) =>
     http.get('/overview/calendar', {
       authenticated: true,
       schema: overviewCalendarResponseSchema,
+      signal: options?.signal,
     }),
-  get: () =>
+  get: (options) =>
     http.get('/overview', {
       authenticated: true,
       schema: overviewResponseSchema,
+      signal: options?.signal,
     }),
-  trends: (query) =>
+  trends: (query, options) =>
     http.get('/overview/trends', {
       authenticated: true,
       schema: overviewTrendResponseSchema,
       searchParams: trendSearchParams(query),
+      signal: options?.signal,
     }),
 });

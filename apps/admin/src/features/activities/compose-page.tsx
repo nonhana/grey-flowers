@@ -1,14 +1,20 @@
-import type { MusicTrack } from '@grey-flowers/contracts';
+import type { ActivityAdmin, MusicTrack } from '@grey-flowers/contracts';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import { ArrowLeft, ExternalLink, Loader2, Music2, Trash2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import {
+  activityDetailOptions,
+  invalidateActivitiesAfterMutation,
+} from '@/app/server-state/activities.js';
+import { markAssetsStale } from '@/app/server-state/assets.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { usePasteFiles } from '@/hooks/use-paste-files.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
@@ -33,66 +39,54 @@ const MAX_MUSIC = 12;
 const CONTENT_LIMIT = 8192;
 const CONTENT_WARN_AT = 7900;
 
-export const ActivityComposePage = () => {
-  const navigate = useNavigate();
-  const params = useParams({ strict: false }) as { activityId?: string };
-  const editingId = params.activityId
-    ? Number.parseInt(params.activityId, 10) || null
-    : null;
+const toComposerImage = (activity: ActivityAdmin): ComposerImage[] =>
+  activity.images.map((image) => ({
+    assetId: image.assetId,
+    error: '',
+    file: null,
+    id: crypto.randomUUID(),
+    progress: 1,
+    status: 'committed',
+    url: image.url,
+  }));
 
-  const [content, setContent] = useState('');
-  const [images, setImages] = useState<ComposerImage[]>([]);
-  const [music, setMusic] = useState<MusicTrack[]>([]);
-  const [loading, setLoading] = useState(editingId !== null);
-  const [loadError, setLoadError] = useState('');
+/** 单次编辑会话的编写器：以传入 activity 惰性初始化，路由换 id 由外层 key 重建。 */
+const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
+  const navigate = useNavigate();
+  const editingId = activity?.id ?? null;
+
+  const [content, setContent] = useState(activity?.content ?? '');
+  const [images, setImages] = useState<ComposerImage[]>(
+    activity ? toComposerImage(activity) : [],
+  );
+  const [music, setMusic] = useState<MusicTrack[]>(activity?.music ?? []);
   const [error, setError] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [musicPickerOpen, setMusicPickerOpen] = useState(false);
   const [assetOpen, setAssetOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [showLightbox, setShowLightBox] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragActive, setDragActive] = useState(false);
-
-  // 编辑：路由参数一变就回加载态（React 官方「按输入调整 state」模式）。
-  const [prevEditingId, setPrevEditingId] = useState(editingId);
-  if (prevEditingId !== editingId) {
-    setPrevEditingId(editingId);
-    setLoading(editingId !== null);
-    setLoadError('');
-  }
-
-  useEffect(() => {
-    if (editingId === null) return;
-    let cancelled = false;
-    apiClient.activities
-      .detail(editingId)
-      .then((activity) => {
-        if (cancelled) return;
-        setContent(activity.content);
-        setImages(
-          activity.images.map((image) => ({
-            assetId: image.assetId,
-            error: '',
-            file: null,
-            id: crypto.randomUUID(),
-            progress: 1,
-            status: 'committed',
-            url: image.url,
-          })),
-        );
-        setMusic(activity.music);
-      })
-      .catch((cause) => {
-        if (!cancelled) setLoadError(apiErrorMessage(cause));
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [editingId]);
+  const submitMutation = useMutation({
+    mutationFn: (input: {
+      content: string;
+      images: ReturnType<typeof toImageItem>[];
+      musicIds: number[];
+    }) =>
+      editingId !== null
+        ? apiClient.activities.update(editingId, input)
+        : apiClient.activities.create(input),
+    onSuccess: async (_data) => {
+      // 动态创建/编辑已落库：相关图片资产记录已存在，音乐/评论投影随 activities 失效。
+      markAssetsStale();
+      await invalidateActivitiesAfterMutation();
+      toast.success(editingId !== null ? '动态已更新。' : '动态已发布。');
+      await navigate({ to: '/activities' });
+    },
+    onError: (cause) => {
+      setError(apiErrorMessage(cause));
+    },
+  });
 
   const patchImage = (id: string, patch: Partial<ComposerImage>) => {
     setImages((current) =>
@@ -107,14 +101,14 @@ export const ActivityComposePage = () => {
       .upload({ file, purpose: 'ACTIVITY_IMAGE' }, (progress) =>
         patchImage(id, { progress }),
       )
-      .then((asset) =>
+      .then((asset) => {
         patchImage(id, {
           assetId: asset.id,
           progress: 1,
           status: 'committed',
           url: asset.deliveryUrl,
-        }),
-      )
+        });
+      })
       .catch(() => patchImage(id, { error: '上传失败', status: 'error' }));
   };
 
@@ -177,36 +171,20 @@ export const ActivityComposePage = () => {
     (image) => image.status === 'committed',
   );
   const canSubmit =
-    !loading &&
     !hasUploading &&
     (content.trim().length > 0 ||
       committedImages.length > 0 ||
       music.length > 0) &&
     content.length <= CONTENT_LIMIT;
 
-  const submit = async () => {
-    if (!canSubmit || submitting) return;
-    setSubmitting(true);
+  const submit = () => {
+    if (!canSubmit || submitMutation.isPending) return;
     setError('');
-    const input = {
+    submitMutation.mutate({
       content,
       images: committedImages.map(toImageItem),
       musicIds: music.map((track) => track.id),
-    };
-    try {
-      if (editingId !== null) {
-        await apiClient.activities.update(editingId, input);
-        toast.success('动态已更新。');
-      } else {
-        await apiClient.activities.create(input);
-        toast.success('动态已发布。');
-      }
-      await navigate({ to: '/activities' });
-    } catch (cause) {
-      setError(apiErrorMessage(cause));
-    } finally {
-      setSubmitting(false);
-    }
+    });
   };
 
   const contentNearLimit = content.length >= CONTENT_WARN_AT;
@@ -237,7 +215,7 @@ export const ActivityComposePage = () => {
 
   // 剪贴板只允许粘贴图片
   usePasteFiles({
-    enabled: !loading,
+    enabled: true,
     onFiles: (files) => {
       const imageFiles = files.filter((file) =>
         fileMatchesAccept(IMAGE_ACCEPT_MAP, file),
@@ -416,7 +394,7 @@ export const ActivityComposePage = () => {
           </span>
           <Button
             isDisabled={!canSubmit}
-            isLoading={submitting}
+            isLoading={submitMutation.isPending}
             onPress={() => void submit()}
             size="md"
             tone="solid"
@@ -427,41 +405,19 @@ export const ActivityComposePage = () => {
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col">
-        {loading ? (
-          <div className="grid h-full flex-1 place-items-center text-ink-dim">
-            <Loader2 aria-hidden className="size-5 animate-spin" />
-          </div>
-        ) : loadError ? (
-          <div className="grid h-full flex-1 place-items-center p-6">
-            <div className="grid max-w-sm justify-items-center gap-4 text-center">
-              <p className="text-md text-ink">{loadError}</p>
-              <Link
-                className={buttonClass()}
-                onClick={() => void navigate({ to: '/activities' })}
-                to="/activities"
-              >
-                <ArrowLeft aria-hidden className="size-4" />
-                返回动态列表
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <>
-            <ActivityEditor
-              onChange={setContent}
-              onSubmit={() => void submit()}
-              value={content}
-            />
-            <aside
-              aria-label="动态资源"
-              className="
-                max-h-[46dvh] shrink-0 overflow-y-auto bg-case shadow-case-up
-              "
-            >
-              {resources}
-            </aside>
-          </>
-        )}
+        <ActivityEditor
+          onChange={setContent}
+          onSubmit={() => void submit()}
+          value={content}
+        />
+        <aside
+          aria-label="动态资源"
+          className="
+            max-h-[46dvh] shrink-0 overflow-y-auto bg-case shadow-case-up
+          "
+        >
+          {resources}
+        </aside>
       </div>
 
       <AnimatePresence>
@@ -537,4 +493,60 @@ export const ActivityComposePage = () => {
       </AppDialog>
     </div>
   );
+};
+
+/**
+ * 外层只负责 route id 与 detail 数据分派：
+ * 编辑态先展示加载/错误，就绪后以 key={activityId} 挂载编写器，
+ * 表单初值全部来自 query data —— 不同编辑路由之间没有草稿串扰。
+ */
+export const ActivityComposePage = () => {
+  const navigate = useNavigate();
+  const params = useParams({ strict: false }) as { activityId?: string };
+  const editingId = params.activityId
+    ? Number.parseInt(params.activityId, 10) || null
+    : null;
+
+  const detailQuery = useQuery({
+    // enabled 关闭时 id 不参与请求；key 需要 number，用 0 占位且永不激活。
+    ...activityDetailOptions(editingId ?? 0),
+    enabled: editingId !== null,
+  });
+
+  if (editingId === null) {
+    return <ActivityComposer activity={null} />;
+  }
+
+  if (detailQuery.isFetching) {
+    return (
+      <div className="grid h-full flex-1 place-items-center text-ink-dim">
+        <Loader2 aria-hidden className="size-5 animate-spin" />
+      </div>
+    );
+  }
+
+  if (detailQuery.error || !detailQuery.data) {
+    return (
+      <div className="grid h-full flex-1 place-items-center p-6">
+        <div className="grid max-w-sm justify-items-center gap-4 text-center">
+          <p className="text-md text-ink">
+            {apiErrorMessage(detailQuery.error) || '无法加载这条动态。'}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button onPress={() => void detailQuery.refetch()}>重试</Button>
+            <Link
+              className={buttonClass()}
+              onClick={() => void navigate({ to: '/activities' })}
+              to="/activities"
+            >
+              <ArrowLeft aria-hidden className="size-4" />
+              返回动态列表
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <ActivityComposer activity={detailQuery.data} key={editingId} />;
 };

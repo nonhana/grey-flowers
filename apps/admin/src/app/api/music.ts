@@ -11,7 +11,7 @@ import {
   musicListResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 const listSearchParams = (query: MusicListQuery) => {
   const params = new URLSearchParams();
@@ -25,16 +25,21 @@ const listSearchParams = (query: MusicListQuery) => {
 
 export const createMusicApi = (http: Http) => {
   return {
-    list: (query: MusicListQuery): Promise<MusicListData> =>
+    list: (
+      query: MusicListQuery,
+      options?: HttpReadOptions,
+    ): Promise<MusicListData> =>
       http.get('/music', {
         authenticated: true,
         schema: musicListResponseSchema,
         searchParams: listSearchParams(query),
+        signal: options?.signal,
       }),
-    detail: (id: number): Promise<MusicAdmin> =>
+    detail: (id: number, options?: HttpReadOptions): Promise<MusicAdmin> =>
       http.get(`/music/${id}`, {
         authenticated: true,
         schema: musicAdminResponseSchema,
+        signal: options?.signal,
       }),
     create: (input: MusicCreateInput): Promise<MusicAdmin> =>
       http.post('/music', {

@@ -1,11 +1,12 @@
-import type { MusicListData, MusicTrack } from '@grey-flowers/contracts';
+import type { MusicListQuery, MusicTrack } from '@grey-flowers/contracts';
 
+import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import { Check, Disc3, ListMusic } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import { musicPickerOptions } from '@/app/server-state/music.js';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { formatDuration } from '@/lib/format.js';
 import { Button } from '@/ui/button.js';
 import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
@@ -28,8 +29,8 @@ const MusicRowSkeleton = () => (
   >
     <Skeleton className="size-11 shrink-0 rounded-control" />
     <span className="min-w-0 flex-1">
-      <Skeleton className="h-[1.55em] w-1/3 text-base" />
-      <Skeleton className="h-[1.45em] w-1/2 text-2xs" />
+      <Skeleton className="h-[1.45em] w-3/5 text-base" />
+      <Skeleton className="mt-1 h-[1.45em] w-2/5 text-2xs" />
     </span>
     <Skeleton className="h-[1.45em] w-10 shrink-0 text-2xs" />
   </div>
@@ -46,57 +47,44 @@ export const MusicPickerDialog = ({
   onOpenChange: (open: boolean) => void;
   selected: MusicTrack[];
 }) => {
+  // 每次 open 产生新的 session：session 进入 query key，重开永远是全新列表。
+  const [session, setSession] = useState(0);
+  const [wasOpen, setWasOpen] = useState(isOpen);
   const [selection, setSelection] = useState<Map<number, MusicTrack>>(
     new Map(),
   );
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [data, setData] = useState<MusicListData | null>(null);
-  const [error, setError] = useState('');
-  const [reloadKey, setReloadKey] = useState(0);
 
-  // 打开时以当前已选种子重建选择集；渲染期受条件保护地重置（React 官方模式）。
-  useDerivedReset(isOpen, () => {
-    if (isOpen) {
-      setSelection(new Map(selected.map((track) => [track.id, track])));
-      setQuery('');
-      setDebouncedQuery('');
-      setPage(1);
-    }
+  if (isOpen && !wasOpen) {
+    setWasOpen(true);
+    setSession((current) => current + 1);
+    // 打开时以当前已选曲目重新播种选择集，搜索与页码回到起点。
+    setSelection(new Map(selected.map((track) => [track.id, track])));
+    setQuery('');
+    setPage(1);
+  } else if (!isOpen && wasOpen) {
+    setWasOpen(false);
+  }
+
+  const committedQuery = useDebouncedCommit(query, 300);
+  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
+  if (prevCommitted !== committedQuery) {
+    setPrevCommitted(committedQuery);
+    setPage(1);
+  }
+
+  const listQuery: MusicListQuery = {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(committedQuery ? { search: committedQuery } : {}),
+  };
+  const pickerQuery = useQuery({
+    ...musicPickerOptions(session, listQuery),
+    enabled: isOpen,
   });
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-      setPage(1);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.music
-      .list({
-        page,
-        pageSize: PAGE_SIZE,
-        ...(debouncedQuery ? { search: debouncedQuery } : {}),
-      })
-      .then((result) => {
-        if (!cancelled) {
-          setData(result);
-          setError('');
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载音乐库，请稍后重试。');
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedQuery, page, isOpen, reloadKey]);
+  const data = pickerQuery.data;
+  const error = pickerQuery.error ? '无法加载音乐库，请稍后重试。' : '';
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const atLimit = selection.size >= SELECT_LIMIT;
@@ -137,31 +125,29 @@ export const MusicPickerDialog = ({
           {error ? (
             <EmptyState
               action={
-                <Button onPress={() => setReloadKey((current) => current + 1)}>
-                  重试
-                </Button>
+                <Button onPress={() => void pickerQuery.refetch()}>重试</Button>
               }
               icon={<Disc3 aria-hidden />}
               title="没能连上音乐库"
             >
               {error}
             </EmptyState>
-          ) : !data ? (
+          ) : pickerQuery.isPending && pickerQuery.isFetching ? (
             <div className="grid animate-content-in gap-1">
               {Array.from({ length: 5 }, (_, index) => (
                 <MusicRowSkeleton key={index} />
               ))}
             </div>
-          ) : data.items.length === 0 ? (
+          ) : data && data.items.length === 0 ? (
             <EmptyState
               icon={<ListMusic aria-hidden />}
-              title={debouncedQuery ? '没有匹配的音乐' : '音乐库是空的'}
+              title={committedQuery ? '没有匹配的音乐' : '音乐库是空的'}
             >
-              {debouncedQuery
+              {committedQuery
                 ? '换一个关键词试试。'
                 : '先去音乐库上传一首音乐，再回来关联到这里。'}
             </EmptyState>
-          ) : (
+          ) : data ? (
             <ul
               className="
                 m-0 list-none divide-y divide-rule rounded-panel border
@@ -250,7 +236,7 @@ export const MusicPickerDialog = ({
                 );
               })}
             </ul>
-          )}
+          ) : null}
         </div>
 
         <div className="flex items-center justify-between gap-3">

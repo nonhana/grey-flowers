@@ -1,5 +1,6 @@
 import type { CategoryAdmin, TagAdmin } from '@grey-flowers/contracts';
 
+import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { cn } from 'cnfast';
 import {
@@ -10,7 +11,7 @@ import {
   PanelRight,
   WifiOff,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import {
   Button as AriaButton,
   Menu,
@@ -19,7 +20,11 @@ import {
   Popover,
 } from 'react-aria-components';
 
-import { apiClient } from '@/app/api/index.js';
+import { articlesListOptions } from '@/app/server-state/articles.js';
+import {
+  taxonomyCategoriesOptions,
+  taxonomyTagsOptions,
+} from '@/app/server-state/taxonomy.js';
 import { useIsDesktop } from '@/hooks/use-media-query.js';
 import { formatDateTime } from '@/lib/format.js';
 import { useArticleEditor } from '@/store/article-editor.js';
@@ -199,37 +204,32 @@ const ConflictDialog = ({
   </AppDialog>
 );
 
-export const ArticleWorkspacePage = () => {
-  const { articleId } = useParams({ strict: false }) as { articleId: string };
-  const numericId = Number.parseInt(articleId, 10) || null;
+const WorkspacePage = ({
+  inspectorOpen,
+  numericId,
+  setInspectorOpen,
+}: {
+  inspectorOpen: boolean;
+  numericId: number | null;
+  setInspectorOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const editor = useArticleEditor(numericId);
   const isDesktop = useIsDesktop();
-  // 桌面端默认展开（那里有地方，也让这个功能可被看见）；
-  // 移动端默认收起，进来就是满屏的纸。
-  const [inspectorOpen, setInspectorOpen] = useState(isDesktop);
-  const [recent, setRecent] = useState<RecentArticle[]>([]);
-  const [options, setOptions] = useState<{
-    categories: CategoryAdmin[];
-    tags: TagAdmin[];
-  } | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    void Promise.all([
-      apiClient.articles.list({ page: 1, pageSize: 20, status: 'all' }),
-      apiClient.taxonomy.listCategories(),
-      apiClient.taxonomy.listTags(),
-    ]).then(([articles, categories, tags]) => {
-      if (cancelled) return;
-      setRecent(
-        articles.items.map((item) => ({ id: item.id, title: item.title })),
-      );
-      setOptions({ categories: categories.items, tags: tags.items });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [articleId]);
+  const recentQuery = useQuery(
+    articlesListOptions({ page: 1, pageSize: 20, status: 'all' }),
+  );
+  const categoriesQuery = useQuery(taxonomyCategoriesOptions());
+  const tagsQuery = useQuery(taxonomyTagsOptions(false));
+  const recent: RecentArticle[] = (recentQuery.data?.items ?? []).map(
+    (item) => ({ id: item.id, title: item.title }),
+  );
+  const options: { categories: CategoryAdmin[]; tags: TagAdmin[] } | null =
+    categoriesQuery.data && tagsQuery.data
+      ? {
+          categories: categoriesQuery.data.items,
+          tags: tagsQuery.data.items,
+        }
+      : null;
 
   if (editor.loading) {
     return (
@@ -374,5 +374,22 @@ export const ArticleWorkspacePage = () => {
         />
       ) : null}
     </div>
+  );
+};
+
+/** 外壳持有关键切换后要存活的 UI 状态；内层按文章 id 作 key 重挂载，
+ *  重挂载即重新拉取最近文章与元数据选项（React 官方「key 重置全部状态」模式）。 */
+export const ArticleWorkspacePage = () => {
+  const { articleId } = useParams({ strict: false }) as { articleId: string };
+  const numericId = Number.parseInt(articleId, 10) || null;
+  const isDesktop = useIsDesktop();
+  const [inspectorOpen, setInspectorOpen] = useState(isDesktop);
+  return (
+    <WorkspacePage
+      inspectorOpen={inspectorOpen}
+      key={numericId}
+      numericId={numericId}
+      setInspectorOpen={setInspectorOpen}
+    />
   );
 };

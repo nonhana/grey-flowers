@@ -46,6 +46,7 @@ catalog:
 
 catalogs:
   admin:
+    '@tanstack/react-query': ^5.102.8
     '@tanstack/react-router': ^1.170.32
     '@codemirror/autocomplete': ^6.20.3
     '@codemirror/commands': ^6.11.0

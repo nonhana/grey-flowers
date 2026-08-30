@@ -1,11 +1,20 @@
-import type { AssetDto, CategoryAdmin } from '@grey-flowers/contracts';
+import type {
+  AssetDto,
+  CategoryAdmin,
+  CategorySaveInput,
+} from '@grey-flowers/contracts';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import { FolderTree, ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import {
+  invalidateTaxonomyAfterMutation,
+  taxonomyCategoriesOptions,
+} from '@/app/server-state/taxonomy.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
@@ -40,44 +49,56 @@ interface CategoryForm {
 const EMPTY_FORM: CategoryForm = { cover: '', coverAssetId: null, name: '' };
 
 export const CategoriesPage = () => {
-  const [items, setItems] = useState<CategoryAdmin[]>([]);
-  const [loading, setLoading] = useState(true);
+  const categoriesQuery = useQuery(taxonomyCategoriesOptions());
+  const items = categoriesQuery.data?.items ?? [];
+  const loading = categoriesQuery.isFetching;
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<CategoryAdmin | null>(null);
   const [form, setForm] = useState<CategoryForm>(EMPTY_FORM);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
   const deleteDialog = useDialog<CategoryAdmin>();
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const [prevReloadKey, setPrevReloadKey] = useState(reloadKey);
-  if (prevReloadKey !== reloadKey) {
-    setPrevReloadKey(reloadKey);
-    setLoading(true);
-  }
+  const saveMutation = useMutation({
+    mutationFn: ({
+      target,
+      input,
+    }: {
+      target: CategoryAdmin | null;
+      input: CategorySaveInput;
+    }) =>
+      target
+        ? apiClient.taxonomy.updateCategory(target.id, input)
+        : apiClient.taxonomy.createCategory(input),
+    onSuccess: async (_data, { target }) => {
+      setDialogOpen(false);
+      await invalidateTaxonomyAfterMutation();
+      toast.success(target ? '已保存修改。' : '分类已创建。');
+    },
+    onError: (saveError, { input }) => {
+      setError(
+        isApiRequestError(saveError, 'CONFLICT')
+          ? `已经有一个叫「${input.name}」的分类了。`
+          : isApiRequestError(saveError)
+            ? saveError.message
+            : '保存失败，请重试。',
+      );
+    },
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.taxonomy
-      .listCategories()
-      .then((data) => {
-        if (!cancelled) setItems(data.items);
-      })
-      .catch((loadError: unknown) => {
-        if (cancelled) return;
-        setError(loadError instanceof Error ? loadError.message : '加载失败。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+  const deleteMutation = useMutation({
+    mutationFn: (target: CategoryAdmin) =>
+      apiClient.taxonomy.deleteCategory(target.id),
+    onSuccess: async (_data, target) => {
+      await invalidateTaxonomyAfterMutation();
+      toast.success(`已删除分类「${target.name}」。`);
+    },
+    onError: (deleteError, target) => {
+      toastError(deleteError, {
+        CONFLICT: `分类「${target.name}」下还有文章，先把它们移到别处再删。`,
       });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
+    },
+  });
 
   const openCreate = () => {
     setEditing(null);
@@ -97,51 +118,24 @@ export const CategoriesPage = () => {
     setDialogOpen(true);
   };
 
-  const save = async () => {
+  const save = () => {
     const name = form.name.trim();
     if (!name) {
       setError('分类名不能为空。');
       return;
     }
-    setSaving(true);
     setError(null);
-    try {
-      const input = {
-        cover: form.cover,
-        coverAssetId: form.coverAssetId,
-        name,
-      };
-      if (editing) await apiClient.taxonomy.updateCategory(editing.id, input);
-      else await apiClient.taxonomy.createCategory(input);
-      setDialogOpen(false);
-      setReloadKey((current) => current + 1);
-      toast.success(editing ? '已保存修改。' : '分类已创建。');
-    } catch (saveError) {
-      setError(
-        isApiRequestError(saveError, 'CONFLICT')
-          ? `已经有一个叫「${name}」的分类了。`
-          : isApiRequestError(saveError)
-            ? saveError.message
-            : '保存失败，请重试。',
-      );
-    } finally {
-      setSaving(false);
-    }
+    saveMutation.mutate({
+      target: editing,
+      input: { cover: form.cover, coverAssetId: form.coverAssetId, name },
+    });
   };
 
-  const remove = async () => {
+  const remove = () => {
     const target = deleteDialog.data;
     if (!target) return;
     deleteDialog.dismiss();
-    try {
-      await apiClient.taxonomy.deleteCategory(target.id);
-      setReloadKey((current) => current + 1);
-      toast.success(`已删除分类「${target.name}」。`);
-    } catch (deleteError) {
-      toastError(deleteError, {
-        CONFLICT: `分类「${target.name}」下还有文章，先把它们移到别处再删。`,
-      });
-    }
+    deleteMutation.mutate(target);
   };
 
   return (
@@ -308,7 +302,11 @@ export const CategoriesPage = () => {
 
           <div className="flex justify-end gap-2">
             <Button onPress={() => setDialogOpen(false)}>取消</Button>
-            <Button isLoading={saving} onPress={() => void save()} tone="solid">
+            <Button
+              isLoading={saveMutation.isPending}
+              onPress={() => void save()}
+              tone="solid"
+            >
               {editing ? '保存修改' : '创建'}
             </Button>
           </div>

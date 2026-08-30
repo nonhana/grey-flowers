@@ -48,9 +48,9 @@ All ops slices (music, activity, comments, users, overview) and all API resource
 ### `apps/admin` (React 19 + Vite + TanStack Router)
 
 - `src/routes/route-tree.tsx` — TanStack Router definition + app shell (nav rail covering overview, activities, comments, users, music, assets, articles, taxonomy).
-- `src/app/` — shell + `api/` client: `http.ts` (ky transport with envelope decode, bearer-token in memory, auth-refresh), `index.ts` (`ApiClient` + `apiClient` singleton), feature API clients (`articles.ts`, `assets.ts`, `auth.ts`, `taxonomy.ts`, …).
+- `src/app/` — shell + `api/` client: `http.ts` (ky transport with envelope decode, bearer-token in memory, auth-refresh + AbortSignal cancellation), `index.ts` (`ApiClient` + `apiClient` singleton), feature API clients (`articles.ts`, `assets.ts`, `auth.ts`, `taxonomy.ts`, …); `server-state/` — the **only** TanStack Query seam: one `client.ts` (singleton QueryClient: no retry, no focus refetch, `staleTime: 0`, cache-clear entry for auth boundaries) plus per-domain key/option modules (`overview.ts`, `taxonomy.ts`, `assets.ts`, `music.ts`, `activities.ts`, `articles.ts`, `comments.ts`, `users.ts`). Pages never hand-build query keys or invalidation matrices; mutations invalidate through these modules only.
 - `src/features/` — one folder per workflow: `overview/`, `activities/`, `comments/`, `users/`, `music/`, `assets/`, `articles/`, `taxonomy/`.
-- `src/store/` — Zustand stores (auth, article editor, player) and React bindings.
+- `src/store/` — Zustand stores (auth, article editor, player) and React bindings. Zustand owns long-lived client workflows only (auth session, editor draft/autosave SSOT, player queue); ordinary list/detail/overview server data lives in Query, never in Zustand.
 
 ## Boundaries
 

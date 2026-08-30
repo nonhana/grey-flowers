@@ -1,10 +1,9 @@
-import type { OverviewCalendarData } from '@grey-flowers/contracts';
-
+import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import { CloudOff } from 'lucide-react';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 
-import { apiClient } from '@/app/api/index.js';
+import { overviewCalendarOptions } from '@/app/server-state/overview.js';
 import { Button } from '@/ui/button.js';
 import { CalendarHeatmap } from '@/ui/charts.js';
 import { EmptyState, Skeleton } from '@/ui/feedback.js';
@@ -49,30 +48,9 @@ const HeatmapSkeleton = () => (
  * 单独一次请求，不拖慢首屏读数抽屉。
  */
 export const CadenceCard = ({ className }: { className?: string }) => {
-  const [data, setData] = useState<OverviewCalendarData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.overview
-      .calendar()
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载发布节奏，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
+  const { data, error, isFetching, refetch } = useQuery(
+    overviewCalendarOptions(),
+  );
 
   return (
     <Panel
@@ -98,25 +76,15 @@ export const CadenceCard = ({ className }: { className?: string }) => {
         ) : null}
       </div>
 
-      {loading ? (
+      {isFetching ? (
         <HeatmapSkeleton />
       ) : error ? (
         <EmptyState
-          action={
-            <Button
-              onPress={() => {
-                setLoading(true);
-                setError('');
-                setReloadKey((current) => current + 1);
-              }}
-            >
-              重试
-            </Button>
-          }
+          action={<Button onPress={() => void refetch()}>重试</Button>}
           icon={<CloudOff aria-hidden />}
           title="没能连上发布节奏"
         >
-          {error}
+          无法加载发布节奏，请稍后重试。
         </EmptyState>
       ) : data ? (
         <CalendarHeatmap

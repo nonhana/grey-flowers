@@ -1,12 +1,17 @@
-import type { ActivityAdmin, ActivityListData } from '@grey-flowers/contracts';
+import type { ActivityAdmin, ActivityListQuery } from '@grey-flowers/contracts';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import {
+  activityListOptions,
+  invalidateActivitiesAfterMutation,
+} from '@/app/server-state/activities.js';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
@@ -31,16 +36,16 @@ const ActivityCardSkeleton = () => (
     className="grid gap-3 rounded-panel border border-rule bg-case-raised p-4"
   >
     <div className="grid gap-1.5">
-      <Skeleton className="h-[1.625em] w-full text-base" />
-      <Skeleton className="h-[1.625em] w-2/3 text-base" />
+      <Skeleton className="h-[1.6em] w-3/4 text-md" />
+      <Skeleton className="h-[1.45em] w-full text-2xs" />
     </div>
     <div className="grid grid-cols-2 gap-1">
       <Skeleton className="aspect-square w-full rounded-control" />
       <Skeleton className="aspect-square w-full rounded-control" />
     </div>
     <MetaLine>
-      <Skeleton className="h-[1.45em] w-40 text-2xs" />
-      <Skeleton className="ml-auto h-[1.45em] w-20 text-2xs" />
+      <Skeleton className="h-[1.45em] w-2/5 text-2xs" />
+      <Skeleton className="h-[1.45em] w-1/5 text-2xs" />
     </MetaLine>
   </div>
 );
@@ -54,55 +59,42 @@ export const ActivitiesPage = () => {
   const removeTrack = usePlayerStore((s) => s.removeTrack);
 
   const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [page, setPage] = useState(1);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [data, setData] = useState<ActivityListData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const deleteDialog = useDialog<ActivityAdmin>();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-      setPage(1);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query]);
+  // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
+  const committedQuery = useDebouncedCommit(query, 300);
+  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
+  if (prevCommitted !== committedQuery) {
+    setPrevCommitted(committedQuery);
+    setPage(1);
+  }
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${debouncedQuery}|${String(page)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.activities
-      .list({
-        page,
-        pageSize: PAGE_SIZE,
-        ...(debouncedQuery ? { search: debouncedQuery } : {}),
-      })
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载动态，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedQuery, page, reloadKey]);
+  const listQuery: ActivityListQuery = {
+    page,
+    pageSize: PAGE_SIZE,
+    ...(committedQuery ? { search: committedQuery } : {}),
+  };
+  const activitiesQuery = useQuery(activityListOptions(listQuery));
+  const data = activitiesQuery.data;
+  const loading = activitiesQuery.isFetching;
+  const error = activitiesQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasQuery = debouncedQuery.length > 0;
+  const hasQuery = committedQuery.length > 0;
+
+  const removeMutation = useMutation({
+    mutationFn: (target: ActivityAdmin) =>
+      apiClient.activities.remove(target.id),
+    onSuccess: async (_data, target) => {
+      for (const track of target.music) removeTrack(track.id);
+      toast.success('动态已删除。');
+      await invalidateActivitiesAfterMutation();
+    },
+    onError: (cause) => {
+      toastError(cause);
+    },
+  });
 
   const handlePlayTrack = (activity: ActivityAdmin, index: number) => {
     const track = activity.music[index];
@@ -126,18 +118,11 @@ export const ActivitiesPage = () => {
     });
   };
 
-  const remove = async () => {
+  const remove = () => {
     const target = deleteDialog.data;
     if (!target) return;
     deleteDialog.dismiss();
-    try {
-      await apiClient.activities.remove(target.id);
-      for (const track of target.music) removeTrack(track.id);
-      setReloadKey((current) => current + 1);
-      toast.success('动态已删除。');
-    } catch (cause) {
-      toastError(cause);
-    }
+    removeMutation.mutate(target);
   };
 
   return (
@@ -198,15 +183,14 @@ export const ActivitiesPage = () => {
         ) : error ? (
           <EmptyState
             action={
-              <Button onPress={() => setReloadKey((current) => current + 1)}>
+              <Button onPress={() => void activitiesQuery.refetch()}>
                 重试
               </Button>
             }
             icon={<CloudOff aria-hidden />}
             title="没能连上动态"
           >
-            {' '}
-            {error}
+            无法加载动态，请稍后重试。
           </EmptyState>
         ) : data && data.items.length === 0 ? (
           <EmptyState

@@ -7,9 +7,7 @@
 What is covered today:
 
 - **`apps/api`** — env parsing and derivation (`env.test.ts`), rate limiter window + key-bound eviction, `resolveClientIp` trusted-proxy-hop matrix, restricted-markdown sanitizer allow/reject matrix, preview token mint/verify/expiry/cross-key, refresh reuse policy (`refresh-policy.test.ts`), refresh credential + access token round-trips (`tokens.test.ts`), the envelope/status-code contract and validation-field mapping (`http/errors.test.ts`), request parsers, slug/wordcount/markdown/pagination/prisma-error helpers.
-- **`apps/admin`** — the article editor store (`store/article-editor.test.ts`: autosave/`flushNow` drain semantics, conflict and offline gating, version restore), plus the display formatters and API error-message mapping.
-
-Test doubles are minimal on purpose: `apps/api` builds environments through the real `readApiEnvironment` factory (`src/testing/environment.ts`) instead of `as ApiEnvironment` casts, and the admin store test replaces only `apiClient`, keeping the real `instanceof`-based error predicates.
+- **`apps/admin`** — the article editor store (`store/article-editor.test.ts`: autosave/`flushNow` drain semantics, conflict and offline gating, version restore, plus a cache-coherence case proving saves invalidate the articles family), the Query foundation (`app/server-state/*.test.ts`: client defaults, per-domain key isolation, invalidation hitting exactly the documented families, `AbortSignal` wiring), the HTTP transport (`app/api/http.test.ts`: signal passthrough, abort during debug delay, shared refresh not bound to caller signals, cancel-skip-retry), app bootstrap idempotency, and the display formatters and API error-message mapping.
 
 Use the regression gate for every code change:
 

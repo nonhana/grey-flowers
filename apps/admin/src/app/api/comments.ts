@@ -12,7 +12,7 @@ import {
   commentListResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http, HttpReadOptions } from './http.js';
 
 const listSearchParams = (query: CommentListQuery) => {
   const params = new URLSearchParams();
@@ -29,7 +29,10 @@ const listSearchParams = (query: CommentListQuery) => {
 };
 
 export interface CommentsApi {
-  list(query: CommentListQuery): Promise<CommentListData>;
+  list(
+    query: CommentListQuery,
+    options?: HttpReadOptions,
+  ): Promise<CommentListData>;
   reply(id: number, input: CommentReplyInput): Promise<CommentAdmin>;
   remove(id: number): Promise<CommentDeleteResult>;
   removeBatch(ids: number[]): Promise<CommentDeleteResult>;
@@ -37,11 +40,15 @@ export interface CommentsApi {
 
 export const createCommentsApi = (http: Http): CommentsApi => {
   return {
-    list: (query: CommentListQuery): Promise<CommentListData> =>
+    list: (
+      query: CommentListQuery,
+      options?: HttpReadOptions,
+    ): Promise<CommentListData> =>
       http.get('/comments', {
         authenticated: true,
         schema: commentListResponseSchema,
         searchParams: listSearchParams(query),
+        signal: options?.signal,
       }),
     reply: (id: number, input: CommentReplyInput): Promise<CommentAdmin> =>
       http.post(`/comments/${id}/reply`, {

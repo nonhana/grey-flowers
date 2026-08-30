@@ -26,6 +26,7 @@
     "@internationalized/date": "catalog:admin",
     "@lezer/common": "catalog:admin",
     "@lezer/highlight": "catalog:admin",
+    "@tanstack/react-query": "catalog:admin",
     "@tanstack/react-router": "catalog:admin",
     "@uiw/react-codemirror": "catalog:admin",
     "cnfast": "catalog:admin",

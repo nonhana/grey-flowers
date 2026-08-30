@@ -9,12 +9,14 @@ export const PwaBridge = () => {
     updateServiceWorker,
   } = useRegisterSW();
 
+  // 外部系统同步：service worker 的离线就绪状态 → toast。
   useEffect(() => {
     if (offlineReady) {
       toast.success('已可离线使用');
     }
   }, [offlineReady]);
 
+  // 外部系统同步：service worker 等待中的新版本 → 可刷新 toast。
   useEffect(() => {
     if (!needRefresh) return;
     toast('新版本可用', {

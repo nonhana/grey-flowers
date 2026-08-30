@@ -1,15 +1,14 @@
 import type {
-  OverviewTrendData,
   OverviewTrendDays,
   OverviewTrendMetric,
 } from '@grey-flowers/contracts';
 
+import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import { CloudOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import { overviewTrendOptions } from '@/app/server-state/overview.js';
 import { Button } from '@/ui/button.js';
 import { TrendPlot } from '@/ui/charts.js';
 import { EmptyState, Skeleton } from '@/ui/feedback.js';
@@ -65,36 +64,9 @@ const PlotSkeleton = () => (
 export const TrendCard = ({ className }: { className?: string }) => {
   const [metric, setMetric] = useState<OverviewTrendMetric>('articles');
   const [days, setDays] = useState<OverviewTrendDays>('14');
-  const [data, setData] = useState<OverviewTrendData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [reloadKey, setReloadKey] = useState(0);
-
-  const requestKey = `${metric}|${days}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-    setError('');
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.overview
-      .trends({ days, metric })
-      .then((result) => {
-        if (!cancelled) setData(result);
-      })
-      .catch(() => {
-        if (!cancelled) setError('无法加载趋势，请稍后重试。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [metric, days, reloadKey]);
+  const { data, error, isFetching, refetch } = useQuery(
+    overviewTrendOptions({ days, metric }),
+  );
 
   return (
     <Panel
@@ -139,19 +111,15 @@ export const TrendCard = ({ className }: { className?: string }) => {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col">
-        {loading ? (
+        {isFetching ? (
           <PlotSkeleton />
         ) : error ? (
           <EmptyState
-            action={
-              <Button onPress={() => setReloadKey((current) => current + 1)}>
-                重试
-              </Button>
-            }
+            action={<Button onPress={() => void refetch()}>重试</Button>}
             icon={<CloudOff aria-hidden />}
             title="没能连上趋势"
           >
-            {error}
+            无法加载趋势，请稍后重试。
           </EmptyState>
         ) : data ? (
           <TrendPlot

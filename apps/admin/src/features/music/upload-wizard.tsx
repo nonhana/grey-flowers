@@ -7,6 +7,8 @@ import { Form, ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import { markAssetsStale } from '@/app/server-state/assets.js';
+import { invalidateMusicAfterMutation } from '@/app/server-state/music.js';
 import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
@@ -182,6 +184,10 @@ export const UploadWizard = () => {
       });
 
       if (embeddedCover) URL.revokeObjectURL(embeddedCover.objectUrl);
+      // 音源/封面资产记录与音乐记录都已落库：标记资产缓存过期并失效音乐家族，
+      // 音乐库列表在导航回来时自动拿到新数据。
+      markAssetsStale();
+      await invalidateMusicAfterMutation();
       toast.success('已加入音乐库。');
       await navigate({ to: '/music' });
     } catch (cause) {

@@ -1,11 +1,14 @@
-import type { MusicAdmin } from '@grey-flowers/contracts';
-
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { ArrowLeft, Disc3, Pencil, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
+import {
+  invalidateMusicAfterMutation,
+  musicDetailOptions,
+} from '@/app/server-state/music.js';
 import { formatDateTime, formatDuration } from '@/lib/format.js';
 import { toastError } from '@/lib/toast.js';
 import { usePlayerStore } from '@/store/player.js';
@@ -23,11 +26,6 @@ import {
 
 import { EditMusicDialog } from './edit-dialog.js';
 
-type DetailState =
-  | { data: MusicAdmin; kind: 'ready' }
-  | { kind: 'error'; message: string }
-  | { kind: 'loading' };
-
 const Row = ({
   children,
   label,
@@ -41,9 +39,53 @@ const Row = ({
   </div>
 );
 
+const DetailSkeleton = () => (
+  <PageBody>
+    {/* 与真实详情同构：页头位 + 方封面 + 播放面板 + 元数据面板 */}
+    <div className="grid animate-content-in gap-4">
+      <div className="flex items-center gap-2">
+        <Skeleton className="size-10 shrink-0 rounded-control" />
+        <Skeleton className="h-7 w-40" />
+        <Skeleton className="ml-auto h-7 w-20 rounded-full" />
+      </div>
+      <Skeleton className="mx-auto aspect-square w-full max-w-72 rounded-panel" />
+      <div
+        className="
+          grid gap-2 rounded-panel border border-rule bg-case-raised p-4
+        "
+      >
+        <Skeleton className="h-[1.45em] w-12 text-2xs" />
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-10 w-24 rounded-control" />
+          <Skeleton className="h-[1.45em] w-20 text-2xs" />
+        </div>
+      </div>
+      <div
+        className="
+          grid gap-2 rounded-panel border border-rule bg-case-raised p-4
+        "
+      >
+        <Skeleton className="h-[1.45em] w-16 text-2xs" />
+        <div className="divide-y divide-rule">
+          {Array.from({ length: 6 }, (_, index) => (
+            <div
+              className="flex items-center justify-between gap-4 py-2.5"
+              key={index}
+            >
+              <Skeleton className="h-[1.45em] w-10 text-2xs" />
+              <Skeleton className="h-[1.55em] w-32 text-base" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </PageBody>
+);
+
 export const MusicDetailPage = () => {
   const { musicId } = useParams({ strict: false }) as { musicId: string };
   const id = Number(musicId);
+  const enabled = Number.isSafeInteger(id) && id > 0;
   const navigate = useNavigate();
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);
@@ -51,89 +93,41 @@ export const MusicDetailPage = () => {
   const toggle = usePlayerStore((s) => s.toggle);
   const play = usePlayerStore((s) => s.play);
   const removeTrack = usePlayerStore((s) => s.removeTrack);
-  const [state, setState] = useState<DetailState>({ kind: 'loading' });
-  const [version, setVersion] = useState(0);
   const [editingOpen, setEditingOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  const detailQuery = useQuery({ ...musicDetailOptions(id), enabled });
 
-    apiClient.music
-      .detail(id)
-      .then((data) => {
-        if (!cancelled) setState({ data, kind: 'ready' });
-      })
-      .catch(() => {
-        if (!cancelled)
-          setState({ kind: 'error', message: '无法加载这首音乐。' });
-      });
+  const removeMutation = useMutation({
+    mutationFn: () => apiClient.music.remove(id),
+    onSuccess: async () => {
+      removeTrack(id);
+      toast.success('已从音乐库删除。');
+      await invalidateMusicAfterMutation();
+      await navigate({ to: '/music' });
+    },
+    onError: (removeError) => {
+      toastError(removeError);
+      setConfirmDelete(false);
+    },
+  });
 
-    return () => {
-      cancelled = true;
-    };
-  }, [id, version]);
-
-  if (state.kind === 'loading') {
-    return (
-      <PageBody>
-        {/* 与真实详情同构：页头位 + 方封面 + 播放面板 + 元数据面板 */}
-        <div className="grid animate-content-in gap-4">
-          <div className="flex items-center gap-2">
-            <Skeleton className="size-10 shrink-0 rounded-control" />
-            <Skeleton className="h-7 w-40" />
-            <Skeleton className="ml-auto h-7 w-20 rounded-full" />
-          </div>
-          <Skeleton className="mx-auto aspect-square w-full max-w-72 rounded-panel" />
-          <div
-            className="
-              grid gap-2 rounded-panel border border-rule bg-case-raised p-4
-            "
-          >
-            <Skeleton className="h-[1.45em] w-12 text-2xs" />
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-10 w-24 rounded-control" />
-              <Skeleton className="h-[1.45em] w-20 text-2xs" />
-            </div>
-          </div>
-          <div
-            className="
-              grid gap-2 rounded-panel border border-rule bg-case-raised p-4
-            "
-          >
-            <Skeleton className="h-[1.45em] w-16 text-2xs" />
-            <div className="divide-y divide-rule">
-              {Array.from({ length: 6 }, (_, index) => (
-                <div
-                  className="flex items-center justify-between gap-4 py-2.5"
-                  key={index}
-                >
-                  <Skeleton className="h-[1.45em] w-10 text-2xs" />
-                  <Skeleton className="h-[1.55em] w-32 text-base" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </PageBody>
-    );
+  if (!enabled || detailQuery.isFetching) {
+    return <DetailSkeleton />;
   }
 
-  if (state.kind === 'error') {
+  if (detailQuery.error || !detailQuery.data) {
     return (
       <PageBody>
         <div className="grid justify-items-center gap-4 py-16 text-center">
-          <p className="text-md text-ink-dim">{state.message}</p>
-          <Button onPress={() => setVersion((current) => current + 1)}>
-            重试
-          </Button>
+          <p className="text-md text-ink-dim">无法加载这首音乐。</p>
+          <Button onPress={() => void detailQuery.refetch()}>重试</Button>
         </div>
       </PageBody>
     );
   }
 
-  const music = state.data;
+  const music = detailQuery.data;
   const isCurrent = currentTrack?.id === music.id;
   const isPlaying = isCurrent && status === 'playing';
 
@@ -147,21 +141,6 @@ export const MusicDetailPage = () => {
       queue,
       queue.findIndex((track) => track.id === music.id),
     );
-  };
-
-  const remove = async () => {
-    setBusy(true);
-    try {
-      await apiClient.music.remove(id);
-      removeTrack(id);
-      toast.success('已从音乐库删除。');
-      await navigate({ to: '/music' });
-    } catch (removeError) {
-      toastError(removeError);
-      setConfirmDelete(false);
-    } finally {
-      setBusy(false);
-    }
   };
 
   return (
@@ -296,7 +275,7 @@ export const MusicDetailPage = () => {
             </Button>
             <Button
               icon={<Trash2 aria-hidden />}
-              isDisabled={busy}
+              isDisabled={removeMutation.isPending}
               onPress={() => {
                 setConfirmDelete(true);
               }}
@@ -311,7 +290,6 @@ export const MusicDetailPage = () => {
       <EditMusicDialog
         music={music}
         onClose={() => setEditingOpen(false)}
-        onSaved={() => setVersion((current) => current + 1)}
         open={editingOpen}
       />
 
@@ -321,7 +299,7 @@ export const MusicDetailPage = () => {
         isOpen={confirmDelete}
         message={`「${music.title}」的记录会被删除；音源与封面资产会保留在资产库，可稍后到资产库清理。`}
         onCancel={() => setConfirmDelete(false)}
-        onConfirm={() => void remove()}
+        onConfirm={() => void removeMutation.mutate()}
         title={`删除「${music.title}」？`}
       />
     </PageBody>

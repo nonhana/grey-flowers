@@ -335,7 +335,9 @@ export const CalendarHeatmap = ({
   const [cursorIndex, setCursorIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // 外部系统同步：日历渲染后把横向滚动归位到最新一天（DOM scrollLeft）。
   useEffect(() => {
+    if (days.length === 0) return;
     const node = scrollRef.current;
     if (node) node.scrollLeft = node.scrollWidth;
   }, [days]);

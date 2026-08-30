@@ -1,19 +1,21 @@
 import type { AssetDto, AssetPurpose } from '@grey-flowers/contracts';
 
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { cn } from 'cnfast';
 import { Check, ImageUp, Images } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
 import { apiClient, isApiRequestError } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import {
+  assetsPickerOptions,
+  markAssetsStale,
+} from '@/app/server-state/assets.js';
 import { formatBytes } from '@/lib/format.js';
 import { Button } from '@/ui/button.js';
 import { Alert, EmptyState, Skeleton, Spinner } from '@/ui/feedback.js';
 import { AssetImage } from '@/ui/image.js';
 import { AppDialog } from '@/ui/overlay.js';
-
-const ASSET_PAGE_SIZE = 12;
 
 export const AssetPickerDialog = ({
   onClose,
@@ -35,96 +37,52 @@ export const AssetPickerDialog = ({
   selectedAssetIds?: ReadonlySet<number>;
   title: string;
 }) => {
-  const [items, setItems] = useState<AssetDto[]>([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  // 每次 open 产生新的 session：session 进入 query key，重开永远是全新列表，
+  // 关闭动画期间/快速重开都不会让旧会话的结果或错误闪现。
+  const [session, setSession] = useState(0);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open && !wasOpen) {
+    setWasOpen(true);
+    setSession((current) => current + 1);
+  } else if (!open && wasOpen) {
+    setWasOpen(false);
+  }
+
   const [uploading, setUploading] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 打开对话框时重置列表态（渲染期、受条件保护地调整 state）
-  useDerivedReset(open, () => {
-    if (open) {
-      setItems([]);
-      setTotal(0);
-      setPage(1);
-      setLoading(true);
-      setError(null);
-    }
+  const pickerQuery = useInfiniteQuery({
+    ...assetsPickerOptions(purpose, session),
+    enabled: open,
   });
+  const items = pickerQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  const total = pickerQuery.data?.pages[0]?.total ?? 0;
 
-  useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-
-    apiClient.assets
-      .list({
-        page: 1,
-        pageSize: ASSET_PAGE_SIZE,
-        purpose,
-        status: 'AVAILABLE',
-      })
-      .then((data) => {
-        if (cancelled) return;
-        setItems(data.items);
-        setPage(1);
-        setTotal(data.total);
-      })
-      .catch((loadError: unknown) => {
-        if (cancelled) return;
-        setError(
-          isApiRequestError(loadError) ? loadError.message : '资产加载失败。',
-        );
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [open, purpose]);
-
-  const loadMore = async () => {
-    const nextPage = page + 1;
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await apiClient.assets.list({
-        page: nextPage,
-        pageSize: ASSET_PAGE_SIZE,
-        purpose,
-        status: 'AVAILABLE',
-      });
-      setItems((current) => [...current, ...data.items]);
-      setPage(nextPage);
-      setTotal(data.total);
-    } catch (loadError) {
-      setError(
-        isApiRequestError(loadError) ? loadError.message : '资产加载失败。',
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error =
+    uploadError ??
+    (pickerQuery.error
+      ? isApiRequestError(pickerQuery.error)
+        ? pickerQuery.error.message
+        : '资产加载失败。'
+      : null);
 
   const upload = async (file: File) => {
+    setUploadError(null);
     setUploading(0);
-    setError(null);
     try {
       const asset = await apiClient.assets.upload(
         { file, purpose },
         (progress) => setUploading(Math.round(progress * 100)),
       );
+      markAssetsStale();
       onSelect(asset);
     } catch (uploadError) {
-      setError(
+      setUploadError(
         isApiRequestError(uploadError) ? uploadError.message : '上传失败。',
       );
-    } finally {
-      setUploading(null);
     }
+    setUploading(null);
   };
 
   return (
@@ -170,7 +128,7 @@ export const AssetPickerDialog = ({
 
         {error ? <Alert>{error}</Alert> : null}
 
-        {loading && items.length === 0 ? (
+        {pickerQuery.isPending && pickerQuery.isFetching ? (
           <ul
             className="
               grid animate-content-in grid-cols-3 gap-3
@@ -260,13 +218,16 @@ export const AssetPickerDialog = ({
           </ul>
         )}
 
-        {items.length > 0 && items.length < total ? (
-          <Button isDisabled={loading} onPress={() => void loadMore()}>
+        {items.length > 0 && pickerQuery.hasNextPage ? (
+          <Button
+            isDisabled={pickerQuery.isFetching}
+            onPress={() => void pickerQuery.fetchNextPage()}
+          >
             加载更多（{items.length}/{total}）
           </Button>
         ) : null}
 
-        {loading && items.length > 0 ? (
+        {pickerQuery.isFetching && items.length > 0 ? (
           <Spinner className="justify-self-center" label="加载中" />
         ) : null}
       </div>

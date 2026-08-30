@@ -3,6 +3,8 @@ import type { ArticleAdmin, ArticleSaveInput } from '@grey-flowers/contracts';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ApiNetworkError, ApiRequestError } from '@/app/api/errors.js';
+import { articlesKeys } from '@/app/server-state/articles.js';
+import { queryClient } from '@/app/server-state/client.js';
 
 import { createArticleEditorStore } from './article-editor.js';
 
@@ -105,6 +107,7 @@ beforeEach(() => {
   // resetAllMocks 而非 clearAllMocks：mockImplementationOnce 的残留队列
   // 会串到下一个用例里，制造假绿。
   vi.resetAllMocks();
+  queryClient.clear();
   idb.del.mockResolvedValue(undefined);
   idb.get.mockResolvedValue(undefined);
   idb.set.mockResolvedValue(undefined);
@@ -292,5 +295,28 @@ describe('article-editor · 版本恢复', () => {
     expect(restore.createSnapshot).toBe(true);
     expect(restore.expectedRevision).toBe(2);
     expect(api.snapshots).toHaveBeenCalledTimes(1);
+  });
+});
+
+/**
+ * Cache coherence：编辑器写操作成功后必须让 articles 家族缓存过期。
+ * 删掉 store 里的 invalidateArticlesAfterMutation() 调用，本用例即红。
+ */
+describe('article-editor · 缓存一致性', () => {
+  it('保存落盘后文章列表缓存被标记失效', async () => {
+    const listQuery = { page: 1, pageSize: 20, q: '', status: 'all' } as const;
+    queryClient.setQueryData(articlesKeys.list(listQuery), []);
+    expect(
+      queryClient.getQueryState(articlesKeys.list(listQuery))?.isInvalidated,
+    ).toBe(false);
+
+    api.save.mockResolvedValue(articleAt(2, 'v1'));
+    const store = await createLoadedStore();
+    store.getState().updateDraft({ content: 'v1' });
+    await expect(store.getState().flushNow()).resolves.toBe(true);
+
+    expect(
+      queryClient.getQueryState(articlesKeys.list(listQuery))?.isInvalidated,
+    ).toBe(true);
   });
 });

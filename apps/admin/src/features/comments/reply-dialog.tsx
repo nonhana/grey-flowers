@@ -1,9 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import { invalidateCommentsAfterMutation } from '@/app/server-state/comments.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
@@ -19,53 +20,98 @@ export interface ReplyTarget {
   username: string;
 }
 
-export const ReplyDialog = ({
-  onClose,
-  onExited,
-  onReplied,
-  open,
+/** 单次打开会话内的表单：content 每次打开都从空白开始。 */
+const ReplyForm = ({
+  onSent,
   target,
 }: {
-  onClose: () => void;
-  onExited?: () => void;
-  onReplied: () => void;
-  open: boolean;
-  target: ReplyTarget | null;
+  onSent: () => void;
+  target: ReplyTarget;
 }) => {
   const [content, setContent] = useState('');
-  const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 打开时同步当前目标（渲染期、受条件保护地调整 state）
-  useDerivedReset(open, () => {
-    if (open) {
-      setContent('');
-      setError(null);
-    }
+  const sendMutation = useMutation({
+    mutationFn: (body: string) =>
+      apiClient.comments.reply(target.id, { content: body }),
+    onSuccess: async () => {
+      onSent();
+      toast.success(`已回复，将通知 ${target.username}`);
+      await invalidateCommentsAfterMutation();
+    },
+    onError: (sendError) => {
+      setError(apiErrorMessage(sendError));
+    },
   });
 
-  const send = async () => {
-    if (!target) return;
+  const send = () => {
     const body = content.trim();
     if (!body) {
       setError('回复内容不能为空。');
       return;
     }
-
-    setSending(true);
     setError(null);
-    try {
-      await apiClient.comments.reply(target.id, { content: body });
-      onReplied();
-      onClose();
-      toast.success(`已回复，将通知 ${target.username}`);
-    } catch (sendError) {
-      setError(apiErrorMessage(sendError));
-    } finally {
-      setSending(false);
-    }
+    sendMutation.mutate(body);
   };
 
+  return (
+    <Form
+      className="grid gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void send();
+      }}
+    >
+      <blockquote
+        className="
+          line-clamp-3 rounded-control border-l-2 border-accent-rule bg-well
+          px-3 py-2 text-sm text-ink-dim
+        "
+      >
+        {target.content}
+      </blockquote>
+
+      <TextAreaField
+        label="回复内容"
+        onChange={setContent}
+        placeholder="写下你的回复…"
+        rows={5}
+        value={content}
+      />
+      <p className="px-1 text-xs/relaxed text-ink-dim">{MD_HINT}</p>
+
+      {error ? <Alert>{error}</Alert> : null}
+
+      <div className="flex justify-end gap-2">
+        <Button
+          isDisabled={sendMutation.isPending}
+          onPress={onSent}
+          type="button"
+        >
+          取消
+        </Button>
+        <Button isLoading={sendMutation.isPending} tone="solid" type="submit">
+          发送回复
+        </Button>
+      </div>
+    </Form>
+  );
+};
+
+export const ReplyDialog = ({
+  onClose,
+  onExited,
+  open,
+  session,
+  target,
+}: {
+  onClose: () => void;
+  onExited?: () => void;
+  open: boolean;
+  /** useDialog 的单调会话 id：重开同一目标也重建全新表单。 */
+  session: number;
+  target: ReplyTarget | null;
+}) => {
   return (
     <AppDialog
       isOpen={open}
@@ -76,44 +122,15 @@ export const ReplyDialog = ({
       size="md"
       title={target ? `回复 ${target.username}` : '回复'}
     >
-      <Form
-        className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void send();
-        }}
-      >
-        {target ? (
-          <blockquote
-            className="
-              line-clamp-3 rounded-control border-l-2 border-accent-rule bg-well
-              px-3 py-2 text-sm text-ink-dim
-            "
-          >
-            {target.content}
-          </blockquote>
-        ) : null}
-
-        <TextAreaField
-          label="回复内容"
-          onChange={setContent}
-          placeholder="写下你的回复…"
-          rows={5}
-          value={content}
+      {target ? (
+        <ReplyForm
+          key={session}
+          onSent={() => {
+            onClose();
+          }}
+          target={target}
         />
-        <p className="px-1 text-xs/relaxed text-ink-dim">{MD_HINT}</p>
-
-        {error ? <Alert>{error}</Alert> : null}
-
-        <div className="flex justify-end gap-2">
-          <Button isDisabled={sending} onPress={onClose}>
-            取消
-          </Button>
-          <Button isLoading={sending} tone="solid" type="submit">
-            发送回复
-          </Button>
-        </div>
-      </Form>
+      ) : null}
     </AppDialog>
   );
 };

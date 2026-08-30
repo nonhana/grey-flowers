@@ -1,11 +1,15 @@
 import type { TagAdmin } from '@grey-flowers/contracts';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Plus, Tags as TagsIcon, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { useDerivedReset } from '@/hooks/use-derived-reset.js';
+import {
+  invalidateTaxonomyAfterMutation,
+  taxonomyTagsOptions,
+} from '@/app/server-state/taxonomy.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { Button, IconButton } from '@/ui/button.js';
@@ -22,79 +26,55 @@ const TagRowSkeleton = () => (
   >
     <div className="min-w-0">
       <Skeleton className="h-[1.6em] w-32 text-md" />
-      <Skeleton className="h-[1.45em] w-16 text-2xs" />
+      <Skeleton className="h-[1.45em] w-20 text-2xs" />
     </div>
     <Skeleton className="size-8 shrink-0 rounded-control" />
   </div>
 );
-
 export const TagsPage = () => {
-  const [items, setItems] = useState<TagAdmin[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [unusedOnly, setUnusedOnly] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
   const [newName, setNewName] = useState('');
-  const [creating, setCreating] = useState(false);
+  const tagsQuery = useQuery(taxonomyTagsOptions(unusedOnly));
+  const items = tagsQuery.data?.items ?? [];
+  const loading = tagsQuery.isFetching;
   const deleteDialog = useDialog<TagAdmin>();
 
-  // 请求条件一变就在渲染期切回加载态（React 官方的「按输入调整 state」模式）。
-  const requestKey = `${String(unusedOnly)}|${String(reloadKey)}`;
-  useDerivedReset(requestKey, () => {
-    setLoading(true);
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    apiClient.taxonomy
-      .listTags(unusedOnly)
-      .then((data) => {
-        if (!cancelled) setItems(data.items);
-      })
-      .catch((loadError: unknown) => {
-        if (cancelled) return;
-        setError(loadError instanceof Error ? loadError.message : '加载失败。');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey, unusedOnly]);
-
-  const create = async () => {
-    const name = newName.trim();
-    if (!name) return;
-    setCreating(true);
-    setError(null);
-    try {
-      await apiClient.taxonomy.createTag(name);
+  const createMutation = useMutation({
+    mutationFn: (name: string) => apiClient.taxonomy.createTag(name),
+    onSuccess: async (_data, name) => {
       setNewName('');
-      setReloadKey((current) => current + 1);
+      await invalidateTaxonomyAfterMutation();
       toast.success(`已创建标签「${name}」。`);
-    } catch (createError) {
+    },
+    onError: (createError, name) => {
       toastError(createError, {
         CONFLICT: `已经有一个叫「${name}」的标签了。`,
       });
-    } finally {
-      setCreating(false);
-    }
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (target: TagAdmin) => apiClient.taxonomy.deleteTag(target.id),
+    onSuccess: async (_data, target) => {
+      await invalidateTaxonomyAfterMutation();
+      toast.success(`已删除标签「${target.name}」。`);
+    },
+    onError: (deleteError) => {
+      toastError(deleteError);
+    },
+  });
+
+  const create = () => {
+    const name = newName.trim();
+    if (!name) return;
+    createMutation.mutate(name);
   };
 
-  const remove = async () => {
+  const remove = () => {
     const target = deleteDialog.data;
     if (!target) return;
     deleteDialog.dismiss();
-    try {
-      await apiClient.taxonomy.deleteTag(target.id);
-      setReloadKey((current) => current + 1);
-      toast.success(`已删除标签「${target.name}」。`);
-    } catch (deleteError) {
-      toastError(deleteError);
-    }
+    deleteMutation.mutate(target);
   };
 
   return (
@@ -126,7 +106,7 @@ export const TagsPage = () => {
         <Button
           icon={<Plus aria-hidden />}
           isDisabled={!newName.trim()}
-          isLoading={creating}
+          isLoading={createMutation.isPending}
           onPress={() => void create()}
           size="lg"
           tone="solid"
@@ -135,7 +115,9 @@ export const TagsPage = () => {
         </Button>
       </div>
 
-      {error ? <Alert className="mt-3">{error}</Alert> : null}
+      {tagsQuery.error ? (
+        <Alert className="mt-3">{tagsQuery.error.message}</Alert>
+      ) : null}
 
       <div className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading ? (
