@@ -26,9 +26,10 @@ export const articlesDetailOptions = (id: number) =>
   });
 
 /**
- * 文章 create/save/publish/unpublish/delete 后的规定失效：
- * article lists/workspace metadata（recent 即 list 一员）、taxonomy counts、
- * overview counts/trends/calendar。
+ * 文章 create/publish/unpublish/delete 后的规定失效（全量，new-article-page
+ * 与 store 的 publish/unpublish/delete 调用）：article lists/workspace
+ * metadata（recent 即 list 一员）、taxonomy counts、overview
+ * counts/trends/calendar。
  * 文章删除级联的资产引用计数由调用点另行 markAssetsStale 标记。
  */
 export const invalidateArticlesAfterMutation = async () => {
@@ -37,4 +38,13 @@ export const invalidateArticlesAfterMutation = async () => {
     queryClient.invalidateQueries({ queryKey: taxonomyRoot }),
     queryClient.invalidateQueries({ queryKey: overviewRoot }),
   ]);
+};
+
+/**
+ * 自动保存落盘后的窄失效（saveOnce 专用）：仅 article lists/workspace
+ * metadata —— 计数与发布态不受 save 影响，避免自动保存期间的
+ * overview/taxonomy refetch 风暴。
+ */
+export const invalidateArticlesAfterContentSave = async () => {
+  await queryClient.invalidateQueries({ queryKey: articlesRoot });
 };

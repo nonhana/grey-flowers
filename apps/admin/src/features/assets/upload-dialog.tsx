@@ -12,7 +12,7 @@ import {
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index.js';
-import { markAssetsStale } from '@/app/server-state/assets.js';
+import { invalidateAssetsAfterMutation } from '@/app/server-state/assets.js';
 import { usePasteFiles } from '@/hooks/use-paste-files.js';
 import {
   AUDIO_ACCEPT_MAP,
@@ -79,8 +79,9 @@ const UploadForm = ({
 
     try {
       await apiClient.assets.upload({ file, purpose }, setProgress);
-      // 上传属于 mutation：只标记失效，由提交后的筛选状态驱动唯一一次重取。
-      markAssetsStale();
+      // 上传属于 mutation：失效 assets 全家族与 overview 计数，
+      // 默认筛选下的当前列表也会立即重取。
+      await invalidateAssetsAfterMutation();
       toast.success(
         purpose === 'MUSIC_SOURCE' ? '音源已上传。' : '图片已上传。',
       );

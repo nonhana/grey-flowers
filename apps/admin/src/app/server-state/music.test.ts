@@ -15,6 +15,7 @@ const musicApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index.js', () => ({ apiClient: { music: musicApi } }));
 
+import { activityKeys } from './activities.js';
 import { queryClient } from './client.js';
 import {
   invalidateMusicAfterMutation,
@@ -102,13 +103,14 @@ describe('invalidateMusicAfterMutation', () => {
     queryClient.clear();
   });
 
-  it('命中 music 全家族（含 picker）与 overview counts，不扩散到其他域', async () => {
+  it('命中 music 全家族（含 picker）、overview counts 与 activities 家族，不扩散到其他域', async () => {
     const listQuery = { page: 1, pageSize: 12 };
     queryClient.setQueryData(musicKeys.list(listQuery), []);
     queryClient.setQueryData(musicKeys.picker(1, listQuery), []);
     queryClient.setQueryData(musicKeys.detail(3), {});
     queryClient.setQueryData([...overviewRoot, 'counts'], {});
     queryClient.setQueryData([...assetsRoot, 'list', { page: 1 }], []);
+    queryClient.setQueryData(activityKeys.list({ page: 1, pageSize: 10 }), []);
 
     await invalidateMusicAfterMutation();
 
@@ -128,5 +130,9 @@ describe('invalidateMusicAfterMutation', () => {
       queryClient.getQueryState([...assetsRoot, 'list', { page: 1 }])
         ?.isInvalidated,
     ).toBe(false);
+    expect(
+      queryClient.getQueryState(activityKeys.list({ page: 1, pageSize: 10 }))
+        ?.isInvalidated,
+    ).toBe(true);
   });
 });

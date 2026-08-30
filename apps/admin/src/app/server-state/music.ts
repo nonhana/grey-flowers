@@ -6,7 +6,7 @@ import { apiClient } from '@/app/api/index.js';
 
 import { queryClient } from './client.js';
 import { overviewKeys } from './overview.js';
-import { musicRoot } from './roots.js';
+import { activitiesRoot, musicRoot } from './roots.js';
 
 export const musicKeys = {
   list: (query: MusicListQuery) => [...musicRoot, 'list', query] as const,
@@ -36,12 +36,12 @@ export const musicDetailOptions = (id: number) =>
 
 /**
  * 音乐增删改后的规定失效：music 全家族 + overview 计数。
- * music metadata 同时内嵌进 activity 投影 —— activities server-state
- * 就绪后其 list/detail family 在这里一并失效。
+ * music metadata 同时内嵌进 activity 投影，activities 家族一并失效。
  */
 export const invalidateMusicAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: musicRoot }),
+    queryClient.invalidateQueries({ queryKey: activitiesRoot }),
     queryClient.invalidateQueries({ queryKey: overviewKeys.counts }),
   ]);
 };

@@ -517,7 +517,7 @@ export const ActivityComposePage = () => {
     return <ActivityComposer activity={null} />;
   }
 
-  if (detailQuery.isFetching) {
+  if (detailQuery.isPending && detailQuery.isFetching) {
     return (
       <div className="grid h-full flex-1 place-items-center text-ink-dim">
         <Loader2 aria-hidden className="size-5 animate-spin" />

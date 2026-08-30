@@ -16,7 +16,10 @@ import {
   isApiNetworkError,
   isApiRequestError,
 } from '@/app/api/index.js';
-import { invalidateArticlesAfterMutation } from '@/app/server-state/articles.js';
+import {
+  invalidateArticlesAfterContentSave,
+  invalidateArticlesAfterMutation,
+} from '@/app/server-state/articles.js';
 import { markAssetsStale } from '@/app/server-state/assets.js';
 import { toastError } from '@/lib/toast.js';
 
@@ -181,7 +184,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
           await del(draftKey(articleId)).catch(() => undefined);
           // 保存已落盘：文章列表/元数据缓存过期。计数与发布态不受 save 影响，
           // 不失效 overview/taxonomy，避免自动保存期间的 refetch 风暴。
-          await invalidateArticlesAfterMutation();
+          await invalidateArticlesAfterContentSave();
           return true;
         } catch (error) {
           if (isApiRequestError(error, 'ARTICLE_STALE')) {
