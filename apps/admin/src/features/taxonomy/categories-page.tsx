@@ -15,7 +15,7 @@ import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
 } from '@/app/server-state/taxonomy.js';
-import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { toastError } from '@/lib/toast.js';
 import { Button, IconButton } from '@/ui/button.js';

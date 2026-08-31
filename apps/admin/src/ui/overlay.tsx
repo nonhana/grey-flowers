@@ -276,6 +276,9 @@ const ExitSignaler = ({ onExited }: { onExited?: () => void }) => {
     onExited?.();
   });
   // 唯一的卸载清理 Effect：useEffectEvent 保证读到最新的 onExited。
+  // StrictMode 契约（L-23）：dev 双挂载会在「模拟卸载」时提前触发一次
+  // onExited——调用方必须保证其幂等（现有消费方 useDialog.clear 满足：
+  // 已关闭时 clear 为 no-op）；生产构建不存在该时机。
   useEffect(() => () => signal(), []);
   return null;
 };

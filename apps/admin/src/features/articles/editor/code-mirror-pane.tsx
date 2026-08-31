@@ -18,6 +18,7 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { apiClient } from '@/app/api/index.js';
+import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset.js';
 import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
@@ -25,7 +26,6 @@ import { isUrl } from '@/lib/url.js';
 import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 
-import { AssetPickerDialog } from './asset-picker.js';
 import { EditorToolbar } from './editor-toolbar.js';
 import { ImageAltDialog } from './image-alt-dialog.js';
 import { ImageViewerDialog } from './image-viewer-dialog.js';

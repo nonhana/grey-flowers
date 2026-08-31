@@ -1,9 +1,12 @@
+/** 中文本地化格式器：模块级单例（MED-1），formatDateTime 只做 .format()。 */
+const dateTimeFormat = new Intl.DateTimeFormat('zh-CN', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
 /** 中文本地化的日期时间。接受 ISO 字符串、毫秒时间戳或 Date。 */
 export const formatDateTime = (value: string | number | Date) => {
-  return new Intl.DateTimeFormat('zh-CN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(new Date(value));
+  return dateTimeFormat.format(new Date(value));
 };
 
 export const formatBytes = (bytes: number) => {

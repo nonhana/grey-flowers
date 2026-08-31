@@ -8,18 +8,19 @@ import { controlClass } from '@/ui/form.js';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
 
-/** 调试控件：接口延迟（ms）改完即生效、刷新保留；仅开发模式渲染（生产 tree-shake 掉）。
+/** 调试控件：接口延迟（ms）改完即生效、刷新保留；应用后收起 Popover。
+ *  仅开发模式渲染——DEV 守卫在挂载点（ConsoleRail），生产 tree-shake 掉。
  *  外部点击/Esc 关闭由 React Aria Popover 的 dismissal 能力提供，无 document 级监听。 */
 export const ApiDelayControl = () => {
   const [value, setValue] = useState(() => readApiDelayMs());
   const [draft, setDraft] = useState('');
-
-  if (!import.meta.env.DEV) return null;
+  const [open, setOpen] = useState(false);
 
   const apply = (ms: number) => {
     writeApiDelayMs(ms);
     setValue(ms);
     setDraft('');
+    setOpen(false);
   };
 
   const applyDraft = () => {
@@ -28,7 +29,7 @@ export const ApiDelayControl = () => {
   };
 
   return (
-    <DialogTrigger>
+    <DialogTrigger isOpen={open} onOpenChange={setOpen}>
       <button
         aria-label={value > 0 ? `接口延迟 ${value} ms` : '接口延迟（调试）'}
         className={buttonClass({ size: 'sm', tone: 'ghost' })}

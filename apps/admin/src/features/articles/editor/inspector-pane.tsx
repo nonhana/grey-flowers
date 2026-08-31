@@ -11,6 +11,7 @@ import { useState } from 'react';
 
 import type { useArticleEditor } from '@/store/article-editor.js';
 
+import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
 import { useDialog } from '@/hooks/use-dialog.js';
 import { formatDateTime } from '@/lib/format.js';
 import { Button, IconButton } from '@/ui/button.js';
@@ -26,7 +27,6 @@ import { ConfirmDialog } from '@/ui/overlay.js';
 import { MetaLine, SectionLabel } from '@/ui/surface.js';
 
 import { slugFromTo } from '../display.js';
-import { AssetPickerDialog } from './asset-picker.js';
 
 type Editor = ReturnType<typeof useArticleEditor>;
 

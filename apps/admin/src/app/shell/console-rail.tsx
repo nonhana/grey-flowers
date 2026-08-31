@@ -23,7 +23,10 @@ import { useRef, useState } from 'react';
 import type { RailSize } from '@/lib/rail-size.js';
 
 import { ThemeToggle } from '@/app/theme/theme-toggle.js';
-import { useResizableEdge } from '@/hooks/use-resizable-edge.js';
+import {
+  useResizableEdge,
+  type ResizeSource,
+} from '@/hooks/use-resizable-edge.js';
 import { RAIL_SIZE, resolveRailSize } from '@/lib/rail-size.js';
 import { useAuth } from '@/store/auth.js';
 import { buttonClass, IconButton } from '@/ui/button.js';
@@ -227,8 +230,11 @@ export const AccountBlock = ({
           {username}
         </span>
       )}
-      {/* 调试控件与主题切换在折叠态收起：56px 内放不下 88px 的三态分段控件。 */}
-      {layout === 'rail' && !collapsed ? <ApiDelayControl /> : null}
+      {/* 调试控件与主题切换在折叠态收起：56px 内放不下 88px 的三态分段控件。
+          DEV 守卫放在挂载点（L-4）：生产不执行组件内 hooks，构建可 tree-shake。 */}
+      {layout === 'rail' && !collapsed && import.meta.env.DEV ? (
+        <ApiDelayControl />
+      ) : null}
       {collapsed ? null : <ThemeToggle />}
       <Hint label="退出登录" placement="top">
         <IconButton
@@ -247,6 +253,18 @@ export const AccountBlock = ({
 export const ConsoleRail = () => {
   const [size, setSize] = useState<RailSize>(loadRailSize);
   const railRef = useRef<HTMLElement>(null);
+  // 事件路径镜像（L-1）：拖拽回调闭包来自拖拽开始的那次渲染，直接读
+  // state 会拿到旧值；镜像让 resolve 恒基于最新尺寸，setSize 改直值、
+  // updater 保纯。持久化时机不变：键盘每次落盘，拖拽只在结束时落盘。
+  const sizeRef = useRef(size);
+
+  const applyResize = (raw: number, source: ResizeSource) => {
+    const next = resolveRailSize(sizeRef.current, raw, source);
+    sizeRef.current = next;
+    setSize(next);
+    // 键盘是离散操作，每次都落盘；拖拽只在 onResizeEnd 落盘。
+    if (source === 'keyboard') saveRailSize(next);
+  };
 
   const { handleProps, isResizing } = useResizableEdge({
     ref: railRef,
@@ -256,24 +274,17 @@ export const ConsoleRail = () => {
     min: size.collapsed ? RAIL_SIZE.collapsed : RAIL_SIZE.min,
     max: RAIL_SIZE.max,
     keyboardStep: 16,
-    onResize: (_next, { raw, source }) =>
-      setSize((current) => {
-        const next = resolveRailSize(current, raw, source);
-        // 键盘是离散操作，每次都落盘；拖拽只在结束时落盘（onResizeEnd）。
-        // updater 内副作用幂等，严格模式双调用无影响。
-        if (source === 'keyboard') saveRailSize(next);
-        return next;
-      }),
-    onResizeEnd: (final) =>
-      setSize((current) => {
-        const next = resolveRailSize(current, final, 'pointer');
-        saveRailSize(next);
-        return next;
-      }),
+    onResize: (_size, change) => applyResize(change.raw, change.source),
+    onResizeEnd: (final) => {
+      applyResize(final, 'pointer');
+      // 拖拽只在结束时落盘（时机语义不变）。
+      saveRailSize(sizeRef.current);
+    },
   });
 
   const toggle = () => {
     const next: RailSize = { ...size, collapsed: !size.collapsed };
+    sizeRef.current = next;
     saveRailSize(next);
     setSize(next);
   };

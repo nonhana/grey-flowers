@@ -8,12 +8,13 @@ export type LoopMode = 'off' | 'all' | 'one' | 'shuffle';
 const VOLUME_STORAGE_KEY = 'gf.player.volume';
 const LOOP_MODES: LoopMode[] = ['off', 'all', 'one', 'shuffle'];
 
-const readStoredVolume = (): number => {
+/** 存储音量只读一次（L-6）：模块加载时定值，audio 初始化与 store 初值共用。 */
+const storedVolume = (() => {
   const raw = localStorage.getItem(VOLUME_STORAGE_KEY);
   if (raw === null) return 1;
   const parsed = Number(raw);
   return Number.isFinite(parsed) && parsed >= 0 && parsed <= 1 ? parsed : 1;
-};
+})();
 
 interface PlayerState {
   currentIndex: number;
@@ -46,8 +47,8 @@ interface PlayerActions {
 
 // 单例 AudioElement：模块加载即创建（未赋值 src 前无实际资源占用），跨路由常驻。
 const audioElement = new Audio();
-audioElement.volume = readStoredVolume();
 audioElement.muted = false;
+audioElement.volume = storedVolume;
 let playIntentActive = false;
 
 export const usePlayerStore = create<PlayerState & PlayerActions>()((
@@ -384,7 +385,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     playlist: [],
     shuffleHistory: [],
     status: 'idle',
-    volume: readStoredVolume(),
+    volume: storedVolume,
     cycleLoopMode,
     next,
     pause,

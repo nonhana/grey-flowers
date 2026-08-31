@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { apiClient } from '@/app/api/index.js';
 import { markAssetsStale } from '@/app/server-state/assets.js';
 import { invalidateMusicAfterMutation } from '@/app/server-state/music.js';
-import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
 import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept.js';

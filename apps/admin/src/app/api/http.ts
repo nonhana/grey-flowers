@@ -71,7 +71,10 @@ const delay = (ms: number, signal: AbortSignal | undefined) => {
     reject(abortError());
   };
   signal?.addEventListener('abort', onAbort, { once: true });
-  return promise;
+  // 落定后（正常完成或 abort）都摘掉监听（L-2），不留对 signal 的引用。
+  return promise.finally(() => {
+    signal?.removeEventListener('abort', onAbort);
+  });
 };
 
 type HttpMethod = 'get' | 'post' | 'patch' | 'delete';

@@ -15,7 +15,7 @@ import {
   invalidateActivitiesAfterMutation,
 } from '@/app/server-state/activities.js';
 import { markAssetsStale } from '@/app/server-state/assets.js';
-import { AssetPickerDialog } from '@/features/articles/editor/asset-picker.js';
+import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
 import { usePasteFiles } from '@/hooks/use-paste-files.js';
 import { apiErrorMessage } from '@/lib/error-message.js';
 import { formatDuration } from '@/lib/format.js';
@@ -71,7 +71,6 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
   const [musicPickerOpen, setMusicPickerOpen] = useState(false);
   const [assetOpen, setAssetOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const [showLightbox, setShowLightBox] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const submitMutation = useMutation({
@@ -272,7 +271,6 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
         onOpenFilePicker={() => openFilePicker()}
         onPreview={(index) => {
           setLightbox(index);
-          setShowLightBox(true);
         }}
         onRemove={removeImage}
         onReorder={reorderImage}
@@ -491,9 +489,9 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
       />
 
       <AppDialog
-        isOpen={showLightbox}
+        isOpen={lightbox !== null}
         onOpenChange={(open) => {
-          if (!open) setShowLightBox(false);
+          if (!open) setLightbox(null);
         }}
         size="lg"
         title={`图片 ${lightbox !== null ? lightbox + 1 : ''}`}
