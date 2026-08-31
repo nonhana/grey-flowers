@@ -120,6 +120,13 @@ export const ActivityEditor = ({
             activitySubmit.current();
             return true;
           }
+          if (
+            (event.metaKey || event.ctrlKey) &&
+            event.key.toLowerCase() === 's'
+          ) {
+            event.preventDefault();
+            return true;
+          }
           return false;
         },
       }),

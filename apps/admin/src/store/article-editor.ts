@@ -585,6 +585,7 @@ export const useArticleEditor = (articleId: number | null) => {
 
   const applyRestored = useStore(store, (s) => s.applyRestored);
   const discardRestored = useStore(store, (s) => s.discardRestored);
+  const flushNow = useStore(store, (s) => s.flushNow);
   const loadVersions = useStore(store, (s) => s.loadVersions);
   const publish = useStore(store, (s) => s.publish);
   const removeArticle = useStore(store, (s) => s.removeArticle);
@@ -636,6 +637,7 @@ export const useArticleEditor = (articleId: number | null) => {
     versions,
     applyRestored,
     discardRestored,
+    flushNow,
     loadVersions,
     publish,
     removeArticle,

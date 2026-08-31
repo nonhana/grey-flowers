@@ -52,9 +52,11 @@ import { paperTheme } from './paper-theme.js';
 
 export const CodeMirrorPane = ({
   onChange,
+  onRequestSave,
   value,
 }: {
   onChange: (value: string) => void;
+  onRequestSave: () => void;
   value: string;
 }) => {
   const viewRef = useRef<EditorView | null>(null);
@@ -244,6 +246,15 @@ export const CodeMirrorPane = ({
           'relative min-h-0 flex-1 overflow-hidden bg-paper',
           isDragActive && 'outline-2 -outline-offset-2 outline-focus',
         )}
+        onKeyDown={(event) => {
+          if (
+            (event.metaKey || event.ctrlKey) &&
+            event.key.toLowerCase() === 's'
+          ) {
+            event.preventDefault();
+            onRequestSave();
+          }
+        }}
       >
         {isDragActive ? (
           <div

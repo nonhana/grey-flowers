@@ -375,6 +375,9 @@ const WorkspacePage = ({
       <div className="flex min-h-0 flex-1">
         <CodeMirrorPane
           onChange={(value) => editor.updateDraft({ content: value })}
+          onRequestSave={() => {
+            void editor.flushNow();
+          }}
           value={editor.draft.content}
         />
         {isDesktop ? (
