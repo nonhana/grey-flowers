@@ -76,41 +76,22 @@ const EditFields = ({
   </div>
 );
 
-/**
- * 编辑用户资料。avatar 不可管理端编辑（服务端由邮箱派生）；密码属自助；
- * role 变更会撤销该用户全部会话，需重新登录——选择与当前不同时给出提示。
- * 草稿以 useDialog 的 session 为 key 重建：同一用户重开也拿到全新表单。
- */
-export const EditUserDialog = ({
+/** 编辑会话本体：draft 与保存逻辑全部住在会话内，随 session 卸载消失。 */
+const EditUserBody = ({
   onClose,
-  onExited,
-  open,
-  session,
   user,
 }: {
   onClose: () => void;
-  onExited?: () => void;
-  open: boolean;
-  /** useDialog 的单调会话 id：重开同一用户也重建全新草稿。 */
-  session: number;
-  user: UserAdminSummary | null;
+  user: UserAdminSummary;
 }) => {
-  const [draft, setDraft] = useState<EditDraft | null>(null);
+  const [draft, setDraft] = useState<EditDraft>({
+    email: user.email,
+    role: user.role,
+    site: user.site ?? '',
+    username: user.username,
+  });
 
-  // 打开/切换用户时同步草稿（渲染期、受条件保护地调整 state）。
-  const [prevUserId, setPrevUserId] = useState<number | null>(null);
-  if (user && prevUserId !== user.id) {
-    setPrevUserId(user.id);
-    setDraft({
-      email: user.email,
-      role: user.role,
-      site: user.site ?? '',
-      username: user.username,
-    });
-  }
-
-  const roleChanged =
-    draft !== null && user !== null && draft.role !== user.role;
+  const roleChanged = draft.role !== user.role;
 
   const saveMutation = useMutation({
     mutationFn: (input: {
@@ -118,10 +99,7 @@ export const EditUserDialog = ({
       role?: UserRole;
       site: string | null;
       username?: string;
-    }) => {
-      if (!user) return Promise.reject(new Error('no user'));
-      return apiClient.users.update(user.id, input);
-    },
+    }) => apiClient.users.update(user.id, input),
     onSuccess: async () => {
       toast.success('已保存用户资料。');
       onClose();
@@ -135,12 +113,11 @@ export const EditUserDialog = ({
 
   const setField = <K extends keyof EditDraft>(key: K) => {
     return (value: EditDraft[K]) => {
-      setDraft((current) => (current ? { ...current, [key]: value } : current));
+      setDraft((current) => ({ ...current, [key]: value }));
     };
   };
 
   const submit = () => {
-    if (!user || !draft) return;
     const username = draft.username.trim();
     const email = draft.email.trim();
     const site = draft.site.trim() === '' ? null : draft.site.trim();
@@ -154,28 +131,48 @@ export const EditUserDialog = ({
   };
 
   return (
+    <Form
+      className="grid gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        submit();
+      }}
+    >
+      <EditFields draft={draft} roleChanged={roleChanged} setField={setField} />
+      <Button
+        isLoading={saveMutation.isPending}
+        size="sm"
+        tone="solid"
+        type="submit"
+      >
+        保存
+      </Button>
+    </Form>
+  );
+};
+
+/**
+ * 编辑用户资料。avatar 不可管理端编辑（服务端由邮箱派生）；密码属自助；
+ * role 变更会撤销该用户全部会话，需重新登录——选择与当前不同时给出提示。
+ * 草稿住在 session-keyed 的编辑会话组件里（M4）：每次打开都从 user 当前值
+ * 起一份全新草稿，同一用户重开也拿到全新表单。
+ */
+export const EditUserDialog = ({
+  onClose,
+  onExited,
+  open,
+  session,
+  user,
+}: {
+  onClose: () => void;
+  onExited?: () => void;
+  open: boolean;
+  /** useDialog 的单调会话 id：作为编辑会话组件的 key，每次打开重建会话。 */
+  session: number;
+  user: UserAdminSummary | null;
+}) => {
+  return (
     <AppDialog
-      footer={
-        user ? (
-          <Form
-            className="grid w-full gap-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void submit();
-            }}
-          >
-            <Button
-              isDisabled={!draft}
-              isLoading={saveMutation.isPending}
-              size="sm"
-              tone="solid"
-              type="submit"
-            >
-              保存
-            </Button>
-          </Form>
-        ) : undefined
-      }
       isOpen={open}
       onExited={onExited}
       onOpenChange={(nextOpen) => {
@@ -184,13 +181,8 @@ export const EditUserDialog = ({
       size="md"
       title="编辑用户"
     >
-      {draft && user ? (
-        <EditFields
-          draft={draft}
-          key={session}
-          roleChanged={roleChanged}
-          setField={setField}
-        />
+      {user ? (
+        <EditUserBody key={session} onClose={onClose} user={user} />
       ) : null}
     </AppDialog>
   );

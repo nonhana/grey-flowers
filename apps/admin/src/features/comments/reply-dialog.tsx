@@ -30,11 +30,15 @@ const ReplyForm = ({
 }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
+  // sent 态（L-17）：成功到对话框卸载之间的退出动画窗口里，提交与取消
+  // 都被禁用 —— 成功瞬间连点不可能发出第二条回复。
+  const [sent, setSent] = useState(false);
 
   const sendMutation = useMutation({
     mutationFn: (body: string) =>
       apiClient.comments.reply(target.id, { content: body }),
     onSuccess: async () => {
+      setSent(true);
       onSent();
       toast.success(`已回复，将通知 ${target.username}`);
       await invalidateCommentsAfterMutation();
@@ -84,13 +88,18 @@ const ReplyForm = ({
 
       <div className="flex justify-end gap-2">
         <Button
-          isDisabled={sendMutation.isPending}
+          isDisabled={sent || sendMutation.isPending}
           onPress={onSent}
           type="button"
         >
           取消
         </Button>
-        <Button isLoading={sendMutation.isPending} tone="solid" type="submit">
+        <Button
+          isDisabled={sent}
+          isLoading={sendMutation.isPending}
+          tone="solid"
+          type="submit"
+        >
           发送回复
         </Button>
       </div>

@@ -569,6 +569,7 @@ export const CommentsPage = () => {
         comment={sessionDialog.data}
         onClose={sessionDialog.dismiss}
         open={sessionDialog.isOpen}
+        session={sessionDialog.session}
         onDelete={(target) =>
           deleteDialog.open({
             childrenCount:

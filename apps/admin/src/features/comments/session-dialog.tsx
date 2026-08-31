@@ -18,6 +18,62 @@ import { CommentBody } from './comment-card.js';
 import { commentPageUrl } from './display.js';
 
 /**
+ * session-keyed 快捷回复表单（L-25）：quickContent 住在会话组件里，
+ * 同一条评论重开也得到全新输入，不残留上次未发送的内容。
+ */
+const QuickReplyForm = ({ comment }: { comment: CommentAdminTree }) => {
+  const [quickContent, setQuickContent] = useState('');
+
+  const replyMutation = useMutation({
+    mutationFn: (body: string) =>
+      apiClient.comments.reply(comment.id, { content: body }),
+    onSuccess: async () => {
+      setQuickContent('');
+      toast.success(`已回复，将通知 ${comment.author.username}`);
+      await invalidateCommentsAfterMutation();
+    },
+    onError: (error) => {
+      toastError(error);
+    },
+  });
+
+  const sendQuickReply = () => {
+    const body = quickContent.trim();
+    if (!body) return;
+    replyMutation.mutate(body);
+  };
+
+  return (
+    <Form
+      className="grid w-full gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        sendQuickReply();
+      }}
+    >
+      <TextAreaField
+        label="向这条评论回复"
+        onChange={setQuickContent}
+        placeholder="向这条评论回复…"
+        rows={2}
+        value={quickContent}
+      />
+      <div className="flex justify-end">
+        <Button
+          isDisabled={!quickContent.trim()}
+          isLoading={replyMutation.isPending}
+          size="sm"
+          tone="solid"
+          type="submit"
+        >
+          发送
+        </Button>
+      </div>
+    </Form>
+  );
+};
+
+/**
  * 会话视图 = 查看评论上下文的载体：同 path 会话树（PARENT + 全部 CHILD）。
  * 头部给 path 面包屑 + 「在访客页打开」外链 + 总条数；底部最小回复框快捷回复 PARENT；
  * 每行复用 CommentBody 的行内操作（回复/删除），由调用方挂接共享弹窗。
@@ -29,6 +85,7 @@ export const SessionDialog = ({
   onExited,
   onReply,
   open,
+  session,
 }: {
   comment: CommentAdminTree | null;
   onClose: () => void;
@@ -36,71 +93,15 @@ export const SessionDialog = ({
   onExited?: () => void;
   onReply: (target: CommentAdmin) => void;
   open: boolean;
+  /** useDialog 的单调会话 id：作为快捷回复表单的 key，重开必得全新输入。 */
+  session: number;
 }) => {
-  const [quickContent, setQuickContent] = useState('');
-
-  // 打开时同步内容（渲染期、受条件保护地调整 state）
-  const [prevCommentId, setPrevCommentId] = useState<number | null>(null);
-  if (comment && prevCommentId !== comment.id) {
-    setPrevCommentId(comment.id);
-    setQuickContent('');
-  }
-
-  const replyMutation = useMutation({
-    mutationFn: (body: string) => {
-      if (!comment) return Promise.reject(new Error('no comment'));
-      return apiClient.comments.reply(comment.id, { content: body });
-    },
-    onSuccess: async () => {
-      setQuickContent('');
-      toast.success(`已回复，将通知 ${comment?.author.username ?? '作者'}`);
-      await invalidateCommentsAfterMutation();
-    },
-    onError: (error) => {
-      toastError(error);
-    },
-  });
-
-  const sendQuickReply = () => {
-    if (!comment) return;
-    const body = quickContent.trim();
-    if (!body) return;
-    replyMutation.mutate(body);
-  };
-
   const sessionCount = comment ? 1 + comment.childrenCount : 0;
 
   return (
     <AppDialog
       footer={
-        comment ? (
-          <Form
-            className="grid w-full gap-2"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void sendQuickReply();
-            }}
-          >
-            <TextAreaField
-              label="向这条评论回复"
-              onChange={setQuickContent}
-              placeholder="向这条评论回复…"
-              rows={2}
-              value={quickContent}
-            />
-            <div className="flex justify-end">
-              <Button
-                isDisabled={!quickContent.trim()}
-                isLoading={replyMutation.isPending}
-                size="sm"
-                tone="solid"
-                type="submit"
-              >
-                发送
-              </Button>
-            </div>
-          </Form>
-        ) : undefined
+        comment ? <QuickReplyForm comment={comment} key={session} /> : undefined
       }
       isOpen={open}
       onExited={onExited}
