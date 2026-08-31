@@ -22,7 +22,7 @@ import {
   ListOrdered,
   Quote,
 } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   lineWrappedMarkdown,
@@ -73,6 +73,13 @@ const activityPaperOverrides = View.theme({
   '.cm-content': { paddingBottom: '1.5rem' },
 });
 
+/**
+ * Cmd/Ctrl+Enter 的模块级发布槽位：挂载后由 effect 注入最新 onSubmit，
+ * 键入路径经它触发（M5：事件路径更新，不在渲染期写入）。与 imageActions
+ * 同一权衡——本编辑器全站单实例（compose-page）。
+ */
+const activitySubmit: { current: () => void } = { current: () => undefined };
+
 export const ActivityEditor = ({
   onChange,
   onSubmit,
@@ -85,7 +92,16 @@ export const ActivityEditor = ({
 }) => {
   const viewRef = useRef<EditorView | null>(null);
 
-  const extensions: Extension[] = [
+  // Cmd/Ctrl+Enter 的模块级发布槽位经事件路径更新（M5）：不在渲染期写入；
+  // 该 effect 属「CodeMirror action registration」白名单项。
+  useEffect(() => {
+    activitySubmit.current = onSubmit;
+  });
+
+  // 扩展只在挂载时构建一次（M5）：react-codemirror 对 extensions 引用
+  // 变化执行整体 reconfigure，逐键重建数组会让每次键入都付这笔开销。
+  // 交互出口走模块级 activitySubmit 槽位，闭包不随渲染变化。
+  const [extensions] = useState<Extension[]>(() => [
     View.lineWrapping,
     history(),
     markdown({ base: markdownLanguage }),
@@ -101,7 +117,7 @@ export const ActivityEditor = ({
             (event.key === 'Enter' || event.key === 'NumpadEnter')
           ) {
             event.preventDefault();
-            onSubmit();
+            activitySubmit.current();
             return true;
           }
           return false;
@@ -116,7 +132,7 @@ export const ActivityEditor = ({
     ]),
     paperTheme,
     activityPaperOverrides,
-  ];
+  ]);
 
   const run = (action: (view: EditorView) => void) => {
     const view = viewRef.current;

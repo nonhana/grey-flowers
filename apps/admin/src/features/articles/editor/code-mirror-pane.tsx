@@ -14,7 +14,7 @@ import { EditorView, keymap } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
 import { cn } from 'cnfast';
 import { RotateCcw } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { apiClient } from '@/app/api/index.js';
@@ -69,24 +69,33 @@ export const CodeMirrorPane = ({
   const [altDraft, setAltDraft] = useState('');
   const keyboardInset = useKeyboardInset();
 
-  // 把图片动作安装到模块级 imageActions 槽位；两个 dialog store 只在开/关时
-  // 变化，借此重装 handler，闭包始终最新（open 本身无状态，重装足够轻）。
+  // 把图片动作安装到模块级 imageActions 槽位（L-9）：effect 空依赖、只在
+  // 挂载时安装一次；handler 经 useEffectEvent 恒读最新的 dialog store 与
+  // viewRef，不再押注 Compiler 记忆化 useDialog 返回对象的引用身份。
+  const openViewer = useEffectEvent(
+    (src: string, alt: string, assetId: string | null) => {
+      viewerDialog.open({ src, alt, assetId });
+    },
+  );
+  const editAlt = useEffectEvent((src: string, alt: string) => {
+    altDialog.open({ src, alt });
+    setAltDraft(alt);
+  });
+  const removeImageAt = useEffectEvent((src: string, anchor: number) => {
+    const view = viewRef.current;
+    if (view) removeImage(view, src, anchor);
+  });
+
   useEffect(() => {
     imageActions.current = {
-      open: (src, alt, assetId) => viewerDialog.open({ src, alt, assetId }),
-      edit: (src, alt) => {
-        altDialog.open({ src, alt });
-        setAltDraft(alt);
-      },
-      remove: (src, anchor) => {
-        const view = viewRef.current;
-        if (view) removeImage(view, src, anchor);
-      },
+      open: openViewer,
+      edit: editAlt,
+      remove: removeImageAt,
     };
     return () => {
       imageActions.current = null;
     };
-  }, [altDialog, viewerDialog]);
+  }, []);
 
   /**
    * 上传不写进文档（幽灵占位是 UI-only，不参与自动保存），成功后才把
