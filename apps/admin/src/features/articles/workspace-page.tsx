@@ -408,9 +408,26 @@ const WorkspacePage = ({
  *  重挂载即重新拉取最近文章与元数据选项（React 官方「key 重置全部状态」模式）。 */
 export const ArticleWorkspacePage = () => {
   const { articleId } = useParams({ strict: false }) as { articleId: string };
-  const numericId = Number.parseInt(articleId, 10) || null;
+  // 路由 id 严格解析（M14）：/^\d+$/ 且 >0 才是合法文章 id；非法（如
+  // /articles/abc、/articles/0）渲染内联无效态（复用 loadError 的视觉
+  // 结构），不再静默落进新建模式。
+  const valid = /^\d+$/.test(articleId) && Number(articleId) > 0;
+  const numericId = valid ? Number(articleId) : null;
   const isDesktop = useIsDesktop();
   const [inspectorOpen, setInspectorOpen] = useState(isDesktop);
+  if (!valid) {
+    return (
+      <div className="grid h-full place-items-center p-6">
+        <div className="grid max-w-sm justify-items-center gap-4 text-center">
+          <p className="text-md text-ink">链接无效：找不到这篇文章。</p>
+          <Link className={buttonClass()} to="/articles">
+            <ArrowLeft aria-hidden className="size-4" />
+            返回文章列表
+          </Link>
+        </div>
+      </div>
+    );
+  }
   return (
     <WorkspacePage
       inspectorOpen={inspectorOpen}

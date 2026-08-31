@@ -136,11 +136,15 @@ export const MusicDetailPage = () => {
       toggle();
       return;
     }
-    const queue = playlist.length > 0 ? playlist : [music];
-    play(
-      queue,
-      queue.findIndex((track) => track.id === music.id),
-    );
+    // 点播即播这首（L-15）：当前队列里有它就按原位播；没有（含队列为
+    // 空）就把它插到队首再播——不再让 player 把 findIndex=-1 钳成 0 而
+    // 在其他队列播放中点播时播错歌。
+    const index = playlist.findIndex((track) => track.id === music.id);
+    if (index === -1) {
+      play([music, ...playlist], 0);
+      return;
+    }
+    play(playlist, index);
   };
 
   return (

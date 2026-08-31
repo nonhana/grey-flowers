@@ -532,9 +532,15 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 export const ActivityComposePage = () => {
   const navigate = useNavigate();
   const params = useParams({ strict: false }) as { activityId?: string };
-  const editingId = params.activityId
-    ? Number.parseInt(params.activityId, 10) || null
-    : null;
+  // 路由 id 严格解析（M14）三分支：无 id（/activities/new）=新建；有 id
+  // 但非 /^\d+$/ 或 ≤0（如 /activities/0/edit）=内联无效态（复用 loadError
+  // 的视觉结构），不再静默变新建；合法 id=编辑。
+  const rawId = params.activityId ?? null;
+  const editingId =
+    rawId !== null && /^\d+$/.test(rawId) && Number(rawId) > 0
+      ? Number(rawId)
+      : null;
+  const invalid = rawId !== null && editingId === null;
 
   const detailQuery = useQuery({
     // enabled 关闭时 id 不参与请求；key 需要 number，用 0 占位且永不激活。
@@ -542,6 +548,23 @@ export const ActivityComposePage = () => {
     enabled: editingId !== null,
   });
 
+  if (invalid) {
+    return (
+      <div className="grid h-full flex-1 place-items-center p-6">
+        <div className="grid max-w-sm justify-items-center gap-4 text-center">
+          <p className="text-md text-ink">链接无效：找不到这条动态。</p>
+          <Link
+            className={buttonClass()}
+            onClick={() => void navigate({ to: '/activities' })}
+            to="/activities"
+          >
+            <ArrowLeft aria-hidden className="size-4" />
+            返回动态列表
+          </Link>
+        </div>
+      </div>
+    );
+  }
   if (editingId === null) {
     return <ActivityComposer activity={null} />;
   }
