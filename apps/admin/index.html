@@ -15,46 +15,11 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
     />
-
-    <!--
-      首帧主题初始化脚本由 vite/theme-script-plugin.ts 在 dev / build 时编译自
-      scripts/theme-init.ts 并内联进本 <head>，保证深色用户首帧不白闪。
-      不要在 index.html 里手写主题脚本 —— 改 scripts/theme-init.ts。
-    -->
-
-    <!--
-      PWA：iOS 安装 meta（manifest、theme-color、favicon/apple-touch-icon links
-      由 vite-plugin-pwa 构建时自动注入，此处不要手写以免重复）。
-      决策见 wiki/plans/2026-08-10-admin-pwa-refactor.md D8/D9。
-    -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Grey Admin" />
   </head>
   <body>
-    <!--
-      GREY FLOWERS ADMIN · DIRECTION CONTRACT
-
-      THESIS: 后台是一间排字房。字盘与纸两种物质，永不混淆。它拒绝的品类默认，是把
-      导航、列表、控件与正文一起塞进同一种「圆角 + 灰边 + 软阴影」卡片的匀质浆糊。
-
-      OWN-WORLD: 承袭 Grey Flowers 已确认身份 —— petal-blue 单一强调色、Noto Sans SC
-      与 JetBrains Mono、雾化中性、圆润不玩具化。新增的是 register 分层：
-      字盘层按格对齐、表格化数字、紧行高、拉丁数据走等宽；纸层黑体、68ch、行高 1.9、
-      无边框切割的抬升面。控制台内不铺网格底纹，网格只留在 auth stage —— 那里品牌才在说话。
-
-      STORY: 操作者冷启动 → 一眼读到当前状态 → 完成她来做的那一件事 → 离开。
-      全程不需要把任何一个标签读第二遍。
-
-      FIRST VIEWPORT: 左侧 264px 通栏字盘侧栏（品牌块 / 与导航明确分离的新建动作键 /
-      分组导航 / 底部账户块），右侧内容区。工作区的 inspector 是任何断点都可召回、
-      可消失的 sheet，推入时挤压纸面页边而不改变行宽。移动端为底部拇指动作栏 +
-      键盘感知的满高纸面。
-
-      FORM: Rail + Sheet；共鸣序列第 4 项；concept-seed key e201f6c7。
-
-      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
-    -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -88,8 +88,7 @@ const REACT_RULES: DummyRuleMap = {
   'react/no-render-return-value': 'error',
   'react/no-unsafe': 'warn',
   'react/no-unstable-nested-components': 'error',
-  // React Compiler 校验（原 nursery 的 react/react-compiler 已随官方迁移移除，
-  // 按其博客对照表展开为具名规则；保持原 warn 级别）。
+  // ---------- React Compiler ---------- //
   'react/capitalized-calls': 'warn',
   'react/error-boundaries': 'warn',
   'react/exhaustive-effect-dependencies': 'warn',

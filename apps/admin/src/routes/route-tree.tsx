@@ -28,9 +28,7 @@ const articlesListRoute = createRoute({
   ),
   getParentRoute: () => rootRoute,
   path: '/articles',
-  // 「全部」是无查询串的规范 URL，草稿与已发布各自带一个 status。
-  // 这样侧栏子项可以深链，而普通的「去文章列表」不必拖着查询串走。
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search) => {
     const status = parseStatusFilter(search.status);
     return status === 'all' ? {} : { status };
   },
@@ -52,7 +50,6 @@ const articleWorkspaceRoute = createRoute({
   ),
   getParentRoute: () => rootRoute,
   path: '/articles/$articleId',
-  // 写作要独占视口：外壳收起移动端的拇指栏，把滚动交还给纸面。
   staticData: { fullBleed: true },
 });
 
@@ -99,7 +96,6 @@ const newActivityRoute = createRoute({
   ),
   getParentRoute: () => rootRoute,
   path: '/activities/new',
-  // 全文写作独占视口：收起移动端拇指栏，把滚动交还给纸面。
   staticData: { fullBleed: true },
 });
 
@@ -117,8 +113,7 @@ const assetsListRoute = createRoute({
   ...lazyPage(() => import('@/features/assets/list-page.js'), 'AssetsListPage'),
   getParentRoute: () => rootRoute,
   path: '/assets',
-  // 待清理深链从概览进来后回到这一页，URL 进入可复位（沿用文章 status 模式）。
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search) => {
     const status = parseAssetStatusFilter(search.status);
     return status === 'all' ? {} : { status };
   },
@@ -140,12 +135,8 @@ const musicListRoute = createRoute({
   ),
   getParentRoute: () => rootRoute,
   path: '/music',
-  // 缺元数据深链：TanStack 默认 parseSearch 会把 ?incomplete=true JSON 解析成
-  // 布尔 true，这里统一归一为布尔 true（round-trip 稳定，不会 `"true"` 双重编码）。
-  validateSearch: (search: Record<string, unknown>) =>
-    search.incomplete === true || search.incomplete === 'true'
-      ? { incomplete: true }
-      : {},
+  validateSearch: (search) =>
+    search.incomplete === true ? { incomplete: true } : {},
 });
 
 const musicDetailRoute = createRoute({
@@ -186,9 +177,3 @@ const routeTree = rootRoute.addChildren([
 ]);
 
 export const router = createRouter({ routeTree });
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
-}

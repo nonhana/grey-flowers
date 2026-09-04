@@ -3,10 +3,6 @@ import { lazyRouteComponent } from '@tanstack/react-router';
 import { Skeleton } from '@/ui/feedback.js';
 import { PageBody } from '@/ui/surface.js';
 
-/**
- * 路由 chunk 懒加载期间的通用页骨架：标题位 + 行列表位，
- * 让首屏从「空页 + 居中 Spinner」变成有结构的占位 —— 落地时只淡入，不整页空跳。
- */
 const RoutePending = () => (
   <PageBody>
     <div className="grid animate-content-in gap-4">

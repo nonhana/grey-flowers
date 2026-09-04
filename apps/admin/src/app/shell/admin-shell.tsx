@@ -18,19 +18,18 @@ import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
 import { TextField } from '@/ui/form.js';
 
-/** Auth stage 保留网格底纹（品牌在说话）；进入控制台后让位给工作面。 */
 const Stage = ({ children }: { children: ReactNode }) => (
   <section
     className="
       grid min-h-full place-items-center gf-stage-grid px-4 py-10
-      max-[480px]:items-start max-[480px]:pt-[12vh]
+      max-stage:items-start max-stage:pt-[12vh]
     "
   >
     <div
       className="
         grid w-full max-w-104 gap-6 rounded-sheet bg-case-raised p-7
         shadow-float
-        max-[480px]:p-6
+        max-stage:p-6
       "
     >
       {children}
@@ -108,12 +107,12 @@ const LoginScreen = ({
       <BrandLine />
       <div className="grid gap-2">
         <Headline>管理后台</Headline>
-        <Muted>使用你的 Grey Flowers 账户继续。</Muted>
+        <Muted>欢迎回来 Hana 酱！</Muted>
       </div>
       <Form
         className="grid gap-4"
-        onSubmit={(event) => {
-          event.preventDefault();
+        onSubmit={(e) => {
+          e.preventDefault();
           void signIn({ account: account.trim(), password });
         }}
       >
@@ -164,7 +163,7 @@ const ForbiddenScreen = () => {
           <ShieldX aria-hidden />
         </StatusMark>
         <Headline>此账户没有后台权限</Headline>
-        <Muted>请改用具有管理员权限的账户登录。</Muted>
+        <Muted>Hana 酱输入你自己的管理账户哦</Muted>
         <Button
           className="mt-1 justify-self-center"
           onPress={useAnotherAccount}

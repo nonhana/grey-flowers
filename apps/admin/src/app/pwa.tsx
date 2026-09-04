@@ -19,19 +19,22 @@ export const PwaBridge = () => {
   // 外部系统同步：service worker 等待中的新版本 → 可刷新 toast。
   useEffect(() => {
     if (!needRefresh) return;
+
+    const refreshApp = () => {
+      void navigator.serviceWorker.getRegistration().then((reg) => {
+        if (!reg || !reg.waiting) {
+          window.location.reload();
+          return;
+        }
+        void updateServiceWorker(true);
+      });
+    };
+
     toast('新版本可用', {
       id: 'pwa-need-refresh',
       action: {
         label: '刷新',
-        onClick: () => {
-          void navigator.serviceWorker.getRegistration().then((reg) => {
-            if (!reg || !reg.waiting) {
-              window.location.reload();
-              return;
-            }
-            void updateServiceWorker(true);
-          });
-        },
+        onClick: refreshApp,
       },
       duration: Infinity,
     });
