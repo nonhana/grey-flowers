@@ -219,6 +219,7 @@ export default defineConfig({
     'apps/main/**',
     '**/dist/**',
     '**/node_modules/**',
+    'apps/admin/src/routeTree.gen.ts',
     'packages/db/prisma/generated/**',
     'packages/db/prisma/migrations/**',
   ],

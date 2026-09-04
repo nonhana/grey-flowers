@@ -1,9 +1,7 @@
-import { lazyRouteComponent } from '@tanstack/react-router';
-
 import { Skeleton } from '@/ui/feedback.js';
 import { PageBody } from '@/ui/surface.js';
 
-const RoutePending = () => (
+export const RoutePending = () => (
   <PageBody>
     <div className="grid animate-content-in gap-4">
       <div className="grid gap-1">
@@ -28,14 +26,3 @@ const RoutePending = () => (
     </div>
   </PageBody>
 );
-
-export const lazyPage = <
-  Module extends Record<string, unknown>,
-  ComponentName extends keyof Module & string,
->(
-  importer: () => Promise<Module>,
-  componentName: ComponentName,
-) => {
-  const component = lazyRouteComponent(importer, componentName);
-  return { component, pendingComponent: RoutePending };
-};

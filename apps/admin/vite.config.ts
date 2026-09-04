@@ -1,5 +1,6 @@
 import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -44,6 +45,11 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_MAIN_ORIGIN': JSON.stringify(mainOrigin),
     },
     plugins: [
+      tanstackRouter({
+        target: 'react',
+        autoCodeSplitting: true,
+        routeFileIgnorePattern: 'router\\.ts$',
+      }),
       react(),
       themeInitScript(),
       tailwindcss(),

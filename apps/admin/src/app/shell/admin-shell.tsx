@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
 
-import { router } from '@/routes/route-tree.js';
+import { router } from '@/routes/router.js';
 import { useAuth } from '@/store/auth.js';
 import { Button } from '@/ui/button.js';
 import { Alert } from '@/ui/feedback.js';
