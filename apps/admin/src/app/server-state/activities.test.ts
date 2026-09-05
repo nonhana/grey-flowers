@@ -13,7 +13,7 @@ const activitiesApi = vi.hoisted(() => ({
     >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({
+vi.mock('@/app/api/index', () => ({
   apiClient: { activities: activitiesApi },
 }));
 
@@ -22,10 +22,10 @@ import {
   activityKeys,
   activityListOptions,
   invalidateActivitiesAfterMutation,
-} from './activities.js';
-import { queryClient } from './client.js';
-import { overviewKeys } from './overview.js';
-import { activitiesRoot, musicRoot } from './roots.js';
+} from './activities';
+import { queryClient } from './client';
+import { overviewKeys } from './overview';
+import { activitiesRoot, musicRoot } from './roots';
 
 describe('activityKeys', () => {
   it('list 与 detail 家族互不冲突', () => {

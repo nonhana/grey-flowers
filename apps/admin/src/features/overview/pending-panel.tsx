@@ -5,8 +5,8 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { ChevronRight, FileText, Images, Music2 } from 'lucide-react';
 
-import { Skeleton } from '@/ui/feedback.js';
-import { SectionLabel } from '@/ui/surface.js';
+import { Skeleton } from '@/ui/feedback';
+import { SectionLabel } from '@/ui/surface';
 
 interface PendingMeta {
   icon: LucideIcon;

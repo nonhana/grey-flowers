@@ -2,7 +2,7 @@ import type { MiddlewareHandler } from 'hono';
 
 import { performance } from 'node:perf_hooks';
 
-import type { ApiEnvironment } from '../context.js';
+import type { ApiEnvironment } from '../context';
 
 interface ApiFailureBody {
   error?: { code?: string; message?: string };

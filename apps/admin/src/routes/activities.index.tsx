@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { ActivitiesPage } from '@/features/activities/list-page.js';
-import { RoutePending } from '@/ui/route-pending.js';
+import { ActivitiesPage } from '@/features/activities/list-page';
+import { RoutePending } from '@/ui/route-pending';
 
 export const Route = createFileRoute('/activities/')({
   component: ActivitiesPage,

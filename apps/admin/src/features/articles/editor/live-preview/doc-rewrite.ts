@@ -3,7 +3,7 @@ import type { SyntaxNode } from '@lezer/common';
 
 import { syntaxTree } from '@codemirror/language';
 
-import { imageCover, parseImage } from './image-parse.js';
+import { imageCover, parseImage } from './image-parse';
 
 interface LocatedImage {
   from: number;

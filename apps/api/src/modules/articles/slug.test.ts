@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { normalizeArticleTo, slugifyTitle } from './slug.js';
+import { normalizeArticleTo, slugifyTitle } from './slug';
 
 describe('slugifyTitle', () => {
   it('中文标题转写为拼音 slug', () => {

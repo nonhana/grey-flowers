@@ -7,9 +7,9 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { ChevronRight } from 'lucide-react';
 
-import { RankBars } from '@/ui/charts/rank-bars.js';
-import { Skeleton } from '@/ui/feedback.js';
-import { Panel, SectionLabel } from '@/ui/surface.js';
+import { RankBars } from '@/ui/charts/rank-bars';
+import { Skeleton } from '@/ui/feedback';
+import { Panel, SectionLabel } from '@/ui/surface';
 
 const RankSection = ({
   footnote,

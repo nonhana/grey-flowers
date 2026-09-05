@@ -1,10 +1,10 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 
-import { IconButton } from '@/ui/button.js';
-import { PageBody, PageHeader } from '@/ui/surface.js';
+import { IconButton } from '@/ui/button';
+import { PageBody, PageHeader } from '@/ui/surface';
 
-import { UploadWizard } from './upload-wizard.js';
+import { UploadWizard } from './upload-wizard';
 
 export const MusicUploadPage = () => {
   const navigate = useNavigate();

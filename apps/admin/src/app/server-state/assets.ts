@@ -2,11 +2,11 @@ import type { AssetListQuery, AssetPurpose } from '@grey-flowers/contracts';
 
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client.js';
-import { overviewKeys } from './overview.js';
-import { assetsRoot } from './roots.js';
+import { queryClient } from './client';
+import { overviewKeys } from './overview';
+import { assetsRoot } from './roots';
 
 /** Picker 每页条数与固定条件一起构成 key 的一部分。 */
 export const ASSET_PICKER_PAGE_SIZE = 12;

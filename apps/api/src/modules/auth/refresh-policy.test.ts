@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { decideRefresh, REFRESH_REUSE_GRACE_MS } from './refresh-policy.js';
+import { decideRefresh, REFRESH_REUSE_GRACE_MS } from './refresh-policy';
 
 const NOW = Date.parse('2026-08-08T12:00:00.000Z');
 

@@ -9,7 +9,7 @@ const assetsApi = vi.hoisted(() => ({
   >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { assets: assetsApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { assets: assetsApi } }));
 
 import type { AssetListData } from '@grey-flowers/contracts';
 
@@ -18,9 +18,9 @@ import {
   assetsPickerOptions,
   invalidateAssetsAfterMutation,
   markAssetsStale,
-} from './assets.js';
-import { queryClient } from './client.js';
-import { overviewRoot, usersRoot } from './roots.js';
+} from './assets';
+import { queryClient } from './client';
+import { overviewRoot, usersRoot } from './roots';
 
 const pageOf = (count: number, total: number): AssetListData => ({
   items: Array.from({ length: count }, (_, index) => ({

@@ -4,7 +4,7 @@ import {
   apiSuccessSchema,
   nonNegativeIntSchema,
   positiveIntSchema,
-} from './common.js';
+} from './common';
 
 export const publicTagSchema = z
   .object({

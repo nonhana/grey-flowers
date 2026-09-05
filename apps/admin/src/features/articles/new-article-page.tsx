@@ -7,14 +7,14 @@ import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateArticlesAfterMutation } from '@/app/server-state/articles.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { TextField } from '@/ui/form.js';
-import { PageBody, PageHeader, Panel } from '@/ui/surface.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateArticlesAfterMutation } from '@/app/server-state/articles';
+import { Button, IconButton } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { TextField } from '@/ui/form';
+import { PageBody, PageHeader, Panel } from '@/ui/surface';
 
-import { articleErrorMessage } from './display.js';
+import { articleErrorMessage } from './display';
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 

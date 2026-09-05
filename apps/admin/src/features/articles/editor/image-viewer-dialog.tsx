@@ -1,7 +1,7 @@
 import { ExternalLink } from 'lucide-react';
 
-import { Button } from '@/ui/button.js';
-import { AppDialog } from '@/ui/overlay.js';
+import { Button } from '@/ui/button';
+import { AppDialog } from '@/ui/overlay';
 
 export const ImageViewerDialog = ({
   onClose,

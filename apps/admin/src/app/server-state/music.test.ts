@@ -13,18 +13,18 @@ const musicApi = vi.hoisted(() => ({
     >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { music: musicApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { music: musicApi } }));
 
-import { activityKeys } from './activities.js';
-import { queryClient } from './client.js';
+import { activityKeys } from './activities';
+import { queryClient } from './client';
 import {
   invalidateMusicAfterMutation,
   musicDetailOptions,
   musicKeys,
   musicListOptions,
   musicPickerOptions,
-} from './music.js';
-import { assetsRoot, musicRoot, overviewRoot } from './roots.js';
+} from './music';
+import { assetsRoot, musicRoot, overviewRoot } from './roots';
 
 describe('musicKeys', () => {
   it('list/detail/picker 家族互不冲突', () => {

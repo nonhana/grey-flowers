@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { stripMarkdownToPlainText } from './markdown.js';
+import { stripMarkdownToPlainText } from './markdown';
 
 describe('stripMarkdownToPlainText', () => {
   it('围栏代码块整块替换为空白', () => {

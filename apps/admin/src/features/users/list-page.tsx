@@ -9,25 +9,25 @@ import { CloudOff, RotateCcw, Users } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateUsersAfterMutation,
   usersListOptions,
-} from '@/app/server-state/users.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState } from '@/ui/feedback.js';
-import { SearchInput, SelectField } from '@/ui/form.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/users';
+import { useClampPage } from '@/hooks/use-clamp-page';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { Button } from '@/ui/button';
+import { EmptyState } from '@/ui/feedback';
+import { SearchInput, SelectField } from '@/ui/form';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import { UserDeleteConfirm } from './delete-confirm.js';
-import { UserDetailDialog } from './detail-dialog.js';
-import { EditUserDialog } from './edit-dialog.js';
-import { UserCard, UserCardSkeleton } from './user-card.js';
+import { UserDeleteConfirm } from './delete-confirm';
+import { UserDetailDialog } from './detail-dialog';
+import { EditUserDialog } from './edit-dialog';
+import { UserCard, UserCardSkeleton } from './user-card';
 
 const PAGE_SIZE = 20;
 

@@ -8,12 +8,12 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { MusicPlayer } from '@/features/music/player/music-player.js';
+import { MusicPlayer } from '@/features/music/player/music-player';
 
-import { ComposeFab } from './compose-fab.js';
-import { ComposeMenu } from './compose-menu.js';
-import { ConsoleRail } from './console-rail.js';
-import { MoreSheet } from './more-sheet.js';
+import { ComposeFab } from './compose-fab';
+import { ComposeMenu } from './compose-menu';
+import { ConsoleRail } from './console-rail';
+import { MoreSheet } from './more-sheet';
 
 const tabClass = cn(
   'flex h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control',

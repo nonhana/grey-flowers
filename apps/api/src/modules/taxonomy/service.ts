@@ -11,12 +11,12 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
-import { ApiError } from '@/http/errors.js';
-import { isUniqueConstraint } from '@/lib/prisma.js';
+import { ApiError } from '@/http/errors';
+import { isUniqueConstraint } from '@/lib/prisma';
 
-import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset.js';
+import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset';
 import {
   categoryProjection,
   tagProjection,
@@ -24,7 +24,7 @@ import {
   toPublicCategory,
   toPublicTag,
   toTagAdmin,
-} from './contracts.js';
+} from './contracts';
 
 /** 分类封面归一：置 asset 则 cover=deliveryUrl；仅外部 URL 则 coverAssetId=null。 */
 const normalizeCategoryCover = async (

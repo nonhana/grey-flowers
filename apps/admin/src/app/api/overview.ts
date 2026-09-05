@@ -11,7 +11,7 @@ import {
   overviewTrendResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http, HttpReadOptions } from './http.js';
+import type { Http, HttpReadOptions } from './http';
 
 const trendSearchParams = (query: OverviewTrendQuery) => {
   const params = new URLSearchParams();

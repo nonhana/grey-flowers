@@ -9,19 +9,19 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
-import { ApiError } from '@/http/errors.js';
-import { concatUrl } from '@/lib/concat-url.js';
-import { pagination } from '@/lib/pagination.js';
+import { ApiError } from '@/http/errors';
+import { concatUrl } from '@/lib/concat-url';
+import { pagination } from '@/lib/pagination';
 
-import { assetPurposeFromStorageKey } from '../assets/contracts.js';
+import { assetPurposeFromStorageKey } from '../assets/contracts';
 import {
   musicAdminSelect,
   musicTrackSelect,
   toMusicAdmin,
   toMusicTrack,
-} from './contracts.js';
+} from './contracts';
 
 type Client = PrismaClient | Prisma.TransactionClient;
 

@@ -4,7 +4,7 @@ import {
   AUDIO_ACCEPT_MAP,
   fileMatchesAccept,
   IMAGE_ACCEPT_MAP,
-} from './media-accept.js';
+} from './media-accept';
 
 describe('fileMatchesAccept', () => {
   it('wildcard MIME 命中 type', () => {

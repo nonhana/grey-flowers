@@ -7,7 +7,7 @@ import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-import { themeInitScript } from './vite/theme-script-plugin.js';
+import { themeInitScript } from './vite/theme-script-plugin';
 
 const PWA_ICONS: Record<string, true> = {
   'favicon.ico': true,

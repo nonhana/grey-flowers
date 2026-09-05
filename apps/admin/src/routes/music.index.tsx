@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { MusicLibraryPage } from '@/features/music/list-page.js';
-import { RoutePending } from '@/ui/route-pending.js';
+import { MusicLibraryPage } from '@/features/music/list-page';
+import { RoutePending } from '@/ui/route-pending';
 
 export const Route = createFileRoute('/music/')({
   validateSearch: (search) =>

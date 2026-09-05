@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { countArticleWordCount } from './wordcount.js';
+import { countArticleWordCount } from './wordcount';
 
 describe('countArticleWordCount', () => {
   it('CJK 逐字计 1', () => {

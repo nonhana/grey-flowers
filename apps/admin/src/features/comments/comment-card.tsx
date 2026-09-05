@@ -9,13 +9,13 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { formatDateTime } from '@/lib/format.js';
-import { IconButton } from '@/ui/button.js';
-import { Skeleton } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDateTime } from '@/lib/format';
+import { IconButton } from '@/ui/button';
+import { Skeleton } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
-import { commentPageUrl } from './display.js';
+import { commentPageUrl } from './display';
 
 export const CommentBody = ({
   actions,

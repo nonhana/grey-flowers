@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-import { commentAdminSchema } from './comments.js';
+import { commentAdminSchema } from './comments';
 import {
   apiSuccessSchema,
   nonNegativeIntSchema,
   positiveIntSchema,
   userRoleSchema,
-} from './common.js';
+} from './common';
 
 export const usernameSchema = z
   .string()

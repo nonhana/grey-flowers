@@ -2,7 +2,7 @@ import type { MiddlewareHandler } from 'hono';
 
 import { randomUUID } from 'node:crypto';
 
-import type { ApiEnvironment } from '../context.js';
+import type { ApiEnvironment } from '../context';
 
 export const requestId = (): MiddlewareHandler<ApiEnvironment> => {
   return async (context, next) => {

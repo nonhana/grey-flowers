@@ -11,7 +11,7 @@ import {
   activityListResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http, HttpReadOptions } from './http.js';
+import type { Http, HttpReadOptions } from './http';
 
 const listSearchParams = (query: ActivityListQuery) => {
   const params = new URLSearchParams();

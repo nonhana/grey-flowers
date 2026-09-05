@@ -6,18 +6,18 @@ import { Check, ImageUp, Images } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
-import { isAbortError } from '@/app/api/http.js';
-import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import { isAbortError } from '@/app/api/http';
+import { apiClient, isApiRequestError } from '@/app/api/index';
 import {
   assetsPickerOptions,
   markAssetsStale,
-} from '@/app/server-state/assets.js';
-import { formatBytes } from '@/lib/format.js';
-import { uploadSizeError } from '@/lib/upload-limits.js';
-import { Button } from '@/ui/button.js';
-import { Alert, EmptyState, Skeleton, Spinner } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
+} from '@/app/server-state/assets';
+import { formatBytes } from '@/lib/format';
+import { uploadSizeError } from '@/lib/upload-limits';
+import { Button } from '@/ui/button';
+import { Alert, EmptyState, Skeleton, Spinner } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
 
 export const AssetPickerDialog = ({
   onClose,

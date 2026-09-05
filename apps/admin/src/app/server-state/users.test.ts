@@ -17,17 +17,17 @@ const usersApi = vi.hoisted(() => ({
     >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { users: usersApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { users: usersApi } }));
 
-import { queryClient } from './client.js';
-import { overviewKeys } from './overview.js';
-import { assetsRoot, commentsRoot, usersRoot } from './roots.js';
+import { queryClient } from './client';
+import { overviewKeys } from './overview';
+import { assetsRoot, commentsRoot, usersRoot } from './roots';
 import {
   invalidateUsersAfterMutation,
   usersDetailOptions,
   usersKeys,
   usersListOptions,
-} from './users.js';
+} from './users';
 
 describe('usersKeys', () => {
   it('detail key 由用户 id 与评论分页组成', () => {

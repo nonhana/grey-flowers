@@ -10,14 +10,14 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import { ApiError } from '@/http/errors.js';
-import { pagination } from '@/lib/pagination.js';
-import { isUniqueConstraint } from '@/lib/prisma.js';
+import { ApiError } from '@/http/errors';
+import { pagination } from '@/lib/pagination';
+import { isUniqueConstraint } from '@/lib/prisma';
 
-import type { AuthService } from '../auth/service.js';
+import type { AuthService } from '../auth/service';
 
-import { commentAdminSelect, toCommentAdmin } from '../comments/contracts.js';
-import { toUserAdmin, userAdminSelect } from './contracts.js';
+import { commentAdminSelect, toCommentAdmin } from '../comments/contracts';
+import { toUserAdmin, userAdminSelect } from './contracts';
 
 type Client = PrismaClient | Prisma.TransactionClient;
 type Role = 'USER' | 'ADMIN';

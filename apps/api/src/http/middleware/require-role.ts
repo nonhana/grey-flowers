@@ -1,9 +1,9 @@
 import type { Principal } from '@grey-flowers/contracts';
 import type { MiddlewareHandler } from 'hono';
 
-import type { ApiEnvironment } from '../context.js';
+import type { ApiEnvironment } from '../context';
 
-import { ApiError } from '../errors.js';
+import { ApiError } from '../errors';
 
 export const requireRole = (
   role: Principal['role'],

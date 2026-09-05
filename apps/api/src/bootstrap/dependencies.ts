@@ -2,23 +2,23 @@ import type { PrismaClient } from '@grey-flowers/db';
 
 import { createPrismaClient } from '@grey-flowers/db';
 
-import type { ApiEnvironment } from '../env.js';
+import type { ApiEnvironment } from '../env';
 
 import {
   R2ObjectStorage,
   type ObjectStorage,
-} from '../adapters/object-storage/r2.js';
-import { ActivityService } from '../modules/activities/service.js';
-import { ArticleService } from '../modules/articles/service.js';
-import { AssetService } from '../modules/assets/service.js';
-import { AuthService } from '../modules/auth/service.js';
-import { CommentMailer } from '../modules/comments/mailer.js';
-import { CommentService } from '../modules/comments/service.js';
-import { MusicService } from '../modules/music/service.js';
-import { OverviewService } from '../modules/overview/service.js';
-import { TaxonomyService } from '../modules/taxonomy/service.js';
-import { UserService } from '../modules/users/service.js';
-import { createLogger, type ApiLogger } from './logger.js';
+} from '../adapters/object-storage/r2';
+import { ActivityService } from '../modules/activities/service';
+import { ArticleService } from '../modules/articles/service';
+import { AssetService } from '../modules/assets/service';
+import { AuthService } from '../modules/auth/service';
+import { CommentMailer } from '../modules/comments/mailer';
+import { CommentService } from '../modules/comments/service';
+import { MusicService } from '../modules/music/service';
+import { OverviewService } from '../modules/overview/service';
+import { TaxonomyService } from '../modules/taxonomy/service';
+import { UserService } from '../modules/users/service';
+import { createLogger, type ApiLogger } from './logger';
 
 export interface AppDependencies {
   activities: ActivityService;

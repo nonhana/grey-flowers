@@ -5,13 +5,13 @@ import {
 } from '@grey-flowers/contracts';
 import ky from 'ky';
 
-import { readApiDelayMs } from './delay.js';
+import { readApiDelayMs } from './delay';
 import {
   ApiNetworkError,
   ApiRequestError,
   ApiResponseError,
   isApiRequestError,
-} from './errors.js';
+} from './errors';
 
 const LOCAL_AUTH_REQUIRED_MESSAGE = '需要重新登录。';
 

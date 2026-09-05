@@ -13,17 +13,17 @@ const articlesApi = vi.hoisted(() => ({
     >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { articles: articlesApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { articles: articlesApi } }));
 
 import {
   articlesKeys,
   invalidateArticlesAfterContentSave,
   invalidateArticlesAfterMutation,
-} from './articles.js';
-import { queryClient } from './client.js';
-import { overviewKeys } from './overview.js';
-import { musicRoot } from './roots.js';
-import { taxonomyKeys } from './taxonomy.js';
+} from './articles';
+import { queryClient } from './client';
+import { overviewKeys } from './overview';
+import { musicRoot } from './roots';
+import { taxonomyKeys } from './taxonomy';
 
 describe('invalidateArticlesAfterContentSave', () => {
   beforeEach(() => {

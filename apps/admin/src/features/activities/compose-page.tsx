@@ -9,32 +9,32 @@ import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   activityDetailOptions,
   invalidateActivitiesAfterMutation,
-} from '@/app/server-state/activities.js';
-import { markAssetsStale } from '@/app/server-state/assets.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { usePasteFiles } from '@/hooks/use-paste-files.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
-import { formatDuration } from '@/lib/format.js';
-import { fileMatchesAccept, IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
-import { uploadSizeError } from '@/lib/upload-limits.js';
-import { Button, buttonClass, IconButton } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { FieldLabel } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
+} from '@/app/server-state/activities';
+import { markAssetsStale } from '@/app/server-state/assets';
+import { AssetPickerDialog } from '@/features/assets/asset-picker';
+import { usePasteFiles } from '@/hooks/use-paste-files';
+import { apiErrorMessage } from '@/lib/error-message';
+import { formatDuration } from '@/lib/format';
+import { fileMatchesAccept, IMAGE_ACCEPT_MAP } from '@/lib/media-accept';
+import { uploadSizeError } from '@/lib/upload-limits';
+import { Button, buttonClass, IconButton } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { FieldLabel } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
 
-import { ActivityEditor } from './activity-editor.js';
+import { ActivityEditor } from './activity-editor';
 import {
   ImageStrip,
   MAX_IMAGES,
   toImageItem,
   type ComposerImage,
-} from './image-strip.js';
-import { MusicPickerDialog } from './music-picker.js';
+} from './image-strip';
+import { MusicPickerDialog } from './music-picker';
 
 const MAX_MUSIC = 12;
 const CONTENT_LIMIT = 8192;

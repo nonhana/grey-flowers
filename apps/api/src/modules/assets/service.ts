@@ -15,12 +15,12 @@ import { randomUUID } from 'node:crypto';
 import type {
   HeadObjectResult,
   ObjectStorage,
-} from '@/adapters/object-storage/r2.js';
-import type { ApiLogger } from '@/bootstrap/logger.js';
-import type { ApiEnvironment } from '@/env.js';
+} from '@/adapters/object-storage/r2';
+import type { ApiLogger } from '@/bootstrap/logger';
+import type { ApiEnvironment } from '@/env';
 
-import { ApiError } from '@/http/errors.js';
-import { pagination } from '@/lib/pagination.js';
+import { ApiError } from '@/http/errors';
+import { pagination } from '@/lib/pagination';
 
 import {
   assetProjection,
@@ -28,7 +28,7 @@ import {
   assetPurposeFromDirectory,
   toAssetDto,
   toReferenceCounts,
-} from './contracts.js';
+} from './contracts';
 
 export const MAX_UPLOAD_BYTES = 150 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024;

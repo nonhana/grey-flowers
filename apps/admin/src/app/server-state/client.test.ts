@@ -1,11 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  clearAdminQueryCache,
-  createQueryClient,
-  queryClient,
-} from './client.js';
-import { articlesRoot } from './roots.js';
+import { clearAdminQueryCache, createQueryClient, queryClient } from './client';
+import { articlesRoot } from './roots';
 
 describe('createQueryClient', () => {
   it('默认不重试、不聚焦刷新、staleTime 0', () => {

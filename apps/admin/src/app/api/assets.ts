@@ -15,7 +15,7 @@ import {
   assetUploadUrlResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http, HttpReadOptions } from './http.js';
+import type { Http, HttpReadOptions } from './http';
 
 const listSearchParams = (query: AssetListQuery) => {
   const params = new URLSearchParams();

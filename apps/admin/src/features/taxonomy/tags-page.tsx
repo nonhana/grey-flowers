@@ -5,18 +5,18 @@ import { Plus, Tags as TagsIcon, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyTagsOptions,
-} from '@/app/server-state/taxonomy.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { Alert, EmptyState, Skeleton } from '@/ui/feedback.js';
-import { controlClass, FilterChip } from '@/ui/form.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { PageBody, PageHeader, RowStack } from '@/ui/surface.js';
+} from '@/app/server-state/taxonomy';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { Button, IconButton } from '@/ui/button';
+import { Alert, EmptyState, Skeleton } from '@/ui/feedback';
+import { controlClass, FilterChip } from '@/ui/form';
+import { ConfirmDialog } from '@/ui/overlay';
+import { PageBody, PageHeader, RowStack } from '@/ui/surface';
 
 /** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳。 */
 const TagRowSkeleton = () => (

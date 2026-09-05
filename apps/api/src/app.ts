@@ -1,38 +1,38 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
-import type { AppDependencies } from './bootstrap/dependencies.js';
-import type { ApiEnvironment } from './http/context.js';
+import type { AppDependencies } from './bootstrap/dependencies';
+import type { ApiEnvironment } from './http/context';
 
-import { createFailure, createSuccess, handleError } from './http/errors.js';
-import { requestId } from './http/middleware/request-id.js';
-import { requestLogger } from './http/middleware/request-logger.js';
+import { createFailure, createSuccess, handleError } from './http/errors';
+import { requestId } from './http/middleware/request-id';
+import { requestLogger } from './http/middleware/request-logger';
 import {
   createActivityPublicRoutes,
   createActivityRoutes,
-} from './modules/activities/routes.js';
+} from './modules/activities/routes';
 import {
   createArticleAdminRoutes,
   createArticlePublicRoutes,
-} from './modules/articles/routes.js';
-import { createAssetRoutes } from './modules/assets/routes.js';
-import { createAuthRoutes } from './modules/auth/routes.js';
+} from './modules/articles/routes';
+import { createAssetRoutes } from './modules/assets/routes';
+import { createAuthRoutes } from './modules/auth/routes';
 import {
   createCommentPublicRoutes,
   createCommentRoutes,
   createCommentUserRoutes,
-} from './modules/comments/routes.js';
+} from './modules/comments/routes';
 import {
   createMusicPublicRoutes,
   createMusicRoutes,
-} from './modules/music/routes.js';
-import { createOverviewRoutes } from './modules/overview/routes.js';
+} from './modules/music/routes';
+import { createOverviewRoutes } from './modules/overview/routes';
 import {
   createCategoryRoutes,
   createPublicTaxonomyRoutes,
   createTagRoutes,
-} from './modules/taxonomy/routes.js';
-import { createUserRoutes } from './modules/users/routes.js';
+} from './modules/taxonomy/routes';
+import { createUserRoutes } from './modules/users/routes';
 
 export const createApp = (dependencies: AppDependencies) => {
   const app = new Hono<ApiEnvironment>();

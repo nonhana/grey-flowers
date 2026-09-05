@@ -17,18 +17,18 @@ import { RotateCcw } from 'lucide-react';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import { apiClient } from '@/app/api/index.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { useKeyboardInset } from '@/hooks/use-keyboard-inset.js';
-import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept.js';
-import { isUrl } from '@/lib/url.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
+import { apiClient } from '@/app/api/index';
+import { AssetPickerDialog } from '@/features/assets/asset-picker';
+import { useDialog } from '@/hooks/use-dialog';
+import { useKeyboardInset } from '@/hooks/use-keyboard-inset';
+import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept';
+import { isUrl } from '@/lib/url';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
 
-import { EditorToolbar } from './editor-toolbar.js';
-import { ImageAltDialog } from './image-alt-dialog.js';
-import { ImageViewerDialog } from './image-viewer-dialog.js';
+import { EditorToolbar } from './editor-toolbar';
+import { ImageAltDialog } from './image-alt-dialog';
+import { ImageViewerDialog } from './image-viewer-dialog';
 import {
   imageActions,
   insertUpload,
@@ -38,7 +38,7 @@ import {
   rewriteImageAlt,
   updateUpload,
   uploadField,
-} from './live-preview/index.js';
+} from './live-preview/index';
 import {
   altForAsset,
   altForFile,
@@ -46,9 +46,9 @@ import {
   isInsideCode,
   wrapSelection,
   wrappedMarkdown,
-} from './markdown-ops.js';
-import { paperHighlight } from './paper-highlight.js';
-import { paperTheme } from './paper-theme.js';
+} from './markdown-ops';
+import { paperHighlight } from './paper-highlight';
+import { paperTheme } from './paper-theme';
 
 export const CodeMirrorPane = ({
   onChange,

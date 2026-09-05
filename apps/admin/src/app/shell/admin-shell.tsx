@@ -12,11 +12,11 @@ import {
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
 
-import { router } from '@/routes/router.js';
-import { useAuth } from '@/store/auth.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { TextField } from '@/ui/form.js';
+import { router } from '@/routes/router';
+import { useAuth } from '@/store/auth';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { TextField } from '@/ui/form';
 
 const Stage = ({ children }: { children: ReactNode }) => (
   <section

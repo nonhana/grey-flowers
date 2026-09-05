@@ -1,13 +1,13 @@
-import { createActivitiesApi, type ActivitiesApi } from './activities.js';
-import { createArticlesApi, type ArticlesApi } from './articles.js';
-import { createAssetsApi, type AssetsApi } from './assets.js';
-import { createAuthApi, type AuthApi } from './auth.js';
-import { createCommentsApi, type CommentsApi } from './comments.js';
-import { createHttp } from './http.js';
-import { createMusicApi, type MusicApi } from './music.js';
-import { createOverviewApi, type OverviewApi } from './overview.js';
-import { createTaxonomyApi, type TaxonomyApi } from './taxonomy.js';
-import { createUsersApi, type UsersApi } from './users.js';
+import { createActivitiesApi, type ActivitiesApi } from './activities';
+import { createArticlesApi, type ArticlesApi } from './articles';
+import { createAssetsApi, type AssetsApi } from './assets';
+import { createAuthApi, type AuthApi } from './auth';
+import { createCommentsApi, type CommentsApi } from './comments';
+import { createHttp } from './http';
+import { createMusicApi, type MusicApi } from './music';
+import { createOverviewApi, type OverviewApi } from './overview';
+import { createTaxonomyApi, type TaxonomyApi } from './taxonomy';
+import { createUsersApi, type UsersApi } from './users';
 
 export {
   ApiNetworkError,
@@ -15,7 +15,7 @@ export {
   ApiResponseError,
   isApiNetworkError,
   isApiRequestError,
-} from './errors.js';
+} from './errors';
 
 /**
  * 短命 access token 只驻留内存，不落 localStorage：

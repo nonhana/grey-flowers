@@ -2,13 +2,13 @@ import type { ApiFailure } from '@grey-flowers/contracts';
 
 import { describe, expect, it } from 'vitest';
 
-import { ApiNetworkError, ApiRequestError } from '@/app/api/errors.js';
+import { ApiNetworkError, ApiRequestError } from '@/app/api/errors';
 
 import {
   apiErrorMessage,
   AUTH_FORBIDDEN_MESSAGE,
   GENERIC_FALLBACK,
-} from './error-message.js';
+} from './error-message';
 
 const requestError = (
   code: ApiFailure['error']['code'],

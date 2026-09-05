@@ -28,10 +28,10 @@ import {
   lineWrappedMarkdown,
   prefixLine,
   wrapSelection,
-} from '@/features/articles/editor/markdown-ops.js';
-import { paperHighlight } from '@/features/articles/editor/paper-highlight.js';
-import { paperTheme } from '@/features/articles/editor/paper-theme.js';
-import { IconButton } from '@/ui/button.js';
+} from '@/features/articles/editor/markdown-ops';
+import { paperHighlight } from '@/features/articles/editor/paper-highlight';
+import { paperTheme } from '@/features/articles/editor/paper-theme';
+import { IconButton } from '@/ui/button';
 
 // 动态正文是受限 Markdown 子集（schema 拒标题/HTML/图片/表格），工具条只放白名单内。
 const FORMAT_ACTIONS = [

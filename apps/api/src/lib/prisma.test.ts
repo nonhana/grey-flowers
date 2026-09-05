@@ -1,7 +1,7 @@
 import { Prisma } from '@grey-flowers/db';
 import { describe, expect, it } from 'vitest';
 
-import { isRecordNotFound, isUniqueConstraint } from './prisma.js';
+import { isRecordNotFound, isUniqueConstraint } from './prisma';
 
 const knownError = (code: string) =>
   new Prisma.PrismaClientKnownRequestError('boom', {

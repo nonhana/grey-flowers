@@ -8,13 +8,13 @@ import {
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import type { AppDependencies } from '@/bootstrap/dependencies.js';
-import type { ApiEnvironment } from '@/http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies';
+import type { ApiEnvironment } from '@/http/context';
 
-import { createSuccess } from '@/http/errors.js';
-import { adminGuard } from '@/http/middleware/admin-guard.js';
-import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
+import { createSuccess } from '@/http/errors';
+import { adminGuard } from '@/http/middleware/admin-guard';
+import { requirePrincipal } from '@/http/middleware/require-principal';
+import { parseBody, parseId, parseQuery } from '@/lib/parser';
 
 const commentCountQuerySchema = z
   .object({

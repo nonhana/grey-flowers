@@ -5,25 +5,25 @@ import { ArrowLeft, Check, Copy, Music2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   assetsDetailOptions,
   invalidateAssetsAfterMutation,
-} from '@/app/server-state/assets.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format.js';
-import { Button, buttonClass, IconButton } from '@/ui/button.js';
-import { Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { PageBody, PageHeader, Panel, SectionLabel } from '@/ui/surface.js';
+} from '@/app/server-state/assets';
+import { useDialog } from '@/hooks/use-dialog';
+import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format';
+import { Button, buttonClass, IconButton } from '@/ui/button';
+import { Skeleton, StatusReadout } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { ConfirmDialog } from '@/ui/overlay';
+import { PageBody, PageHeader, Panel, SectionLabel } from '@/ui/surface';
 
 import {
   assetErrorMessage,
   mediaTypeLabels,
   purposeLabels,
   statusLabels,
-} from './display.js';
+} from './display';
 
 const Row = ({
   children,

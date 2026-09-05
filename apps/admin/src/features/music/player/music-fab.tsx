@@ -1,6 +1,6 @@
 import { Disc3 } from 'lucide-react';
 
-import { usePlayerStore } from '@/store/player.js';
+import { usePlayerStore } from '@/store/player';
 
 /**
  * 移动端右下角音乐管理入口：圆形悬浮按钮，悬于发布 FAB 正上方。

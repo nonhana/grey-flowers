@@ -6,20 +6,20 @@ import { useEffect, useRef, useState } from 'react';
 import { Form, ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { markAssetsStale } from '@/app/server-state/assets.js';
-import { invalidateMusicAfterMutation } from '@/app/server-state/music.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
-import { formatDuration } from '@/lib/format.js';
-import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept.js';
-import { uploadSizeError } from '@/lib/upload-limits.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { FileDrop } from '@/ui/file-drop.js';
-import { FieldLabel, TextField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine, Panel } from '@/ui/surface.js';
+import { apiClient } from '@/app/api/index';
+import { markAssetsStale } from '@/app/server-state/assets';
+import { invalidateMusicAfterMutation } from '@/app/server-state/music';
+import { AssetPickerDialog } from '@/features/assets/asset-picker';
+import { apiErrorMessage } from '@/lib/error-message';
+import { formatDuration } from '@/lib/format';
+import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept';
+import { uploadSizeError } from '@/lib/upload-limits';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { FileDrop } from '@/ui/file-drop';
+import { FieldLabel, TextField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { MetaLine, Panel } from '@/ui/surface';
 
 type Phase = 'idle' | 'parsing' | 'ready';
 

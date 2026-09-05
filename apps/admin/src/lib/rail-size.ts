@@ -1,4 +1,4 @@
-import type { ResizeSource } from '@/hooks/use-resizable-edge.js';
+import type { ResizeSource } from '@/hooks/use-resizable-edge';
 
 /**
  * 侧栏尺寸状态机（独立模块以便脱离 React 组件图单测：console-rail.tsx

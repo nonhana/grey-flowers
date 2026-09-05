@@ -18,7 +18,7 @@ import {
   toOverviewTrend,
   TREND_TARGET,
   type TrendFetchArgs,
-} from './contracts.js';
+} from './contracts';
 
 interface TrendRow {
   createdAt?: Date;

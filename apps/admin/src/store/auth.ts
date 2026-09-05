@@ -10,8 +10,8 @@ import {
   isApiNetworkError,
   isApiRequestError,
   setAccessToken,
-} from '@/app/api/index.js';
-import { clearAdminQueryCache } from '@/app/server-state/client.js';
+} from '@/app/api/index';
+import { clearAdminQueryCache } from '@/app/server-state/client';
 
 type AuthenticationState =
   | { status: 'checking' }

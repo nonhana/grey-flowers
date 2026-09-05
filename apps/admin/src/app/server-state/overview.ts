@@ -2,9 +2,9 @@ import type { OverviewTrendQuery } from '@grey-flowers/contracts';
 
 import { queryOptions } from '@tanstack/react-query';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 
-import { overviewRoot } from './roots.js';
+import { overviewRoot } from './roots';
 
 export const overviewKeys = {
   counts: [...overviewRoot, 'counts'] as const,

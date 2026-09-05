@@ -2,8 +2,8 @@ import type { ZodType } from 'zod';
 
 import z from 'zod';
 
-import { ApiError } from '../http/errors.js';
-import { validationError } from '../http/errors.js';
+import { ApiError } from '../http/errors';
+import { validationError } from '../http/errors';
 
 export const parseBody = async <TInput>(
   request: Request,

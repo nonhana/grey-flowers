@@ -15,14 +15,14 @@ import {
   Table2,
 } from 'lucide-react';
 
-import { IconButton } from '@/ui/button.js';
+import { IconButton } from '@/ui/button';
 
 import {
   insertInline,
   lineWrappedMarkdown,
   prefixLine,
   wrapSelection,
-} from './markdown-ops.js';
+} from './markdown-ops';
 
 const TOOLBAR_BUTTONS = [
   {

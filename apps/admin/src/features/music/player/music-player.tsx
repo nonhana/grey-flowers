@@ -1,12 +1,12 @@
 import { useState, type ComponentType } from 'react';
 
-import { usePlayerStore } from '@/store/player.js';
+import { usePlayerStore } from '@/store/player';
 
-import { MusicFab } from './music-fab.js';
-import { PlayerBar } from './player-bar.js';
+import { MusicFab } from './music-fab';
+import { PlayerBar } from './player-bar';
 // 懒加载入口是模块级普通函数：React Compiler 不支持组件内的 import 表达式。
 const loadNowPlayingSheet = () =>
-  import('./now-playing-sheet.js').then((mod) => mod.NowPlayingSheet);
+  import('./now-playing-sheet').then((mod) => mod.NowPlayingSheet);
 
 interface NowPlayingSheetProps {
   isOpen: boolean;

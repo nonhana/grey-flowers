@@ -1,4 +1,4 @@
-import { apiErrorMessage } from '@/lib/error-message.js';
+import { apiErrorMessage } from '@/lib/error-message';
 
 export type ArticleStatusFilter = 'all' | 'draft' | 'published';
 

@@ -6,19 +6,19 @@ import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 
-import { articlesListOptions } from '@/app/server-state/articles.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { formatDateTime } from '@/lib/format.js';
-import { Button, buttonClass } from '@/ui/button.js';
-import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback.js';
-import { FilterChip, SearchInput } from '@/ui/form.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader, RowStack } from '@/ui/surface.js';
+import { articlesListOptions } from '@/app/server-state/articles';
+import { useClampPage } from '@/hooks/use-clamp-page';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { formatDateTime } from '@/lib/format';
+import { Button, buttonClass } from '@/ui/button';
+import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback';
+import { FilterChip, SearchInput } from '@/ui/form';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader, RowStack } from '@/ui/surface';
 
-import type { ArticleStatusFilter } from './display.js';
+import type { ArticleStatusFilter } from './display';
 
-import { parseStatusFilter } from './display.js';
+import { parseStatusFilter } from './display';
 
 const PAGE_SIZE = 20;
 

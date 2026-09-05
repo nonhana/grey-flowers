@@ -1,5 +1,5 @@
-import { apiClient } from '@/app/api/index.js';
-import { useAuthStore } from '@/store/auth.js';
+import { apiClient } from '@/app/api/index';
+import { useAuthStore } from '@/store/auth';
 
 let bootstrapped = false;
 

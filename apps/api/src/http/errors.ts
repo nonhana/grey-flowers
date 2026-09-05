@@ -3,7 +3,7 @@ import type { Context, ErrorHandler } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type { z } from 'zod';
 
-import type { ApiEnvironment } from './context.js';
+import type { ApiEnvironment } from './context';
 
 interface ApiErrorOptions {
   cause?: unknown;

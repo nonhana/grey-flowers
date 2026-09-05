@@ -6,7 +6,7 @@ import {
   formatDuration,
   formatDurationMs,
   formatHours,
-} from './format.js';
+} from './format';
 
 describe('formatBytes', () => {
   it('1024 以下按字节原样显示', () => {

@@ -1,6 +1,6 @@
 import type { UserAdminSummary } from '@grey-flowers/contracts';
 
-import { ConfirmDialog } from '@/ui/overlay.js';
+import { ConfirmDialog } from '@/ui/overlay';
 
 /** 删除用户确认：披露 authored 评论数与级联警告（子回复可能含他人回复、通知一并删除）。 */
 export const UserDeleteConfirm = ({

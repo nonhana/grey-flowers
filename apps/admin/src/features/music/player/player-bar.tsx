@@ -17,12 +17,12 @@ import {
   X,
 } from 'lucide-react';
 
-import { usePlayerStore, type LoopMode } from '@/store/player.js';
-import { IconButton } from '@/ui/button.js';
-import { AssetImage } from '@/ui/image.js';
+import { usePlayerStore, type LoopMode } from '@/store/player';
+import { IconButton } from '@/ui/button';
+import { AssetImage } from '@/ui/image';
 
-import { SeekRow } from './seek-row.js';
-import { TrackSlider } from './track-slider.js';
+import { SeekRow } from './seek-row';
+import { TrackSlider } from './track-slider';
 
 const LOOP_LABEL: Record<LoopMode, string> = {
   off: '顺序播放',
