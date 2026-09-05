@@ -1,4 +1,8 @@
-import type { ApiErrorCode, ApiFailure } from '@grey-flowers/contracts';
+import {
+  apiErrorStatus,
+  type ApiErrorCode,
+  type ApiFailure,
+} from '@grey-flowers/contracts';
 import type { Context, ErrorHandler } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type { z } from 'zod';
@@ -11,21 +15,11 @@ interface ApiErrorOptions {
   message?: string;
 }
 
-const errorStatus: Record<ApiErrorCode, ContentfulStatusCode> = {
-  ARTICLE_STALE: 409,
-  ASSET_PAYLOAD_TOO_LARGE: 413,
-  ASSET_REFERENCED: 409,
-  AUTH_FORBIDDEN: 403,
-  AUTH_INVALID_CREDENTIALS: 401,
-  AUTH_REQUIRED: 401,
-  CONFLICT: 409,
-  INTERNAL_ERROR: 500,
-  NOT_FOUND: 404,
-  RATE_LIMITED: 429,
-  UNSUPPORTED_MEDIA_TYPE: 415,
-  UPLOAD_FAILED: 502,
-  VALIDATION_FAILED: 400,
-};
+// status 语义的 SSOT 在 contracts 的 apiErrorStatus；此处只做类型收口（契约包禁止依赖 Hono）。
+const errorStatus = apiErrorStatus as Record<
+  ApiErrorCode,
+  ContentfulStatusCode
+>;
 
 const errorMessages: Record<ApiErrorCode, string> = {
   ARTICLE_STALE:

@@ -1,10 +1,12 @@
+import type { LucideIcon } from 'lucide-react';
+
 import { cn } from 'cn';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from 'react-aria-components';
 
 const MODES: Array<{
-  icon: typeof Sun;
+  icon: LucideIcon;
   label: string;
   mode: 'system' | 'light' | 'dark';
 }> = [
@@ -13,7 +15,6 @@ const MODES: Array<{
   { icon: Moon, label: '深色', mode: 'dark' },
 ];
 
-/** 三态分段控件：当前模式一眼可见，不需要展开菜单才知道自己在哪一档。 */
 export const ThemeToggle = ({ className }: { className?: string }) => {
   const { setTheme, theme } = useTheme();
   const current = theme;

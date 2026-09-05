@@ -41,6 +41,5 @@ export const isApiRequestError = (
   );
 };
 
-export const isApiNetworkError = (error: unknown): error is ApiNetworkError => {
-  return error instanceof ApiNetworkError;
-};
+export const isApiNetworkError = (error: unknown): error is ApiNetworkError =>
+  error instanceof ApiNetworkError;
