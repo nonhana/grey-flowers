@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { useId } from 'react';
 import { useDropzone } from 'react-dropzone';
 

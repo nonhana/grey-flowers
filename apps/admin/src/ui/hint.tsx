@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Tooltip as AriaTooltip, TooltipTrigger } from 'react-aria-components';
 
 /**

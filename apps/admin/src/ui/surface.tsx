@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 
 type PageWidth = 'narrow' | 'default' | 'wide';
 type PageBodyScroll = 'body' | 'child';

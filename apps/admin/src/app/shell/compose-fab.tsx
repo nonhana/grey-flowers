@@ -1,4 +1,4 @@
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Plus } from 'lucide-react';
 
 /**
@@ -6,11 +6,9 @@ import { Plus } from 'lucide-react';
  * 悬停/聚焦/pointerdown 触发 onPrefetch，首次展开不等网络。
  */
 export const ComposeFab = ({
-  onPrefetch,
   onToggle,
   open,
 }: {
-  onPrefetch: () => void;
   onToggle: () => void;
   open: boolean;
 }) => (
@@ -29,9 +27,6 @@ export const ComposeFab = ({
       'md:hidden',
     )}
     onClick={onToggle}
-    onFocus={onPrefetch}
-    onPointerDown={onPrefetch}
-    onPointerEnter={onPrefetch}
     type="button"
   >
     <Plus

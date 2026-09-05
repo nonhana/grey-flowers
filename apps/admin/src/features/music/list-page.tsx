@@ -2,7 +2,7 @@ import type { MusicAdmin, MusicListQuery } from '@grey-flowers/contracts';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';

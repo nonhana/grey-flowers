@@ -1,15 +1,14 @@
 import type { OverviewStorage } from '@grey-flowers/contracts';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 
-import type { ShareSegment } from '@/ui/charts.js';
+import type { ShareSegment } from '@/ui/charts/share-bar.js';
 
 import { formatBytes } from '@/lib/format.js';
-import { ShareBar } from '@/ui/charts.js';
+import { ShareBar } from '@/ui/charts/share-bar.js';
 import { Skeleton } from '@/ui/feedback.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
 
-/** 存储构成看体积（「该不该清」只有体积答得了）；三段互斥和为总量，可画 part-to-whole。 */
 export const StorageCard = ({
   className,
   storage,
@@ -53,7 +52,6 @@ export const StorageCard = ({
   );
 };
 
-/** 存储卡骨架：卡头 + 量值条 + 三行图例，图例行高与真实一致，落地不跳。 */
 export const StorageCardSkeleton = ({ className }: { className?: string }) => (
   <Panel
     aria-hidden

@@ -2,7 +2,7 @@ import type { ActivityAdmin, MusicTrack } from '@grey-flowers/contracts';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ArrowLeft, ExternalLink, Loader2, Music2, Trash2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';

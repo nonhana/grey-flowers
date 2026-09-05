@@ -1,15 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { Fragment } from 'react';
 
 import { overviewCalendarOptions } from '@/app/server-state/overview.js';
 import { Button } from '@/ui/button.js';
-import { CalendarHeatmap } from '@/ui/charts.js';
+import { CalendarHeatmap } from '@/ui/charts/calendar-heatmap.js';
 import { EmptyState, Skeleton } from '@/ui/feedback.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
 
-/** 骨架同 53 列 × auto+7 行网格，卡宽变化时与真实同比例伸缩，任何视口高度一致。 */
 const HeatmapSkeleton = () => (
   <div aria-hidden className="grid gap-2.5">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -27,7 +26,6 @@ const HeatmapSkeleton = () => (
       >
         {Array.from({ length: 53 }, (_, column) => (
           <Fragment key={column}>
-            {/* 月份标签格：只占行高，不画条 —— 真实标签也只有首列有字。 */}
             <span aria-hidden className="h-[1.45em] text-2xs" />
             {Array.from({ length: 7 }, (_, row) => (
               <div
@@ -43,10 +41,6 @@ const HeatmapSkeleton = () => (
   </div>
 );
 
-/**
- * 发布节奏：近一年的逐日分布（柱图看量，这张看分布/断更）。
- * 单独一次请求，不拖慢首屏读数抽屉。
- */
 export const CadenceCard = ({ className }: { className?: string }) => {
   const { data, error, isFetching, refetch } = useQuery(
     overviewCalendarOptions(),
@@ -88,7 +82,7 @@ export const CadenceCard = ({ className }: { className?: string }) => {
         </EmptyState>
       ) : data ? (
         <CalendarHeatmap
-          ariaLabel={`近 12 个月逐日发布量，文章 ${data.articlesTotal} 篇、动态 ${data.activitiesTotal} 条。用方向键逐日读数。`}
+          ariaLabel={`近 12 个月逐日发布量，文章 ${data.articlesTotal} 篇、动态 ${data.activitiesTotal} 条`}
           days={data.days}
         />
       ) : null}

@@ -1,6 +1,6 @@
 import type { AssetPurpose } from '@grey-flowers/contracts';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { FileUp, Upload } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import {

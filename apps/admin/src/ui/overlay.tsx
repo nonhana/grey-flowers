@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { useEffect, useEffectEvent, useRef } from 'react';

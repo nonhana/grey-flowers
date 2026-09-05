@@ -1,4 +1,4 @@
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Slider, SliderThumb, SliderTrack } from 'react-aria-components';
 
 /**

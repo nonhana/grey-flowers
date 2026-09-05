@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import type { ComponentProps } from 'react';
 
 import { Link } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { PenLine, SquarePen } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect } from 'react';

@@ -1,21 +1,21 @@
 import type { OverviewPendingItem } from '@grey-flowers/contracts';
+import type { LucideIcon } from 'lucide-react';
 
 import { Link } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ChevronRight, FileText, Images, Music2 } from 'lucide-react';
 
 import { Skeleton } from '@/ui/feedback.js';
 import { SectionLabel } from '@/ui/surface.js';
 
 interface PendingMeta {
-  icon: typeof FileText;
+  icon: LucideIcon;
   label: string;
   search: Record<string, unknown>;
   to: '/articles' | '/assets' | '/music';
 }
 
-/** 待处理项的标签与深链映射只属于展示层；key 本身是契约。 */
-const PENDING_META: Record<string, PendingMeta> = {
+const PENDING_META: Record<OverviewPendingItem['key'], PendingMeta> = {
   draft_articles: {
     icon: FileText,
     label: '草稿文章',
@@ -31,16 +31,11 @@ const PENDING_META: Record<string, PendingMeta> = {
   incomplete_music: {
     icon: Music2,
     label: '缺元数据音乐',
-    /* 布尔 true：TanStack 默认 search 会把 ?incomplete=true JSON 解析成布尔。 */
     search: { incomplete: true },
     to: '/music',
   },
 };
 
-/**
- * 待办带：最多三项、排在页顶下方，把整幅宽度还给趋势图；
- * 全零时不摆空框——好消息只值一行。
- */
 export const PendingPanel = ({
   className,
   items,
@@ -61,8 +56,6 @@ export const PendingPanel = ({
           className="
             grid gap-px overflow-hidden rounded-panel border border-rule bg-rule
           "
-          /* auto-fit 而不是固定 grid-cols-3：只有两条待办时，第三条空轨道会把
-             容器的 bg-rule 露成一块灰板。auto-fit 直接把空轨道收掉。 */
           style={{
             gridTemplateColumns: 'repeat(auto-fit, minmax(15rem, 1fr))',
           }}
@@ -70,7 +63,6 @@ export const PendingPanel = ({
           {visible.map((item) => {
             const meta = PENDING_META[item.key];
             if (!meta) return null;
-            const Icon = meta.icon;
 
             return (
               <Link
@@ -83,7 +75,7 @@ export const PendingPanel = ({
                 search={meta.search}
                 to={meta.to}
               >
-                <Icon
+                <meta.icon
                   aria-hidden
                   className="
                     size-4 shrink-0 text-ink-dim transition-colors
@@ -123,7 +115,6 @@ export const PendingPanel = ({
   );
 };
 
-/** 与真实待办带同构的骨架（标签 + 三格），落地时整带不跳。 */
 export const PendingPanelSkeleton = () => (
   <section aria-hidden className="grid animate-content-in gap-2">
     <SectionLabel>待处理</SectionLabel>

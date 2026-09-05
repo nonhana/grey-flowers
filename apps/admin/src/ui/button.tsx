@@ -1,14 +1,9 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Loader2 } from 'lucide-react';
 import { Button as AriaButton } from 'react-aria-components';
 
-/**
- * 字盘层按钮，共五种 tone：
- * solid 提交（一屏至多一枚）、quiet 次级、ghost 工具条/图标、
- * danger 破坏性确认端、warnish 破坏性入口（描边防误触）。
- */
 export type ButtonTone = 'solid' | 'quiet' | 'ghost' | 'danger' | 'warnish';
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -41,10 +36,6 @@ const BASE = cn(
   `,
 );
 
-/**
- * 给「其实是链接、但要长得像按钮」的场合用（导航到新建、空状态里的跳转等），
- * 避免把 <button> 套进 <a> 里造成嵌套可交互元素。
- */
 export const buttonClass = ({
   className,
   size = 'md',

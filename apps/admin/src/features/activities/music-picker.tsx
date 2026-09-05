@@ -1,7 +1,7 @@
 import type { MusicListQuery, MusicTrack } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Check, Disc3, ListMusic } from 'lucide-react';
 import { useState } from 'react';
 

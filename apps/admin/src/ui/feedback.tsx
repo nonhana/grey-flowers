@@ -1,6 +1,7 @@
+import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { AlertTriangle, Info, Loader2, OctagonAlert } from 'lucide-react';
 
 export type Tone = 'danger' | 'warn' | 'info';
@@ -11,7 +12,7 @@ const ALERT_TONE: Record<Tone, string> = {
   info: 'border-accent-rule bg-accent-wash text-accent-text',
 };
 
-const ALERT_ICON: Record<Tone, typeof Info> = {
+const ALERT_ICON: Record<Tone, LucideIcon> = {
   danger: OctagonAlert,
   warn: AlertTriangle,
   info: Info,

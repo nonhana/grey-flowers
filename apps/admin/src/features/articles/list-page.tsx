@@ -2,7 +2,7 @@ import type { ArticleListAdmin } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 

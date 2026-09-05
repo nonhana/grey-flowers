@@ -1,4 +1,4 @@
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 
 import { Button } from '@/ui/button.js';
 import { controlClass } from '@/ui/form.js';

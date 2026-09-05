@@ -1,25 +1,19 @@
 import { Link, Outlet, useMatches } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import {
   FileText,
   LayoutDashboard,
   MoreHorizontal,
   PenLine,
 } from 'lucide-react';
-import { useState, type ComponentType } from 'react';
+import { useState } from 'react';
 
 import { MusicPlayer } from '@/features/music/player/music-player.js';
 
-import type { ComposeMenuProps } from './compose-menu.js';
-import type { MoreSheetProps } from './more-sheet.js';
-
 import { ComposeFab } from './compose-fab.js';
+import { ComposeMenu } from './compose-menu.js';
 import { ConsoleRail } from './console-rail.js';
-// 懒加载入口是模块级普通函数：React Compiler 不支持组件内的 import 表达式。
-const loadMoreSheet = () =>
-  import('./more-sheet.js').then((mod) => mod.MoreSheet);
-const loadComposeMenu = () =>
-  import('./compose-menu.js').then((mod) => mod.ComposeMenu);
+import { MoreSheet } from './more-sheet.js';
 
 const tabClass = cn(
   'flex h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control',
@@ -57,34 +51,14 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
     </button>
   </nav>
 );
-/** 控制台外壳：html/body/#root 全 100%，外壳 flex-row 让侧栏拉伸到底。 */
+
+// 控制台外壳
 export const ConsoleShell = () => {
   const [composeOpen, setComposeOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  // MoreSheet 首次打开时才懒加载；加载后保持挂载，关闭动画完整走完（交接 P2）。
-  const [MoreSheet, setMoreSheet] =
-    useState<ComponentType<MoreSheetProps> | null>(null);
-  const openMore = () => {
-    setMoreOpen(true);
-    if (!MoreSheet) {
-      void loadMoreSheet().then((component) => setMoreSheet(() => component));
-    }
-  };
-  // ComposeMenu（motion 展开层）由 ComposeFab 悬停/聚焦/pointerdown 预取后懒加载；
-  // open 状态仍在 shell 持有，首次点击不会丢（交接 P2）。
-  const [ComposeMenu, setComposeMenu] =
-    useState<ComponentType<ComposeMenuProps> | null>(null);
-  const prefetchComposeMenu = () => {
-    if (!ComposeMenu) {
-      void loadComposeMenu().then((component) =>
-        setComposeMenu(() => component),
-      );
-    }
-  };
+
   const matches = useMatches();
-  const isFullBleed = matches.some(
-    (match) => (match.staticData as { fullBleed?: boolean }).fullBleed === true,
-  );
+  const isFullBleed = matches.some((match) => match.staticData.fullBleed);
 
   return (
     <div
@@ -102,20 +76,15 @@ export const ConsoleShell = () => {
           <>
             <MusicPlayer composeMenuOpen={composeOpen} />
             <ComposeFab
-              onPrefetch={prefetchComposeMenu}
               onToggle={() => setComposeOpen((open) => !open)}
               open={composeOpen}
             />
-            {ComposeMenu ? (
-              <ComposeMenu onOpenChange={setComposeOpen} open={composeOpen} />
-            ) : null}
-            <MobileTabBar onMore={openMore} />
+            <ComposeMenu onOpenChange={setComposeOpen} open={composeOpen} />
+            <MobileTabBar onMore={() => setMoreOpen(true)} />
           </>
         )}
       </div>
-      {MoreSheet ? (
-        <MoreSheet isOpen={moreOpen} onOpenChange={setMoreOpen} />
-      ) : null}
+      <MoreSheet isOpen={moreOpen} onOpenChange={setMoreOpen} />
     </div>
   );
 };

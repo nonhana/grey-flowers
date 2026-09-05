@@ -1,4 +1,4 @@
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { useShallow } from 'zustand/react/shallow';
 
 import { formatDuration } from '@/lib/format.js';

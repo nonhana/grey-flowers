@@ -1,6 +1,6 @@
 import type { EditorView } from '@codemirror/view';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import {
   Bold,
   Code2,

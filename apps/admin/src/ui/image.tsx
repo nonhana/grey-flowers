@@ -1,4 +1,4 @@
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ImageOff } from 'lucide-react';
 import { useState } from 'react';
 

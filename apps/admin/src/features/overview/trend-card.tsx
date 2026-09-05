@@ -4,13 +4,13 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { useState } from 'react';
 
 import { overviewTrendOptions } from '@/app/server-state/overview.js';
 import { Button } from '@/ui/button.js';
-import { TrendPlot } from '@/ui/charts.js';
+import { TrendPlot } from '@/ui/charts/trend-plot.js';
 import { EmptyState, Skeleton } from '@/ui/feedback.js';
 import { FilterChip } from '@/ui/form.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
@@ -29,7 +29,6 @@ const METRIC_LABELS: Record<OverviewTrendMetric, string> = {
   users: '用户',
 };
 
-/** 读数行的量词。「24 篇」读得出来，「24」读不出来。 */
 const METRIC_UNITS: Record<OverviewTrendMetric, string> = {
   activities: '条',
   articles: '篇',
@@ -39,7 +38,6 @@ const METRIC_UNITS: Record<OverviewTrendMetric, string> = {
 
 const DAYS_OPTIONS: readonly OverviewTrendDays[] = ['7', '14', '30'];
 
-/** 加载骨架照抄真实图表的三段结构（读数行 / 图区 / 日期行），落地时不跳。 */
 const PlotSkeleton = () => (
   <div aria-hidden className="flex min-h-0 flex-1 flex-col gap-2.5">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -57,10 +55,6 @@ const PlotSkeleton = () => (
   </div>
 );
 
-/**
- * 趋势卡：度量与天数图内切换；独立请求只负责自己的态。
- * TrendPlot 按 metric|days 换 key 重演入场编排，并把游标归位到最新一天。
- */
 export const TrendCard = ({ className }: { className?: string }) => {
   const [metric, setMetric] = useState<OverviewTrendMetric>('articles');
   const [days, setDays] = useState<OverviewTrendDays>('14');
@@ -80,8 +74,6 @@ export const TrendCard = ({ className }: { className?: string }) => {
     >
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <SectionLabel>逐日新增</SectionLabel>
-        {/* 七个 chip 在窄屏里换行会把卡头顶成两层；改成单行横滚（轨道不可见）。
-            子项必须 shrink-0，否则 flex 会先把 chip 压扁成竖排字，再谈溢出。 */}
         <div
           className="
             -mx-1 gf-scroll-x flex items-center gap-1.5 px-1

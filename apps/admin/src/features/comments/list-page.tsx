@@ -6,7 +6,7 @@ import type {
 
 import { parseDate } from '@internationalized/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import {
   CalendarDays,
   ChevronLeft,

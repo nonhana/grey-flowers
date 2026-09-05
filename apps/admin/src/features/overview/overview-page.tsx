@@ -32,18 +32,13 @@ import {
 import { StorageCard, StorageCardSkeleton } from './storage-card.js';
 import { TrendCard } from './trend-card.js';
 
-/** 运营概览：计数抽屉 + 待办带 + 趋势图，三条横带布局；计数与趋势独立请求、错误互不阻塞。 */
 export const OverviewPage = () => {
   const { data, error, isFetching, refetch } = useQuery(
     overviewCountsOptions(),
   );
 
-  const counts = data?.counts;
-
   return (
     <PageBody scroll="child" width="wide">
-      {/* 唯一的滚动所有者：移动端整页滚动；桌面内容恰好一屏（趋势图 flex-1 填满剩余，
-          底部无需滚动条）。 */}
       <div
         className="
           flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto overscroll-contain
@@ -51,7 +46,7 @@ export const OverviewPage = () => {
       >
         <PageHeader
           actions={
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-nowrap items-center gap-2 overflow-x-auto">
               <Link
                 className={buttonClass({ tone: 'solid' })}
                 to="/articles/new"
@@ -79,7 +74,7 @@ export const OverviewPage = () => {
               </Link>
             </div>
           }
-          description="全站态势：关键计数、近 N 天新增趋势与待处理事项。"
+          description="最近的花园有什么新事情呢？"
           title="运营概览"
         />
 
@@ -94,43 +89,43 @@ export const OverviewPage = () => {
             >
               无法加载概览，请稍后重试。
             </EmptyState>
-          ) : counts ? (
+          ) : data?.counts ? (
             <ReadoutDrawer>
               <ReadoutCell
                 icon={<FileText aria-hidden />}
                 label="文章"
-                secondary={`草稿 ${counts.articles.drafts} · 已发布 ${formatCount(counts.articles.wordTotal)}字`}
-                value={formatCount(counts.articles.published)}
+                secondary={`草稿 ${data.counts.articles.drafts} · 已发布 ${formatCount(data.counts.articles.wordTotal)}字`}
+                value={formatCount(data.counts.articles.published)}
               />
               <ReadoutCell
                 icon={<Send aria-hidden />}
                 label="动态"
-                secondary={`近 30 天 ${counts.activities.last30d}`}
-                value={formatCount(counts.activities.total)}
+                secondary={`近 30 天 ${data.counts.activities.last30d}`}
+                value={formatCount(data.counts.activities.total)}
               />
               <ReadoutCell
                 icon={<MessagesSquare aria-hidden />}
                 label="评论"
-                secondary={`父 ${counts.comments.parents} · 子 ${counts.comments.children}`}
-                value={formatCount(counts.comments.total)}
+                secondary={`父 ${data.counts.comments.parents} · 子 ${data.counts.comments.children}`}
+                value={formatCount(data.counts.comments.total)}
               />
               <ReadoutCell
                 icon={<Users aria-hidden />}
                 label="用户"
-                secondary={`近 30 天 ${counts.users.joined30d}`}
-                value={formatCount(counts.users.total)}
+                secondary={`近 30 天 ${data.counts.users.joined30d}`}
+                value={formatCount(data.counts.users.total)}
               />
               <ReadoutCell
                 icon={<Images aria-hidden />}
                 label="资产"
-                secondary={`图片 ${counts.assets.images} · 音频 ${counts.assets.audio} · 待清理 ${counts.assets.pendingCleanup}`}
-                value={formatCount(counts.assets.total)}
+                secondary={`图片 ${data.counts.assets.images} · 音频 ${data.counts.assets.audio} · 待清理 ${data.counts.assets.pendingCleanup}`}
+                value={formatCount(data.counts.assets.total)}
               />
               <ReadoutCell
                 icon={<Music2 aria-hidden />}
                 label="音乐"
-                secondary={`缺元数据 ${counts.music.missingMetadata} · 总长 ${formatHours(counts.music.secondsTotal)}`}
-                value={formatCount(counts.music.total)}
+                secondary={`缺元数据 ${data.counts.music.missingMetadata} · 总长 ${formatHours(data.counts.music.secondsTotal)}`}
+                value={formatCount(data.counts.music.total)}
               />
             </ReadoutDrawer>
           ) : null}
@@ -142,15 +137,12 @@ export const OverviewPage = () => {
           <PendingPanel className="animate-content-in" items={data.pending} />
         ) : null}
 
-        {/* 逐日新增 7 / 内容构成 5：柱图不再贪婪吃满视口，它只是四张图之一。 */}
         <div
           className="
             grid gap-3
             xl:grid-cols-12
           "
         >
-          {/* 不再固定高度：grid 行会把它拉到和右侧内容构成一样高，
-              柱图的 flex-1 图区顺势填满 —— 两卡等高，右列不再留一片空。 */}
           <TrendCard
             className="
               min-h-72
@@ -170,7 +162,6 @@ export const OverviewPage = () => {
           ) : null}
         </div>
 
-        {/* 发布节奏 8 / 存储构成 4 */}
         <div
           className="
             grid gap-3

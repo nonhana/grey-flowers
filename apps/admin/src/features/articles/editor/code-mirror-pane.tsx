@@ -12,7 +12,7 @@ import { syntaxHighlighting } from '@codemirror/language';
 import { searchKeymap } from '@codemirror/search';
 import { EditorView, keymap } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';

@@ -4,14 +4,13 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { Link } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ChevronRight } from 'lucide-react';
 
-import { RankBars } from '@/ui/charts.js';
+import { RankBars } from '@/ui/charts/rank-bars.js';
 import { Skeleton } from '@/ui/feedback.js';
 import { Panel, SectionLabel } from '@/ui/surface.js';
 
-/** 排行段：行级不做深链（文章列表只认 ?status，点不动的链接比没有更糟），段标题可深链。 */
 const RankSection = ({
   footnote,
   group,
@@ -48,13 +47,11 @@ const RankSection = ({
   </section>
 );
 
-/** 尾注：把没进榜的部分如实交代，否则排行条会读成「全部就这些」。 */
 const restNote = (group: OverviewRankGroup, unit: string) =>
   group.restCount > 0
     ? `其余 ${group.totalItems - group.items.length} 个 · ${group.restCount} ${unit}`
     : '';
 
-/** 内容构成排行。计数来自 articleCount 物化列（含草稿口径），卡头标「含草稿」讲清分母。 */
 export const CompositionCard = ({
   className,
   composition,
@@ -103,7 +100,6 @@ export const CompositionCard = ({
   );
 };
 
-/** 排行段占位：与 RankBars 同网格（名称 / 槽 / 计数）。行数 = 契约 RANK_TAKE。 */
 const RankRowsSkeleton = ({ rows }: { rows: number }) => (
   <div
     className="
@@ -124,7 +120,6 @@ const RankRowsSkeleton = ({ rows }: { rows: number }) => (
   </div>
 );
 
-/** 构成卡骨架：分类 5 行 / 标签 6 行（对齐 RANK_TAKE），落地卡高逐段相等。 */
 export const CompositionCardSkeleton = ({
   className,
 }: {

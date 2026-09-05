@@ -5,7 +5,7 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { FolderTree, ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';

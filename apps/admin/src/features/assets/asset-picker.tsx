@@ -1,7 +1,7 @@
 import type { AssetDto, AssetPurpose } from '@grey-flowers/contracts';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Check, ImageUp, Images } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';

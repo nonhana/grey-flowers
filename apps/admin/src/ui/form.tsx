@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Check, ChevronDown, Search } from 'lucide-react';
 import {
   FieldError,

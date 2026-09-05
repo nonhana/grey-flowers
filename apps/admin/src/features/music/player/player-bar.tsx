@@ -1,4 +1,6 @@
-import { cn } from 'cnfast';
+import type { LucideIcon } from 'lucide-react';
+
+import { cn } from 'cn';
 import {
   Disc3,
   Loader2,
@@ -29,7 +31,7 @@ const LOOP_LABEL: Record<LoopMode, string> = {
   shuffle: '随机播放',
 };
 
-const LOOP_ICON: Record<LoopMode, typeof Repeat> = {
+const LOOP_ICON: Record<LoopMode, LucideIcon> = {
   off: Repeat,
   all: Repeat,
   one: Repeat1,

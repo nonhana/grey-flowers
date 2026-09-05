@@ -5,7 +5,7 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { useNavigate } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ChevronDown, Eye, ImagePlus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 

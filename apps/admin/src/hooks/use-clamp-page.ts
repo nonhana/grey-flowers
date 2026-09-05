@@ -13,7 +13,7 @@ export const useClampPage = (
   setPage: (page: number) => void,
   data: { items: readonly unknown[]; total: number } | undefined,
   pageSize: number,
-): void => {
+) => {
   const [prevData, setPrevData] = useState(data);
   if (prevData !== data) {
     setPrevData(data);

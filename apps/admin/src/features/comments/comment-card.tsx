@@ -1,6 +1,6 @@
 import type { CommentAdmin, CommentAdminTree } from '@grey-flowers/contracts';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import {
   ExternalLink,
   MessageSquareReply,

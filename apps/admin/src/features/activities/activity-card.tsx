@@ -1,6 +1,6 @@
 import type { ActivityAdmin } from '@grey-flowers/contracts';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
 import { formatDateTime } from '@/lib/format.js';

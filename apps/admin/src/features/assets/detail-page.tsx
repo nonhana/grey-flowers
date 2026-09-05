@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ArrowLeft, Check, Copy, Music2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';

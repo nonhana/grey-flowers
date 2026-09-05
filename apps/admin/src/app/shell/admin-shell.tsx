@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { RouterProvider } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import {
   CloudOff,
   Flower2,

@@ -8,9 +8,7 @@ import { controlClass } from '@/ui/form.js';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
 
-/** 调试控件：接口延迟（ms）改完即生效、刷新保留；应用后收起 Popover。
- *  仅开发模式渲染——DEV 守卫在挂载点（ConsoleRail），生产 tree-shake 掉。
- *  外部点击/Esc 关闭由 React Aria Popover 的 dismissal 能力提供，无 document 级监听。 */
+// 接口延迟控制面板（用于测试）
 export const ApiDelayControl = () => {
   const [value, setValue] = useState(() => readApiDelayMs());
   const [draft, setDraft] = useState('');

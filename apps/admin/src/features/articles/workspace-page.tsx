@@ -2,7 +2,7 @@ import type { CategoryAdmin, TagAdmin } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import {
   AlertTriangle,
   ArrowLeft,

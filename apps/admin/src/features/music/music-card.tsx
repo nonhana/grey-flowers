@@ -1,7 +1,7 @@
 import type { MusicAdmin } from '@grey-flowers/contracts';
 
 import { Link } from '@tanstack/react-router';
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { Disc3, Info, Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
 import { formatDuration } from '@/lib/format.js';

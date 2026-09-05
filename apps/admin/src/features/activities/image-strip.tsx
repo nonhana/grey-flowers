@@ -1,6 +1,6 @@
 import type { ActivityImageItem } from '@grey-flowers/contracts';
 
-import { cn } from 'cnfast';
+import { cn } from 'cn';
 import { ImagePlus, Images, X } from 'lucide-react';
 import { ProgressBar } from 'react-aria-components';
 

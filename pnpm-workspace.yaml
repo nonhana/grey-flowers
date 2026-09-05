@@ -77,7 +77,6 @@ catalogs:
     vite: ^8.2.2
     '@rolldown/plugin-babel': ^0.2.3
     ky: ^2.1.0
-    cnfast: ^0.2.0
     motion: ^13.2.0
     react-aria: ^3.52.0
     react-dropzone: ^20.1.1
@@ -92,6 +91,7 @@ catalogs:
     sharp: ^0.35.4
     sharp-ico: ^0.1.5
     '@tanstack/router-plugin': ^1.168.35
+    cn: ^0.2.5
 
   api:
     '@aws-sdk/client-s3': ^3.1124.0
