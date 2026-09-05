@@ -17,11 +17,6 @@ export {
   isApiRequestError,
 } from './errors';
 
-/**
- * 短命 access token 只驻留内存，不落 localStorage：
- * 刷新后 / 会话过期时凭 httpOnly refresh cookie（gf_refresh）重新换发。
- * 第三方脚本无法从持久化存储窃取令牌。
- */
 let accessToken: string | null = null;
 
 const getApiOrigin = () => {
@@ -34,9 +29,7 @@ const getApiOrigin = () => {
   return new URL(origin).toString();
 };
 
-export const getAccessToken = () => {
-  return accessToken;
-};
+export const getAccessToken = () => accessToken;
 
 export const setAccessToken = (next: string | null) => {
   accessToken = next;
@@ -71,12 +64,10 @@ export class ApiClient {
     this.users = createUsersApi(this.http);
   }
 
-  /** transport 凭据续期（refresh 属于 transport，见 D5） */
   refresh() {
     return this.http.refresh();
   }
 
-  /** React 侧只通过这里订阅会话过期；核心保持框架无关（D4） */
   setSessionExpiredHandler(handler: () => void) {
     this.http.setSessionExpiredHandler(handler);
   }

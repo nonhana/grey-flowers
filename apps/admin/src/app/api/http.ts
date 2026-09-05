@@ -1,4 +1,5 @@
 import {
+  apiErrorStatus,
   apiFailureSchema,
   authRefreshResponseSchema,
   type AuthRefreshData,
@@ -13,19 +14,19 @@ import {
   isApiRequestError,
 } from './errors';
 
-const LOCAL_AUTH_REQUIRED_MESSAGE = '需要重新登录。';
-
 export interface HttpOptions {
   prefixUrl: string;
   getAccessToken: () => string | null;
   setAccessToken: (accessToken: string | null) => void;
 }
 
-/** contracts 的 response envelope schema 的结构鸭子类型 */
 interface ResponseSchema<TData> {
-  safeParse: (
-    value: unknown,
-  ) => { success: true; data: { data: TData } } | { success: false };
+  safeParse: (value: unknown) =>
+    | {
+        success: true;
+        data: { data: TData };
+      }
+    | { success: false };
 }
 
 type ResponseData<TSchema> =
@@ -53,28 +54,24 @@ const abortError = () =>
 export const isAbortError = (error: unknown): boolean =>
   error instanceof Error && error.name === 'AbortError';
 
-/** 取消不是网络故障：原样上抛，Query 据此静默结算，不进入页面错误态。 */
 const rethrowIfAborted = (error: unknown, signal: AbortSignal | undefined) => {
   if (isAbortError(error) || signal?.aborted) {
     throw isAbortError(error) ? error : abortError();
   }
 };
 
-/** 调试延迟尊重取消：abort 时立即结束，不留挂起的 setTimeout。 */
-const delay = (ms: number, signal: AbortSignal | undefined) => {
+const delay = async (ms: number, signal: AbortSignal | undefined) => {
   if (signal?.aborted) return Promise.reject(abortError());
 
-  const { promise, reject, resolve } = Promise.withResolvers<void>();
+  const { promise, resolve, reject } = Promise.withResolvers<void>();
   const timer = setTimeout(resolve, ms);
   const onAbort = () => {
     clearTimeout(timer);
     reject(abortError());
   };
   signal?.addEventListener('abort', onAbort, { once: true });
-  // 落定后（正常完成或 abort）都摘掉监听（L-2），不留对 signal 的引用。
-  return promise.finally(() => {
-    signal?.removeEventListener('abort', onAbort);
-  });
+
+  return promise.finally(() => signal?.removeEventListener('abort', onAbort));
 };
 
 type HttpMethod = 'get' | 'post' | 'patch' | 'delete';
@@ -113,20 +110,17 @@ export const createHttp = (options: HttpOptions) => {
             success: false,
             error: {
               code: 'AUTH_REQUIRED',
-              message: LOCAL_AUTH_REQUIRED_MESSAGE,
+              message: '请重新登录。',
             },
             requestId: '',
           },
-          401,
+          apiErrorStatus.AUTH_REQUIRED,
         );
       }
     }
 
-    // 调试：统一延迟（0 时不引入任何开销）。每次请求前读，改完即生效。
     const delayMs = readApiDelayMs();
-    if (delayMs > 0) {
-      await delay(delayMs, requestOptions.signal);
-    }
+    if (delayMs > 0) await delay(delayMs, requestOptions.signal);
 
     let response: Response;
 
@@ -135,9 +129,9 @@ export const createHttp = (options: HttpOptions) => {
         ...(requestOptions.json === undefined
           ? {}
           : { json: requestOptions.json }),
-        headers: requestOptions.authenticated
+        ...(requestOptions.authenticated
           ? { Authorization: `Bearer ${options.getAccessToken()}` }
-          : undefined,
+          : {}),
         searchParams: requestOptions.searchParams,
         signal: requestOptions.signal,
       });
@@ -183,9 +177,9 @@ export const createHttp = (options: HttpOptions) => {
       });
     }
 
-    return refreshPromise.then((response) => {
-      options.setAccessToken(response.accessToken);
-      return response;
+    return refreshPromise.then((res) => {
+      options.setAccessToken(res.accessToken);
+      return res;
     });
   };
 
@@ -200,7 +194,7 @@ export const createHttp = (options: HttpOptions) => {
     contentType: string,
     onUploadProgress?: (progress: number) => void,
     signal?: AbortSignal,
-  ): Promise<void> => {
+  ) => {
     const { promise, reject, resolve } = Promise.withResolvers<void>();
 
     const xhr = new XMLHttpRequest();
@@ -216,7 +210,6 @@ export const createHttp = (options: HttpOptions) => {
     }
 
     xhr.onerror = () => reject(new ApiNetworkError('Upload request failed'));
-    // 取消口径与 rethrowIfAborted 一致：AbortError 形态上抛，不伪装成网络错误。
     xhr.onabort = () => reject(abortError());
     xhr.onload = () => {
       // 2xx 即接收完成；R2 错误响应体为 XML，统一归一为网络错误。
@@ -258,7 +251,6 @@ export const createHttp = (options: HttpOptions) => {
           throw error;
         }
 
-        // refresh 是共享 promise，不随单个 caller 取消；恢复后若调用方已取消，放弃重试。
         if (requestOptions.signal?.aborted) {
           throw abortError();
         }

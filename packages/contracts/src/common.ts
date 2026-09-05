@@ -26,6 +26,22 @@ export const apiErrorCodeSchema = z.enum([
 
 export type ApiErrorCode = z.infer<typeof apiErrorCodeSchema>;
 
+export const apiErrorStatus = {
+  ARTICLE_STALE: 409,
+  ASSET_PAYLOAD_TOO_LARGE: 413,
+  ASSET_REFERENCED: 409,
+  AUTH_FORBIDDEN: 403,
+  AUTH_INVALID_CREDENTIALS: 401,
+  AUTH_REQUIRED: 401,
+  CONFLICT: 409,
+  INTERNAL_ERROR: 500,
+  NOT_FOUND: 404,
+  RATE_LIMITED: 429,
+  UNSUPPORTED_MEDIA_TYPE: 415,
+  UPLOAD_FAILED: 502,
+  VALIDATION_FAILED: 400,
+} as const satisfies Record<ApiErrorCode, number>;
+
 const apiValidationFieldsSchema = z.record(z.string(), z.array(z.string()));
 
 export const apiFailureSchema = z
