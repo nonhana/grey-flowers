@@ -5,7 +5,7 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma } from '@grey-flowers/db';
 
-import { concatUrl } from '@/lib/concat-url.js';
+import { concatUrl } from '@/lib/concat-url';
 
 /** 管理读：含 sourceAsset/coverAsset 摘要与 activityCount（多对多引用计数）。 */
 export const musicAdminSelect = {

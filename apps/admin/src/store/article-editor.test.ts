@@ -3,15 +3,15 @@ import type { ArticleAdmin, ArticleSaveInput } from '@grey-flowers/contracts';
 import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ApiNetworkError, ApiRequestError } from '@/app/api/errors.js';
-import { articlesKeys } from '@/app/server-state/articles.js';
-import { queryClient } from '@/app/server-state/client.js';
+import { ApiNetworkError, ApiRequestError } from '@/app/api/errors';
+import { articlesKeys } from '@/app/server-state/articles';
+import { queryClient } from '@/app/server-state/client';
 
 import {
   createArticleEditorStore,
   toDraft,
   type RestoreCandidate,
-} from './article-editor.js';
+} from './article-editor';
 
 const api = vi.hoisted(() => ({
   detail: vi.fn(),
@@ -36,11 +36,11 @@ vi.mock('idb-keyval', () => idb);
 vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
-vi.mock('@/lib/toast.js', () => ({ toastError: vi.fn() }));
+vi.mock('@/lib/toast', () => ({ toastError: vi.fn() }));
 // 只替换 apiClient，错误判定仍走真实实现（isApiRequestError / isApiNetworkError
 // 依赖 instanceof，桩掉就等于把分支测假了）。
-vi.mock('@/app/api/index.js', async () => {
-  const errors = await import('@/app/api/errors.js');
+vi.mock('@/app/api/index', async () => {
+  const errors = await import('@/app/api/errors');
   return { ...errors, apiClient: { articles: api } };
 });
 

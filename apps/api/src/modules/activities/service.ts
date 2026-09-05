@@ -11,20 +11,20 @@ import type {
 
 import { Prisma, type PrismaClient } from '@grey-flowers/db';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
-import { ApiError } from '@/http/errors.js';
-import { concatUrl } from '@/lib/concat-url.js';
-import { pagination } from '@/lib/pagination.js';
+import { ApiError } from '@/http/errors';
+import { concatUrl } from '@/lib/concat-url';
+import { pagination } from '@/lib/pagination';
 
-import { assetPurposeFromStorageKey } from '../assets/contracts.js';
-import { parseActivityMarkdown } from './activity-markdown.js';
+import { assetPurposeFromStorageKey } from '../assets/contracts';
+import { parseActivityMarkdown } from './activity-markdown';
 import {
   activityAdminSelect,
   activityPublicSelect,
   toActivityAdmin,
   toActivityPublic,
-} from './contracts.js';
+} from './contracts';
 
 type Client = PrismaClient | Prisma.TransactionClient;
 

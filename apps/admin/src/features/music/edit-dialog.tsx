@@ -10,17 +10,17 @@ import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateMusicAfterMutation } from '@/app/server-state/music.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
-import { formatDuration } from '@/lib/format.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { FieldLabel, TextField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { MetaLine } from '@/ui/surface.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateMusicAfterMutation } from '@/app/server-state/music';
+import { AssetPickerDialog } from '@/features/assets/asset-picker';
+import { apiErrorMessage } from '@/lib/error-message';
+import { formatDuration } from '@/lib/format';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { FieldLabel, TextField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
+import { MetaLine } from '@/ui/surface';
 
 interface EditForm {
   album: string;

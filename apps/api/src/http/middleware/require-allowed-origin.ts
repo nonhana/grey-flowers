@@ -1,10 +1,10 @@
 import type { MiddlewareHandler } from 'hono';
 
-import type { ApiEnvironment as Environment } from '@/env.js';
+import type { ApiEnvironment as Environment } from '@/env';
 
-import type { ApiEnvironment } from '../context.js';
+import type { ApiEnvironment } from '../context';
 
-import { ApiError } from '../errors.js';
+import { ApiError } from '../errors';
 
 export const requireAllowedOrigin = (
   env: Environment,

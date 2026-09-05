@@ -4,11 +4,11 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { Disc3, Info, Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
-import { formatDuration } from '@/lib/format.js';
-import { buttonClass, IconButton } from '@/ui/button.js';
-import { StatusReadout } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDuration } from '@/lib/format';
+import { buttonClass, IconButton } from '@/ui/button';
+import { StatusReadout } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
 export const MusicCard = ({
   isCurrent,

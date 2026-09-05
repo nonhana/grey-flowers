@@ -1,10 +1,10 @@
 import { cn } from 'cn';
 import { useShallow } from 'zustand/react/shallow';
 
-import { formatDuration } from '@/lib/format.js';
-import { usePlayerStore } from '@/store/player.js';
+import { formatDuration } from '@/lib/format';
+import { usePlayerStore } from '@/store/player';
 
-import { TrackSlider } from './track-slider.js';
+import { TrackSlider } from './track-slider';
 
 /**
  * 播放进度区：独占 currentTime/duration 的订阅，把 timeupdate 每秒 4~10 次的

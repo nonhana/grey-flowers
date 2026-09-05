@@ -4,27 +4,27 @@ import { ArrowLeft, Disc3, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicDetailOptions,
-} from '@/app/server-state/music.js';
-import { formatDateTime, formatDuration } from '@/lib/format.js';
-import { toastError } from '@/lib/toast.js';
-import { usePlayerStore } from '@/store/player.js';
-import { Button, buttonClass } from '@/ui/button.js';
-import { Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
+} from '@/app/server-state/music';
+import { formatDateTime, formatDuration } from '@/lib/format';
+import { toastError } from '@/lib/toast';
+import { usePlayerStore } from '@/store/player';
+import { Button, buttonClass } from '@/ui/button';
+import { Skeleton, StatusReadout } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { ConfirmDialog } from '@/ui/overlay';
 import {
   MetaLine,
   PageBody,
   PageHeader,
   Panel,
   SectionLabel,
-} from '@/ui/surface.js';
+} from '@/ui/surface';
 
-import { EditMusicDialog } from './edit-dialog.js';
+import { EditMusicDialog } from './edit-dialog';
 
 const Row = ({
   children,

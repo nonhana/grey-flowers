@@ -1,11 +1,11 @@
 import { Buffer } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
-import { readApiEnvironment } from './env.js';
+import { readApiEnvironment } from './env';
 import {
   baseEnvironmentInput,
   createTestEnvironment,
-} from './testing/environment.js';
+} from './testing/environment';
 
 describe('readApiEnvironment · 可信反代跳数', () => {
   it('development 默认 0 层：直连时一律不采信 X-Forwarded-For', () => {

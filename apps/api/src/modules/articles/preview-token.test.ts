@@ -1,9 +1,9 @@
 import { Buffer } from 'node:buffer';
 import { describe, expect, it, vi } from 'vitest';
 
-import { createTestEnvironment } from '@/testing/environment.js';
+import { createTestEnvironment } from '@/testing/environment';
 
-import { createPreviewToken, verifyPreviewToken } from './preview-token.js';
+import { createPreviewToken, verifyPreviewToken } from './preview-token';
 
 /** 最小开发环境：走真实解析工厂，避免 unsafe 类型断言。 */
 const environment = createTestEnvironment();

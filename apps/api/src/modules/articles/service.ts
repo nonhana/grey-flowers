@@ -17,17 +17,17 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
-import { ApiError } from '@/http/errors.js';
-import { concatUrl } from '@/lib/concat-url.js';
-import { stripMarkdownToPlainText } from '@/lib/markdown.js';
-import { pagination } from '@/lib/pagination.js';
-import { isRecordNotFound } from '@/lib/prisma.js';
+import { ApiError } from '@/http/errors';
+import { concatUrl } from '@/lib/concat-url';
+import { stripMarkdownToPlainText } from '@/lib/markdown';
+import { pagination } from '@/lib/pagination';
+import { isRecordNotFound } from '@/lib/prisma';
 
-import type { TaxonomyService } from '../taxonomy/service.js';
+import type { TaxonomyService } from '../taxonomy/service';
 
-import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset.js';
+import { assertAvailableAssetDeliveryUrl } from '../assets/managed-asset';
 import {
   articleListAdminProjection,
   type ArticleDetailRecord,
@@ -35,14 +35,11 @@ import {
   toArticleCard,
   toArticleDetail,
   toArticleListAdmin,
-} from './contracts.js';
-import {
-  extractInlineAssetRefs,
-  type InlineAssetRef,
-} from './inline-assets.js';
-import { createPreviewToken, verifyPreviewToken } from './preview-token.js';
-import { normalizeArticleTo, slugifyTitle } from './slug.js';
-import { countArticleWordCount } from './wordcount.js';
+} from './contracts';
+import { extractInlineAssetRefs, type InlineAssetRef } from './inline-assets';
+import { createPreviewToken, verifyPreviewToken } from './preview-token';
+import { normalizeArticleTo, slugifyTitle } from './slug';
+import { countArticleWordCount } from './wordcount';
 
 const DEFAULT_SEARCH_LIMIT = 8;
 const MAX_SEARCH_LIMIT = 10;

@@ -9,17 +9,17 @@ const commentsApi = vi.hoisted(() => ({
   >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { comments: commentsApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { comments: commentsApi } }));
 
-import { queryClient } from './client.js';
+import { queryClient } from './client';
 import {
   commentsKeys,
   commentsListOptions,
   invalidateCommentsAfterMutation,
-} from './comments.js';
-import { overviewKeys } from './overview.js';
-import { commentsRoot, musicRoot } from './roots.js';
-import { usersKeys } from './users.js';
+} from './comments';
+import { overviewKeys } from './overview';
+import { commentsRoot, musicRoot } from './roots';
+import { usersKeys } from './users';
 
 describe('commentsKeys', () => {
   it('list key 由规范化 query 对象组成且互不冲突', () => {

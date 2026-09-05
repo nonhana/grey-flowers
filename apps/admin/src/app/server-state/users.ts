@@ -2,11 +2,11 @@ import type { UserListQuery } from '@grey-flowers/contracts';
 
 import { queryOptions } from '@tanstack/react-query';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client.js';
-import { overviewKeys } from './overview.js';
-import { commentsRoot, usersRoot } from './roots.js';
+import { queryClient } from './client';
+import { overviewKeys } from './overview';
+import { commentsRoot, usersRoot } from './roots';
 
 export const usersKeys = {
   list: (query: UserListQuery) => [...usersRoot, 'list', query] as const,

@@ -1,7 +1,7 @@
 import type { Principal } from '@grey-flowers/contracts';
 import type { HttpBindings } from '@hono/node-server';
 
-import type { AppDependencies } from '../bootstrap/dependencies.js';
+import type { AppDependencies } from '../bootstrap/dependencies';
 
 export interface ApiVariables {
   dependencies: AppDependencies;

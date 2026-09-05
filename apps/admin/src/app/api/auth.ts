@@ -8,7 +8,7 @@ import {
   authSessionResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http } from './http.js';
+import type { Http } from './http';
 
 export const createAuthApi = (http: Http) => {
   return {

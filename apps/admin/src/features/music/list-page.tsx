@@ -7,25 +7,25 @@ import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicListOptions,
-} from '@/app/server-state/music.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { usePlayerStore } from '@/store/player.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { FilterChip, SearchInput } from '@/ui/form.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/music';
+import { useClampPage } from '@/hooks/use-clamp-page';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { usePlayerStore } from '@/store/player';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { FilterChip, SearchInput } from '@/ui/form';
+import { ConfirmDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { PageBody, PageHeader } from '@/ui/surface';
 
-import { EditMusicDialog } from './edit-dialog.js';
-import { MusicCard } from './music-card.js';
+import { EditMusicDialog } from './edit-dialog';
+import { MusicCard } from './music-card';
 
 const PAGE_SIZE = 12;
 /* 网格撑满列表区，行高 minmax(min-content,1fr) 均分剩余高度；溢出时回落到

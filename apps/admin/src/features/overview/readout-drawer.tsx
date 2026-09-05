@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { Skeleton } from '@/ui/feedback.js';
-import { SectionLabel } from '@/ui/surface.js';
+import { Skeleton } from '@/ui/feedback';
+import { SectionLabel } from '@/ui/surface';
 
 export const ReadoutDrawer = ({ children }: { children: ReactNode }) => (
   <div

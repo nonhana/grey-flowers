@@ -6,23 +6,23 @@ import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   activityListOptions,
   invalidateActivitiesAfterMutation,
-} from '@/app/server-state/activities.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { usePlayerStore } from '@/store/player.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { SearchInput } from '@/ui/form.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/activities';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { usePlayerStore } from '@/store/player';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { SearchInput } from '@/ui/form';
+import { ConfirmDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import { ActivityCard } from './activity-card.js';
+import { ActivityCard } from './activity-card';
 
 const PAGE_SIZE = 10;
 

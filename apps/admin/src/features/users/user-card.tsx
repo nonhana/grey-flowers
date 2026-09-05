@@ -2,11 +2,11 @@ import type { UserAdminSummary } from '@grey-flowers/contracts';
 
 import { ExternalLink, Pencil, Trash2, UserRound } from 'lucide-react';
 
-import { formatDateTime } from '@/lib/format.js';
-import { IconButton } from '@/ui/button.js';
-import { Skeleton } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDateTime } from '@/lib/format';
+import { IconButton } from '@/ui/button';
+import { Skeleton } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
 export const UserCard = ({
   actions,

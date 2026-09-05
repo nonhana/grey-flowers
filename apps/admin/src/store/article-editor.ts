@@ -15,13 +15,13 @@ import {
   apiClient,
   isApiNetworkError,
   isApiRequestError,
-} from '@/app/api/index.js';
+} from '@/app/api/index';
 import {
   invalidateArticlesAfterContentSave,
   invalidateArticlesAfterMutation,
-} from '@/app/server-state/articles.js';
-import { markAssetsStale } from '@/app/server-state/assets.js';
-import { toastError } from '@/lib/toast.js';
+} from '@/app/server-state/articles';
+import { markAssetsStale } from '@/app/server-state/assets';
+import { toastError } from '@/lib/toast';
 
 export interface ArticleDraft {
   alt: string;

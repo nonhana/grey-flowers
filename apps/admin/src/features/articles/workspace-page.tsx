@@ -20,21 +20,21 @@ import {
   Popover,
 } from 'react-aria-components';
 
-import { articlesListOptions } from '@/app/server-state/articles.js';
+import { articlesListOptions } from '@/app/server-state/articles';
 import {
   taxonomyCategoriesOptions,
   taxonomyTagsOptions,
-} from '@/app/server-state/taxonomy.js';
-import { useIsDesktop } from '@/hooks/use-media-query.js';
-import { formatDateTime } from '@/lib/format.js';
-import { useArticleEditor } from '@/store/article-editor.js';
-import { Button, buttonClass, IconButton } from '@/ui/button.js';
-import { Alert, StatusReadout } from '@/ui/feedback.js';
-import { Hint } from '@/ui/hint.js';
-import { AppDialog, BottomSheet, SidePanel } from '@/ui/overlay.js';
+} from '@/app/server-state/taxonomy';
+import { useIsDesktop } from '@/hooks/use-media-query';
+import { formatDateTime } from '@/lib/format';
+import { useArticleEditor } from '@/store/article-editor';
+import { Button, buttonClass, IconButton } from '@/ui/button';
+import { Alert, StatusReadout } from '@/ui/feedback';
+import { Hint } from '@/ui/hint';
+import { AppDialog, BottomSheet, SidePanel } from '@/ui/overlay';
 
-import { CodeMirrorPane } from './editor/code-mirror-pane.js';
-import { InspectorPane } from './editor/inspector-pane.js';
+import { CodeMirrorPane } from './editor/code-mirror-pane';
+import { InspectorPane } from './editor/inspector-pane';
 
 type Editor = ReturnType<typeof useArticleEditor>;
 

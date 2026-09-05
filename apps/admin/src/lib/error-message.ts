@@ -1,6 +1,6 @@
 import type { ApiErrorCode } from '@grey-flowers/contracts';
 
-import { type ApiRequestError, isApiRequestError } from '@/app/api/errors.js';
+import { type ApiRequestError, isApiRequestError } from '@/app/api/errors';
 
 export const GENERIC_FALLBACK = '暂时无法完成此操作。';
 export const AUTH_FORBIDDEN_MESSAGE = '当前账户没有执行该操作的权限。';

@@ -2,7 +2,7 @@ import { cn } from 'cn';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button as AriaButton } from 'react-aria-components';
 
-import { IconButton } from './button.js';
+import { IconButton } from './button';
 
 /**
  * 页码序列：首尾两页 + 当前页附近滑动窗口，跳过的区间用省略号占位；

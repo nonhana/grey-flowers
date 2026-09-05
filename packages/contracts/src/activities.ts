@@ -4,8 +4,8 @@ import {
   apiSuccessSchema,
   nonNegativeIntSchema,
   positiveIntSchema,
-} from './common.js';
-import { musicTrackSchema } from './music.js';
+} from './common';
+import { musicTrackSchema } from './music';
 
 export const activityImageItemSchema = z
   .union([

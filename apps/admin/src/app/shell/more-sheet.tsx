@@ -8,9 +8,9 @@ import {
   Users,
 } from 'lucide-react';
 
-import { BottomSheet } from '@/ui/overlay.js';
+import { BottomSheet } from '@/ui/overlay';
 
-import { AccountBlock, navRowClass } from './console-rail.js';
+import { AccountBlock, navRowClass } from './console-rail';
 
 export interface MoreSheetProps {
   isOpen: boolean;

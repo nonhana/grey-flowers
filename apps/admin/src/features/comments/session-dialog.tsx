@@ -6,16 +6,16 @@ import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateCommentsAfterMutation } from '@/app/server-state/comments.js';
-import { toastError } from '@/lib/toast.js';
-import { Button } from '@/ui/button.js';
-import { TextAreaField } from '@/ui/form.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { MetaLine } from '@/ui/surface.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateCommentsAfterMutation } from '@/app/server-state/comments';
+import { toastError } from '@/lib/toast';
+import { Button } from '@/ui/button';
+import { TextAreaField } from '@/ui/form';
+import { AppDialog } from '@/ui/overlay';
+import { MetaLine } from '@/ui/surface';
 
-import { CommentBody } from './comment-card.js';
-import { commentPageUrl } from './display.js';
+import { CommentBody } from './comment-card';
+import { commentPageUrl } from './display';
 
 /**
  * session-keyed 快捷回复表单（L-25）：quickContent 住在会话组件里，

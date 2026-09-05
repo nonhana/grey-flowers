@@ -15,7 +15,7 @@ import {
   tagResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http, HttpReadOptions } from './http.js';
+import type { Http, HttpReadOptions } from './http';
 
 export const createTaxonomyApi = (http: Http) => {
   return {

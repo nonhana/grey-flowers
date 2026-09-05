@@ -8,12 +8,12 @@ import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { useState } from 'react';
 
-import { overviewTrendOptions } from '@/app/server-state/overview.js';
-import { Button } from '@/ui/button.js';
-import { TrendPlot } from '@/ui/charts/trend-plot.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { FilterChip } from '@/ui/form.js';
-import { Panel, SectionLabel } from '@/ui/surface.js';
+import { overviewTrendOptions } from '@/app/server-state/overview';
+import { Button } from '@/ui/button';
+import { TrendPlot } from '@/ui/charts/trend-plot';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { FilterChip } from '@/ui/form';
+import { Panel, SectionLabel } from '@/ui/surface';
 
 const METRIC_OPTIONS: readonly OverviewTrendMetric[] = [
   'articles',

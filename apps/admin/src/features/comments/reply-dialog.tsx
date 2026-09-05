@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateCommentsAfterMutation } from '@/app/server-state/comments.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { TextAreaField } from '@/ui/form.js';
-import { AppDialog } from '@/ui/overlay.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateCommentsAfterMutation } from '@/app/server-state/comments';
+import { apiErrorMessage } from '@/lib/error-message';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { TextAreaField } from '@/ui/form';
+import { AppDialog } from '@/ui/overlay';
 
 const MD_HINT =
   'MD 支持：**粗体**、*斜体*、~~删除线~~、[链接](url)、> 引用、- 列表、`代码` · 不支持标题/表格/图片/HTML · 最多 2048 字';

@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
 
-import { readApiEnvironment } from '@/env.js';
+import { readApiEnvironment } from '@/env';
 
 /**
  * 单测用的最小 API 环境。

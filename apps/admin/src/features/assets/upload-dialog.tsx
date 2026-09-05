@@ -11,23 +11,23 @@ import {
 } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { isAbortError } from '@/app/api/http.js';
-import { apiClient } from '@/app/api/index.js';
-import { invalidateAssetsAfterMutation } from '@/app/server-state/assets.js';
-import { usePasteFiles } from '@/hooks/use-paste-files.js';
+import { isAbortError } from '@/app/api/http';
+import { apiClient } from '@/app/api/index';
+import { invalidateAssetsAfterMutation } from '@/app/server-state/assets';
+import { usePasteFiles } from '@/hooks/use-paste-files';
 import {
   AUDIO_ACCEPT_MAP,
   fileMatchesAccept,
   IMAGE_ACCEPT_MAP,
-} from '@/lib/media-accept.js';
-import { uploadSizeError } from '@/lib/upload-limits.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { FileDrop } from '@/ui/file-drop.js';
-import { FieldLabel } from '@/ui/form.js';
-import { AppDialog } from '@/ui/overlay.js';
+} from '@/lib/media-accept';
+import { uploadSizeError } from '@/lib/upload-limits';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { FileDrop } from '@/ui/file-drop';
+import { FieldLabel } from '@/ui/form';
+import { AppDialog } from '@/ui/overlay';
 
-import { assetErrorMessage, purposeLabels, purposeOptions } from './display.js';
+import { assetErrorMessage, purposeLabels, purposeOptions } from './display';
 
 type Phase = 'idle' | 'uploading' | 'error';
 

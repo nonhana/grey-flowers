@@ -15,7 +15,7 @@ import {
   previewTokenResponseSchema,
 } from '@grey-flowers/contracts';
 
-import type { Http, HttpReadOptions } from './http.js';
+import type { Http, HttpReadOptions } from './http';
 
 export const createArticlesApi = (http: Http) => {
   return {

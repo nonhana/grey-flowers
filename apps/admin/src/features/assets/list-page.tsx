@@ -12,15 +12,15 @@ import { cn } from 'cn';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 
-import { assetsListOptions } from '@/app/server-state/assets.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { formatBytes, formatDateTime } from '@/lib/format.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { SelectField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+import { assetsListOptions } from '@/app/server-state/assets';
+import { useClampPage } from '@/hooks/use-clamp-page';
+import { formatBytes, formatDateTime } from '@/lib/format';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback';
+import { SelectField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
 import {
   mediaTypeLabels,
@@ -28,8 +28,8 @@ import {
   purposeLabels,
   purposeOptions,
   statusLabels,
-} from './display.js';
-import { UploadDialog } from './upload-dialog.js';
+} from './display';
+import { UploadDialog } from './upload-dialog';
 
 const PAGE_SIZE = 12;
 /** 状态筛选只在可选的两个状态上取值（DELETED 不参与筛选）。 */

@@ -9,16 +9,16 @@ const overviewApi = vi.hoisted(() => ({
   calendar: vi.fn<(options?: { signal?: AbortSignal }) => Promise<unknown>>(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { overview: overviewApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { overview: overviewApi } }));
 
-import { createQueryClient } from './client.js';
+import { createQueryClient } from './client';
 import {
   overviewCalendarOptions,
   overviewCountsOptions,
   overviewKeys,
   overviewTrendOptions,
-} from './overview.js';
-import { overviewRoot } from './roots.js';
+} from './overview';
+import { overviewRoot } from './roots';
 
 describe('overviewKeys', () => {
   it('统一以 [admin, overview] 为前缀', () => {

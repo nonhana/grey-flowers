@@ -3,12 +3,12 @@ import type { ActivityAdmin } from '@grey-flowers/contracts';
 import { cn } from 'cn';
 import { Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
-import { formatDateTime } from '@/lib/format.js';
-import { IconButton } from '@/ui/button.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDateTime } from '@/lib/format';
+import { IconButton } from '@/ui/button';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
-import { activityContentPreview, activityImageGridClass } from './display.js';
+import { activityContentPreview, activityImageGridClass } from './display';
 
 export const ActivityCard = ({
   activity,

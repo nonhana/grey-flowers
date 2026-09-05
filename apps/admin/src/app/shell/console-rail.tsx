@@ -20,19 +20,19 @@ import {
 } from 'lucide-react';
 import { useRef, useState } from 'react';
 
-import type { RailSize } from '@/lib/rail-size.js';
+import type { RailSize } from '@/lib/rail-size';
 
-import { ThemeToggle } from '@/app/theme/theme-toggle.js';
+import { ThemeToggle } from '@/app/theme/theme-toggle';
 import {
   useResizableEdge,
   type ResizeSource,
-} from '@/hooks/use-resizable-edge.js';
-import { RAIL_SIZE, resolveRailSize } from '@/lib/rail-size.js';
-import { useAuth } from '@/store/auth.js';
-import { buttonClass, IconButton } from '@/ui/button.js';
-import { Hint } from '@/ui/hint.js';
+} from '@/hooks/use-resizable-edge';
+import { RAIL_SIZE, resolveRailSize } from '@/lib/rail-size';
+import { useAuth } from '@/store/auth';
+import { buttonClass, IconButton } from '@/ui/button';
+import { Hint } from '@/ui/hint';
 
-import { ApiDelayControl } from './api-delay-control.js';
+import { ApiDelayControl } from './api-delay-control';
 
 interface NavItem {
   icon: LucideIcon;

@@ -2,10 +2,10 @@ import type { ArticleListAdminQuery } from '@grey-flowers/contracts';
 
 import { queryOptions } from '@tanstack/react-query';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client.js';
-import { articlesRoot, overviewRoot, taxonomyRoot } from './roots.js';
+import { queryClient } from './client';
+import { articlesRoot, overviewRoot, taxonomyRoot } from './roots';
 
 export const articlesKeys = {
   list: (query: ArticleListAdminQuery) =>

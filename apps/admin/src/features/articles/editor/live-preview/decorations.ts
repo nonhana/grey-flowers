@@ -9,14 +9,14 @@ import {
   imageCover,
   imageInCode,
   parseImage,
-} from './image-parse.js';
+} from './image-parse';
 import {
   insertUpload,
   removeUpload,
   updateUpload,
   uploadField,
-} from './upload-state.js';
-import { InlineImageWidget, UploadGhostWidget } from './widgets.js';
+} from './upload-state';
+import { InlineImageWidget, UploadGhostWidget } from './widgets';
 
 /**
  * 装饰层：`Image` 节点整体被 `Decoration.replace` 替换成 `<img>`；

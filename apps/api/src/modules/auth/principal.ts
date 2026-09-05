@@ -1,6 +1,6 @@
 import type { Principal } from '@grey-flowers/contracts';
 
-import type { AppDependencies } from '@/bootstrap/dependencies.js';
+import type { AppDependencies } from '@/bootstrap/dependencies';
 
 interface PublicUserFields {
   avatar: string;

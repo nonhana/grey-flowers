@@ -34,25 +34,25 @@ import {
 } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   commentsListOptions,
   invalidateCommentsAfterMutation,
-} from '@/app/server-state/comments.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { EmptyState } from '@/ui/feedback.js';
-import { SearchInput, TextField, controlClass } from '@/ui/form.js';
-import { BottomSheet, ConfirmDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/comments';
+import { useClampPage } from '@/hooks/use-clamp-page';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { Button, IconButton } from '@/ui/button';
+import { EmptyState } from '@/ui/feedback';
+import { SearchInput, TextField, controlClass } from '@/ui/form';
+import { BottomSheet, ConfirmDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import { CommentCard, CommentCardSkeleton } from './comment-card.js';
-import { ReplyDialog, type ReplyTarget } from './reply-dialog.js';
-import { SessionDialog } from './session-dialog.js';
+import { CommentCard, CommentCardSkeleton } from './comment-card';
+import { ReplyDialog, type ReplyTarget } from './reply-dialog';
+import { SessionDialog } from './session-dialog';
 
 const PAGE_SIZE = 20;
 

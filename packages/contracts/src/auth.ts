@@ -1,17 +1,13 @@
 import { z } from 'zod';
 
-import {
-  apiSuccessSchema,
-  positiveIntSchema,
-  userRoleSchema,
-} from './common.js';
+import { apiSuccessSchema, positiveIntSchema, userRoleSchema } from './common';
 import {
   emailInputSchema,
   emailSchema,
   publicUserSchema,
   siteSchema,
   usernameSchema,
-} from './users.js';
+} from './users';
 
 const passwordSchema = z
   .string()

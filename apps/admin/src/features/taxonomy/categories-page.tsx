@@ -10,20 +10,20 @@ import { FolderTree, ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import { apiClient, isApiRequestError } from '@/app/api/index';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
-} from '@/app/server-state/taxonomy.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { Alert, EmptyState, Skeleton } from '@/ui/feedback.js';
-import { controlClass, FieldLabel, TextField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog, ConfirmDialog } from '@/ui/overlay.js';
-import { PageBody, PageHeader, RowStack } from '@/ui/surface.js';
+} from '@/app/server-state/taxonomy';
+import { AssetPickerDialog } from '@/features/assets/asset-picker';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { Button, IconButton } from '@/ui/button';
+import { Alert, EmptyState, Skeleton } from '@/ui/feedback';
+import { controlClass, FieldLabel, TextField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog, ConfirmDialog } from '@/ui/overlay';
+import { PageBody, PageHeader, RowStack } from '@/ui/surface';
 
 /** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位。 */
 const CategoryRowSkeleton = () => (

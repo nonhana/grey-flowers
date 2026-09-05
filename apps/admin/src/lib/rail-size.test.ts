@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { RAIL_SIZE, resolveRailSize } from './rail-size.js';
+import { RAIL_SIZE, resolveRailSize } from './rail-size';
 
 const expanded = { collapsed: false, width: RAIL_SIZE.default } as const;
 

@@ -5,13 +5,13 @@ import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateUsersAfterMutation } from '@/app/server-state/users.js';
-import { toastError } from '@/lib/toast.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { SelectField, TextField } from '@/ui/form.js';
-import { AppDialog } from '@/ui/overlay.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateUsersAfterMutation } from '@/app/server-state/users';
+import { toastError } from '@/lib/toast';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { SelectField, TextField } from '@/ui/form';
+import { AppDialog } from '@/ui/overlay';
 
 const ROLE_OPTIONS = ['USER', 'ADMIN'] as const;
 

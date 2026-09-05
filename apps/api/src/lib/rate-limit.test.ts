@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createRateLimiter } from './rate-limit.js';
+import { createRateLimiter } from './rate-limit';
 
 describe('createRateLimiter', () => {
   it('允许窗口内的请求，超出上限后拒绝同一 key', () => {

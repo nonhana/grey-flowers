@@ -1,8 +1,8 @@
 import { serve } from '@hono/node-server';
 
-import { createApp } from './app.js';
-import { createDependencies } from './bootstrap/dependencies.js';
-import { readApiEnvironment } from './env.js';
+import { createApp } from './app';
+import { createDependencies } from './bootstrap/dependencies';
+import { readApiEnvironment } from './env';
 
 const environment = readApiEnvironment(process.env);
 const dependencies = createDependencies(environment);

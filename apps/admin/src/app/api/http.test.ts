@@ -11,9 +11,9 @@ const delayModule = vi.hoisted(() => ({ readApiDelayMs: vi.fn(() => 0) }));
 
 vi.mock('ky', () => ({ default: { create: vi.fn(() => kyHandlers) } }));
 
-vi.mock('./delay.js', () => delayModule);
+vi.mock('./delay', () => delayModule);
 
-import { createHttp } from './http.js';
+import { createHttp } from './http';
 
 const requestId = '11111111-1111-4111-8111-111111111111';
 

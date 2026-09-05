@@ -5,7 +5,7 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { concatUrl } from '@/lib/concat-url.js';
+import { concatUrl } from '@/lib/concat-url';
 
 /**
  * 六个消费 role 即存储目录（上传即定址，storage key 永不 re-key）。

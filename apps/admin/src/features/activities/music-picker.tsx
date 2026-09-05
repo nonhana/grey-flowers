@@ -5,15 +5,15 @@ import { cn } from 'cn';
 import { Check, Disc3, ListMusic } from 'lucide-react';
 import { useState } from 'react';
 
-import { musicPickerOptions } from '@/app/server-state/music.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { formatDuration } from '@/lib/format.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { SearchInput } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
+import { musicPickerOptions } from '@/app/server-state/music';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { formatDuration } from '@/lib/format';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback';
+import { SearchInput } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
 
 const PAGE_SIZE = 20;
 const SELECT_LIMIT = 10;

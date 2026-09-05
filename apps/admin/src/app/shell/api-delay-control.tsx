@@ -2,9 +2,9 @@ import { Gauge } from 'lucide-react';
 import { useState } from 'react';
 import { DialogTrigger, Popover } from 'react-aria-components';
 
-import { readApiDelayMs, writeApiDelayMs } from '@/app/api/delay.js';
-import { Button, buttonClass } from '@/ui/button.js';
-import { controlClass } from '@/ui/form.js';
+import { readApiDelayMs, writeApiDelayMs } from '@/app/api/delay';
+import { Button, buttonClass } from '@/ui/button';
+import { controlClass } from '@/ui/form';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
 

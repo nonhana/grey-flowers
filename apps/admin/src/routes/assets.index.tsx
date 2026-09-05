@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { parseAssetStatusFilter } from '@/features/assets/display.js';
-import { AssetsListPage } from '@/features/assets/list-page.js';
-import { RoutePending } from '@/ui/route-pending.js';
+import { parseAssetStatusFilter } from '@/features/assets/display';
+import { AssetsListPage } from '@/features/assets/list-page';
+import { RoutePending } from '@/ui/route-pending';
 
 export const Route = createFileRoute('/assets/')({
   validateSearch: (search) => {

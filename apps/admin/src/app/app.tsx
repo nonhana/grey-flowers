@@ -1,5 +1,5 @@
-import { AppProviders } from './providers.js';
-import { AdminShell } from './shell/admin-shell.js';
+import { AppProviders } from './providers';
+import { AdminShell } from './shell/admin-shell';
 
 export const App = () => {
   return (

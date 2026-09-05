@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveClientIp, UNKNOWN_CLIENT_IP } from './client-ip.js';
+import { resolveClientIp, UNKNOWN_CLIENT_IP } from './client-ip';
 
 describe('resolveClientIp · 无可信反代（hops = 0）', () => {
   it('完全忽略 X-Forwarded-For，只认 socket 对端地址', () => {

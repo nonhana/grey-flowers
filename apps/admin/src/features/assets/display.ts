@@ -4,7 +4,7 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { apiErrorMessage } from '@/lib/error-message.js';
+import { apiErrorMessage } from '@/lib/error-message';
 
 export const purposeLabels: Record<AssetPurpose, string> = {
   ACTIVITY_IMAGE: '动态图片',

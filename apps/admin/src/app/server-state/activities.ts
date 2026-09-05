@@ -2,11 +2,11 @@ import type { ActivityListQuery } from '@grey-flowers/contracts';
 
 import { queryOptions } from '@tanstack/react-query';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client.js';
-import { overviewKeys } from './overview.js';
-import { activitiesRoot } from './roots.js';
+import { queryClient } from './client';
+import { overviewKeys } from './overview';
+import { activitiesRoot } from './roots';
 
 export const activityKeys = {
   list: (query: ActivityListQuery) =>

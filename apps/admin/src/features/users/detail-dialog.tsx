@@ -8,15 +8,15 @@ import { useQuery } from '@tanstack/react-query';
 import { CloudOff, ExternalLink, MessagesSquare } from 'lucide-react';
 import { useState } from 'react';
 
-import { usersDetailOptions } from '@/app/server-state/users.js';
-import { formatDateTime } from '@/lib/format.js';
-import { pageUrl } from '@/lib/page-url.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine } from '@/ui/surface.js';
+import { usersDetailOptions } from '@/app/server-state/users';
+import { formatDateTime } from '@/lib/format';
+import { pageUrl } from '@/lib/page-url';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine } from '@/ui/surface';
 
 const COMMENT_PAGE_SIZE = 10;
 

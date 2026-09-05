@@ -5,7 +5,7 @@ import { getDayOfWeek, parseDate, startOfWeek } from '@internationalized/date';
 import { cn } from 'cn';
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import { monthDay } from './shared.js';
+import { monthDay } from './shared';
 
 const CAL_LOCALE = 'zh-CN';
 const WEEKDAYS = ['一', '二', '三', '四', '五', '六', '日'] as const;

@@ -9,16 +9,16 @@ const taxonomyApi = vi.hoisted(() => ({
     >(),
 }));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: { taxonomy: taxonomyApi } }));
+vi.mock('@/app/api/index', () => ({ apiClient: { taxonomy: taxonomyApi } }));
 
-import { queryClient } from './client.js';
-import { overviewRoot, taxonomyRoot, usersRoot } from './roots.js';
+import { queryClient } from './client';
+import { overviewRoot, taxonomyRoot, usersRoot } from './roots';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
   taxonomyKeys,
   taxonomyTagsOptions,
-} from './taxonomy.js';
+} from './taxonomy';
 
 describe('taxonomyKeys', () => {
   it('category/tag list 家族互不冲突', () => {

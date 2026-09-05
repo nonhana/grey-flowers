@@ -1,6 +1,6 @@
 import { WidgetType } from '@codemirror/view';
 
-import type { UploadEntry } from './upload-state.js';
+import type { UploadEntry } from './upload-state';
 
 /** React 侧的交互出口；CodeMirrorPane 挂载时注入。 */
 export interface ImageActions {

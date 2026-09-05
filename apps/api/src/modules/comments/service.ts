@@ -12,14 +12,14 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import type { ApiLogger } from '@/bootstrap/logger.js';
+import type { ApiLogger } from '@/bootstrap/logger';
 
-import { ApiError } from '@/http/errors.js';
-import { pagination } from '@/lib/pagination.js';
+import { ApiError } from '@/http/errors';
+import { pagination } from '@/lib/pagination';
 
-import type { CommentMailer } from './mailer.js';
+import type { CommentMailer } from './mailer';
 
-import { parseCommentMarkdown } from './comment-markdown.js';
+import { parseCommentMarkdown } from './comment-markdown';
 import {
   commentAdminSelect,
   commentPublicSelect,
@@ -27,7 +27,7 @@ import {
   toCommentAdminTree,
   toCommentPublic,
   toCommentPublicTree,
-} from './contracts.js';
+} from './contracts';
 
 type Client = PrismaClient | Prisma.TransactionClient;
 

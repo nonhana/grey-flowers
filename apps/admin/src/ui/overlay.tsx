@@ -12,9 +12,9 @@ import {
   useOverlayTriggerState,
 } from 'react-stately';
 
-import { useMediaQuery } from '@/hooks/use-media-query.js';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
-import { Button, IconButton } from './button.js';
+import { Button, IconButton } from './button';
 
 const scrimClass = cn(
   'fixed inset-0 z-50 bg-scrim',

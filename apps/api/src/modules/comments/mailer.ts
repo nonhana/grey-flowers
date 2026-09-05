@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
 /**
  * 站点名/站点址：API 不可 import 主站 #shared/data/meta，改为模块常量

@@ -4,8 +4,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 
-import { PwaBridge } from './pwa.js';
-import { queryClient } from './server-state/client.js';
+import { PwaBridge } from './pwa';
+import { queryClient } from './server-state/client';
 
 export const AppProviders = ({ children }: PropsWithChildren) => {
   return (

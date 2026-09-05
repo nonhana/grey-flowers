@@ -4,16 +4,16 @@ import { Hono } from 'hono';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
-import type { AppDependencies } from '@/bootstrap/dependencies.js';
-import type { ApiEnvironment } from '@/http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies';
+import type { ApiEnvironment } from '@/http/context';
 
 import {
   ApiError,
   createSuccess,
   handleError,
   validationError,
-} from '@/http/errors.js';
-import { requestId } from '@/http/middleware/request-id.js';
+} from '@/http/errors';
+import { requestId } from '@/http/middleware/request-id';
 
 /** 只有 handleError 用得到 logger，其余依赖在本测试里不参与。 */
 const createDependenciesStub = () => {
