@@ -8,7 +8,7 @@ import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicDetailOptions,
-} from '@/app/server-state/music';
+} from '@/app/server-state/modules/music';
 import { formatDateTime, formatDuration } from '@/lib/format';
 import { toastError } from '@/lib/toast';
 import { usePlayerStore } from '@/store/player';

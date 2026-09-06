@@ -11,14 +11,14 @@ const commentsApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index', () => ({ apiClient: { comments: commentsApi } }));
 
-import { queryClient } from './client';
+import { queryClient } from '../client';
+import { commentsRoot, musicRoot } from '../roots';
 import {
   commentsKeys,
   commentsListOptions,
   invalidateCommentsAfterMutation,
 } from './comments';
 import { overviewKeys } from './overview';
-import { commentsRoot, musicRoot } from './roots';
 import { usersKeys } from './users';
 
 describe('commentsKeys', () => {

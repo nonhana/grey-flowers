@@ -38,7 +38,7 @@ import { apiClient } from '@/app/api/index';
 import {
   commentsListOptions,
   invalidateCommentsAfterMutation,
-} from '@/app/server-state/comments';
+} from '@/app/server-state/modules/comments';
 import { useClampPage } from '@/hooks/use-clamp-page';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';

@@ -11,7 +11,7 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
-import { invalidateMusicAfterMutation } from '@/app/server-state/music';
+import { invalidateMusicAfterMutation } from '@/app/server-state/modules/music';
 import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { apiErrorMessage } from '@/lib/error-message';
 import { formatDuration } from '@/lib/format';

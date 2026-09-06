@@ -13,8 +13,8 @@ import { apiClient } from '@/app/api/index';
 import {
   activityDetailOptions,
   invalidateActivitiesAfterMutation,
-} from '@/app/server-state/activities';
-import { markAssetsStale } from '@/app/server-state/assets';
+} from '@/app/server-state/modules/activities';
+import { markAssetsStale } from '@/app/server-state/modules/assets';
 import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { usePasteFiles } from '@/hooks/use-paste-files';
 import { apiErrorMessage } from '@/lib/error-message';

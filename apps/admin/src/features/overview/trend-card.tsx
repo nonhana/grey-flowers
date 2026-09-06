@@ -8,7 +8,7 @@ import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { useState } from 'react';
 
-import { overviewTrendOptions } from '@/app/server-state/overview';
+import { overviewTrendOptions } from '@/app/server-state/modules/overview';
 import { Button } from '@/ui/button';
 import { TrendPlot } from '@/ui/charts/trend-plot';
 import { EmptyState, Skeleton } from '@/ui/feedback';

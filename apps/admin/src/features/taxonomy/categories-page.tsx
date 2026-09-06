@@ -14,7 +14,7 @@ import { apiClient, isApiRequestError } from '@/app/api/index';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
-} from '@/app/server-state/taxonomy';
+} from '@/app/server-state/modules/taxonomy';
 import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';

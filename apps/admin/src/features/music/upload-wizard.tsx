@@ -7,8 +7,8 @@ import { Form, ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
-import { markAssetsStale } from '@/app/server-state/assets';
-import { invalidateMusicAfterMutation } from '@/app/server-state/music';
+import { markAssetsStale } from '@/app/server-state/modules/assets';
+import { invalidateMusicAfterMutation } from '@/app/server-state/modules/music';
 import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { apiErrorMessage } from '@/lib/error-message';
 import { formatDuration } from '@/lib/format';

@@ -3,7 +3,7 @@ import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { Fragment } from 'react';
 
-import { overviewCalendarOptions } from '@/app/server-state/overview';
+import { overviewCalendarOptions } from '@/app/server-state/modules/overview';
 import { Button } from '@/ui/button';
 import { CalendarHeatmap } from '@/ui/charts/calendar-heatmap';
 import { EmptyState, Skeleton } from '@/ui/feedback';

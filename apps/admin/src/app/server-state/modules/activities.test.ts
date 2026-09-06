@@ -17,15 +17,15 @@ vi.mock('@/app/api/index', () => ({
   apiClient: { activities: activitiesApi },
 }));
 
+import { queryClient } from '../client';
+import { activitiesRoot, musicRoot } from '../roots';
 import {
   activityDetailOptions,
   activityKeys,
   activityListOptions,
   invalidateActivitiesAfterMutation,
 } from './activities';
-import { queryClient } from './client';
 import { overviewKeys } from './overview';
-import { activitiesRoot, musicRoot } from './roots';
 
 describe('activityKeys', () => {
   it('list 与 detail 家族互不冲突', () => {

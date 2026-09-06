@@ -9,7 +9,7 @@ import { apiClient } from '@/app/api/index';
 import {
   assetsDetailOptions,
   invalidateAssetsAfterMutation,
-} from '@/app/server-state/assets';
+} from '@/app/server-state/modules/assets';
 import { useDialog } from '@/hooks/use-dialog';
 import { formatBytes, formatDateTime, formatDurationMs } from '@/lib/format';
 import { Button, buttonClass, IconButton } from '@/ui/button';

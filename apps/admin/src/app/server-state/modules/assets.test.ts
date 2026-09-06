@@ -13,14 +13,14 @@ vi.mock('@/app/api/index', () => ({ apiClient: { assets: assetsApi } }));
 
 import type { AssetListData } from '@grey-flowers/contracts';
 
+import { queryClient } from '../client';
+import { overviewRoot, usersRoot } from '../roots';
 import {
   assetsKeys,
   assetsPickerOptions,
   invalidateAssetsAfterMutation,
   markAssetsStale,
 } from './assets';
-import { queryClient } from './client';
-import { overviewRoot, usersRoot } from './roots';
 
 const pageOf = (count: number, total: number): AssetListData => ({
   items: Array.from({ length: count }, (_, index) => ({

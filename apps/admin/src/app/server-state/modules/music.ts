@@ -4,9 +4,9 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client';
+import { queryClient } from '../client';
+import { activitiesRoot, musicRoot } from '../roots';
 import { overviewKeys } from './overview';
-import { activitiesRoot, musicRoot } from './roots';
 
 export const musicKeys = {
   list: (query: MusicListQuery) => [...musicRoot, 'list', query] as const,

@@ -2,9 +2,9 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client';
+import { queryClient } from '../client';
+import { articlesRoot, taxonomyRoot } from '../roots';
 import { overviewKeys } from './overview';
-import { articlesRoot, taxonomyRoot } from './roots';
 
 export const taxonomyKeys = {
   categories: [...taxonomyRoot, 'categories'] as const,

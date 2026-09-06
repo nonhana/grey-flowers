@@ -12,7 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 
-import { overviewCountsOptions } from '@/app/server-state/overview';
+import { overviewCountsOptions } from '@/app/server-state/modules/overview';
 import { formatCount, formatHours } from '@/lib/format';
 import { Button, buttonClass } from '@/ui/button';
 import { EmptyState } from '@/ui/feedback';

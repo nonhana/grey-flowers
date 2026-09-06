@@ -6,7 +6,7 @@ import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 
-import { articlesListOptions } from '@/app/server-state/articles';
+import { articlesListOptions } from '@/app/server-state/modules/articles';
 import { useClampPage } from '@/hooks/use-clamp-page';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { formatDateTime } from '@/lib/format';

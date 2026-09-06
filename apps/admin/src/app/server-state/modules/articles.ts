@@ -4,8 +4,8 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client';
-import { articlesRoot, overviewRoot, taxonomyRoot } from './roots';
+import { queryClient } from '../client';
+import { articlesRoot, overviewRoot, taxonomyRoot } from '../roots';
 
 export const articlesKeys = {
   list: (query: ArticleListAdminQuery) =>

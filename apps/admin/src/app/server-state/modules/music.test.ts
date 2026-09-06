@@ -15,8 +15,9 @@ const musicApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index', () => ({ apiClient: { music: musicApi } }));
 
+import { queryClient } from '../client';
+import { assetsRoot, musicRoot, overviewRoot } from '../roots';
 import { activityKeys } from './activities';
-import { queryClient } from './client';
 import {
   invalidateMusicAfterMutation,
   musicDetailOptions,
@@ -24,7 +25,6 @@ import {
   musicListOptions,
   musicPickerOptions,
 } from './music';
-import { assetsRoot, musicRoot, overviewRoot } from './roots';
 
 describe('musicKeys', () => {
   it('list/detail/picker 家族互不冲突', () => {

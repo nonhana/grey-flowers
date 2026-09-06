@@ -10,7 +10,7 @@ import { apiClient } from '@/app/api/index';
 import {
   activityListOptions,
   invalidateActivitiesAfterMutation,
-} from '@/app/server-state/activities';
+} from '@/app/server-state/modules/activities';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';

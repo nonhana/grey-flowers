@@ -11,8 +11,8 @@ const taxonomyApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index', () => ({ apiClient: { taxonomy: taxonomyApi } }));
 
-import { queryClient } from './client';
-import { overviewRoot, taxonomyRoot, usersRoot } from './roots';
+import { queryClient } from '../client';
+import { overviewRoot, taxonomyRoot, usersRoot } from '../roots';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,

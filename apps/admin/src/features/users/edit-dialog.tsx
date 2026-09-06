@@ -6,7 +6,7 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
-import { invalidateUsersAfterMutation } from '@/app/server-state/users';
+import { invalidateUsersAfterMutation } from '@/app/server-state/modules/users';
 import { toastError } from '@/lib/toast';
 import { Button } from '@/ui/button';
 import { Alert } from '@/ui/feedback';

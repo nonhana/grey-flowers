@@ -15,14 +15,14 @@ const articlesApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index', () => ({ apiClient: { articles: articlesApi } }));
 
+import { queryClient } from '../client';
+import { musicRoot } from '../roots';
 import {
   articlesKeys,
   invalidateArticlesAfterContentSave,
   invalidateArticlesAfterMutation,
 } from './articles';
-import { queryClient } from './client';
 import { overviewKeys } from './overview';
-import { musicRoot } from './roots';
 import { taxonomyKeys } from './taxonomy';
 
 describe('invalidateArticlesAfterContentSave', () => {

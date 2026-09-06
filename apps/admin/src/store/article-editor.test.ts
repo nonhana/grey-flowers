@@ -4,8 +4,8 @@ import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ApiNetworkError, ApiRequestError } from '@/app/api/errors';
-import { articlesKeys } from '@/app/server-state/articles';
 import { queryClient } from '@/app/server-state/client';
+import { articlesKeys } from '@/app/server-state/modules/articles';
 
 import {
   createArticleEditorStore,

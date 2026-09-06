@@ -4,9 +4,9 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client';
+import { queryClient } from '../client';
+import { commentsRoot, usersRoot } from '../roots';
 import { overviewKeys } from './overview';
-import { commentsRoot, usersRoot } from './roots';
 
 export const usersKeys = {
   list: (query: UserListQuery) => [...usersRoot, 'list', query] as const,

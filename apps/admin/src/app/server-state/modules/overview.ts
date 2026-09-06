@@ -4,7 +4,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
-import { overviewRoot } from './roots';
+import { overviewRoot } from '../roots';
 
 export const overviewKeys = {
   counts: [...overviewRoot, 'counts'] as const,

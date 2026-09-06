@@ -12,7 +12,7 @@ import {
 import { toast } from 'sonner';
 
 import { apiClient, isAbortError } from '@/app/api';
-import { invalidateAssetsAfterMutation } from '@/app/server-state/assets';
+import { invalidateAssetsAfterMutation } from '@/app/server-state/modules/assets';
 import { usePasteFiles } from '@/hooks/use-paste-files';
 import {
   AUDIO_ACCEPT_MAP,
