@@ -6,8 +6,7 @@ import { Check, ImageUp, Images } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 
-import { isAbortError } from '@/app/api/http';
-import { apiClient, isApiRequestError } from '@/app/api/index';
+import { apiClient, isAbortError, isApiRequestError } from '@/app/api';
 import {
   assetsPickerOptions,
   markAssetsStale,
@@ -91,7 +90,7 @@ export const AssetPickerDialog = ({
         { file, purpose },
         (progress) => setUploading(Math.round(progress * 100)),
         undefined,
-        { signal: controller.signal },
+        controller.signal,
       );
       // 上传成功但对话框已关闭/会话已取消：不幽灵回调插入（L-19）。
       if (!controller.signal.aborted) {

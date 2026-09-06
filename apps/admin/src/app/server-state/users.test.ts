@@ -54,9 +54,9 @@ describe('users query options', () => {
 
     await queryClient.query(usersListOptions(query));
 
-    const [callQuery, callOptions] = usersApi.list.mock.calls[0] ?? [];
+    const [callQuery, callSignal] = usersApi.list.mock.calls[0] ?? [];
     expect(callQuery).toEqual(query);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 
   it('detail query 携带评论分页并消费 signal', async () => {
@@ -66,10 +66,10 @@ describe('users query options', () => {
       usersDetailOptions(3, { commentPage: 2, commentPageSize: 10 }),
     );
 
-    const [id, callQuery, callOptions] = usersApi.detail.mock.calls[0] ?? [];
+    const [id, callQuery, callSignal] = usersApi.detail.mock.calls[0] ?? [];
     expect(id).toBe(3);
     expect(callQuery).toEqual({ commentPage: 2, commentPageSize: 10 });
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 });
 

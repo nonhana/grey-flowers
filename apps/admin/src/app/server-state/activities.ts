@@ -17,13 +17,13 @@ export const activityKeys = {
 export const activityListOptions = (query: ActivityListQuery) =>
   queryOptions({
     queryKey: activityKeys.list(query),
-    queryFn: ({ signal }) => apiClient.activities.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.activities.list(query, signal),
   });
 
 export const activityDetailOptions = (id: number) =>
   queryOptions({
     queryKey: activityKeys.detail(id),
-    queryFn: ({ signal }) => apiClient.activities.detail(id, { signal }),
+    queryFn: ({ signal }) => apiClient.activities.detail(id, signal),
   });
 
 /**

@@ -17,7 +17,7 @@ export const usersKeys = {
 export const usersListOptions = (query: UserListQuery) =>
   queryOptions({
     queryKey: usersKeys.list(query),
-    queryFn: ({ signal }) => apiClient.users.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.users.list(query, signal),
   });
 
 export const usersDetailOptions = (
@@ -30,7 +30,7 @@ export const usersDetailOptions = (
       comments.commentPage,
       comments.commentPageSize,
     ),
-    queryFn: ({ signal }) => apiClient.users.detail(id, comments, { signal }),
+    queryFn: ({ signal }) => apiClient.users.detail(id, comments, signal),
   });
 
 /**

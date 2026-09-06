@@ -14,13 +14,13 @@ export const taxonomyKeys = {
 export const taxonomyCategoriesOptions = () =>
   queryOptions({
     queryKey: taxonomyKeys.categories,
-    queryFn: ({ signal }) => apiClient.taxonomy.listCategories({ signal }),
+    queryFn: ({ signal }) => apiClient.taxonomy.listCategories(signal),
   });
 
 export const taxonomyTagsOptions = (unused: boolean) =>
   queryOptions({
     queryKey: taxonomyKeys.tags(unused),
-    queryFn: ({ signal }) => apiClient.taxonomy.listTags(unused, { signal }),
+    queryFn: ({ signal }) => apiClient.taxonomy.listTags(unused, signal),
   });
 
 /**

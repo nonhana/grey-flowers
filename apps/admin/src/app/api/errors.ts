@@ -43,3 +43,9 @@ export const isApiRequestError = (
 
 export const isApiNetworkError = (error: unknown): error is ApiNetworkError =>
   error instanceof ApiNetworkError;
+
+export const abortError = () =>
+  new DOMException('The operation was aborted.', 'AbortError');
+
+export const isAbortError = (error: unknown): boolean =>
+  error instanceof Error && error.name === 'AbortError';

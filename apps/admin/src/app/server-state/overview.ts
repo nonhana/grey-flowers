@@ -17,17 +17,17 @@ export const overviewKeys = {
 export const overviewCountsOptions = () =>
   queryOptions({
     queryKey: overviewKeys.counts,
-    queryFn: ({ signal }) => apiClient.overview.get({ signal }),
+    queryFn: ({ signal }) => apiClient.overview.get(signal),
   });
 
 export const overviewTrendOptions = (query: OverviewTrendQuery) =>
   queryOptions({
     queryKey: overviewKeys.trend(query),
-    queryFn: ({ signal }) => apiClient.overview.trends(query, { signal }),
+    queryFn: ({ signal }) => apiClient.overview.trends(query, signal),
   });
 
 export const overviewCalendarOptions = () =>
   queryOptions({
     queryKey: overviewKeys.calendar,
-    queryFn: ({ signal }) => apiClient.overview.calendar({ signal }),
+    queryFn: ({ signal }) => apiClient.overview.calendar(signal),
   });

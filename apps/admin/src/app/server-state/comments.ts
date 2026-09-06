@@ -15,7 +15,7 @@ export const commentsKeys = {
 export const commentsListOptions = (query: CommentListQuery) =>
   queryOptions({
     queryKey: commentsKeys.list(query),
-    queryFn: ({ signal }) => apiClient.comments.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.comments.list(query, signal),
   });
 
 /**

@@ -11,7 +11,7 @@ import {
   isApiRequestError,
   setAccessToken,
 } from '@/app/api/index';
-import { clearAdminQueryCache } from '@/app/server-state/client';
+import { queryClient } from '@/app/server-state/client';
 
 type AuthenticationState =
   | { status: 'checking' }
@@ -57,13 +57,13 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     }
 
     setAccessToken(null);
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ state: { status: 'forbidden' } });
   };
 
   const decideSessionExpired = () => {
     setAccessToken(null);
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ state: { status: 'unauthenticated' } });
     toast.error('登录已过期，请重新登录。');
   };
@@ -82,7 +82,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     } catch (error) {
       if (isApiRequestError(error, 'AUTH_FORBIDDEN')) {
         setAccessToken(null);
-        clearAdminQueryCache();
+        queryClient.clear();
         set({ state: { status: 'forbidden' } });
         return;
       }
@@ -104,7 +104,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
 
   const signIn = async (input: { account: string; password: string }) => {
     // 登录前清掉上一主体可能残留的查询缓存。
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ isSubmitting: true });
     try {
       const response = await apiClient.auth.login(input);
@@ -113,7 +113,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     } catch (error) {
       if (isApiRequestError(error, 'AUTH_FORBIDDEN')) {
         setAccessToken(null);
-        clearAdminQueryCache();
+        queryClient.clear();
         set({ state: { status: 'forbidden' } });
         return;
       }
@@ -142,13 +142,13 @@ export const useAuthStore = create<AuthState>()((set, get) => {
       set({ state: { status: 'unauthenticated', error: messageFor(error) } });
     } finally {
       setAccessToken(null);
-      clearAdminQueryCache();
+      queryClient.clear();
       set({ isSigningOut: false });
     }
   };
 
   const useAnotherAccount = () => {
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ state: { status: 'unauthenticated' } });
   };
 

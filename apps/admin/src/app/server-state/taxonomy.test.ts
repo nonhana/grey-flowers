@@ -38,8 +38,8 @@ describe('taxonomy query options', () => {
     taxonomyApi.listCategories.mockResolvedValue({ items: [] });
     await queryClient.query(taxonomyCategoriesOptions());
 
-    const [callOptions] = taxonomyApi.listCategories.mock.calls[0] ?? [];
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    const [callSignal] = taxonomyApi.listCategories.mock.calls[0] ?? [];
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(queryClient.getQueryState(taxonomyKeys.categories)?.data).toEqual({
       items: [],
     });
@@ -49,9 +49,9 @@ describe('taxonomy query options', () => {
     taxonomyApi.listTags.mockResolvedValue({ items: [] });
     await queryClient.query(taxonomyTagsOptions(true));
 
-    const [unused, callOptions] = taxonomyApi.listTags.mock.calls[0] ?? [];
+    const [unused, callSignal] = taxonomyApi.listTags.mock.calls[0] ?? [];
     expect(unused).toBe(true);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(queryClient.getQueryState(taxonomyKeys.tags(true))?.data).toEqual({
       items: [],
     });

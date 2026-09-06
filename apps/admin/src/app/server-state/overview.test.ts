@@ -48,8 +48,8 @@ describe('overview query options', () => {
     overviewApi.get.mockResolvedValue({ counts: { n: 1 } });
 
     await client.query(overviewCountsOptions());
-    const [callOptions] = overviewApi.get.mock.calls[0] ?? [];
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    const [callSignal] = overviewApi.get.mock.calls[0] ?? [];
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(client.getQueryState(overviewKeys.counts)?.data).toEqual({
       counts: { n: 1 },
     });
@@ -61,9 +61,9 @@ describe('overview query options', () => {
     overviewApi.trends.mockResolvedValue({ points: [] });
 
     await client.query(overviewTrendOptions(query));
-    const [callQuery, callOptions] = overviewApi.trends.mock.calls[0] ?? [];
+    const [callQuery, callSignal] = overviewApi.trends.mock.calls[0] ?? [];
     expect(callQuery).toEqual(query);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(client.getQueryState(overviewKeys.trend(query))?.data).toEqual({
       points: [],
     });
@@ -74,8 +74,8 @@ describe('overview query options', () => {
     overviewApi.calendar.mockResolvedValue({ days: [] });
 
     await client.query(overviewCalendarOptions());
-    const [callOptions] = overviewApi.calendar.mock.calls[0] ?? [];
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    const [callSignal] = overviewApi.calendar.mock.calls[0] ?? [];
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(client.getQueryState(overviewKeys.calendar)?.data).toEqual({
       days: [],
     });
