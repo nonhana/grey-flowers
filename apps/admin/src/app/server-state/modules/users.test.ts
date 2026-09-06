@@ -19,9 +19,9 @@ const usersApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index', () => ({ apiClient: { users: usersApi } }));
 
-import { queryClient } from './client';
+import { queryClient } from '../client';
+import { assetsRoot, commentsRoot, usersRoot } from '../roots';
 import { overviewKeys } from './overview';
-import { assetsRoot, commentsRoot, usersRoot } from './roots';
 import {
   invalidateUsersAfterMutation,
   usersDetailOptions,

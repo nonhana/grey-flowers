@@ -13,7 +13,7 @@ import { apiClient } from '@/app/api/index';
 import {
   invalidateUsersAfterMutation,
   usersListOptions,
-} from '@/app/server-state/users';
+} from '@/app/server-state/modules/users';
 import { useClampPage } from '@/hooks/use-clamp-page';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';

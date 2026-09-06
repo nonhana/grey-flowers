@@ -4,9 +4,9 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
-import { queryClient } from './client';
+import { queryClient } from '../client';
+import { activitiesRoot } from '../roots';
 import { overviewKeys } from './overview';
-import { activitiesRoot } from './roots';
 
 export const activityKeys = {
   list: (query: ActivityListQuery) =>

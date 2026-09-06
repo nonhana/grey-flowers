@@ -4,7 +4,7 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
-import { invalidateCommentsAfterMutation } from '@/app/server-state/comments';
+import { invalidateCommentsAfterMutation } from '@/app/server-state/modules/comments';
 import { apiErrorMessage } from '@/lib/error-message';
 import { Button } from '@/ui/button';
 import { Alert } from '@/ui/feedback';

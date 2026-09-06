@@ -20,11 +20,11 @@ import {
   Popover,
 } from 'react-aria-components';
 
-import { articlesListOptions } from '@/app/server-state/articles';
+import { articlesListOptions } from '@/app/server-state/modules/articles';
 import {
   taxonomyCategoriesOptions,
   taxonomyTagsOptions,
-} from '@/app/server-state/taxonomy';
+} from '@/app/server-state/modules/taxonomy';
 import { useIsDesktop } from '@/hooks/use-media-query';
 import { formatDateTime } from '@/lib/format';
 import { useArticleEditor } from '@/store/article-editor';

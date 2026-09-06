@@ -9,7 +9,7 @@ import { apiClient } from '@/app/api/index';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyTagsOptions,
-} from '@/app/server-state/taxonomy';
+} from '@/app/server-state/modules/taxonomy';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';
 import { Button, IconButton } from '@/ui/button';

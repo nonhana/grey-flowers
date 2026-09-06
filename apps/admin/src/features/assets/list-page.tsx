@@ -12,7 +12,7 @@ import { cn } from 'cn';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 
-import { assetsListOptions } from '@/app/server-state/assets';
+import { assetsListOptions } from '@/app/server-state/modules/assets';
 import { useClampPage } from '@/hooks/use-clamp-page';
 import { formatBytes, formatDateTime } from '@/lib/format';
 import { Button } from '@/ui/button';

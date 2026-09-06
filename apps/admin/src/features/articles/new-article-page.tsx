@@ -8,7 +8,7 @@ import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
-import { invalidateArticlesAfterMutation } from '@/app/server-state/articles';
+import { invalidateArticlesAfterMutation } from '@/app/server-state/modules/articles';
 import { Button, IconButton } from '@/ui/button';
 import { Alert } from '@/ui/feedback';
 import { TextField } from '@/ui/form';

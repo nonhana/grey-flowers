@@ -19,8 +19,8 @@ import {
 import {
   invalidateArticlesAfterContentSave,
   invalidateArticlesAfterMutation,
-} from '@/app/server-state/articles';
-import { markAssetsStale } from '@/app/server-state/assets';
+} from '@/app/server-state/modules/articles';
+import { markAssetsStale } from '@/app/server-state/modules/assets';
 import { toastError } from '@/lib/toast';
 
 export interface ArticleDraft {

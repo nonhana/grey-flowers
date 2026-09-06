@@ -1,10 +1,6 @@
 import { cn } from 'cn';
 import { Plus } from 'lucide-react';
 
-/**
- * 移动端发布 FAB（md:hidden）：常驻入口链不带 motion，展开菜单由 shell 懒加载；
- * 悬停/聚焦/pointerdown 触发 onPrefetch，首次展开不等网络。
- */
 export const ComposeFab = ({
   onToggle,
   open,

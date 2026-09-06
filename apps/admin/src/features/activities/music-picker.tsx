@@ -5,7 +5,7 @@ import { cn } from 'cn';
 import { Check, Disc3, ListMusic } from 'lucide-react';
 import { useState } from 'react';
 
-import { musicPickerOptions } from '@/app/server-state/music';
+import { musicPickerOptions } from '@/app/server-state/modules/music';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { formatDuration } from '@/lib/format';
 import { Button } from '@/ui/button';

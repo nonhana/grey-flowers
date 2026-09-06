@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { CloudOff, ExternalLink, MessagesSquare } from 'lucide-react';
 import { useState } from 'react';
 
-import { usersDetailOptions } from '@/app/server-state/users';
+import { usersDetailOptions } from '@/app/server-state/modules/users';
 import { formatDateTime } from '@/lib/format';
 import { pageUrl } from '@/lib/page-url';
 import { Button } from '@/ui/button';

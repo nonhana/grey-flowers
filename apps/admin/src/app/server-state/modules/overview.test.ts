@@ -11,14 +11,14 @@ const overviewApi = vi.hoisted(() => ({
 
 vi.mock('@/app/api/index', () => ({ apiClient: { overview: overviewApi } }));
 
-import { createQueryClient } from './client';
+import { createQueryClient } from '../client';
+import { overviewRoot } from '../roots';
 import {
   overviewCalendarOptions,
   overviewCountsOptions,
   overviewKeys,
   overviewTrendOptions,
 } from './overview';
-import { overviewRoot } from './roots';
 
 describe('overviewKeys', () => {
   it('统一以 [admin, overview] 为前缀', () => {

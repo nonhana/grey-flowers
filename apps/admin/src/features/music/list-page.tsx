@@ -11,7 +11,7 @@ import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicListOptions,
-} from '@/app/server-state/music';
+} from '@/app/server-state/modules/music';
 import { useClampPage } from '@/hooks/use-clamp-page';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';

@@ -10,7 +10,7 @@ import { apiClient, isAbortError, isApiRequestError } from '@/app/api';
 import {
   assetsPickerOptions,
   markAssetsStale,
-} from '@/app/server-state/assets';
+} from '@/app/server-state/modules/assets';
 import { formatBytes } from '@/lib/format';
 import { uploadSizeError } from '@/lib/upload-limits';
 import { Button } from '@/ui/button';
