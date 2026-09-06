@@ -26,13 +26,13 @@ export const assetsKeys = {
 export const assetsListOptions = (query: AssetListQuery) =>
   queryOptions({
     queryKey: assetsKeys.list(query),
-    queryFn: ({ signal }) => apiClient.assets.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.assets.list(query, signal),
   });
 
 export const assetsDetailOptions = (id: number) =>
   queryOptions({
     queryKey: assetsKeys.detail(id),
-    queryFn: ({ signal }) => apiClient.assets.detail(id, { signal }),
+    queryFn: ({ signal }) => apiClient.assets.detail(id, signal),
   });
 
 export const assetsPickerOptions = (purpose: AssetPurpose, session: number) =>
@@ -47,7 +47,7 @@ export const assetsPickerOptions = (purpose: AssetPurpose, session: number) =>
           purpose,
           status: 'AVAILABLE',
         },
-        { signal },
+        signal,
       ),
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const fetched = allPages.reduce(

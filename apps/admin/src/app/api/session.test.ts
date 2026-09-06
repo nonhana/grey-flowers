@@ -13,7 +13,8 @@ vi.mock('ky', () => ({ default: { create: vi.fn(() => kyHandlers) } }));
 
 vi.mock('./delay', () => delayModule);
 
-import { createHttp } from './http';
+import { createSession } from './session';
+import { createTransport } from './transport';
 
 const requestId = '11111111-1111-4111-8111-111111111111';
 
@@ -45,92 +46,47 @@ const okResponse = (body: unknown) => ({
   json: () => Promise.resolve(body),
 });
 
-/** 全接受 schema：任何 body 都按成功数据返回。 */
-const permissiveSchema = {
-  safeParse: (value: unknown) => ({
-    success: true as const,
-    data: { data: value },
-  }),
-};
-
 /** 全拒绝 schema：把 body 交给真实 apiFailureSchema 解析。 */
-const rejectingSchema = { safeParse: () => ({ success: false as const }) };
+const rejectingSchema = {
+  '~standard': {
+    version: 1,
+    vendor: 'test',
+    validate: () => ({
+      issues: [{ message: 'rejected' }],
+    }),
+  },
+} as const;
 
 let accessToken: string | null = 'at-1';
-const buildHttp = () =>
-  createHttp({
+
+const buildSession = () => {
+  const transport = createTransport({
     prefixUrl: 'http://api.test',
+    getAccessToken: () => accessToken,
+  });
+  return createSession({
+    transport,
     getAccessToken: () => accessToken,
     setAccessToken: (next) => {
       accessToken = next;
     },
   });
-
-const abortError = () => new DOMException('aborted', 'AbortError');
+};
 
 beforeEach(() => {
   vi.resetAllMocks();
   delayModule.readApiDelayMs.mockReturnValue(0);
-  accessToken = 'at-1';
 });
 
-describe('createHttp signal', () => {
-  it('把 signal 透传给底层请求', async () => {
-    kyHandlers.get.mockResolvedValue(okResponse({ ok: true }));
-    const controller = new AbortController();
-    const http = buildHttp();
-
-    await http.get('/probe', {
-      schema: permissiveSchema,
-      signal: controller.signal,
-    });
-
-    expect(kyHandlers.get).toHaveBeenCalledWith(
-      '/probe',
-      expect.objectContaining({ signal: controller.signal }),
-    );
-  });
-
-  it('AbortError 原样上抛，不包装为网络错误', async () => {
-    const abort = abortError();
-    kyHandlers.get.mockRejectedValue(abort);
-    const http = buildHttp();
-
-    await expect(
-      http.get('/probe', {
-        schema: permissiveSchema,
-        signal: new AbortController().signal,
-      }),
-    ).rejects.toBe(abort);
-  });
-
-  it('调试延迟期间取消：请求不再发出', async () => {
-    delayModule.readApiDelayMs.mockReturnValue(10_000);
-    const controller = new AbortController();
-    const http = buildHttp();
-
-    const pending = http.get('/probe', {
-      schema: permissiveSchema,
-      signal: controller.signal,
-    });
-    controller.abort();
-
-    await expect(pending).rejects.toMatchObject({ name: 'AbortError' });
-    expect(kyHandlers.get).not.toHaveBeenCalled();
-  });
-});
-
-describe('createHttp auth retry', () => {
+describe('createSession auth retry', () => {
   it('refresh 期间已取消的请求跳过重试', async () => {
     const refreshGate = Promise.withResolvers();
     kyHandlers.get.mockResolvedValue(okResponse(AUTH_REQUIRED_FAILURE));
     kyHandlers.post.mockReturnValue(refreshGate.promise);
     const controller = new AbortController();
-    const http = buildHttp();
+    const session = buildSession();
 
-    const pending = http.get('/probe', {
-      schema: rejectingSchema,
-      authenticated: true,
+    const pending = session.auth.get('/probe', rejectingSchema, {
       signal: controller.signal,
     });
     await vi.waitFor(() => expect(kyHandlers.post).toHaveBeenCalledOnce());
@@ -147,16 +103,12 @@ describe('createHttp auth retry', () => {
     kyHandlers.post.mockReturnValue(refreshGate.promise);
     const first = new AbortController();
     const second = new AbortController();
-    const http = buildHttp();
+    const session = buildSession();
 
-    const firstPending = http.get('/a', {
-      schema: rejectingSchema,
-      authenticated: true,
+    const firstPending = session.auth.get('/a', rejectingSchema, {
       signal: first.signal,
     });
-    const secondPending = http.get('/b', {
-      schema: rejectingSchema,
-      authenticated: true,
+    const secondPending = session.auth.get('/b', rejectingSchema, {
       signal: second.signal,
     });
     await vi.waitFor(() => expect(kyHandlers.post).toHaveBeenCalledOnce());

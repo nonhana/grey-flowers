@@ -11,8 +11,7 @@ import {
 } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { isAbortError } from '@/app/api/http';
-import { apiClient } from '@/app/api/index';
+import { apiClient, isAbortError } from '@/app/api';
 import { invalidateAssetsAfterMutation } from '@/app/server-state/assets';
 import { usePasteFiles } from '@/hooks/use-paste-files';
 import {
@@ -90,9 +89,12 @@ const UploadForm = ({
     setError('');
 
     try {
-      await apiClient.assets.upload({ file, purpose }, setProgress, undefined, {
-        signal: controller.signal,
-      });
+      await apiClient.assets.upload(
+        { file, purpose },
+        setProgress,
+        undefined,
+        controller.signal,
+      );
       // 上传属于 mutation：失效 assets 全家族与 overview 计数，
       // 默认筛选下的当前列表也会立即重取。
       await invalidateAssetsAfterMutation();

@@ -64,9 +64,9 @@ describe('music query options', () => {
 
     await queryClient.query(musicListOptions(query));
 
-    const [callQuery, callOptions] = musicApi.list.mock.calls[0] ?? [];
+    const [callQuery, callSignal] = musicApi.list.mock.calls[0] ?? [];
     expect(callQuery).toEqual(query);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(queryClient.getQueryState(musicKeys.list(query))?.data).toEqual({
       items: [],
       total: 0,
@@ -79,9 +79,9 @@ describe('music query options', () => {
 
     await queryClient.query(musicPickerOptions(1, query));
 
-    const [callQuery, callOptions] = musicApi.list.mock.calls[0] ?? [];
+    const [callQuery, callSignal] = musicApi.list.mock.calls[0] ?? [];
     expect(callQuery).toEqual(query);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
     expect(queryClient.getQueryState(musicKeys.picker(1, query))?.data).toEqual(
       { items: [], total: 0 },
     );
@@ -92,9 +92,9 @@ describe('music query options', () => {
 
     await queryClient.query(musicDetailOptions(3));
 
-    const [id, callOptions] = musicApi.detail.mock.calls[0] ?? [];
+    const [id, callSignal] = musicApi.detail.mock.calls[0] ?? [];
     expect(id).toBe(3);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 });
 

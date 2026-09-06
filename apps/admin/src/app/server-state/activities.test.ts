@@ -52,9 +52,9 @@ describe('activity query options', () => {
 
     await queryClient.query(activityListOptions(query));
 
-    const [callQuery, callOptions] = activitiesApi.list.mock.calls[0] ?? [];
+    const [callQuery, callSignal] = activitiesApi.list.mock.calls[0] ?? [];
     expect(callQuery).toEqual(query);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 
   it('detail query 消费 signal', async () => {
@@ -62,9 +62,9 @@ describe('activity query options', () => {
 
     await queryClient.query(activityDetailOptions(7));
 
-    const [id, callOptions] = activitiesApi.detail.mock.calls[0] ?? [];
+    const [id, callSignal] = activitiesApi.detail.mock.calls[0] ?? [];
     expect(id).toBe(7);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 });
 

@@ -16,13 +16,13 @@ export const articlesKeys = {
 export const articlesListOptions = (query: ArticleListAdminQuery) =>
   queryOptions({
     queryKey: articlesKeys.list(query),
-    queryFn: ({ signal }) => apiClient.articles.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.articles.list(query, signal),
   });
 
 export const articlesDetailOptions = (id: number) =>
   queryOptions({
     queryKey: articlesKeys.detail(id),
-    queryFn: ({ signal }) => apiClient.articles.detail(id, { signal }),
+    queryFn: ({ signal }) => apiClient.articles.detail(id, signal),
   });
 
 /**

@@ -45,9 +45,9 @@ describe('comments query options', () => {
 
     await queryClient.query(commentsListOptions(query));
 
-    const [callQuery, callOptions] = commentsApi.list.mock.calls[0] ?? [];
+    const [callQuery, callSignal] = commentsApi.list.mock.calls[0] ?? [];
     expect(callQuery).toEqual(query);
-    expect(callOptions?.signal).toBeInstanceOf(AbortSignal);
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 });
 

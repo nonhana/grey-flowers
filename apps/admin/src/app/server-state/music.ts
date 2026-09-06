@@ -19,19 +19,19 @@ export const musicKeys = {
 export const musicListOptions = (query: MusicListQuery) =>
   queryOptions({
     queryKey: musicKeys.list(query),
-    queryFn: ({ signal }) => apiClient.music.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.music.list(query, signal),
   });
 
 export const musicPickerOptions = (session: number, query: MusicListQuery) =>
   queryOptions({
     queryKey: musicKeys.picker(session, query),
-    queryFn: ({ signal }) => apiClient.music.list(query, { signal }),
+    queryFn: ({ signal }) => apiClient.music.list(query, signal),
   });
 
 export const musicDetailOptions = (id: number) =>
   queryOptions({
     queryKey: musicKeys.detail(id),
-    queryFn: ({ signal }) => apiClient.music.detail(id, { signal }),
+    queryFn: ({ signal }) => apiClient.music.detail(id, signal),
   });
 
 /**
