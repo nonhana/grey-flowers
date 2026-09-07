@@ -30,7 +30,7 @@ import { StorageCard, StorageCardSkeleton } from './storage-card';
 import { TrendCard } from './trend-card';
 
 export const OverviewPage = () => {
-  const { data, error, isFetching, refetch } = useQuery(
+  const { data, error, isFetching, isPending, refetch } = useQuery(
     overviewCountsOptions(),
   );
 
@@ -76,7 +76,7 @@ export const OverviewPage = () => {
         />
 
         <section aria-label="关键计数" aria-busy={isFetching}>
-          {isFetching ? (
+          {isPending ? (
             <ReadoutDrawerSkeleton />
           ) : error ? (
             <EmptyState
@@ -128,7 +128,7 @@ export const OverviewPage = () => {
           ) : null}
         </section>
 
-        {isFetching ? (
+        {isPending ? (
           <PendingPanelSkeleton />
         ) : data ? (
           <PendingPanel className="animate-content-in" items={data.pending} />
@@ -146,7 +146,7 @@ export const OverviewPage = () => {
               xl:col-span-7
             "
           />
-          {isFetching ? (
+          {isPending ? (
             <CompositionCardSkeleton className="xl:col-span-5" />
           ) : data ? (
             <CompositionCard
@@ -166,7 +166,7 @@ export const OverviewPage = () => {
           "
         >
           <CadenceCard className="xl:col-span-8" />
-          {isFetching ? (
+          {isPending ? (
             <StorageCardSkeleton className="xl:col-span-4" />
           ) : data ? (
             <StorageCard

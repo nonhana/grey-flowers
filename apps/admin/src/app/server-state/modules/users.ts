@@ -33,10 +33,7 @@ export const usersDetailOptions = (
     queryFn: ({ signal }) => apiClient.users.detail(id, comments, signal),
   });
 
-/**
- * 用户编辑/删除后的规定失效：user lists/details、comment lists（评论投影内
- * 嵌作者资料）、overview counts/trends（删除级联评论时计数与趋势都变化）。
- */
+/** 用户编辑/删除后的规定失效：users、comments（评论投影内嵌作者资料）、overview counts/trends。 */
 export const invalidateUsersAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: usersRoot }),

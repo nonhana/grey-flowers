@@ -51,7 +51,7 @@ const EMPTY_FORM: CategoryForm = { cover: '', coverAssetId: null, name: '' };
 export const CategoriesPage = () => {
   const categoriesQuery = useQuery(taxonomyCategoriesOptions());
   const items = categoriesQuery.data?.items ?? [];
-  const loading = categoriesQuery.isFetching;
+  const loading = categoriesQuery.isPending;
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<CategoryAdmin | null>(null);
   const [form, setForm] = useState<CategoryForm>(EMPTY_FORM);

@@ -23,10 +23,7 @@ export const taxonomyTagsOptions = (unused: boolean) =>
     queryFn: ({ signal }) => apiClient.taxonomy.listTags(unused, signal),
   });
 
-/**
- * 分类/标签增删改后的规定失效：taxonomy 全家族、article lists/workspace
- * metadata、overview composition。
- */
+/** 分类/标签增删改后的规定失效：taxonomy 全家族、article lists、overview counts。 */
 export const invalidateTaxonomyAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: taxonomyRoot }),

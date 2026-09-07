@@ -1,6 +1,6 @@
 import type { ActivityListQuery } from '@grey-flowers/contracts';
 
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, skipToken } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
@@ -20,16 +20,17 @@ export const activityListOptions = (query: ActivityListQuery) =>
     queryFn: ({ signal }) => apiClient.activities.list(query, signal),
   });
 
-export const activityDetailOptions = (id: number) =>
+/** id 为 null（新建模式）时走 skipToken，查询不请求。 */
+export const activityDetailOptions = (id: number | null) =>
   queryOptions({
-    queryKey: activityKeys.detail(id),
-    queryFn: ({ signal }) => apiClient.activities.detail(id, signal),
+    queryKey: activityKeys.detail(id ?? 0),
+    queryFn:
+      id === null
+        ? skipToken
+        : ({ signal }) => apiClient.activities.detail(id, signal),
   });
 
-/**
- * 动态增删改后的规定失效：activities 全家族 + overview 计数/趋势/节奏。
- * 删除可能级联评论 —— comments/users family 在其 server-state 就绪后接入。
- */
+/** 动态增删改后的规定失效：activities 全家族、overview 计数/趋势/节奏；删除级联评论的失效待接入 comments/users。 */
 export const invalidateActivitiesAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: activitiesRoot }),

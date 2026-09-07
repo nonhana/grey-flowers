@@ -341,7 +341,8 @@ export const CommentsPage = () => {
   const data = commentsQuery.data;
   // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
   useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = commentsQuery.isFetching;
+  const loading = commentsQuery.isPending;
+  const busy = commentsQuery.isFetching;
   const error = commentsQuery.error ? '无法加载评论，请稍后重试。' : '';
 
   const removeMutation = useMutation({
@@ -477,7 +478,7 @@ export const CommentsPage = () => {
       ) : null}
 
       <section
-        aria-busy={loading}
+        aria-busy={busy}
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (

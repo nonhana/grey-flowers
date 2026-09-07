@@ -145,7 +145,7 @@ export const AssetsDetailPage = () => {
     setTimeout(() => setCopied(false), 1600);
   };
 
-  if (!enabled || detailQuery.isFetching) {
+  if (!enabled || detailQuery.isPending) {
     return <DetailSkeleton />;
   }
 

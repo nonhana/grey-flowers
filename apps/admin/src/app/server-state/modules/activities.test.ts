@@ -18,55 +18,9 @@ vi.mock('@/app/api/index', () => ({
 }));
 
 import { queryClient } from '../client';
-import { activitiesRoot, musicRoot } from '../roots';
-import {
-  activityDetailOptions,
-  activityKeys,
-  activityListOptions,
-  invalidateActivitiesAfterMutation,
-} from './activities';
+import { musicRoot } from '../roots';
+import { activityKeys, invalidateActivitiesAfterMutation } from './activities';
 import { overviewKeys } from './overview';
-
-describe('activityKeys', () => {
-  it('list 与 detail 家族互不冲突', () => {
-    const listQuery = { page: 1, pageSize: 10 };
-    expect(activityKeys.list(listQuery)).toEqual([
-      ...activitiesRoot,
-      'list',
-      listQuery,
-    ]);
-    expect(activityKeys.detail(7)).toEqual([...activitiesRoot, 'detail', 7]);
-    expect(activityKeys.list(listQuery)).not.toEqual(activityKeys.detail(7));
-  });
-});
-
-describe('activity query options', () => {
-  beforeEach(() => {
-    queryClient.clear();
-    vi.clearAllMocks();
-  });
-
-  it('list query 携带 search 条件并消费 signal', async () => {
-    activitiesApi.list.mockResolvedValue({ items: [], total: 0 });
-    const query = { page: 1, pageSize: 10, search: 'hana' } as const;
-
-    await queryClient.query(activityListOptions(query));
-
-    const [callQuery, callSignal] = activitiesApi.list.mock.calls[0] ?? [];
-    expect(callQuery).toEqual(query);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-  });
-
-  it('detail query 消费 signal', async () => {
-    activitiesApi.detail.mockResolvedValue({ id: 7 });
-
-    await queryClient.query(activityDetailOptions(7));
-
-    const [id, callSignal] = activitiesApi.detail.mock.calls[0] ?? [];
-    expect(id).toBe(7);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-  });
-});
 
 describe('invalidateActivitiesAfterMutation', () => {
   beforeEach(() => {

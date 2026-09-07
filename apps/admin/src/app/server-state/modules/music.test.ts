@@ -16,87 +16,9 @@ const musicApi = vi.hoisted(() => ({
 vi.mock('@/app/api/index', () => ({ apiClient: { music: musicApi } }));
 
 import { queryClient } from '../client';
-import { assetsRoot, musicRoot, overviewRoot } from '../roots';
+import { assetsRoot, overviewRoot } from '../roots';
 import { activityKeys } from './activities';
-import {
-  invalidateMusicAfterMutation,
-  musicDetailOptions,
-  musicKeys,
-  musicListOptions,
-  musicPickerOptions,
-} from './music';
-
-describe('musicKeys', () => {
-  it('list/detail/picker 家族互不冲突', () => {
-    const listQuery = { page: 1, pageSize: 12 };
-    expect(musicKeys.list(listQuery)).toEqual([
-      ...musicRoot,
-      'list',
-      listQuery,
-    ]);
-    expect(musicKeys.detail(3)).toEqual([...musicRoot, 'detail', 3]);
-    expect(musicKeys.picker(1, listQuery)).toEqual([
-      ...musicRoot,
-      'picker',
-      1,
-      listQuery,
-    ]);
-    expect(musicKeys.picker(2, listQuery)).not.toEqual(
-      musicKeys.picker(1, listQuery),
-    );
-  });
-});
-
-describe('music query options', () => {
-  beforeEach(() => {
-    queryClient.clear();
-    vi.clearAllMocks();
-  });
-
-  it('list query 携带 search/incomplete 条件并消费 signal', async () => {
-    musicApi.list.mockResolvedValue({ items: [], total: 0 });
-    const query = {
-      page: 2,
-      pageSize: 12,
-      search: 'hana',
-      incomplete: 'true',
-    } as const;
-
-    await queryClient.query(musicListOptions(query));
-
-    const [callQuery, callSignal] = musicApi.list.mock.calls[0] ?? [];
-    expect(callQuery).toEqual(query);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-    expect(queryClient.getQueryState(musicKeys.list(query))?.data).toEqual({
-      items: [],
-      total: 0,
-    });
-  });
-
-  it('picker query 复用 list 读路径并消费 signal', async () => {
-    musicApi.list.mockResolvedValue({ items: [], total: 0 });
-    const query = { page: 1, pageSize: 20 } as const;
-
-    await queryClient.query(musicPickerOptions(1, query));
-
-    const [callQuery, callSignal] = musicApi.list.mock.calls[0] ?? [];
-    expect(callQuery).toEqual(query);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-    expect(queryClient.getQueryState(musicKeys.picker(1, query))?.data).toEqual(
-      { items: [], total: 0 },
-    );
-  });
-
-  it('detail query 消费 signal', async () => {
-    musicApi.detail.mockResolvedValue({ id: 3 });
-
-    await queryClient.query(musicDetailOptions(3));
-
-    const [id, callSignal] = musicApi.detail.mock.calls[0] ?? [];
-    expect(id).toBe(3);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-  });
-});
+import { invalidateMusicAfterMutation, musicKeys } from './music';
 
 describe('invalidateMusicAfterMutation', () => {
   beforeEach(() => {

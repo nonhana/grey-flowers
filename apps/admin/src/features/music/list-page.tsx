@@ -91,7 +91,8 @@ export const MusicLibraryPage = () => {
   const data = musicQuery.data;
   // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
   useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = musicQuery.isFetching;
+  const loading = musicQuery.isPending;
+  const busy = musicQuery.isFetching;
   const error = musicQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
@@ -180,7 +181,7 @@ export const MusicLibraryPage = () => {
       </div>
 
       <section
-        aria-busy={loading}
+        aria-busy={busy}
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (

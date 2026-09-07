@@ -10,7 +10,6 @@ import { overviewKeys } from './overview';
 
 export const musicKeys = {
   list: (query: MusicListQuery) => [...musicRoot, 'list', query] as const,
-  /** Picker 每次打开用独立 session：重开永远全新列表，不闪旧结果。 */
   picker: (session: number, query: MusicListQuery) =>
     [...musicRoot, 'picker', session, query] as const,
   detail: (id: number) => [...musicRoot, 'detail', id] as const,
@@ -34,10 +33,7 @@ export const musicDetailOptions = (id: number) =>
     queryFn: ({ signal }) => apiClient.music.detail(id, signal),
   });
 
-/**
- * 音乐增删改后的规定失效：music 全家族 + overview 计数。
- * music metadata 同时内嵌进 activity 投影，activities 家族一并失效。
- */
+/** 音乐增删改后的规定失效：music 全家族、activities（metadata 内嵌进动态投影）、overview counts。 */
 export const invalidateMusicAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: musicRoot }),

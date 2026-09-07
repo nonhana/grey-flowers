@@ -112,7 +112,7 @@ export const MusicDetailPage = () => {
     },
   });
 
-  if (!enabled || detailQuery.isFetching) {
+  if (!enabled || detailQuery.isPending) {
     return <DetailSkeleton />;
   }
 

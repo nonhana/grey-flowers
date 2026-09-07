@@ -42,7 +42,7 @@ const HeatmapSkeleton = () => (
 );
 
 export const CadenceCard = ({ className }: { className?: string }) => {
-  const { data, error, isFetching, refetch } = useQuery(
+  const { data, error, isPending, refetch } = useQuery(
     overviewCalendarOptions(),
   );
 
@@ -70,7 +70,7 @@ export const CadenceCard = ({ className }: { className?: string }) => {
         ) : null}
       </div>
 
-      {isFetching ? (
+      {isPending ? (
         <HeatmapSkeleton />
       ) : error ? (
         <EmptyState

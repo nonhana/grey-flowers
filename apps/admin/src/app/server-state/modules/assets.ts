@@ -69,11 +69,7 @@ export const invalidateAssetsAfterMutation = async () => {
   ]);
 };
 
-/**
- * 上传成功专用：只标记失效、不立即 refetch。
- * 上传回调随后提交新筛选状态，失效标记让「提交后的 key」在下一次
- * observer 恢复时重新请求 —— 避免旧条件 refetch + 新条件 fetch 双请求。
- */
+/** 上传成功专用：只标记失效、不触发 refetch，等新筛选 key 提交后一并请求，避免新旧条件各请求一次。 */
 export const markAssetsStale = () => {
   void queryClient.invalidateQueries({
     queryKey: assetsRoot,

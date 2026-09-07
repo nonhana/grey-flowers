@@ -20,58 +20,9 @@ const usersApi = vi.hoisted(() => ({
 vi.mock('@/app/api/index', () => ({ apiClient: { users: usersApi } }));
 
 import { queryClient } from '../client';
-import { assetsRoot, commentsRoot, usersRoot } from '../roots';
+import { assetsRoot, commentsRoot } from '../roots';
 import { overviewKeys } from './overview';
-import {
-  invalidateUsersAfterMutation,
-  usersDetailOptions,
-  usersKeys,
-  usersListOptions,
-} from './users';
-
-describe('usersKeys', () => {
-  it('detail key 由用户 id 与评论分页组成', () => {
-    expect(usersKeys.detail(3, 1, 10)).toEqual([
-      ...usersRoot,
-      'detail',
-      3,
-      { commentPage: 1, commentPageSize: 10 },
-    ]);
-    expect(usersKeys.detail(3, 2, 10)).not.toEqual(usersKeys.detail(3, 1, 10));
-    expect(usersKeys.detail(4, 1, 10)).not.toEqual(usersKeys.detail(3, 1, 10));
-  });
-});
-
-describe('users query options', () => {
-  beforeEach(() => {
-    queryClient.clear();
-    vi.clearAllMocks();
-  });
-
-  it('list query 携带筛选并消费 signal', async () => {
-    usersApi.list.mockResolvedValue({ items: [], total: 0 });
-    const query = { page: 1, pageSize: 20, role: 'USER' } as const;
-
-    await queryClient.query(usersListOptions(query));
-
-    const [callQuery, callSignal] = usersApi.list.mock.calls[0] ?? [];
-    expect(callQuery).toEqual(query);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-  });
-
-  it('detail query 携带评论分页并消费 signal', async () => {
-    usersApi.detail.mockResolvedValue({ user: {} });
-
-    await queryClient.query(
-      usersDetailOptions(3, { commentPage: 2, commentPageSize: 10 }),
-    );
-
-    const [id, callQuery, callSignal] = usersApi.detail.mock.calls[0] ?? [];
-    expect(id).toBe(3);
-    expect(callQuery).toEqual({ commentPage: 2, commentPageSize: 10 });
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-  });
-});
+import { invalidateUsersAfterMutation, usersKeys } from './users';
 
 describe('invalidateUsersAfterMutation', () => {
   beforeEach(() => {

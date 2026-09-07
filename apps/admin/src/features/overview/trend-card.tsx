@@ -58,7 +58,7 @@ const PlotSkeleton = () => (
 export const TrendCard = ({ className }: { className?: string }) => {
   const [metric, setMetric] = useState<OverviewTrendMetric>('articles');
   const [days, setDays] = useState<OverviewTrendDays>('14');
-  const { data, error, isFetching, refetch } = useQuery(
+  const { data, error, isPending, refetch } = useQuery(
     overviewTrendOptions({ days, metric }),
   );
 
@@ -103,7 +103,7 @@ export const TrendCard = ({ className }: { className?: string }) => {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col">
-        {isFetching ? (
+        {isPending ? (
           <PlotSkeleton />
         ) : error ? (
           <EmptyState

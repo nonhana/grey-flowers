@@ -540,11 +540,7 @@ export const ActivityComposePage = () => {
       : null;
   const invalid = rawId !== null && editingId === null;
 
-  const detailQuery = useQuery({
-    // enabled 关闭时 id 不参与请求；key 需要 number，用 0 占位且永不激活。
-    ...activityDetailOptions(editingId ?? 0),
-    enabled: editingId !== null,
-  });
+  const detailQuery = useQuery(activityDetailOptions(editingId));
 
   if (invalid) {
     return (

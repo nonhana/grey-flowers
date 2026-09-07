@@ -88,7 +88,8 @@ const DetailBody = ({ user }: { user: UserAdminSummary }) => {
     }),
   );
   const data: UserAdminDetailData | undefined = detailQuery.data;
-  const loading = detailQuery.isFetching;
+  const loading = detailQuery.isPending;
+  const busy = detailQuery.isFetching;
   const error = detailQuery.error ? '无法加载用户详情，请稍后重试。' : '';
 
   const totalComments = data?.comments.total ?? 0;
@@ -98,7 +99,7 @@ const DetailBody = ({ user }: { user: UserAdminSummary }) => {
 
   return (
     <div className="grid gap-4">
-      <section aria-busy={loading} className="grid gap-4">
+      <section aria-busy={busy} className="grid gap-4">
         <h3 className="font-mono text-xs text-ink-dim">评论历史</h3>
 
         {loading ? (

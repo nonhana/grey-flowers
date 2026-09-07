@@ -18,10 +18,7 @@ import { toSearchParams } from '../shared';
 export const createArticlesApi = (channel: Channel) => ({
   list: (query: ArticleListAdminQuery, signal?: AbortSignal) =>
     channel.get('/articles', articleListAdminResponseSchema, {
-      searchParams: toSearchParams({
-        ...query,
-        q: query.q?.trim() || undefined,
-      }),
+      searchParams: toSearchParams(query),
       signal,
     }),
   detail: (id: number, signal?: AbortSignal) =>

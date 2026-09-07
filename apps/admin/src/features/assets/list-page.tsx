@@ -159,7 +159,8 @@ export const AssetsListPage = () => {
   const data = assetsQuery.data;
   // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
   useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = assetsQuery.isFetching;
+  const loading = assetsQuery.isPending;
+  const busy = assetsQuery.isFetching;
   const error = assetsQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
@@ -251,7 +252,7 @@ export const AssetsListPage = () => {
       </div>
 
       <section
-        aria-busy={loading}
+        aria-busy={busy}
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (

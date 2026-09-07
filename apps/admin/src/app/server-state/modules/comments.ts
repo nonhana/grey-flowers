@@ -18,10 +18,7 @@ export const commentsListOptions = (query: CommentListQuery) =>
     queryFn: ({ signal }) => apiClient.comments.list(query, signal),
   });
 
-/**
- * 评论回复/删除（含批量）后的规定失效：comment lists、user list/detail 的
- * 评论计数、overview counts 与评论趋势。
- */
+/** 评论回复/删除（含批量）后的规定失效：comments、users（评论计数）、overview counts/trends。 */
 export const invalidateCommentsAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: commentsRoot }),

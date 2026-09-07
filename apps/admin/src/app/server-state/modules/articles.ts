@@ -7,17 +7,27 @@ import { apiClient } from '@/app/api/index';
 import { queryClient } from '../client';
 import { articlesRoot, overviewRoot, taxonomyRoot } from '../roots';
 
+/** q 空白等价于未搜索，键与请求共用同一份归一化结果。 */
+const normalizeListQuery = (
+  query: ArticleListAdminQuery,
+): ArticleListAdminQuery => ({
+  ...query,
+  q: query.q?.trim() || undefined,
+});
+
 export const articlesKeys = {
   list: (query: ArticleListAdminQuery) =>
-    [...articlesRoot, 'list', query] as const,
+    [...articlesRoot, 'list', normalizeListQuery(query)] as const,
   detail: (id: number) => [...articlesRoot, 'detail', id] as const,
 };
 
-export const articlesListOptions = (query: ArticleListAdminQuery) =>
-  queryOptions({
-    queryKey: articlesKeys.list(query),
-    queryFn: ({ signal }) => apiClient.articles.list(query, signal),
+export const articlesListOptions = (query: ArticleListAdminQuery) => {
+  const normalized = normalizeListQuery(query);
+  return queryOptions({
+    queryKey: articlesKeys.list(normalized),
+    queryFn: ({ signal }) => apiClient.articles.list(normalized, signal),
   });
+};
 
 export const articlesDetailOptions = (id: number) =>
   queryOptions({
@@ -25,13 +35,7 @@ export const articlesDetailOptions = (id: number) =>
     queryFn: ({ signal }) => apiClient.articles.detail(id, signal),
   });
 
-/**
- * 文章 create/publish/unpublish/delete 后的规定失效（全量，new-article-page
- * 与 store 的 publish/unpublish/delete 调用）：article lists/workspace
- * metadata（recent 即 list 一员）、taxonomy counts、overview
- * counts/trends/calendar。
- * 文章删除级联的资产引用计数由调用点另行 markAssetsStale 标记。
- */
+/** 文章 create/publish/unpublish/delete 后的规定失效：articles、taxonomy、overview 全家族；删除级联的资产引用计数由调用点另行 markAssetsStale。 */
 export const invalidateArticlesAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: articlesRoot }),
@@ -40,11 +44,7 @@ export const invalidateArticlesAfterMutation = async () => {
   ]);
 };
 
-/**
- * 自动保存落盘后的窄失效（saveOnce 专用）：仅 article lists/workspace
- * metadata —— 计数与发布态不受 save 影响，避免自动保存期间的
- * overview/taxonomy refetch 风暴。
- */
+/** 自动保存落盘后的窄失效：只刷 articles 家族，不动计数与发布态，避免自动保存期间的 overview/taxonomy refetch 风暴。 */
 export const invalidateArticlesAfterContentSave = async () => {
   await queryClient.invalidateQueries({ queryKey: articlesRoot });
 };

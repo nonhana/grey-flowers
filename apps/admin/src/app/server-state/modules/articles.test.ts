@@ -19,6 +19,7 @@ import { queryClient } from '../client';
 import { musicRoot } from '../roots';
 import {
   articlesKeys,
+  articlesListOptions,
   invalidateArticlesAfterContentSave,
   invalidateArticlesAfterMutation,
 } from './articles';
@@ -81,5 +82,40 @@ describe('invalidateArticlesAfterMutation', () => {
       queryClient.getQueryState([...musicRoot, 'list', { page: 1 }])
         ?.isInvalidated,
     ).toBe(false);
+  });
+});
+
+describe('articles list query', () => {
+  beforeEach(() => {
+    queryClient.clear();
+    vi.clearAllMocks();
+  });
+
+  it('空 q 与无 q 是同一个缓存键,同一请求只占一份缓存', () => {
+    expect(
+      articlesKeys.list({ status: 'all', page: 1, pageSize: 20, q: '' }),
+    ).toEqual(articlesKeys.list({ status: 'all', page: 1, pageSize: 20 }));
+  });
+
+  it('list query 归一化 q(去空白、空白即未搜索)并消费 signal', async () => {
+    articlesApi.list.mockResolvedValue({ items: [], total: 0 });
+
+    await queryClient.query(
+      articlesListOptions({
+        status: 'all',
+        page: 1,
+        pageSize: 20,
+        q: '  hana  ',
+      }),
+    );
+
+    const [callQuery, callSignal] = articlesApi.list.mock.calls[0] ?? [];
+    expect(callQuery).toEqual({
+      status: 'all',
+      page: 1,
+      pageSize: 20,
+      q: 'hana',
+    });
+    expect(callSignal).toBeInstanceOf(AbortSignal);
   });
 });

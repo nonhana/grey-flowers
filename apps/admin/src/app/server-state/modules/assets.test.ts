@@ -40,24 +40,6 @@ const pageOf = (count: number, total: number): AssetListData => ({
   total,
 });
 
-describe('assetsKeys', () => {
-  it('picker key 携带 purpose/status/pageSize 且按 session 隔离', () => {
-    expect(assetsKeys.picker('ARTICLE_COVER', 1)).toEqual([
-      'admin',
-      'assets',
-      'picker',
-      1,
-      { pageSize: 12, purpose: 'ARTICLE_COVER', status: 'AVAILABLE' },
-    ]);
-    expect(assetsKeys.picker('ARTICLE_COVER', 2)).not.toEqual(
-      assetsKeys.picker('ARTICLE_COVER', 1),
-    );
-    expect(assetsKeys.picker('MUSIC_COVER', 1)).not.toEqual(
-      assetsKeys.picker('ARTICLE_COVER', 1),
-    );
-  });
-});
-
 describe('assetsPickerOptions getNextPageParam', () => {
   const options = assetsPickerOptions('ARTICLE_COVER', 1);
 

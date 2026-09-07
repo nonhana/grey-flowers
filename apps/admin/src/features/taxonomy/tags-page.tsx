@@ -36,7 +36,7 @@ export const TagsPage = () => {
   const [newName, setNewName] = useState('');
   const tagsQuery = useQuery(taxonomyTagsOptions(unusedOnly));
   const items = tagsQuery.data?.items ?? [];
-  const loading = tagsQuery.isFetching;
+  const loading = tagsQuery.isPending;
   const deleteDialog = useDialog<TagAdmin>();
 
   const createMutation = useMutation({

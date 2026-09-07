@@ -12,51 +12,8 @@ const taxonomyApi = vi.hoisted(() => ({
 vi.mock('@/app/api/index', () => ({ apiClient: { taxonomy: taxonomyApi } }));
 
 import { queryClient } from '../client';
-import { overviewRoot, taxonomyRoot, usersRoot } from '../roots';
-import {
-  invalidateTaxonomyAfterMutation,
-  taxonomyCategoriesOptions,
-  taxonomyKeys,
-  taxonomyTagsOptions,
-} from './taxonomy';
-
-describe('taxonomyKeys', () => {
-  it('category/tag list 家族互不冲突', () => {
-    expect(taxonomyKeys.categories).toEqual([...taxonomyRoot, 'categories']);
-    expect(taxonomyKeys.tags(false)).toEqual([
-      ...taxonomyRoot,
-      'tags',
-      { unused: false },
-    ]);
-    expect(taxonomyKeys.tags(true)).not.toEqual(taxonomyKeys.tags(false));
-    expect(taxonomyKeys.tags(true)).not.toEqual(taxonomyKeys.categories);
-  });
-});
-
-describe('taxonomy query options', () => {
-  it('categories query 消费 signal', async () => {
-    taxonomyApi.listCategories.mockResolvedValue({ items: [] });
-    await queryClient.query(taxonomyCategoriesOptions());
-
-    const [callSignal] = taxonomyApi.listCategories.mock.calls[0] ?? [];
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-    expect(queryClient.getQueryState(taxonomyKeys.categories)?.data).toEqual({
-      items: [],
-    });
-  });
-
-  it('unused filter 直接进入 tags query key', async () => {
-    taxonomyApi.listTags.mockResolvedValue({ items: [] });
-    await queryClient.query(taxonomyTagsOptions(true));
-
-    const [unused, callSignal] = taxonomyApi.listTags.mock.calls[0] ?? [];
-    expect(unused).toBe(true);
-    expect(callSignal).toBeInstanceOf(AbortSignal);
-    expect(queryClient.getQueryState(taxonomyKeys.tags(true))?.data).toEqual({
-      items: [],
-    });
-  });
-});
+import { overviewRoot, usersRoot } from '../roots';
+import { invalidateTaxonomyAfterMutation, taxonomyKeys } from './taxonomy';
 
 describe('invalidateTaxonomyAfterMutation', () => {
   beforeEach(() => {

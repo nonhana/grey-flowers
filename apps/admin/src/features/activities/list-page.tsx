@@ -77,7 +77,8 @@ export const ActivitiesPage = () => {
   };
   const activitiesQuery = useQuery(activityListOptions(listQuery));
   const data = activitiesQuery.data;
-  const loading = activitiesQuery.isFetching;
+  const loading = activitiesQuery.isPending;
+  const busy = activitiesQuery.isFetching;
   const error = activitiesQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
@@ -171,7 +172,7 @@ export const ActivitiesPage = () => {
       </div>
 
       <section
-        aria-busy={loading}
+        aria-busy={busy}
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {loading ? (
