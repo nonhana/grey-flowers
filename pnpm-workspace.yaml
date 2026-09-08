@@ -76,6 +76,7 @@ catalogs:
     react-aria-components: ^1.21.1
     react-dom: ^19.3.0
     tailwindcss: ^4.3.3
+    use-debounce: ^10.0.6
     vite: ^8.3.0
     '@rolldown/plugin-babel': ^0.2.4
     ky: ^2.1.0

@@ -45,6 +45,7 @@
     "react-modal-sheet": "catalog:admin",
     "react-stately": "catalog:admin",
     "sonner": "catalog:admin",
+    "use-debounce": "catalog:admin",
     "zustand": "catalog:admin"
   },
   "devDependencies": {

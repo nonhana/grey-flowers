@@ -5,13 +5,13 @@ import { useNavigate } from '@tanstack/react-router';
 import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
   activityListOptions,
   invalidateActivitiesAfterMutation,
 } from '@/app/server-state/modules/activities';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';
 import { usePlayerStore } from '@/store/player';
@@ -63,7 +63,7 @@ export const ActivitiesPage = () => {
   const deleteDialog = useDialog<ActivityAdmin>();
 
   // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebouncedCommit(query, 300);
+  const committedQuery = useDebounce(query, 300)[0];
   const [prevCommitted, setPrevCommitted] = useState(committedQuery);
   if (prevCommitted !== committedQuery) {
     setPrevCommitted(committedQuery);

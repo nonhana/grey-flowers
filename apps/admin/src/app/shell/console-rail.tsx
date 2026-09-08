@@ -95,12 +95,6 @@ export const navRowClass = cn(
   'data-[status=active]:text-accent-text',
 );
 
-/*
- * 选中态一律走 TanStack 挂在链接上的 data-status，而不是 activeProps 追加 class：
- * 追加的 text-accent-text 与基类的 text-ink-dim 特异性相同，谁生效取决于
- * Tailwind 输出的先后顺序 —— 实测输给了 ink-dim，于是子项完全没有选中态。
- * data-[status=active]: 编译成属性选择器，特异性更高，结果是确定的。
- */
 const subRowClass = cn(
   'flex min-h-8 items-center rounded-control py-1 pr-2.5 pl-9',
   'font-mono text-base text-ink-dim transition-colors duration-150',

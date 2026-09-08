@@ -6,6 +6,7 @@ import { cn } from 'cn';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
@@ -13,7 +14,6 @@ import {
   musicListOptions,
 } from '@/app/server-state/modules/music';
 import { useClampPage } from '@/hooks/use-clamp-page';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';
 import { usePlayerStore } from '@/store/player';
@@ -74,7 +74,7 @@ export const MusicLibraryPage = () => {
   const deleteDialog = useDialog<MusicAdmin>();
 
   // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebouncedCommit(query, 300);
+  const committedQuery = useDebounce(query, 300)[0];
   const [prevCommitted, setPrevCommitted] = useState(committedQuery);
   if (prevCommitted !== committedQuery) {
     setPrevCommitted(committedQuery);

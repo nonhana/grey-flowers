@@ -1,6 +1,6 @@
 type QueryValue = string | number | undefined;
 
-/** query -> URLSearchParams */
+/** `query` -> `URLSearchParams` */
 export const toSearchParams = (query: Record<string, QueryValue>) => {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {

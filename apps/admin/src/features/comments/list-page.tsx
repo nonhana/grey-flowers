@@ -33,6 +33,7 @@ import {
   Popover,
 } from 'react-aria-components';
 import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
@@ -40,7 +41,6 @@ import {
   invalidateCommentsAfterMutation,
 } from '@/app/server-state/modules/comments';
 import { useClampPage } from '@/hooks/use-clamp-page';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';
 import { Button, IconButton } from '@/ui/button';
@@ -307,7 +307,7 @@ export const CommentsPage = () => {
   const batchDialog = useDialog<number[]>();
 
   // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
-  const filters = useDebouncedCommit(draft, 300);
+  const filters = useDebounce(draft, 300)[0];
   const [prevFilters, setPrevFilters] = useState(filters);
   if (prevFilters !== filters) {
     setPrevFilters(filters);

@@ -5,10 +5,10 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
 import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 import { articlesListOptions } from '@/app/server-state/modules/articles';
 import { useClampPage } from '@/hooks/use-clamp-page';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { formatDateTime } from '@/lib/format';
 import { Button, buttonClass } from '@/ui/button';
 import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback';
@@ -40,7 +40,6 @@ const EMPTY_COPY: Record<ArticleStatusFilter, string> = {
   published: '在编辑页打开元数据面板，点「发布」，文章就会出现在主站上。',
 };
 
-/** 行布局骨架与真实行共用：标题 / 描述 / 元数据三段的行高永远同步。 */
 const ARTICLE_ROW_LAYOUT = 'grid gap-1.5 px-4 py-3.5';
 
 const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
@@ -79,15 +78,10 @@ const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
   </Link>
 );
 
-/**
- * 与真实行同构的行骨架：块高按真实字号的 line-height 取 em，
- * 徽章 / 日期位按固定高度取 —— 行高与真实逐段相等，落地时零跳动。
- */
 const ArticleRowSkeleton = () => (
   <div aria-hidden className={ARTICLE_ROW_LAYOUT}>
     <div className="flex items-start justify-between gap-3">
       <Skeleton className="h-[1.6em] w-48 text-md" />
-      {/* 发布徽章：text-2xs lh 1.45 + py-0.5 ≈ 20px */}
       <Skeleton className="h-5 w-14" />
     </div>
     <Skeleton className="h-[1.55em] w-3/5 text-base" />
@@ -142,7 +136,7 @@ export const ArticlesListPage = () => {
 
   // 每一次按键都发一次请求既浪费也让列表抖动，落后 250ms 再查；
   // 提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebouncedCommit(query, 250);
+  const committedQuery = useDebounce(query, 250)[0];
   const [prevCommitted, setPrevCommitted] = useState(committedQuery);
   if (prevCommitted !== committedQuery) {
     setPrevCommitted(committedQuery);

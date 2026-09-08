@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
 import { Check, Disc3, ListMusic } from 'lucide-react';
 import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 import { musicPickerOptions } from '@/app/server-state/modules/music';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { formatDuration } from '@/lib/format';
 import { Button } from '@/ui/button';
 import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback';
@@ -60,7 +60,7 @@ const MusicPickerBody = ({
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
 
-  const committedQuery = useDebouncedCommit(query, 300);
+  const committedQuery = useDebounce(query, 300)[0];
   const [prevCommitted, setPrevCommitted] = useState(committedQuery);
   if (prevCommitted !== committedQuery) {
     setPrevCommitted(committedQuery);

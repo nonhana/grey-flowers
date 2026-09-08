@@ -8,6 +8,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { CloudOff, RotateCcw, Users } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
@@ -15,7 +16,6 @@ import {
   usersListOptions,
 } from '@/app/server-state/modules/users';
 import { useClampPage } from '@/hooks/use-clamp-page';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';
 import { Button } from '@/ui/button';
@@ -53,7 +53,7 @@ export const UsersPage = () => {
   const deleteDialog = useDialog<UserAdminSummary>();
 
   // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
-  const filters = useDebouncedCommit(draft, 300);
+  const filters = useDebounce(draft, 300)[0];
   const [prevFilters, setPrevFilters] = useState(filters);
   if (prevFilters !== filters) {
     setPrevFilters(filters);
