@@ -36,7 +36,5 @@
   },
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "css.lint.unknownAtRules": "ignore",
-  "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
-  "commentTranslate.hover.enabled": true,
-  "commentTranslate.targetLanguage": "zh-CN"
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
 }

@@ -104,16 +104,11 @@ function getFallbackContent(item: ActivityItem) {
       v-if="previewImage"
       class="relative mt-4 overflow-hidden border border-white/70 rounded-5 bg-white/75 dark:border-hana-black-200/80 dark:bg-hana-black-700/70"
     >
-      <div class="aspect-[5/3] w-full">
-        <HanaLazyImg
-          :src="previewImage"
-          alt="最近动态配图预览"
-          width="100%"
-          height="100%"
-          surface-class=""
-          img-class="block size-full select-none transition-transform duration-500 ease-out object-cover group-hover:scale-103"
-        />
-      </div>
+      <HanaLazyImg
+        :src="previewImage"
+        alt="最近动态配图预览"
+        img-class="aspect-[5/3] select-none duration-500 ease-out object-cover group-hover:scale-103 object-top"
+      />
 
       <span
         v-if="imageCount > 1"

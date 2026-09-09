@@ -4,8 +4,8 @@ import { LoaderCircle } from '@lucide/vue'
 const props = withDefaults(defineProps<{
   src: string
   alt: string
-  width: number | string
-  height: number | string
+  width?: number | string
+  height?: number | string
   fallbackText?: string
   rootMargin?: string
   surfaceClass?: string
@@ -27,8 +27,8 @@ const isLoaded = ref(false)
 const hasError = ref(false)
 
 const containerStyle = computed(() => ({
-  width: normalizeLength(props.width),
-  height: normalizeLength(props.height),
+  width: normalizeLength(props.width ?? '100%'),
+  height: normalizeLength(props.height ?? '100%'),
 }))
 
 const imageWidth = computed(() =>
