@@ -33,20 +33,19 @@ const typeIcon = computed<LucideIcon>(() => {
   return MessageCircle
 })
 
-const excerpt = computed(() => {
+const fallbackExcerpt = computed(() => {
   const rawContent = props.item.content?.trim()
-  const content = rawContent && rawContent.length > 0 ? rawContent : getFallbackContent(props.item)
-  return truncateContent(content, 120)
+  return rawContent && rawContent.length > 0 ? rawContent : getFallbackContent(props.item)
 })
+
+const previewRef = useTemplateRef('previewRef')
+const previewContentRef = useTemplateRef('previewContentRef')
+const { clamped: previewClamped } = useOverflowClamp(previewRef, previewContentRef)
 
 const absoluteDate = computed(() => formatDateDotYmdHm(props.item.publishedAt))
 const compactDate = computed(() => formatMonthDay(props.item.publishedAt))
 
 const detailAriaLabel = computed(() => `查看${typeLabel.value}动态详情，发布时间 ${absoluteDate.value}`)
-
-function truncateContent(content: string, maxLength: number) {
-  return content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
-}
 
 function getFallbackContent(item: ActivityItem) {
   if (item.music?.length) {
@@ -96,9 +95,21 @@ function getFallbackContent(item: ActivityItem) {
       </span>
     </div>
 
-    <p class="mt-4 whitespace-pre-line text-sm/6 text-hana-black line-clamp-4 dark:text-hana-white">
-      {{ excerpt }}
-    </p>
+    <div
+      ref="previewRef"
+      class="pointer-events-none mt-4 max-h-24 overflow-hidden text-sm/6 text-hana-black dark:text-hana-white"
+      :class="previewClamped ? 'hana-content-fade' : ''"
+    >
+      <div ref="previewContentRef">
+        <MarkdownRenderer :value="item.contentMarkdown" class="custom-markdown">
+          <template #empty>
+            <p class="whitespace-pre-line break-words">
+              {{ fallbackExcerpt }}
+            </p>
+          </template>
+        </MarkdownRenderer>
+      </div>
+    </div>
 
     <div
       v-if="previewImage"

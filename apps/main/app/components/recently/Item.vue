@@ -12,6 +12,9 @@ const router = useRouter()
 
 const opacity = ref(0)
 const top = ref('10px')
+const previewRef = useTemplateRef('previewRef')
+const previewContentRef = useTemplateRef('previewContentRef')
+const { clamped: previewClamped } = useOverflowClamp(previewRef, previewContentRef)
 
 const transitionDelay = computed(() => `${(props.index % 20) * 0.1}s`)
 const transitionStyle = computed(() => `all 0.2s ${transitionDelay.value}`)
@@ -47,9 +50,21 @@ function gotoDetail() {
       </HanaTooltip>
     </header>
     <main class="my-5 text-black dark:text-hana-white space-y-5">
-      <p class="whitespace-pre-wrap leading-6 line-clamp-6">
-        {{ item.content }}
-      </p>
+      <div
+        ref="previewRef"
+        class="max-h-36 overflow-hidden"
+        :class="previewClamped ? 'hana-content-fade' : ''"
+      >
+        <div ref="previewContentRef">
+          <MarkdownRenderer :value="item.contentMarkdown" class="custom-markdown">
+            <template #empty>
+              <p class="whitespace-pre-wrap break-words leading-6">
+                {{ item.content }}
+              </p>
+            </template>
+          </MarkdownRenderer>
+        </div>
+      </div>
       <RecentlyPhotoGrid :images="item.images" @click="gotoDetail" />
       <RecentlyMusicCard v-if="item.music && item.music.length > 0" :music="item.music" />
     </main>

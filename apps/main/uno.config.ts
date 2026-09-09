@@ -120,6 +120,7 @@ export default defineConfig({
       'dark:bg-[linear-gradient(to_top,oklch(0.75_0.0883_226.04)_calc(var(--volume-progress)*100%),oklch(0.93_0.0358_205.23)_calc(var(--volume-progress)*100%))]',
     ].join(' '),
     'hana-article-title': 'flex items-center gap-2 font-bold before:font-light before:text-hana-blue-200 before:content-["#"] hover:text-hana-blue dark:hover:text-hana-blue-200',
+    'hana-content-fade': '[-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_3.5rem),transparent)] [mask-image:linear-gradient(to_bottom,black_calc(100%_-_3.5rem),transparent)]',
     'custom-markdown': [
       '[&_p]:m-0',
       '[&_p]:whitespace-pre-wrap',
