@@ -115,9 +115,8 @@ export const PublishBadge = ({ published }: { published: boolean }) => (
     className={cn(
       `
         inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5
-        py-0.5
+        py-0.5 font-mono text-2xs
       `,
-      'font-mono text-2xs',
       published
         ? 'border-accent-rule bg-accent-wash text-accent-text'
         : 'border-edge text-ink-dim',
@@ -137,13 +136,11 @@ export const PublishBadge = ({ published }: { published: boolean }) => (
 type ReadoutTone = NonNullable<VariantProps<typeof readoutVariants>['tone']>;
 
 const readoutVariants = cva(
-  cn(
-    'inline-flex min-h-7 items-center gap-1.5 rounded-full border px-2.5',
-    `
-      font-mono text-2xs whitespace-nowrap
-      [&_svg]:size-3.5
-    `,
-  ),
+  `
+    inline-flex min-h-7 items-center gap-1.5 rounded-full border px-2.5
+    font-mono text-2xs whitespace-nowrap
+    [&_svg]:size-3.5
+  `,
   {
     variants: {
       tone: {

@@ -17,17 +17,8 @@ import {
   Button as AriaButton,
 } from 'react-aria-components';
 
-/** 输入控件公共外观。字号锁 1rem——低于 16px 时 iOS Safari 聚焦会放大页面。 */
-export const controlClass = cn(
-  'min-h-11 w-full rounded-control border border-edge bg-well px-3 py-2',
-  'text-md text-ink-strong transition-colors outline-none',
-  'placeholder:text-ink-dim',
-  'hover:not-disabled:border-edge-hover',
-  'focus-visible:border-accent focus-visible:outline-2',
-  'focus-visible:outline-offset-1 focus-visible:outline-focus',
-  'disabled:opacity-55',
-  'data-invalid:border-danger-rule',
-);
+export const controlClass =
+  'min-h-11 w-full rounded-control border border-edge bg-well px-3 py-2 text-md text-ink-strong transition-colors outline-none placeholder:text-ink-dim hover:not-disabled:border-edge-hover focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus disabled:opacity-55 data-invalid:border-danger-rule';
 
 const labelClass = 'font-mono text-xs text-ink-dim';
 const hintClass = 'text-xs leading-relaxed text-ink-dim';
@@ -116,13 +107,11 @@ export const TextAreaField = ({
 
 interface SelectFieldProps<T extends string> {
   className?: string;
-  /** 空选项文案已经说清是哪一维时，把可见标签收掉，让筛选行只占一行。 */
   hideLabel?: boolean;
   label: string;
   onChange: (value: T | undefined) => void;
   optionLabels: Record<string, string>;
   options: readonly T[];
-  /** 「全部」这一项的文案；给 undefined 表示不提供空选项。 */
   placeholderLabel?: string;
   value: T | undefined;
 }
@@ -152,12 +141,12 @@ export const SelectField = <T extends string>({
       <AriaButton
         className={cn(
           controlClass,
-          'flex items-center justify-between gap-2 text-left',
-          '[&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-ink-dim',
+          `
+            flex items-center justify-between gap-2 text-left
+            [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-ink-dim
+          `,
         )}
       >
-        {/* 收掉可见标签之后，选中态必须自己带上维度：
-            「图片」说不清是哪一维，「类型 · 图片」才说得清。 */}
         <SelectValue className="truncate text-md text-ink-strong">
           {({ defaultChildren }) =>
             hideLabel && value !== undefined
@@ -168,19 +157,19 @@ export const SelectField = <T extends string>({
         <ChevronDown aria-hidden />
       </AriaButton>
       <Popover
-        className={cn(
-          'w-(--trigger-width) min-w-40 overflow-hidden rounded-panel',
-          'bg-case-raised p-1 shadow-float',
-        )}
+        className="
+          w-(--trigger-width) min-w-40 overflow-hidden rounded-panel
+          bg-case-raised p-1 shadow-float
+        "
       >
         <ListBox className="grid gap-0.5 outline-none">
           <ListBoxItem
-            className={cn(
-              'flex cursor-pointer items-center justify-between gap-2',
-              'rounded-control px-2.5 py-2 text-base text-ink outline-none',
-              'data-focused:bg-accent-wash data-focused:text-accent-text',
-              'data-selected:text-accent-text',
-            )}
+            className="
+              flex cursor-pointer items-center justify-between gap-2
+              rounded-control px-2.5 py-2 text-base text-ink outline-none
+              data-focused:bg-accent-wash data-focused:text-accent-text
+              data-selected:text-accent-text
+            "
             id={ALL_KEY}
             textValue={placeholderLabel}
           >
@@ -193,12 +182,12 @@ export const SelectField = <T extends string>({
           </ListBoxItem>
           {options.map((option) => (
             <ListBoxItem
-              className={cn(
-                'flex cursor-pointer items-center justify-between gap-2',
-                'rounded-control px-2.5 py-2 text-base text-ink outline-none',
-                'data-focused:bg-accent-wash data-focused:text-accent-text',
-                'data-selected:text-accent-text',
-              )}
+              className="
+                flex cursor-pointer items-center justify-between gap-2
+                rounded-control px-2.5 py-2 text-base text-ink outline-none
+                data-focused:bg-accent-wash data-focused:text-accent-text
+                data-selected:text-accent-text
+              "
               id={option}
               key={option}
               textValue={optionLabels[option]}
@@ -266,8 +255,10 @@ export const FilterChip = ({
   <AriaButton
     aria-pressed={isSelected}
     className={cn(
-      'inline-flex min-h-9 items-center rounded-full border px-3.5',
-      'font-mono text-xs transition-colors duration-150',
+      `
+        inline-flex min-h-9 items-center rounded-full border px-3.5 font-mono
+        text-xs transition-colors duration-150
+      `,
       isSelected
         ? 'border-accent-rule bg-accent-wash text-accent-text'
         : `

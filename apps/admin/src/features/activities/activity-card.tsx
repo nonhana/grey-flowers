@@ -71,12 +71,12 @@ export const ActivityCard = ({
               <button
                 aria-label={`${isPlaying ? '暂停' : '播放'} ${track.title}`}
                 className={cn(
-                  'inline-flex min-h-8 items-center gap-1.5 rounded-full border',
                   `
+                    inline-flex min-h-8 items-center gap-1.5 rounded-full border
                     border-edge bg-well px-2.5 font-mono text-xs text-ink
                     transition-colors
+                    hover:border-accent-rule hover:text-accent-text
                   `,
-                  'hover:border-accent-rule hover:text-accent-text',
                   isPlaying && 'border-accent-rule text-accent-text',
                 )}
                 key={track.id}

@@ -86,21 +86,11 @@ const SECTIONS: NavSection[] = [
   },
 ];
 
-export const navRowClass = cn(
-  'relative flex min-h-10 items-center gap-2.5 rounded-control px-2.5',
-  'text-base text-ink-dim transition-colors duration-150',
-  'hover:bg-accent-wash hover:text-accent-text',
-  '[&_svg]:size-4 [&_svg]:shrink-0',
-  'data-[status=active]:bg-accent-wash data-[status=active]:font-bold',
-  'data-[status=active]:text-accent-text',
-);
+export const navRowClass =
+  'relative flex min-h-10 items-center gap-2.5 rounded-control px-2.5 text-base text-ink-dim transition-colors duration-150 hover:bg-accent-wash hover:text-accent-text [&_svg]:size-4 [&_svg]:shrink-0 data-[status=active]:bg-accent-wash data-[status=active]:font-bold data-[status=active]:text-accent-text';
 
-const subRowClass = cn(
-  'flex min-h-8 items-center rounded-control py-1 pr-2.5 pl-9',
-  'font-mono text-base text-ink-dim transition-colors duration-150',
-  'hover:text-accent-text',
-  'data-[status=active]:font-medium data-[status=active]:text-accent-text',
-);
+const subRowClass =
+  'flex min-h-8 items-center rounded-control py-1 pr-2.5 pl-9 font-mono text-base text-ink-dim transition-colors duration-150 hover:text-accent-text data-[status=active]:font-medium data-[status=active]:text-accent-text';
 
 const STORAGE_KEY = 'gf.admin.rail';
 
@@ -168,8 +158,10 @@ const NavRow = ({ collapsed, item }: { collapsed: boolean; item: NavItem }) => (
      */}
     <span
       className={cn(
-        'absolute inset-y-0 right-0 left-9 flex min-w-0 items-center',
-        'transition-opacity duration-150',
+        `
+          absolute inset-y-0 right-0 left-9 flex min-w-0 items-center
+          transition-opacity duration-150
+        `,
         collapsed ? 'opacity-0' : 'opacity-100 delay-150',
       )}
     >
@@ -359,8 +351,10 @@ export const ConsoleRail = () => {
       >
         <span
           className={cn(
-            'absolute inset-y-0 left-1/2 w-px -translate-x-1/2 rounded-full',
-            'transition-all duration-150',
+            `
+              absolute inset-y-0 left-1/2 w-px -translate-x-1/2 rounded-full
+              transition-all duration-150
+            `,
             isResizing
               ? 'w-1.5 bg-accent-rule'
               : `

@@ -74,14 +74,14 @@ const EMPTY_FILTER: CommentFilterDraft = {
 };
 const dateGroupClass = cn(
   controlClass,
-  'flex min-w-0 items-center gap-1 px-2',
-  'focus-within:border-accent focus-within:outline-2',
-  'focus-within:outline-offset-1 focus-within:outline-focus',
+  `
+    flex min-w-0 items-center gap-1 px-2
+    focus-within:border-accent focus-within:outline-2
+    focus-within:outline-offset-1 focus-within:outline-focus
+  `,
 );
-const dateRangeClass = cn(
-  'grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-1.5 gap-y-2',
-  'md:flex md:gap-1.5',
-);
+const dateRangeClass =
+  'grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-1.5 gap-y-2 md:flex md:gap-1.5';
 const desktopFilterControlsClass = 'mt-5 hidden md:block';
 const mobileFilterControlsClass = 'mt-5 md:hidden';
 

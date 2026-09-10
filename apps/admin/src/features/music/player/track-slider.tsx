@@ -39,15 +39,13 @@ export const TrackSlider = ({
             style={{ width: `${state.getThumbPercent(0) * 100}%` }}
           />
           <SliderThumb
-            className={cn(
-              'top-1/2 size-3 rounded-full bg-accent shadow-sm outline-none',
-              'opacity-0 transition-opacity',
-              'group-hover/slider:opacity-100',
-              `
-                data-dragging:opacity-100
-                data-focus-visible:opacity-100
-              `,
-            )}
+            className="
+              top-1/2 size-3 rounded-full bg-accent opacity-0 shadow-sm
+              transition-opacity outline-none
+              group-hover/slider:opacity-100
+              data-dragging:opacity-100
+              data-focus-visible:opacity-100
+            "
             style={{ transform: 'translateY(-50%)' }}
           />
         </>

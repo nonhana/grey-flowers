@@ -7,6 +7,7 @@ import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+import { flattenJsxAttrWhitespace } from './vite/flatten-jsx-attr-whitespace';
 import { themeInitScript } from './vite/theme-script-plugin';
 
 const PWA_ICONS: Record<string, true> = {
@@ -30,9 +31,9 @@ export default defineConfig(({ mode }) => {
   const mainPort = Number.parseInt(env.MAIN_PORT);
 
   const apiOrigin =
-    mode === 'production' || !enableLocalApi
-      ? 'https://api.caelum.moe'
-      : `http://localhost:${apiPort}`;
+    enableLocalApi || mode !== 'production'
+      ? `http://localhost:${apiPort}`
+      : 'https://api.caelum.moe';
 
   const mainOrigin =
     mode === 'production'
@@ -53,6 +54,10 @@ export default defineConfig(({ mode }) => {
       react(),
       themeInitScript(),
       tailwindcss(),
+      babel({
+        include: /\.[jt]sx$/,
+        plugins: [flattenJsxAttrWhitespace()],
+      }),
       babel({
         presets: [reactCompilerPreset()],
       }),

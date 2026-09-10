@@ -136,10 +136,10 @@ export const NowPlayingSheet = ({
           </div>
 
           <div
-            className={cn(
-              'flex items-center justify-center gap-3',
-              'rounded-control border border-rule p-2',
-            )}
+            className="
+              flex items-center justify-center gap-3 rounded-control border
+              border-rule p-2
+            "
           >
             <IconButton
               label={muted ? '取消静音' : '静音'}

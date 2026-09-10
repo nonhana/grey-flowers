@@ -55,8 +55,10 @@ export const ComposeMenu = ({ onOpenChange, open }: ComposeMenuProps) => {
       <motion.button
         aria-label="收起发布菜单"
         className={cn(
-          'fixed inset-0 z-40',
-          'md:hidden',
+          `
+            fixed inset-0 z-40
+            md:hidden
+          `,
           open ? '' : 'pointer-events-none',
         )}
         animate={{ opacity: open ? 1 : 0 }}
@@ -69,13 +71,11 @@ export const ComposeMenu = ({ onOpenChange, open }: ComposeMenuProps) => {
 
       <div
         aria-hidden={!open}
-        className={cn(
-          'fixed z-50 w-12',
-          'pointer-events-none',
-          'md:hidden',
-          'right-[max(1rem,env(safe-area-inset-right))]',
-          'bottom-[calc(5rem+env(safe-area-inset-bottom))]',
-        )}
+        className="
+          pointer-events-none fixed right-[max(1rem,env(safe-area-inset-right))]
+          bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 w-12
+          md:hidden
+        "
       >
         {MENU_ITEMS.map((item, index) => (
           <motion.span

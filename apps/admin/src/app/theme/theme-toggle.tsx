@@ -36,8 +36,8 @@ export const ThemeToggle = ({ className }: { className?: string }) => {
             `
               grid size-7 place-items-center rounded-full transition-colors
               duration-150
+              [&_svg]:size-3.5
             `,
-            '[&_svg]:size-3.5',
             current === mode
               ? 'bg-accent-wash text-accent-text'
               : `

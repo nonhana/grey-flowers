@@ -202,8 +202,10 @@ export const CommentCard = ({
 }) => (
   <article
     className={cn(
-      'grid gap-3 rounded-panel border border-rule bg-case-raised p-4',
-      'transition-colors',
+      `
+        grid gap-3 rounded-panel border border-rule bg-case-raised p-4
+        transition-colors
+      `,
       selected && 'border-accent-rule',
     )}
   >

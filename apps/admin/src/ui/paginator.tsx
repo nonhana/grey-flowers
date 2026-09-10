@@ -28,14 +28,8 @@ const buildPageItems = (
 };
 
 /** 页码是 8px 圆角矩形按钮，不是胶囊——胶囊留给状态读数（见 DESIGN「Pill Is Not A Button」）。 */
-const PAGE_BUTTON = cn(
-  'inline-flex h-8 min-w-8 items-center justify-center rounded-control border',
-  'font-mono text-xs leading-none transition-colors duration-150',
-  `
-    disabled:opacity-45
-    disabled:hover:bg-transparent
-  `,
-);
+const PAGE_BUTTON =
+  'inline-flex h-8 min-w-8 items-center justify-center rounded-control border font-mono text-xs leading-none transition-colors duration-150 disabled:opacity-45 disabled:hover:bg-transparent';
 
 /** Colour Is Never Alone：当前页的填充、描边、文字一起换到 accent 家族。 */
 const PAGE_CURRENT =

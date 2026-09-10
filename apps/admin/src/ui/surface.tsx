@@ -100,8 +100,10 @@ export const RowStack = ({
 }) => (
   <div
     className={cn(
-      'overflow-hidden rounded-panel border border-rule bg-case-raised',
-      '[&>*+*]:border-t [&>*+*]:border-rule',
+      `
+        overflow-hidden rounded-panel border border-rule bg-case-raised
+        [&>*+*]:border-t [&>*+*]:border-rule
+      `,
       className,
     )}
   >

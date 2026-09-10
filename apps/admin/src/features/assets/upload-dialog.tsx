@@ -1,6 +1,5 @@
 import type { AssetPurpose } from '@grey-flowers/contracts';
 
-import { cn } from 'cn';
 import { FileUp, Upload } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import {
@@ -135,29 +134,16 @@ const UploadForm = ({
           {purposeOptions.map((option) => (
             <RadioField key={option} value={option}>
               <RadioButton
-                className={cn(
-                  `
-                    flex min-h-11 cursor-pointer items-center gap-2
-                    rounded-control
-                  `,
-                  `
-                    border border-edge bg-well px-3 text-base text-ink
-                    outline-none
-                  `,
-                  `
-                    transition-colors
-                    hover:border-edge-hover
-                  `,
-                  `
-                    focus-within:outline-2 focus-within:outline-offset-2
-                    focus-within:outline-focus
-                  `,
-                  `
-                    data-selected:border-accent-rule
-                    data-selected:bg-accent-wash
-                  `,
-                  'data-selected:text-accent-text',
-                )}
+                className="
+                  flex min-h-11 cursor-pointer items-center gap-2
+                  rounded-control border border-edge bg-well px-3 text-base
+                  text-ink transition-colors outline-none
+                  focus-within:outline-2 focus-within:outline-offset-2
+                  focus-within:outline-focus
+                  hover:border-edge-hover
+                  data-selected:border-accent-rule data-selected:bg-accent-wash
+                  data-selected:text-accent-text
+                "
               >
                 {purposeLabels[option]}
               </RadioButton>

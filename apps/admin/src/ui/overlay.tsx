@@ -16,13 +16,8 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 
 import { Button, IconButton } from './button';
 
-const scrimClass = cn(
-  'fixed inset-0 z-50 bg-scrim',
-  `
-    data-entering:animate-scrim-in
-    data-exiting:animate-scrim-out
-  `,
-);
+const scrimClass =
+  'fixed inset-0 z-50 bg-scrim data-entering:animate-scrim-in data-exiting:animate-scrim-out';
 
 interface BottomSheetProps {
   children: ReactNode;
@@ -68,11 +63,10 @@ const BottomSheetContents = ({
         onKeyDown={onKeyDown}
         role={role}
         tabIndex={tabIndex}
-        className={cn(
-          '[--gf-surface:var(--color-case-raised)]',
-          'max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised',
-          'shadow-float outline-none',
-        )}
+        className="
+          max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised
+          shadow-float outline-none [--gf-surface:var(--color-case-raised)]
+        "
         ref={panelRef}
         unstyled
       >
@@ -149,9 +143,11 @@ export const SidePanel = ({
     className={cn(
       // --gf-surface 让面板里的吸底条知道自己该刷成什么颜色 ——
       // 桌面端它是布局的一列（字盘），移动端它是浮起的 sheet（抬起的字盘）。
-      '[--gf-surface:var(--color-case)]',
-      'h-full shrink-0 overflow-hidden border-l border-rule bg-case',
-      'transition-[width] duration-200 ease-out',
+      `
+        h-full shrink-0 overflow-hidden border-l border-rule bg-case
+        transition-[width] duration-200 ease-out
+        [--gf-surface:var(--color-case)]
+      `,
       !isOpen && 'pointer-events-none border-l-0',
     )}
     style={{ width: isOpen ? width : 0 }}
@@ -203,11 +199,10 @@ const AppDialogSheetContents = ({
         onKeyDown={onKeyDown}
         role={role}
         tabIndex={tabIndex}
-        className={cn(
-          '[--gf-surface:var(--color-case-raised)]',
-          'max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised',
-          'shadow-float outline-none',
-        )}
+        className="
+          max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised
+          shadow-float outline-none [--gf-surface:var(--color-case-raised)]
+        "
         ref={panelRef}
         unstyled
       >
@@ -320,9 +315,9 @@ export const AppDialog = ({
       >
         <Modal
           className={cn(
-            'w-full overflow-hidden rounded-sheet bg-case-raised shadow-float',
-            'outline-none',
             `
+              w-full overflow-hidden rounded-sheet bg-case-raised shadow-float
+              outline-none
               data-entering:animate-dialog-in
               data-exiting:animate-dialog-out
             `,
@@ -444,16 +439,12 @@ export const ConfirmDialog = ({
     }}
   >
     <Modal
-      className={cn(
-        `
-          w-full max-w-md rounded-sheet bg-case-raised p-5 shadow-float
-          outline-none
-        `,
-        `
-          data-entering:animate-dialog-in
-          data-exiting:animate-dialog-out
-        `,
-      )}
+      className="
+        w-full max-w-md rounded-sheet bg-case-raised p-5 shadow-float
+        outline-none
+        data-entering:animate-dialog-in
+        data-exiting:animate-dialog-out
+      "
     >
       <ExitSignaler onExited={onExited} />
       <Dialog className="outline-none" role="alertdialog">

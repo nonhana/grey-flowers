@@ -90,10 +90,11 @@ export const EditorToolbar = ({
     aria-label="Markdown 插入工具"
     className={cn(
       'z-30 gf-scroll-x flex items-center gap-0.5 bg-case px-1.5',
-      // 字盘压在纸上的那道边用投影而不是描边：纸是抬升面，不该被线切开。
-      'fixed inset-x-0 bottom-0 py-1.5 shadow-case-up',
-      'pb-[max(0.375rem,env(safe-area-inset-bottom))]',
-      'md:relative md:pb-1.5 md:shadow-case-down',
+      `
+        fixed inset-x-0 bottom-0 py-1.5
+        pb-[max(0.375rem,env(safe-area-inset-bottom))] shadow-case-up
+        md:relative md:pb-1.5 md:shadow-case-down
+      `,
     )}
     role="toolbar"
     style={

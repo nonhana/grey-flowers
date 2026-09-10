@@ -200,10 +200,7 @@ export const AssetPickerDialog = ({
                     className={cn(
                       `
                         relative grid w-full gap-1.5 rounded-control border
-                        p-1.5 text-left transition-colors
-                      `,
-                      `
-                        border-rule bg-well
+                        border-rule bg-well p-1.5 text-left transition-colors
                         hover:border-accent-rule hover:bg-accent-wash
                       `,
                       isSelected && 'border-accent bg-accent-wash',

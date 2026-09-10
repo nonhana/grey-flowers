@@ -46,8 +46,8 @@ const StatusMark = ({
 }) => (
   <span
     className={cn(
-      'inline-grid size-11 place-items-center justify-self-center rounded-full',
       `
+        inline-grid size-11 place-items-center justify-self-center rounded-full
         border border-current
         [&_svg]:size-5
       `,

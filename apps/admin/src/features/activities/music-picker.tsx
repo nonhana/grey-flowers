@@ -153,8 +153,6 @@ const MusicPickerBody = ({
                       `
                         flex w-full items-center gap-3 rounded-control p-2
                         text-left transition-colors
-                      `,
-                      `
                         hover:bg-accent-wash
                         md:h-full md:rounded-panel md:border md:border-rule
                         md:bg-case-raised md:p-3

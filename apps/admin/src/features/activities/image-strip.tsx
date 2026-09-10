@@ -104,9 +104,8 @@ export const ImageStrip = ({
               className={cn(
                 `
                   relative size-28 shrink-0 snap-start overflow-hidden
-                  rounded-panel
+                  rounded-panel border border-rule bg-well
                 `,
-                'border border-rule bg-well',
                 image.status === 'error' && 'border-danger-rule',
               )}
               draggable={image.status === 'committed'}

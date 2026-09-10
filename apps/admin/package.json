@@ -51,10 +51,12 @@
     "zustand": "catalog:admin"
   },
   "devDependencies": {
+    "@babel/core": "catalog:admin",
     "@rolldown/plugin-babel": "catalog:admin",
     "@tailwindcss/vite": "catalog:admin",
     "@tanstack/react-query-devtools": "catalog:admin",
     "@tanstack/router-plugin": "catalog:admin",
+    "@types/babel__core": "catalog:admin",
     "@types/react": "catalog:admin",
     "@types/react-dom": "catalog:admin",
     "@vite-pwa/assets-generator": "catalog:admin",
