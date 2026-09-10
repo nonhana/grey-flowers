@@ -1,14 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { parseStatusFilter } from '@/features/articles/display';
+import { articlesSearchSchema } from '@/features/articles/display';
 import { ArticlesListPage } from '@/features/articles/list-page';
 import { RoutePending } from '@/ui/route-pending';
 
 export const Route = createFileRoute('/articles/')({
-  validateSearch: (search) => {
-    const status = parseStatusFilter(search.status);
-    return status === 'all' ? {} : { status };
-  },
+  validateSearch: articlesSearchSchema,
   component: ArticlesListPage,
   pendingComponent: RoutePending,
 });

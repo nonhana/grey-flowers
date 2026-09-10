@@ -1,11 +1,11 @@
 import type { ActivityAdmin, ActivityListQuery } from '@grey-flowers/contracts';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { toast } from 'sonner';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
@@ -13,6 +13,7 @@ import {
   invalidateActivitiesAfterMutation,
 } from '@/app/server-state/modules/activities';
 import { useDialog } from '@/hooks/use-dialog';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { usePlayerStore } from '@/store/player';
 import { Button } from '@/ui/button';
@@ -52,28 +53,33 @@ const ActivityCardSkeleton = () => (
 
 export const ActivitiesPage = () => {
   const navigate = useNavigate();
+  const search = useSearch({ from: '/activities/' });
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);
   const toggle = usePlayerStore((s) => s.toggle);
   const play = usePlayerStore((s) => s.play);
   const removeTrack = usePlayerStore((s) => s.removeTrack);
 
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
+  const page = search.page ?? 1;
   const deleteDialog = useDialog<ActivityAdmin>();
 
-  // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebounce(query, 300)[0];
-  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
-  if (prevCommitted !== committedQuery) {
-    setPrevCommitted(committedQuery);
-    setPage(1);
-  }
+  const navigateSearch = useSearchNavigation('/activities', search);
+
+  const [draft, setDraft] = useState(() => search.search ?? '');
+  // 300ms 防抖提交：replace + 页码一并重置。
+  const commitSearch = useDebouncedCallback((value: string) => {
+    navigateSearch(
+      { page: undefined, search: value.trim() || undefined },
+      true,
+    );
+  }, 300);
+
+  useEffect(() => () => commitSearch.cancel(), [commitSearch]);
 
   const listQuery: ActivityListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(committedQuery ? { search: committedQuery } : {}),
+    search: search.search,
   };
   const activitiesQuery = useQuery(activityListOptions(listQuery));
   const data = activitiesQuery.data;
@@ -81,8 +87,22 @@ export const ActivitiesPage = () => {
   const busy = activitiesQuery.isFetching;
   const error = activitiesQuery.error;
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasQuery = committedQuery.length > 0;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const hasQuery = search.search !== undefined;
+
+  // 越界钳制：页码超界时渲染骨架，effect 同步回最后有效页。
+  const clamping =
+    items.length === 0 && page > 1 && total > 0 && totalPages < page;
+
+  const syncClampedPage = useEffectEvent(() => {
+    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  });
+
+  useEffect(() => {
+    if (clamping) syncClampedPage();
+  }, [clamping]);
 
   const removeMutation = useMutation({
     mutationFn: (target: ActivityAdmin) =>
@@ -137,9 +157,12 @@ export const ActivitiesPage = () => {
                 md:block
               "
               label="搜索动态"
-              onChange={setQuery}
+              onChange={(value) => {
+                setDraft(value);
+                commitSearch(value);
+              }}
               placeholder="搜索动态内容…"
-              value={query}
+              value={draft}
             />
             <Button
               className="
@@ -165,9 +188,12 @@ export const ActivitiesPage = () => {
             md:hidden
           "
           label="搜索动态"
-          onChange={setQuery}
+          onChange={(value) => {
+            setDraft(value);
+            commitSearch(value);
+          }}
           placeholder="搜索动态内容…"
-          value={query}
+          value={draft}
         />
       </div>
 
@@ -175,7 +201,7 @@ export const ActivitiesPage = () => {
         aria-busy={busy}
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
-        {loading ? (
+        {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <ActivityCardSkeleton key={index} />
@@ -193,11 +219,21 @@ export const ActivitiesPage = () => {
           >
             无法加载动态，请稍后重试。
           </EmptyState>
-        ) : data && data.items.length === 0 ? (
+        ) : items.length === 0 ? (
           <EmptyState
             action={
               hasQuery ? (
-                <Button onPress={() => setQuery('')}>清除搜索</Button>
+                <Button
+                  onPress={() => {
+                    setDraft('');
+                    navigateSearch(
+                      { page: undefined, search: undefined },
+                      true,
+                    );
+                  }}
+                >
+                  清除搜索
+                </Button>
               ) : (
                 <Button
                   icon={<PenLine aria-hidden />}
@@ -217,7 +253,7 @@ export const ActivitiesPage = () => {
           </EmptyState>
         ) : (
           <div className="grid animate-content-in gap-3" key="content">
-            {data?.items.map((activity) => (
+            {items.map((activity) => (
               <ActivityCard
                 activity={activity}
                 key={activity.id}
@@ -233,12 +269,14 @@ export const ActivitiesPage = () => {
         )}
       </section>
 
-      {data ? (
+      {!loading ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
-          total={data.total}
+          total={total}
           totalPages={totalPages}
           unit="条"
         />

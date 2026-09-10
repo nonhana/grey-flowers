@@ -46,6 +46,7 @@
     "react-stately": "catalog:admin",
     "sonner": "catalog:admin",
     "use-debounce": "catalog:admin",
+    "zod": "catalog:",
     "zustand": "catalog:admin"
   },
   "devDependencies": {

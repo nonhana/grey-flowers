@@ -51,6 +51,6 @@
     "unocss": "catalog:main",
     "unocss-preset-scrollbar": "catalog:main",
     "vivus": "catalog:main",
-    "zod": "catalog:main"
+    "zod": "catalog:"
   }
 }

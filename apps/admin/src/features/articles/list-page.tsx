@@ -1,14 +1,14 @@
 import type { ArticleListAdmin } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
-import { useState } from 'react';
-import { useDebounce } from 'use-debounce';
+import { useEffect, useEffectEvent, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { articlesListOptions } from '@/app/server-state/modules/articles';
-import { useClampPage } from '@/hooks/use-clamp-page';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { formatDateTime } from '@/lib/format';
 import { Button, buttonClass } from '@/ui/button';
 import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback';
@@ -18,14 +18,12 @@ import { MetaLine, PageBody, PageHeader, RowStack } from '@/ui/surface';
 
 import type { ArticleStatusFilter } from './display';
 
-import { parseStatusFilter } from './display';
-
 const PAGE_SIZE = 20;
 
 const FILTERS = [
-  { label: '全部', search: {}, status: 'all' },
-  { label: '草稿', search: { status: 'draft' }, status: 'draft' },
-  { label: '已发布', search: { status: 'published' }, status: 'published' },
+  { label: '全部', status: 'all' },
+  { label: '草稿', status: 'draft' },
+  { label: '已发布', status: 'published' },
 ] as const;
 
 const EMPTY_TITLE: Record<ArticleStatusFilter, string> = {
@@ -127,42 +125,48 @@ const EmptySearch = ({
 );
 
 export const ArticlesListPage = () => {
-  const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { status?: unknown };
-  const status = parseStatusFilter(search.status);
+  const search = useSearch({ from: '/articles/' });
+  const status = search.status ?? 'all';
+  const page = search.page ?? 1;
 
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState('');
+  const navigateSearch = useSearchNavigation('/articles', search);
 
-  // 每一次按键都发一次请求既浪费也让列表抖动，落后 250ms 再查；
-  // 提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebounce(query, 250)[0];
-  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
-  if (prevCommitted !== committedQuery) {
-    setPrevCommitted(committedQuery);
-    setPage(1);
-  }
+  const [draft, setDraft] = useState(() => search.q ?? '');
+  const commitQuery = useDebouncedCallback((value: string) => {
+    navigateSearch({ page: undefined, q: value.trim() || undefined }, true);
+  }, 250);
+
+  useEffect(() => () => commitQuery.cancel(), [commitQuery]);
 
   const articlesQuery = useQuery(
     articlesListOptions({
       page,
       pageSize: PAGE_SIZE,
-      q: committedQuery,
+      q: search.q,
       status,
     }),
   );
   const items = articlesQuery.data?.items ?? [];
   const total = articlesQuery.data?.total ?? 0;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, articlesQuery.data, PAGE_SIZE);
   const loading = articlesQuery.isPending;
   const error = articlesQuery.error;
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const isSearching = committedQuery.trim().length > 0;
+  const isSearching = search.q !== undefined;
+
+  const clamping =
+    items.length === 0 && page > 1 && total > 0 && totalPages < page;
+
+  const syncClampedPage = useEffectEvent(() => {
+    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  });
+
+  useEffect(() => {
+    if (clamping) syncClampedPage();
+  }, [clamping]);
+
   return (
     <PageBody scroll="child">
-      {/* 搜索是这一屏唯一的控件，跟标题同排；桌面端的状态筛选由侧栏子项承担。 */}
       <PageHeader
         actions={
           <SearchInput
@@ -171,9 +175,12 @@ export const ArticlesListPage = () => {
               md:block
             "
             label="搜索文章标题"
-            onChange={setQuery}
+            onChange={(value) => {
+              setDraft(value);
+              commitQuery(value);
+            }}
             placeholder="搜索标题…"
-            value={query}
+            value={draft}
           />
         }
         description="草稿与已发布都在这里。点开任意一篇进入写作台。"
@@ -192,8 +199,10 @@ export const ArticlesListPage = () => {
               isSelected={status === filter.status}
               key={filter.status}
               onPress={() => {
-                setPage(1);
-                void navigate({ search: filter.search, to: '/articles' });
+                navigateSearch({
+                  page: undefined,
+                  status: filter.status === 'all' ? undefined : filter.status,
+                });
               }}
             >
               {filter.label}
@@ -202,14 +211,17 @@ export const ArticlesListPage = () => {
         </div>
         <SearchInput
           label="搜索文章标题"
-          onChange={setQuery}
+          onChange={(value) => {
+            setDraft(value);
+            commitQuery(value);
+          }}
           placeholder="搜索标题…"
-          value={query}
+          value={draft}
         />
       </div>
 
       <div className="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        {loading ? (
+        {loading || clamping ? (
           <RowStack className="animate-content-in" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <ArticleRowSkeleton key={index} />
@@ -227,7 +239,13 @@ export const ArticlesListPage = () => {
           </Alert>
         ) : items.length === 0 ? (
           isSearching ? (
-            <EmptySearch onClear={() => setQuery('')} query={committedQuery} />
+            <EmptySearch
+              onClear={() => {
+                setDraft('');
+                navigateSearch({ page: undefined, q: undefined }, true);
+              }}
+              query={search.q ?? ''}
+            />
           ) : (
             <EmptyArticles status={status} />
           )
@@ -243,7 +261,9 @@ export const ArticlesListPage = () => {
       {!loading ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={total}
           totalPages={totalPages}

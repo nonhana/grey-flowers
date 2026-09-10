@@ -7,13 +7,13 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 
 import { assetsListOptions } from '@/app/server-state/modules/assets';
-import { useClampPage } from '@/hooks/use-clamp-page';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { formatBytes, formatDateTime } from '@/lib/format';
 import { Button } from '@/ui/button';
 import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback';
@@ -24,7 +24,6 @@ import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
 import {
   mediaTypeLabels,
-  parseAssetStatusFilter,
   purposeLabels,
   purposeOptions,
   statusLabels,
@@ -36,13 +35,6 @@ const PAGE_SIZE = 12;
 type AssetFilterStatus = 'AVAILABLE' | 'PENDING_CLEANUP';
 const STATUS_OPTIONS: AssetFilterStatus[] = ['AVAILABLE', 'PENDING_CLEANUP'];
 const MEDIA_OPTIONS: AssetMediaType[] = ['IMAGE', 'AUDIO'];
-
-interface FilterState {
-  mediaType?: AssetMediaType;
-  purpose?: AssetPurpose;
-}
-
-const EMPTY_FILTER: FilterState = {};
 
 const statusTone = (status: AssetStatus) =>
   status === 'AVAILABLE' ? 'ok' : status === 'PENDING_CLEANUP' ? 'warn' : 'err';
@@ -137,47 +129,59 @@ const AssetCardSkeleton = () => (
 );
 
 export const AssetsListPage = () => {
-  const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { status?: unknown };
-  const status = parseAssetStatusFilter(search.status);
-  const activeStatus: AssetFilterStatus | undefined =
-    status === 'all' ? undefined : status;
+  const search = useSearch({ from: '/assets/' });
+  const page = search.page ?? 1;
 
-  const [filters, setFilters] = useState<FilterState>(EMPTY_FILTER);
-  const [page, setPage] = useState(1);
+  const navigateSearch = useSearchNavigation('/assets', search);
+
   const [uploadOpen, setUploadOpen] = useState(false);
 
   // 空筛选不进 key：undefined 字段按「未提供」归一。
   const listQuery: AssetListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(filters.purpose ? { purpose: filters.purpose } : {}),
-    ...(filters.mediaType ? { mediaType: filters.mediaType } : {}),
-    ...(activeStatus ? { status: activeStatus } : {}),
+    ...(search.status ? { status: search.status } : {}),
+    ...(search.mediaType ? { mediaType: search.mediaType } : {}),
+    ...(search.purpose ? { purpose: search.purpose } : {}),
   };
   const assetsQuery = useQuery(assetsListOptions(listQuery));
   const data = assetsQuery.data;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, data, PAGE_SIZE);
   const loading = assetsQuery.isPending;
   const busy = assetsQuery.isFetching;
   const error = assetsQuery.error;
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter =
-    Object.values(filters).some((value) => value !== undefined) ||
-    activeStatus !== undefined;
+    search.status !== undefined ||
+    search.mediaType !== undefined ||
+    search.purpose !== undefined;
 
-  const applyFilter = (next: FilterState) => {
-    setFilters((current) => ({ ...current, ...next }));
-    setPage(1);
-  };
+  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  const clamping =
+    data !== undefined &&
+    data.items.length === 0 &&
+    page > 1 &&
+    data.total > 0 &&
+    totalPages < page;
 
-  const clearFilters = () => {
-    setFilters(EMPTY_FILTER);
-    setPage(1);
-    void navigate({ search: {}, to: '/assets' });
-  };
+  const syncClampedPage = useEffectEvent(() => {
+    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  });
+
+  useEffect(() => {
+    if (clamping) syncClampedPage();
+  }, [clamping]);
+
+  const clearFilters = () =>
+    navigateSearch(
+      {
+        page: undefined,
+        status: undefined,
+        mediaType: undefined,
+        purpose: undefined,
+      },
+      true,
+    );
 
   return (
     <PageBody scroll="child" width="wide">
@@ -207,37 +211,37 @@ export const AssetsListPage = () => {
           className="sm:w-40"
           hideLabel
           label="用途"
-          onChange={(value) => applyFilter({ purpose: value })}
+          onChange={(value) =>
+            navigateSearch({ page: undefined, purpose: value })
+          }
           optionLabels={purposeLabels}
           options={purposeOptions}
           placeholderLabel="全部用途"
-          value={filters.purpose}
+          value={search.purpose}
         />
         <SelectField<AssetMediaType>
           className="sm:w-32"
           hideLabel
           label="类型"
-          onChange={(value) => applyFilter({ mediaType: value })}
+          onChange={(value) =>
+            navigateSearch({ page: undefined, mediaType: value })
+          }
           optionLabels={mediaTypeLabels}
           options={MEDIA_OPTIONS}
           placeholderLabel="全部类型"
-          value={filters.mediaType}
+          value={search.mediaType}
         />
         <SelectField<AssetFilterStatus>
           className="sm:w-32"
           hideLabel
           label="状态"
-          onChange={(value) => {
-            setPage(1);
-            void navigate({
-              search: value ? { status: value } : {},
-              to: '/assets',
-            });
-          }}
+          onChange={(value) =>
+            navigateSearch({ page: undefined, status: value })
+          }
           optionLabels={statusLabels}
           options={STATUS_OPTIONS}
           placeholderLabel="全部状态"
-          value={activeStatus}
+          value={search.status}
         />
         {hasFilter ? (
           <Button
@@ -305,7 +309,9 @@ export const AssetsListPage = () => {
       {data ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={data.total}
           totalPages={totalPages}

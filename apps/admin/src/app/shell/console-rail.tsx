@@ -46,9 +46,9 @@ interface NavSection {
 }
 
 const ARTICLE_FILTERS = [
-  { label: '全部', search: {} },
-  { label: '草稿', search: { status: 'draft' } },
-  { label: '已发布', search: { status: 'published' } },
+  { label: '全部', status: undefined },
+  { label: '草稿', status: 'draft' },
+  { label: '已发布', status: 'published' },
 ] as const;
 
 const SECTIONS: NavSection[] = [
@@ -141,7 +141,7 @@ const ArticleFilterLinks = () => (
         activeOptions={{ exact: true, includeSearch: true }}
         className={subRowClass}
         key={filter.label}
-        search={filter.search}
+        search={(prev) => ({ ...prev, status: filter.status, page: undefined })}
         to="/articles"
       >
         {filter.label}

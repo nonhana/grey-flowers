@@ -6,6 +6,7 @@ import type {
 
 import { parseDate } from '@internationalized/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import {
   CalendarDays,
@@ -16,7 +17,7 @@ import {
   MessagesSquare,
   RotateCcw,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import {
   Button as AriaButton,
   Calendar,
@@ -33,15 +34,15 @@ import {
   Popover,
 } from 'react-aria-components';
 import { toast } from 'sonner';
-import { useDebounce } from 'use-debounce';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
   commentsListOptions,
   invalidateCommentsAfterMutation,
 } from '@/app/server-state/modules/comments';
-import { useClampPage } from '@/hooks/use-clamp-page';
 import { useDialog } from '@/hooks/use-dialog';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { Button, IconButton } from '@/ui/button';
 import { EmptyState } from '@/ui/feedback';
@@ -293,8 +294,18 @@ const toReplyTarget = (comment: CommentAdmin): ReplyTarget => ({
 });
 
 export const CommentsPage = () => {
-  const [draft, setDraft] = useState<CommentFilterDraft>(EMPTY_FILTER);
-  const [page, setPage] = useState(1);
+  const search = useSearch({ from: '/comments' });
+  const page = search.page ?? 1;
+
+  const navigateSearch = useSearchNavigation('/comments', search);
+
+  const [draft, setDraft] = useState<CommentFilterDraft>(() => ({
+    authorId: search.authorId === undefined ? '' : String(search.authorId),
+    endDate: search.endDate ?? '',
+    path: search.path ?? '',
+    search: search.search ?? '',
+    startDate: search.startDate ?? '',
+  }));
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
@@ -306,13 +317,40 @@ export const CommentsPage = () => {
   }>();
   const batchDialog = useDialog<number[]>();
 
-  // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
-  const filters = useDebounce(draft, 300)[0];
-  const [prevFilters, setPrevFilters] = useState(filters);
-  if (prevFilters !== filters) {
-    setPrevFilters(filters);
-    setPage(1);
-    // 筛选提交即清空选择集（L-11）：跨筛选的选择没有意义还会误删。
+  // 筛选草稿 300ms 防抖整体提交；空串字段统一降级为 undefined。
+  const commitFilters = useDebouncedCallback((next: CommentFilterDraft) => {
+    const authorIdRaw = next.authorId.trim();
+    navigateSearch(
+      {
+        authorId: /^\d+$/.test(authorIdRaw) ? Number(authorIdRaw) : undefined,
+        endDate: next.endDate || undefined,
+        page: undefined,
+        path: next.path.trim() || undefined,
+        search: next.search.trim() || undefined,
+        startDate: next.startDate || undefined,
+      },
+      true,
+    );
+  }, 300);
+
+  useEffect(() => () => commitFilters.cancel(), [commitFilters]);
+
+  const handleFilterChange = (next: CommentFilterDraft) => {
+    setDraft(next);
+    commitFilters(next);
+  };
+
+  // 筛选提交即清空选择集（L-11）：跨筛选的选择没有意义还会误删。
+  const filterKey = [
+    search.authorId ?? '',
+    search.endDate ?? '',
+    search.path ?? '',
+    search.search ?? '',
+    search.startDate ?? '',
+  ].join('|');
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
     setSelectedIds(new Set());
   }
   const [prevPage, setPrevPage] = useState(page);
@@ -322,25 +360,32 @@ export const CommentsPage = () => {
     setSelectedIds(new Set());
   }
 
-  // authorId 严格解析：非纯数字一律视为未筛选，不做 parseInt 前缀解析。
-  const authorIdRaw = filters.authorId.trim();
-  const authorId = /^\d+$/.test(authorIdRaw)
-    ? Number.parseInt(authorIdRaw, 10)
-    : Number.NaN;
-
   const listQuery: CommentListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(filters.search ? { search: filters.search } : {}),
-    ...(filters.path ? { path: filters.path } : {}),
-    ...(Number.isInteger(authorId) && authorId > 0 ? { authorId } : {}),
-    ...(filters.startDate ? { startDate: filters.startDate } : {}),
-    ...(filters.endDate ? { endDate: filters.endDate } : {}),
+    ...(search.search ? { search: search.search } : {}),
+    ...(search.path ? { path: search.path } : {}),
+    ...(search.authorId !== undefined ? { authorId: search.authorId } : {}),
+    ...(search.startDate ? { startDate: search.startDate } : {}),
+    ...(search.endDate ? { endDate: search.endDate } : {}),
   };
   const commentsQuery = useQuery(commentsListOptions(listQuery));
   const data = commentsQuery.data;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, data, PAGE_SIZE);
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
+  // 末页删光后页码越界：渲染期推导 + effect 钳回最后一个非空页（L-18）。
+  const clamping =
+    items.length === 0 && page > 1 && total > 0 && totalPages < page;
+
+  const syncClampedPage = useEffectEvent(() => {
+    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  });
+
+  useEffect(() => {
+    if (clamping) syncClampedPage();
+  }, [clamping]);
+
   const loading = commentsQuery.isPending;
   const busy = commentsQuery.isFetching;
   const error = commentsQuery.error ? '无法加载评论，请稍后重试。' : '';
@@ -373,13 +418,12 @@ export const CommentsPage = () => {
     },
   });
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter =
-    filters.search !== '' ||
-    filters.path !== '' ||
-    filters.authorId !== '' ||
-    filters.startDate !== '' ||
-    filters.endDate !== '';
+    search.search !== undefined ||
+    search.path !== undefined ||
+    search.authorId !== undefined ||
+    search.startDate !== undefined ||
+    search.endDate !== undefined;
 
   const toggleSelect = (id: number) => {
     setSelectedIds((current) => {
@@ -421,7 +465,7 @@ export const CommentsPage = () => {
       />
 
       <div className={desktopFilterControlsClass}>
-        <FilterControls onChange={setDraft} value={draft} />
+        <FilterControls onChange={handleFilterChange} value={draft} />
       </div>
       <div className={mobileFilterControlsClass}>
         <span className="mb-1.5 block font-mono text-xs text-ink-dim">
@@ -431,8 +475,8 @@ export const CommentsPage = () => {
           <SearchInput
             className="min-w-0 flex-1"
             label="搜索评论内容"
-            onChange={(search) =>
-              setDraft((current) => ({ ...current, search }))
+            onChange={(value) =>
+              handleFilterChange({ ...draft, search: value })
             }
             placeholder="搜索内容…"
             value={draft.search}
@@ -481,7 +525,7 @@ export const CommentsPage = () => {
         aria-busy={busy}
         className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
-        {loading ? (
+        {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <CommentCardSkeleton key={index} />
@@ -504,7 +548,17 @@ export const CommentsPage = () => {
                 <Button
                   onPress={() => {
                     setDraft(EMPTY_FILTER);
-                    setPage(1);
+                    navigateSearch(
+                      {
+                        authorId: undefined,
+                        endDate: undefined,
+                        page: undefined,
+                        path: undefined,
+                        search: undefined,
+                        startDate: undefined,
+                      },
+                      true,
+                    );
                   }}
                 >
                   清除筛选
@@ -545,7 +599,9 @@ export const CommentsPage = () => {
       {data ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={data.total}
           totalPages={totalPages}
@@ -559,7 +615,7 @@ export const CommentsPage = () => {
         title="筛选评论"
       >
         <div className="grid gap-4 px-4 pt-1 pb-4">
-          <FilterControls onChange={setDraft} value={draft} />
+          <FilterControls onChange={handleFilterChange} value={draft} />
           <Button onPress={() => setFilterSheetOpen(false)} tone="solid">
             完成
           </Button>

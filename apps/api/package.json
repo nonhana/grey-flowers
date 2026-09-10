@@ -38,7 +38,7 @@
     "pinyin-pro": "catalog:api",
     "rehype-sanitize": "catalog:api",
     "resend": "catalog:api",
-    "zod": "catalog:api"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "pino-pretty": "catalog:api",

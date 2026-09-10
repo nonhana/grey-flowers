@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { MusicLibraryPage } from '@/features/music/list-page';
+import { musicSearchSchema } from '@/features/music/search';
 import { RoutePending } from '@/ui/route-pending';
 
 export const Route = createFileRoute('/music/')({
-  validateSearch: (search) =>
-    search.incomplete === true ? { incomplete: true } : {},
+  validateSearch: musicSearchSchema,
   component: MusicLibraryPage,
   pendingComponent: RoutePending,
 });

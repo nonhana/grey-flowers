@@ -20,7 +20,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "zod": "catalog:api"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "tsdown": "catalog:"
