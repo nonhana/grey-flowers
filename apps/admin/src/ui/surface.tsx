@@ -1,20 +1,36 @@
 import type { ComponentProps, ReactNode } from 'react';
 
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from 'cn';
 
-type PageWidth = 'narrow' | 'default' | 'wide';
-type PageBodyScroll = 'body' | 'child';
+const pageBodyVariants = cva(
+  `
+    mx-auto flex size-full min-h-0 flex-col px-4
+    pt-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))]
+    sm:px-6
+    md:py-10
+    lg:px-8
+  `,
+  {
+    variants: {
+      scroll: {
+        body: `
+          overflow-y-auto overscroll-contain
+          pb-[calc(6rem+env(safe-area-inset-bottom))]
+        `,
+        child: 'overflow-hidden pb-[calc(1rem+env(safe-area-inset-bottom))]',
+      },
+      width: { narrow: 'max-w-2xl', default: 'max-w-4xl', wide: 'max-w-6xl' },
+    },
+  },
+);
 
-const WIDTH: Record<PageWidth, string> = {
-  narrow: 'max-w-2xl',
-  default: 'max-w-4xl',
-  wide: 'max-w-6xl',
-};
+type PageWidth = NonNullable<VariantProps<typeof pageBodyVariants>['width']>;
+type PageBodyScroll = NonNullable<
+  VariantProps<typeof pageBodyVariants>['scroll']
+>;
 
-/**
- * 页面容器：默认内容区自滚；列表页把滚动权移交子级 items 区。
- * 底部 padding 按滚动模式区别——自滚须预留悬浮层高度，否则末行被压住。
- */
+/** 页面容器，可以控制发生滚动的容器位于哪一层 */
 export const PageBody = ({
   children,
   className,
@@ -26,32 +42,11 @@ export const PageBody = ({
   scroll?: PageBodyScroll;
   width?: PageWidth;
 }) => (
-  <div
-    className={cn(
-      `mx-auto flex size-full min-h-0 flex-col px-4`,
-      scroll === 'body'
-        ? 'pb-[calc(6rem+env(safe-area-inset-bottom))]'
-        : 'pb-[calc(1rem+env(safe-area-inset-bottom))]',
-      'pt-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))]',
-      `
-        sm:px-6
-        md:py-10
-        lg:px-8
-      `,
-      scroll === 'body'
-        ? 'overflow-y-auto overscroll-contain'
-        : 'overflow-hidden',
-      WIDTH[width],
-      className,
-    )}
-  >
+  <div className={cn(pageBodyVariants({ scroll, width }), className)}>
     {children}
   </div>
 );
 
-/**
- * 页头。标题之上不放 kicker / eyebrow —— 标题自己扛得住。
- */
 export const PageHeader = ({
   actions,
   description,
@@ -60,7 +55,6 @@ export const PageHeader = ({
 }: {
   actions?: ReactNode;
   description?: string;
-  /** 返回箭头这类前置控件。 */
   leading?: ReactNode;
   title: string;
 }) => (
@@ -72,8 +66,6 @@ export const PageHeader = ({
     <div className="flex min-w-0 items-start gap-2">
       {leading ? <div className="-ml-2 shrink-0 pt-0.5">{leading}</div> : null}
       <div className="grid min-w-0 gap-1">
-        {/* 标题必须是这一屏最大的东西 —— 否则一个 264px 的蓝按钮就会
-            把页面的主语抢走。 */}
         <h1 className="truncate text-2xl font-bold text-ink-strong">{title}</h1>
         {description ? (
           <p className="max-w-prose text-base text-ink-dim">{description}</p>
@@ -86,7 +78,6 @@ export const PageHeader = ({
   </header>
 );
 
-/** 分组容器。描边即抬升，不再叠投影。 */
 export const Panel = ({
   children,
   className,
@@ -100,7 +91,6 @@ export const Panel = ({
   </section>
 );
 
-/** 字盘：靠发丝分隔线切格，而不是堆同尺寸卡片。 */
 export const RowStack = ({
   children,
   className,
@@ -129,7 +119,6 @@ export const SectionLabel = ({
   </h3>
 );
 
-/** 元数据行：拉丁与数字走等宽并对齐，中文回退到 Noto Sans SC。 */
 export const MetaLine = ({
   children,
   className,

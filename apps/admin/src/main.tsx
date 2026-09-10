@@ -13,9 +13,7 @@ bootstrapAdminApp();
 
 const container = document.querySelector('#root');
 
-if (!container) {
-  throw new Error('Admin root container is missing.');
-}
+if (!container) throw new Error('Admin root container is missing.');
 
 createRoot(container).render(
   <StrictMode>

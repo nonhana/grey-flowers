@@ -1,16 +1,27 @@
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from 'cn';
 import { AlertTriangle, Info, Loader2, OctagonAlert } from 'lucide-react';
 
-export type Tone = 'danger' | 'warn' | 'info';
+const alertVariants = cva(
+  `
+    flex items-start gap-2.5 rounded-control border px-3 py-2.5
+    text-base/relaxed
+  `,
+  {
+    variants: {
+      tone: {
+        danger: 'border-danger-rule bg-danger-wash text-danger-text',
+        warn: 'border-warn-rule bg-warn-wash text-warn-text',
+        info: 'border-accent-rule bg-accent-wash text-accent-text',
+      },
+    },
+  },
+);
 
-const ALERT_TONE: Record<Tone, string> = {
-  danger: 'border-danger-rule bg-danger-wash text-danger-text',
-  warn: 'border-warn-rule bg-warn-wash text-warn-text',
-  info: 'border-accent-rule bg-accent-wash text-accent-text',
-};
+type Tone = NonNullable<VariantProps<typeof alertVariants>['tone']>;
 
 const ALERT_ICON: Record<Tone, LucideIcon> = {
   danger: OctagonAlert,
@@ -18,7 +29,6 @@ const ALERT_ICON: Record<Tone, LucideIcon> = {
   info: Info,
 };
 
-/** 提示条：整块淡底 + 1px 描边，不用彩色粗左边条（装饰不是信息）。 */
 export const Alert = ({
   action,
   children,
@@ -33,15 +43,7 @@ export const Alert = ({
   const Icon = ALERT_ICON[tone];
 
   return (
-    <div
-      className={cn(
-        'flex items-start gap-2.5 rounded-control border px-3 py-2.5',
-        'text-base/relaxed',
-        ALERT_TONE[tone],
-        className,
-      )}
-      role="alert"
-    >
+    <div className={cn(alertVariants({ tone }), className)} role="alert">
       <Icon aria-hidden className="mt-0.5 size-4 shrink-0" />
       <div className="min-w-0 flex-1">{children}</div>
       {action ? <div className="shrink-0">{action}</div> : null}
@@ -49,7 +51,6 @@ export const Alert = ({
   );
 };
 
-/** 空状态要教界面怎么用，而不是说「这里没有东西」。 */
 export const EmptyState = ({
   action,
   children,
@@ -133,16 +134,28 @@ export const PublishBadge = ({ published }: { published: boolean }) => (
   </span>
 );
 
-export type ReadoutTone = 'ok' | 'busy' | 'warn' | 'err';
+type ReadoutTone = NonNullable<VariantProps<typeof readoutVariants>['tone']>;
 
-const READOUT_TONE: Record<ReadoutTone, string> = {
-  ok: 'border-accent-rule bg-accent-wash text-accent-text',
-  busy: 'border-edge bg-well text-ink-dim',
-  warn: 'border-warn-rule bg-warn-wash text-warn-text',
-  err: 'border-danger-rule bg-danger-wash text-danger-text',
-};
+const readoutVariants = cva(
+  cn(
+    'inline-flex min-h-7 items-center gap-1.5 rounded-full border px-2.5',
+    `
+      font-mono text-2xs whitespace-nowrap
+      [&_svg]:size-3.5
+    `,
+  ),
+  {
+    variants: {
+      tone: {
+        ok: 'border-accent-rule bg-accent-wash text-accent-text',
+        busy: 'border-edge bg-well text-ink-dim',
+        warn: 'border-warn-rule bg-warn-wash text-warn-text',
+        err: 'border-danger-rule bg-danger-wash text-danger-text',
+      },
+    },
+  },
+);
 
-/** 状态读数屏：一次只报一个值（取代原先一排各说各话的 chip）。 */
 export const StatusReadout = ({
   icon,
   label,
@@ -152,16 +165,7 @@ export const StatusReadout = ({
   label: string;
   tone: ReadoutTone;
 }) => (
-  <span
-    className={cn(
-      'inline-flex min-h-7 items-center gap-1.5 rounded-full border px-2.5',
-      `
-        font-mono text-2xs whitespace-nowrap
-        [&_svg]:size-3.5
-      `,
-      READOUT_TONE[tone],
-    )}
-  >
+  <span className={readoutVariants({ tone })}>
     {icon}
     <span aria-live="polite">{label}</span>
   </span>
