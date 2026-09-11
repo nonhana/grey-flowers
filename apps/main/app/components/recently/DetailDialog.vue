@@ -73,7 +73,7 @@ const { isContentReady, shouldShowLoading, markMarkdownReady } = useDetailConten
             v-for="image in item.images"
             :key="image"
             :src="image"
-            class="[&>img]:mx-auto [&>img]:max-h-[68dvh] [&>img]:max-w-full [&>img]:w-auto"
+            class="mx-auto max-h-[65dvh] max-w-full w-auto rounded-lg"
             style="width: auto;"
           />
         </div>

@@ -69,7 +69,6 @@ const viewerPreviewSrc = computed(() => {
 
 <template>
   <HanaImgViewer
-    as="span"
     :src="thumbnailSrc"
     :preview-src="viewerPreviewSrc"
     :alt="props.alt"
