@@ -73,8 +73,8 @@ const { isContentReady, shouldShowLoading, markMarkdownReady } = useDetailConten
             v-for="image in item.images"
             :key="image"
             :src="image"
-            thumbnail-class="mx-auto max-h-[78dvh]"
-            thumbnail-style="width: auto;"
+            class="[&>img]:mx-auto [&>img]:max-h-[68dvh] [&>img]:max-w-full [&>img]:w-auto"
+            style="width: auto;"
           />
         </div>
         <RecentlyMusicCard v-if="item.music && item.music.length > 0" :music="item.music" />
