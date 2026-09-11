@@ -37,8 +37,7 @@ vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 vi.mock('@/lib/toast', () => ({ toastError: vi.fn() }));
-// 只替换 apiClient，错误判定仍走真实实现（isApiRequestError / isApiNetworkError
-// 依赖 instanceof，桩掉就等于把分支测假了）。
+// 只替换 apiClient，错误判定仍走真实实现：isApiRequestError/isApiNetworkError 依赖 instanceof，桩掉就测假了
 vi.mock('@/app/api/index', async () => {
   const errors = await import('@/app/api/errors');
   return { ...errors, apiClient: { articles: api } };
@@ -82,10 +81,7 @@ const defer = <T>(): Deferred<T> => {
   return { promise, reject, resolve };
 };
 
-/**
- * 跨一个宏任务边界，让所有已排队的微任务（promise 回调链）跑完。
- * 0ms 定时器不会触发 autosave 的 1s debounce，测的仍是显式落盘路径。
- */
+/** 跨一个宏任务边界让排队的微任务（promise 回调链）跑完；0ms 定时器不触发 autosave 的 1s debounce，测的仍是显式落盘路径 */
 const flushMicrotasks = () =>
   new Promise<void>((resolve) => {
     setTimeout(resolve, 0);
@@ -107,7 +103,7 @@ const requestError = (code: 'ARTICLE_STALE' | 'AUTH_REQUIRED') => {
 const savedContentOf = (call: number) =>
   (api.save.mock.calls[call]?.[1] as ArticleSaveInput | undefined)?.content;
 
-/** 建一个已加载完成（phase = saved）的编辑器 store。 */
+/** 建一个已加载完成（phase = saved）的编辑器 store */
 const createLoadedStore = async () => {
   api.detail.mockResolvedValue(articleAt(1, 'v0'));
   const store = createArticleEditorStore(ARTICLE_ID);
@@ -116,8 +112,7 @@ const createLoadedStore = async () => {
 };
 
 beforeEach(() => {
-  // resetAllMocks 而非 clearAllMocks：mockImplementationOnce 的残留队列
-  // 会串到下一个用例里，制造假绿。
+  // resetAllMocks 而非 clearAllMocks：mockImplementationOnce 的残留队列会串到下一个用例制造假绿
   vi.resetAllMocks();
   queryClient.clear();
   idb.del.mockResolvedValue(undefined);
@@ -231,7 +226,7 @@ describe('article-editor · flushNow 落盘门控', () => {
     expect(api.save).toHaveBeenCalledTimes(1);
     expect(store.getState().phase).toBe('conflict');
     expect(store.getState().conflict?.server.revision).toBe(9);
-    // 冲突分支也幂等落恢复槽（M12）
+    // 冲突分支也幂等落恢复槽
     expect(idb.set).toHaveBeenCalledTimes(1);
   });
 
@@ -312,10 +307,7 @@ describe('article-editor · 版本恢复', () => {
   });
 });
 
-/**
- * Cache coherence：编辑器写操作成功后必须让 articles 家族缓存过期。
- * 删掉 store 里的 invalidateArticlesAfterMutation() 调用，本用例即红。
- */
+/** Cache coherence：编辑器写操作成功后必须让 articles 家族缓存过期；删掉 store 的 invalidateArticlesAfterMutation() 本用例即红 */
 describe('article-editor · 缓存一致性', () => {
   it('保存落盘后文章列表缓存被标记失效', async () => {
     const listQuery = { page: 1, pageSize: 20, q: '', status: 'all' } as const;
@@ -335,8 +327,8 @@ describe('article-editor · 缓存一致性', () => {
   });
 });
 
-describe('article-editor · S4 保存链与恢复', () => {
-  it('AUTH_REQUIRED 保存失败也把最新草稿写进恢复槽（M12）', async () => {
+describe('article-editor · 保存链与恢复', () => {
+  it('AUTH_REQUIRED 保存失败也把最新草稿写进恢复槽', async () => {
     const store = await createLoadedStore();
     api.save.mockRejectedValue(requestError('AUTH_REQUIRED'));
 
@@ -350,7 +342,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     expect(slot.draft.content).toBe('v1');
   });
 
-  it('通用保存失败也写恢复槽，与离线分支同口径（M12）', async () => {
+  it('通用保存失败也写恢复槽，与离线分支同口径', async () => {
     const store = await createLoadedStore();
     api.save.mockRejectedValue(new Error('boom'));
 
@@ -361,7 +353,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     expect(idb.set).toHaveBeenCalledTimes(1);
   });
 
-  it('发布请求在途期间敲字：结果不覆盖草稿、不清脏（M11）', async () => {
+  it('发布请求在途期间敲字：结果不覆盖草稿、不清脏', async () => {
     const store = await createLoadedStore();
     api.save.mockResolvedValue(articleAt(2, 'typed'));
     const published = defer<ArticleAdmin>();
@@ -387,7 +379,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     expect(store.getState().revision).toBe(3);
   });
 
-  it('版本列表加载失败不误报发布成功为失败（M10）', async () => {
+  it('版本列表加载失败不误报发布成功为失败', async () => {
     const store = await createLoadedStore();
     api.snapshots.mockRejectedValue(new Error('boom'));
     api.publish.mockResolvedValue(articleAt(2, 'v0'));
@@ -398,8 +390,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     expect(toast.error).toHaveBeenCalledWith('版本列表加载失败。');
   });
 
-  it('存在恢复槽且内容与当前稿不同时展示，时钟不再参与判定（M13）', async () => {
-    // savedAt = 1970：旧实现里必然被时钟比较拒绝
+  it('存在恢复槽且内容与当前稿不同时展示，时钟不再参与判定', async () => {
     api.detail.mockResolvedValue(articleAt(1, 'v0'));
     idb.get.mockResolvedValue({
       draft: { ...toDraft(articleAt(1, 'v0')), content: '本地未落盘' },
@@ -411,7 +402,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     expect(store.getState().restoreCandidate?.draft.content).toBe('本地未落盘');
   });
 
-  it('槽内容与当前稿一致时不展示恢复条（M13）', async () => {
+  it('槽内容与当前稿一致时不展示恢复条', async () => {
     api.detail.mockResolvedValue(articleAt(1, 'v0'));
     idb.get.mockResolvedValue({
       draft: toDraft(articleAt(1, 'v0')),
@@ -422,7 +413,7 @@ describe('article-editor · S4 保存链与恢复', () => {
 
     expect(store.getState().restoreCandidate).toBeNull();
   });
-  it('放弃恢复删除本地槽（M13）', async () => {
+  it('放弃恢复删除本地槽', async () => {
     api.detail.mockResolvedValue(articleAt(1, 'v0'));
     idb.get.mockResolvedValue({
       draft: { ...toDraft(articleAt(1, 'v0')), content: '本地未落盘' },
@@ -438,7 +429,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     expect(store.getState().restoreCandidate).toBeNull();
   });
 
-  it('采用服务端解决冲突后删除恢复槽，弃稿不再复活（M13）', async () => {
+  it('采用服务端解决冲突后删除恢复槽，弃稿不再复活', async () => {
     const store = await createLoadedStore();
     api.save.mockRejectedValue(requestError('ARTICLE_STALE'));
     api.detail.mockResolvedValue(articleAt(9, 'server'));
@@ -446,7 +437,7 @@ describe('article-editor · S4 保存链与恢复', () => {
     store.getState().updateDraft({ content: 'v1' });
     await store.getState().flushNow();
     expect(store.getState().phase).toBe('conflict');
-    // M12：进入冲突时已落了恢复槽
+    // 进入冲突时已落了恢复槽
     expect(idb.set).toHaveBeenCalledTimes(1);
 
     await store.getState().resolveConflict('take-server');

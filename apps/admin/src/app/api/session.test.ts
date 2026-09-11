@@ -46,7 +46,7 @@ const okResponse = (body: unknown) => ({
   json: () => Promise.resolve(body),
 });
 
-/** 全拒绝 schema：把 body 交给真实 apiFailureSchema 解析。 */
+/** 全拒绝 schema：把 body 交给真实 apiFailureSchema 解析 */
 const rejectingSchema = {
   '~standard': {
     version: 1,
@@ -120,7 +120,6 @@ describe('createSession auth retry', () => {
       name: 'ApiRequestError',
       code: 'AUTH_REQUIRED',
     });
-    // 共享 refresh 只发一次；被取消的请求不重试，未取消的重试了一次。
     expect(kyHandlers.post).toHaveBeenCalledOnce();
     expect(kyHandlers.get.mock.calls.map(([path]) => path)).toEqual([
       '/a',

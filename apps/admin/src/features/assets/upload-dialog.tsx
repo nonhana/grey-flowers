@@ -29,7 +29,7 @@ import { assetErrorMessage, purposeLabels, purposeOptions } from './display';
 
 type Phase = 'idle' | 'uploading' | 'error';
 
-/** 单次打开会话内的表单：挂载即全新，关闭重开由外壳的 session key 重建。 */
+/** 单次打开会话内的表单：挂载即全新，关闭重开由外壳的 session key 重建 */
 const UploadForm = ({
   abortRef,
   onUploaded,
@@ -51,7 +51,7 @@ const UploadForm = ({
   usePasteFiles({
     enabled: true,
     onFiles: (files) => {
-      // 上传中粘贴闸门：不打断在途上传，也不悄悄换掉正在上传的文件（L-14）。
+      // 上传中粘贴闸门：不打断在途上传，也不悄悄换掉正在上传的文件
       if (phase === 'uploading') return;
       setPhase('idle');
       if (purpose === null) {
@@ -94,8 +94,6 @@ const UploadForm = ({
         undefined,
         controller.signal,
       );
-      // 上传属于 mutation：失效 assets 全家族与 overview 计数，
-      // 默认筛选下的当前列表也会立即重取。
       await invalidateAssetsAfterMutation();
       toast.success(
         purpose === 'MUSIC_SOURCE' ? '音源已上传。' : '图片已上传。',
@@ -104,7 +102,7 @@ const UploadForm = ({
       setOpen(false);
     } catch (cause) {
       if (isAbortError(cause)) {
-        // 取消不是错误：无成功反馈、无回调、无导航，只留一条 info 管理预期。
+        // 取消不是错误：无成功反馈、无回调、无导航，只留一条 info 管理预期
         toast.info('已取消上传');
         setPhase('idle');
         setProgress(0);
@@ -113,7 +111,7 @@ const UploadForm = ({
         setPhase('error');
       }
     }
-    // 不用 try/finally：React Compiler 尚不支持带 finally 的 try 语句。
+    // 不用 try/finally：React Compiler 尚不支持带 finally 的 try 语句
     if (abortRef.current === controller) abortRef.current = null;
   };
 
@@ -161,7 +159,7 @@ const UploadForm = ({
           accept={acceptMap}
           busy={phase === 'uploading'}
           onFile={(target) => {
-            // 上传中 FileDrop 已 busy 失效，此处只处理非上传中的选入。
+            // 上传中 FileDrop 已 busy 失效，此处只处理非上传中的选入
             const sizeError = uploadSizeError(
               target,
               purpose ?? 'ARTICLE_COVER',
@@ -249,12 +247,11 @@ export const UploadDialog = ({
   open: boolean;
   setOpen: (value: boolean) => void;
 }) => {
-  // 在途上传的取消柄：任何关闭路径与外壳卸载都掐断上传（L-3/H1）。
+  // 在途上传的取消柄：任何关闭路径与外壳卸载都掐断上传
   const abortRef = useRef<AbortController | null>(null);
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  // 每次 open 产生新的 session identity：keyed inner form 据此重建，
-  // 同一入口快速重开也拿到全新表单（退出动画期间的数据不再复用）。
+  // 每次 open 产生新的 session identity：keyed inner form 据此重建，快速重开拿到全新表单（退出动画期间数据不复用）
   const [session, setSession] = useState(0);
   const [wasOpen, setWasOpen] = useState(open);
   if (open && !wasOpen) {
@@ -264,7 +261,7 @@ export const UploadDialog = ({
     setWasOpen(false);
   }
 
-  // 关闭即取消：取消按钮、Esc、遮罩、标题关闭钮全部经由这里。
+  // 关闭即取消：取消按钮、Esc、遮罩、标题关闭钮全部经由这里
   const close = () => {
     abortRef.current?.abort();
     setOpen(false);

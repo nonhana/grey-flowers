@@ -22,5 +22,5 @@ export const useMediaQuery = (query: string, serverValue = false) =>
     () => serverValue,
   );
 
-/** 与 Tailwind 的 md 断点保持一致。改这里要同步改布局里的 md: 前缀。 */
+/** 与 Tailwind 的 md 断点保持一致。改这里要同步改布局里的 md: 前缀 */
 export const useIsDesktop = () => useMediaQuery('(min-width: 768px)');

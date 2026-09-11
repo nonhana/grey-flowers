@@ -113,7 +113,7 @@ const saveRailSize = (size: RailSize) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(size));
   } catch {
-    // 隐私模式等场景写失败不阻塞交互。
+    // 隐私模式等场景写失败不阻塞交互
   }
 };
 
@@ -149,13 +149,7 @@ const NavRow = ({ collapsed, item }: { collapsed: boolean; item: NavItem }) => (
     to={item.path}
   >
     <item.icon aria-hidden className="shrink-0" />
-    {/*
-     * 文字不占位（absolute）：折叠时图标居中、展开时文字从图标右侧开始，
-     * 都不会因文字占位把图标挤出中心。opacity 过渡负责淡入淡出，
-     * 展开时延迟 150ms 等宽度先到位，避免文字在窄宽度里被裁。
-     * 折叠态提示用 title（React Aria 的 TooltipTrigger 只向 RAC 组件
-     * 注入事件，TanStack Link 收不到），配合 aria-label 覆盖 a11y。
-     */}
+    {/* 折叠态提示用 title（React Aria 的 TooltipTrigger 只向 RAC 组件注入事件，TanStack Link 收不到），配合 aria-label 覆盖 a11y */}
     <span
       className={cn(
         `
@@ -216,8 +210,7 @@ export const AccountBlock = ({
           {username}
         </span>
       )}
-      {/* 调试控件与主题切换在折叠态收起：56px 内放不下 88px 的三态分段控件。
-          DEV 守卫放在挂载点（L-4）：生产不执行组件内 hooks，构建可 tree-shake。 */}
+      {/* DEV 守卫放在挂载点：生产不执行组件内 hooks，构建可 tree-shake */}
       {layout === 'rail' && !collapsed && import.meta.env.DEV ? (
         <ApiDelayControl />
       ) : null}
@@ -239,31 +232,27 @@ export const AccountBlock = ({
 export const ConsoleRail = () => {
   const [size, setSize] = useState<RailSize>(loadRailSize);
   const railRef = useRef<HTMLElement>(null);
-  // 事件路径镜像（L-1）：拖拽回调闭包来自拖拽开始的那次渲染，直接读
-  // state 会拿到旧值；镜像让 resolve 恒基于最新尺寸，setSize 改直值、
-  // updater 保纯。持久化时机不变：键盘每次落盘，拖拽只在结束时落盘。
+  // 事件路径镜像：拖拽回调闭包来自拖拽开始的那次渲染，镜像让 resolve 恒基于最新尺寸
   const sizeRef = useRef(size);
 
   const applyResize = (raw: number, source: ResizeSource) => {
     const next = resolveRailSize(sizeRef.current, raw, source);
     sizeRef.current = next;
     setSize(next);
-    // 键盘是离散操作，每次都落盘；拖拽只在 onResizeEnd 落盘。
+    // 键盘是离散操作，每次都落盘；拖拽只在 onResizeEnd 落盘
     if (source === 'keyboard') saveRailSize(next);
   };
 
   const { handleProps, isResizing } = useResizableEdge({
     ref: railRef,
     edge: 'right',
-    // 钳制范围跟随形态：折叠态允许 [X, MAX]，拖到 Y 即展开；
-    // 展开态钳 [Y, MAX]，拖到 X 才折叠。
+    // 钳制范围跟随形态：折叠态允许 [X, MAX] 拖到 Y 展开；展开态钳 [Y, MAX] 拖到 X 才折叠
     min: size.collapsed ? RAIL_SIZE.collapsed : RAIL_SIZE.min,
     max: RAIL_SIZE.max,
     keyboardStep: 16,
     onResize: (_size, change) => applyResize(change.raw, change.source),
     onResizeEnd: (final) => {
       applyResize(final, 'pointer');
-      // 拖拽只在结束时落盘（时机语义不变）。
       saveRailSize(sizeRef.current);
     },
   });
@@ -286,7 +275,6 @@ export const ConsoleRail = () => {
           relative hidden shrink-0 flex-col border-r border-rule bg-case
           md:flex
         `,
-        // 拖拽中跟手，不允许过渡；切换形态时 200ms 过渡。
         isResizing
           ? 'transition-none'
           : 'transition-[width] duration-200 ease-out',
@@ -294,7 +282,6 @@ export const ConsoleRail = () => {
       ref={railRef}
       style={{ width }}
     >
-      {/* 折叠按钮与品牌同行：折叠态品牌让位，按钮居中成为唯一的展开入口。 */}
       <div
         className={cn(
           'flex items-center',
@@ -341,8 +328,7 @@ export const ConsoleRail = () => {
       <div className="border-t border-rule p-3">
         <AccountBlock collapsed={collapsed} layout="rail" />
       </div>
-      {/* 把手即 rail 的右边本身：静止时 1px 与 border 重合，
-          hover/拖拽时以该边为重心向两侧变粗。命中区中心对准边线。 */}
+      {/* 把手即 rail 右边本身：命中区中心对准边线，hover/拖拽时向两侧变粗 */}
       <div
         {...handleProps}
         aria-label="调整侧栏宽度"

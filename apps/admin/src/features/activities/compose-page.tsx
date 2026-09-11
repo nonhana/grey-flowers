@@ -51,11 +51,11 @@ const toComposerImage = (activity: ActivityAdmin): ComposerImage[] =>
     url: image.url,
   }));
 
-/** 单次编辑会话的编写器：以传入 activity 惰性初始化，路由换 id 由外层 key 重建。 */
+/** 单次编辑会话的编写器：以传入 activity 惰性初始化，路由换 id 由外层 key 重建 */
 const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
   const navigate = useNavigate();
   const editingId = activity?.id ?? null;
-  // 卸载守卫（L-19）：卸载后的迟到上传结果不再触碰任何状态。
+  // 卸载守卫：卸载后的迟到上传结果不再触碰任何状态
   const disposedRef = useRef(false);
   useEffect(() => {
     return () => {
@@ -83,7 +83,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
         ? apiClient.activities.update(editingId, input)
         : apiClient.activities.create(input),
     onSuccess: async (_data) => {
-      // 动态创建/编辑已落库：相关图片资产记录已存在，音乐/评论投影随 activities 失效。
+      // 动态创建/编辑已落库：相关图片资产记录已存在，音乐/评论投影随 activities 失效
       markAssetsStale();
       await invalidateActivitiesAfterMutation();
       toast.success(editingId !== null ? '动态已更新。' : '动态已发布。');
@@ -111,7 +111,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
       .then((asset) => {
         if (disposedRef.current) return;
         setImages((current) => {
-          // 插入前校验图片仍在列表：已被用户移除的槽位不复活（L-19）。
+          // 插入前校验图片仍在列表：已被用户移除的槽位不复活
           if (!current.some((image) => image.id === id)) return current;
           return current.map((image) =>
             image.id === id
@@ -135,8 +135,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
   const addUploads = (files: File[]) => {
     const slots = MAX_IMAGES - images.length;
     if (slots <= 0) return;
-    // 选入即校验（M15）：0 字节/超限图片直接拒收，不等必败请求；
-    // dropzone 拖入与剪贴板粘贴两个入口都汇到这里。
+    // 选入即校验：0 字节/超限图片直接拒收，不等必败请求；dropzone 拖入与剪贴板粘贴都汇到这里
     const sized = files.filter(
       (file) => uploadSizeError(file, 'ACTIVITY_IMAGE') === null,
     );
@@ -217,9 +216,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
   const contentNearLimit = content.length >= CONTENT_WARN_AT;
 
-  // 整页都是投放区：图片拖到任意位置都会进图库，不再被浏览器接管。
-  // dragActive 用根元素的 enter/leave 自己追踪 —— react-dropzone 只在
-  // dragleave 时复位 isDragActive，drop 不复位，直接用它做遮罩会卡住。
+  // 整页都是投放区：dragActive 用根元素 enter/leave 自己追踪——dropzone 只在 dragleave 复位 isDragActive，drop 不复位，用它做遮罩会卡住
   const {
     getInputProps,
     getRootProps,
@@ -241,7 +238,6 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
     },
   });
 
-  // 剪贴板只允许粘贴图片
   usePasteFiles({
     enabled: true,
     onFiles: (files) => {
@@ -522,17 +518,10 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
   );
 };
 
-/**
- * 外层只负责 route id 与 detail 数据分派：
- * 编辑态先展示加载/错误，就绪后以 key={activityId} 挂载编写器，
- * 表单初值全部来自 query data —— 不同编辑路由之间没有草稿串扰。
- */
 export const ActivityComposePage = () => {
   const navigate = useNavigate();
   const params = useParams({ strict: false }) as { activityId?: string };
-  // 路由 id 严格解析（M14）三分支：无 id（/activities/new）=新建；有 id
-  // 但非 /^\d+$/ 或 ≤0（如 /activities/0/edit）=内联无效态（复用 loadError
-  // 的视觉结构），不再静默变新建；合法 id=编辑。
+  // 路由 id 严格解析的三分支：无 id=新建；有 id 但非 /^\d+$/ 或 ≤0=内联无效态（复用 loadError 视觉），不静默变新建；合法 id=编辑
   const rawId = params.activityId ?? null;
   const editingId =
     rawId !== null && /^\d+$/.test(rawId) && Number(rawId) > 0

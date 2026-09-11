@@ -31,7 +31,6 @@ import {
 import { UploadDialog } from './upload-dialog';
 
 const PAGE_SIZE = 12;
-/** 状态筛选只在可选的两个状态上取值（DELETED 不参与筛选）。 */
 type AssetFilterStatus = 'AVAILABLE' | 'PENDING_CLEANUP';
 const STATUS_OPTIONS: AssetFilterStatus[] = ['AVAILABLE', 'PENDING_CLEANUP'];
 const MEDIA_OPTIONS: AssetMediaType[] = ['IMAGE', 'AUDIO'];
@@ -39,10 +38,6 @@ const MEDIA_OPTIONS: AssetMediaType[] = ['IMAGE', 'AUDIO'];
 const statusTone = (status: AssetStatus) =>
   status === 'AVAILABLE' ? 'ok' : status === 'PENDING_CLEANUP' ? 'warn' : 'err';
 
-/**
- * 缩略图直接顶到卡片内沿 —— 不再是「圆角盒子里再套一个圆角盒子」。
- * 卡片只声明一次抬升：描边，不叠投影。
- */
 const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   <Link
     className="
@@ -93,18 +88,9 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   </Link>
 );
 
-/* 只剩一两个资产时也不该出现一块 500px 宽的巨砖：轨道宽度固定，缺的补空位。
-   网格 h-full 撑满列表区，行高 minmax(min-content,1fr)：内容超过视口时
-   行取内容高、列表区照常滚动；视口高时 1fr 均分剩余高度。缩略图绝对定位
-   不参与行高计算（否则加载出来的图片会把行撑得参差不齐），由卡片内部的
-   缩略图区吸收增长，避免底部留白。 */
 const GRID_CLASS =
   'grid h-full grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] auto-rows-[minmax(min-content,1fr)] gap-3';
 
-/**
- * 与真实资产卡同构的骨架：图区（min-h-28、随行高吸收增长）+ 标签行（含状态
- * 读数位 28px）+ 三段元数据。块高按真实字号的 line-height 取 em，落地时卡高相等。
- */
 const AssetCardSkeleton = () => (
   <div
     aria-hidden
@@ -136,7 +122,7 @@ export const AssetsListPage = () => {
 
   const [uploadOpen, setUploadOpen] = useState(false);
 
-  // 空筛选不进 key：undefined 字段按「未提供」归一。
+  // 空筛选不进 key：undefined 字段按「未提供」归一
   const listQuery: AssetListQuery = {
     page,
     pageSize: PAGE_SIZE,
@@ -156,7 +142,7 @@ export const AssetsListPage = () => {
     search.mediaType !== undefined ||
     search.purpose !== undefined;
 
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
+  // 末页删光后页码越界：渲染期钳回最后一个非空页
   const clamping =
     data !== undefined &&
     data.items.length === 0 &&
@@ -199,8 +185,6 @@ export const AssetsListPage = () => {
         title="资产库"
       />
 
-      {/* 一行字盘式筛选条：空选项自己说清是哪一维（「全部用途」），
-          于是三个可见标签可以收掉，整排从三行塌成一行。 */}
       <div
         className="
           mt-5 grid grid-cols-2 gap-2

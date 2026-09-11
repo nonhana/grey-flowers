@@ -20,7 +20,6 @@ export const activityListOptions = (query: ActivityListQuery) =>
     queryFn: ({ signal }) => apiClient.activities.list(query, signal),
   });
 
-/** id 为 null（新建模式）时走 skipToken，查询不请求。 */
 export const activityDetailOptions = (id: number | null) =>
   queryOptions({
     queryKey: activityKeys.detail(id ?? 0),
@@ -29,8 +28,7 @@ export const activityDetailOptions = (id: number | null) =>
         ? skipToken
         : ({ signal }) => apiClient.activities.detail(id, signal),
   });
-
-/** 动态增删改后的规定失效：activities 全家族、overview 计数/趋势/节奏；删除级联评论的失效待接入 comments/users。 */
+/** 动态增删改后的规定失效：activities 全家族、overview 计数/趋势/节奏；删除级联评论的失效待接入 comments/users */
 export const invalidateActivitiesAfterMutation = async () => {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: activitiesRoot }),

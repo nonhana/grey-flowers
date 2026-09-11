@@ -16,17 +16,13 @@ const MENU_ITEMS = [
   to: ComponentProps<typeof Link>['to'];
 }>;
 
-// 子按钮从主按钮往上叠：FAB(56) + 间距(12) + 子按钮(48)。
+// 子按钮从主按钮往上叠：FAB(56) + 间距(12) + 子按钮(48)
 const CHILD_GAP = 12;
 const CHILD_SIZE = 48;
 const nearestBottom = 56 + CHILD_GAP;
 const stackStep = CHILD_SIZE + CHILD_GAP;
 
-/**
- * 移动端发布展开弹层（motion 懒加载部分）：遮罩 + 两个纯图标圆形弹簧弹出。
- * 用「常驻 DOM + animate」而非 AnimatePresence（React Compiler 下挂载动画被跳过，
- * 实测卡 initial）；展开态由 ConsoleShell 持有，供音乐按钮让位共享。
- */
+/** 用「常驻 DOM + animate」而非 AnimatePresence：Compiler 下挂载动画被跳过（实测卡 initial）；展开态由 ConsoleShell 持有，供音乐按钮让位共享 */
 export interface ComposeMenuProps {
   onOpenChange: (open: boolean) => void;
   open: boolean;
@@ -35,7 +31,7 @@ export interface ComposeMenuProps {
 export const ComposeMenu = ({ onOpenChange, open }: ComposeMenuProps) => {
   const prefersReducedMotion = useReducedMotion();
 
-  // 外部系统同步：菜单开着时在 window 上监听 Escape 关闭（全局键盘监听）。
+  // 外部系统同步：菜单开着时在 window 上监听 Escape 关闭（全局键盘监听）
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -51,7 +47,6 @@ export const ComposeMenu = ({ onOpenChange, open }: ComposeMenuProps) => {
 
   return (
     <>
-      {/* 点外面即收起：常驻透明层，只用透明度切换可见性。 */}
       <motion.button
         aria-label="收起发布菜单"
         className={cn(

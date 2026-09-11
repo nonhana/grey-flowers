@@ -8,7 +8,6 @@ import { controlClass } from '@/ui/form';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
 
-// 接口延迟控制面板（用于测试）
 export const ApiDelayControl = () => {
   const [value, setValue] = useState(() => readApiDelayMs());
   const [draft, setDraft] = useState('');

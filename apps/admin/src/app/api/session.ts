@@ -11,7 +11,6 @@ export interface SessionOptions {
   setAccessToken: (accessToken: string | null) => void;
 }
 
-// 基于 transport，附加身份校验与重试逻辑
 export const createSession = (options: SessionOptions) => {
   const { transport } = options;
 

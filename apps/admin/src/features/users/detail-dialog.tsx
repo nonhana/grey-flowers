@@ -63,10 +63,6 @@ const CommentRow = ({ comment }: { comment: CommentAdmin }) => (
   </article>
 );
 
-/**
- * 与 CommentRow 同构的骨架：path 行 + 三行正文（引用行可有可无，不画）。
- * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
- */
 const CommentRowSkeleton = () => (
   <article aria-hidden className="grid gap-1.5">
     <Skeleton className="h-[1.45em] w-2/3 text-2xs" />
@@ -77,7 +73,7 @@ const CommentRowSkeleton = () => (
   </article>
 );
 
-/** 单次打开会话内的详情体：评论页码构成 query key，翻页/重试都由 Query 驱动。 */
+/** 单次打开会话内的详情体：评论页码构成 query key，翻页/重试都由 Query 驱动 */
 const DetailBody = ({ user }: { user: UserAdminSummary }) => {
   const [commentPage, setCommentPage] = useState(1);
 
@@ -146,10 +142,7 @@ const DetailBody = ({ user }: { user: UserAdminSummary }) => {
   );
 };
 
-/**
- * 用户详情：资料头 + 分页评论历史（复用 commentAdminSchema 投影）。
- * 只读视图，编辑/删除走列表卡片操作。
- */
+/** 只读视图，编辑/删除走列表卡片操作 */
 export const UserDetailDialog = ({
   onClose,
   onExited,
@@ -160,7 +153,6 @@ export const UserDetailDialog = ({
   onClose: () => void;
   onExited?: () => void;
   open: boolean;
-  /** useDialog 的单调会话 id：重开/切换用户都从第 1 页重新开始。 */
   session: number;
   user: UserAdminSummary | null;
 }) => {

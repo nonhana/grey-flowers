@@ -242,7 +242,6 @@ export const SearchInput = ({
   </div>
 );
 
-/** 可切换的筛选筹码。选中态同时改变填充与描边，不只靠颜色。 */
 export const FilterChip = ({
   children,
   isSelected,

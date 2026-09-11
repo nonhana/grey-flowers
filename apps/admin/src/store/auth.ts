@@ -33,7 +33,7 @@ interface AuthState {
   signIn: (input: { account: string; password: string }) => Promise<void>;
   signOut: () => Promise<void>;
   useAnotherAccount: () => void;
-  /** 会话过期（401）时的兜底处理，供 apiClient 拦截器回调。 */
+  /** 会话过期（401）时的兜底处理，供 apiClient 拦截器回调 */
   decideSessionExpired: () => void;
 }
 
@@ -103,7 +103,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
   };
 
   const signIn = async (input: { account: string; password: string }) => {
-    // 登录前清掉上一主体可能残留的查询缓存。
+    // 登录前清掉上一主体可能残留的查询缓存
     queryClient.clear();
     set({ isSubmitting: true });
     try {
@@ -165,7 +165,6 @@ export const useAuthStore = create<AuthState>()((set, get) => {
   };
 });
 
-/** 认证状态与动作订阅（返回形状稳定，仅顶层字段变化时通知）。 */
 export const useAuth = () =>
   useAuthStore(
     useShallow((s) => ({

@@ -56,10 +56,7 @@ export const createAssetsApi = (channel: Channel) => ({
     }),
   detail: (id: number, signal?: AbortSignal) =>
     channel.get(`/assets/${id}`, assetDetailResponseSchema, { signal }),
-  /**
-   * 受管资产直传：presign 签发 URL → 浏览器 PUT 到 R2（进度真实）→
-   * confirm 回执落库。密钥不出服务端；100% 即 R2 接收完成。
-   */
+  /** 受管资产直传：presign 签发 URL → 浏览器 PUT 到 R2（进度真实）→ confirm 回执落库；密钥不出服务端，100% 即接收完成 */
   upload: async (
     input: { file: File; purpose: AssetPurpose },
     onUploadProgress?: (progress: number) => void,

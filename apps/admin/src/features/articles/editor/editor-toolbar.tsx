@@ -83,9 +83,6 @@ export const EditorToolbar = ({
   onOpenPicker: () => void;
   onRun: (run: (view: EditorView) => void) => void;
 }) => (
-  /*
-   桌面端是顶栏，移动端吸底并跟随软键盘上移——打字时拇指够不到顶栏等于没有。
-  */
   <div
     aria-label="Markdown 插入工具"
     className={cn(

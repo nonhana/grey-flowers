@@ -41,7 +41,6 @@ const Row = ({
 
 const DetailSkeleton = () => (
   <PageBody>
-    {/* 与真实详情同构：页头位 + 方封面 + 播放面板 + 元数据面板 */}
     <div className="grid animate-content-in gap-4">
       <div className="flex items-center gap-2">
         <Skeleton className="size-10 shrink-0 rounded-control" />
@@ -136,9 +135,7 @@ export const MusicDetailPage = () => {
       toggle();
       return;
     }
-    // 点播即播这首（L-15）：当前队列里有它就按原位播；没有（含队列为
-    // 空）就把它插到队首再播——不再让 player 把 findIndex=-1 钳成 0 而
-    // 在其他队列播放中点播时播错歌。
+    // 点播即播这首：队列里有就按原位播，没有就插到队首再播——不再让 findIndex=-1 被钳成 0 而播错歌
     const index = playlist.findIndex((track) => track.id === music.id);
     if (index === -1) {
       play([music, ...playlist], 0);

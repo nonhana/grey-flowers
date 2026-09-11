@@ -1,9 +1,5 @@
 import { EditorView } from '@codemirror/view';
 
-/**
- * 纸面主题：刻意无行号（行号是代码编辑器的度量）、行宽 68ch、
- * 底部 45vh 留白让末行能滚到视线中央。
- */
 export const paperTheme = EditorView.theme({
   '&': {
     backgroundColor: 'var(--color-paper)',
@@ -39,7 +35,6 @@ export const paperTheme = EditorView.theme({
   },
   '.cm-placeholder': { color: 'var(--color-ink-dim)' },
 
-  /* 所见即所得层：图片、上传幽灵、块级观感、链接 */
   '& .gf-live-img': {
     display: 'inline-flex',
     alignItems: 'center',

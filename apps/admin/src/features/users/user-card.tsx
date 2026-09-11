@@ -113,10 +113,6 @@ export const UserCard = ({
   </article>
 );
 
-/**
- * 与真实用户卡同构的骨架：头像 40px 主导行高，右侧三个操作位。
- * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
- */
 export const UserCardSkeleton = () => (
   <article
     aria-hidden

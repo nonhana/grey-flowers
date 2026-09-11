@@ -18,7 +18,7 @@ import { controlClass, FilterChip } from '@/ui/form';
 import { ConfirmDialog } from '@/ui/overlay';
 import { PageBody, PageHeader, RowStack } from '@/ui/surface';
 
-/** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳。 */
+/** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳 */
 const TagRowSkeleton = () => (
   <div
     aria-hidden

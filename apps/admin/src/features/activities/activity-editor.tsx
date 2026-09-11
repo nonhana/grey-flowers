@@ -33,7 +33,7 @@ import { paperHighlight } from '@/features/articles/editor/paper-highlight';
 import { paperTheme } from '@/features/articles/editor/paper-theme';
 import { IconButton } from '@/ui/button';
 
-// 动态正文是受限 Markdown 子集（schema 拒标题/HTML/图片/表格），工具条只放白名单内。
+// 动态正文是受限 Markdown 子集（schema 拒标题/HTML/图片/表格），工具条只放白名单内
 const FORMAT_ACTIONS = [
   {
     icon: Bold,
@@ -68,16 +68,10 @@ const FORMAT_ACTIONS = [
   },
 ] as const;
 
-/** 短文用不到长文那 45vh 的下部留白，压矮，让最后的字不悬在半空。 */
 const activityPaperOverrides = View.theme({
   '.cm-content': { paddingBottom: '1.5rem' },
 });
 
-/**
- * Cmd/Ctrl+Enter 的模块级发布槽位：挂载后由 effect 注入最新 onSubmit，
- * 键入路径经它触发（M5：事件路径更新，不在渲染期写入）。与 imageActions
- * 同一权衡——本编辑器全站单实例（compose-page）。
- */
 const activitySubmit: { current: () => void } = { current: () => undefined };
 
 export const ActivityEditor = ({
@@ -86,29 +80,23 @@ export const ActivityEditor = ({
   value,
 }: {
   onChange: (value: string) => void;
-  /** Cmd/Ctrl+Enter：在编辑器内直接按下也会触发发布。 */
   onSubmit: () => void;
   value: string;
 }) => {
   const viewRef = useRef<EditorView | null>(null);
 
-  // Cmd/Ctrl+Enter 的模块级发布槽位经事件路径更新（M5）：不在渲染期写入；
-  // 该 effect 属「CodeMirror action registration」白名单项。
+  // Cmd/Ctrl+Enter 的模块级发布槽位经事件路径更新：不在渲染期写入；该 effect 属「CodeMirror action registration」白名单项
   useEffect(() => {
     activitySubmit.current = onSubmit;
   });
 
-  // 扩展只在挂载时构建一次（M5）：react-codemirror 对 extensions 引用
-  // 变化执行整体 reconfigure，逐键重建数组会让每次键入都付这笔开销。
-  // 交互出口走模块级 activitySubmit 槽位，闭包不随渲染变化。
+  // 扩展只在挂载时构建一次：extensions 引用变化会整体 reconfigure，逐键重建让每次键入都付这笔开销；交互出口走模块级 activitySubmit 槽位
   const [extensions] = useState<Extension[]>(() => [
     View.lineWrapping,
     history(),
     markdown({ base: markdownLanguage }),
     syntaxHighlighting(paperHighlight, { fallback: true }),
-    // Cmd/Ctrl+Enter 发布。在 DOM 层高优先级拦下：keymap 的 Mod-Enter 在本
-    // 环境构建产物里对不上号（Meta+F 正常、Mod-Enter 始终不命中），DOM 层
-    // 一定能收到键按下事件，且 Mac/Windows 的修饰键都覆盖。
+    // Cmd/Ctrl+Enter 发布在 DOM 层高优先级拦下：keymap 的 Mod-Enter 在本环境构建产物里对不上号，DOM 层一定能收到且覆盖 Mac/Win 修饰键
     Prec.high(
       View.domEventHandlers({
         keydown(event) {

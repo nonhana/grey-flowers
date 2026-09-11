@@ -17,10 +17,7 @@ import { MetaLine } from '@/ui/surface';
 import { CommentBody } from './comment-card';
 import { commentPageUrl } from './display';
 
-/**
- * session-keyed 快捷回复表单（L-25）：quickContent 住在会话组件里，
- * 同一条评论重开也得到全新输入，不残留上次未发送的内容。
- */
+/** session-keyed 快捷回复表单：quickContent 住在会话组件里，重开也得到全新输入，不残留上次未发送的内容 */
 const QuickReplyForm = ({ comment }: { comment: CommentAdminTree }) => {
   const [quickContent, setQuickContent] = useState('');
 
@@ -73,11 +70,7 @@ const QuickReplyForm = ({ comment }: { comment: CommentAdminTree }) => {
   );
 };
 
-/**
- * 会话视图 = 查看评论上下文的载体：同 path 会话树（PARENT + 全部 CHILD）。
- * 头部给 path 面包屑 + 「在访客页打开」外链 + 总条数；底部最小回复框快捷回复 PARENT；
- * 每行复用 CommentBody 的行内操作（回复/删除），由调用方挂接共享弹窗。
- */
+/** 每行复用 CommentBody 的行内操作（回复/删除），由调用方挂接共享弹窗 */
 export const SessionDialog = ({
   comment,
   onClose,
@@ -93,7 +86,6 @@ export const SessionDialog = ({
   onExited?: () => void;
   onReply: (target: CommentAdmin) => void;
   open: boolean;
-  /** useDialog 的单调会话 id：作为快捷回复表单的 key，重开必得全新输入。 */
   session: number;
 }) => {
   const sessionCount = comment ? 1 + comment.childrenCount : 0;

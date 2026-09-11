@@ -1,10 +1,7 @@
 import { HighlightStyle } from '@codemirror/language';
 import { tags } from '@lezer/highlight';
 
-/**
- * 克制的语法着色：标题靠字号和字重，强调靠字重和字形，
- * 只有链接和列表符号动用强调蓝。没有第二个色系。
- */
+/** 克制的语法着色：标题靠字号和字重，强调靠字重和字形，只有链接和列表符号动用强调蓝 */
 export const paperHighlight = HighlightStyle.define([
   {
     tag: tags.heading1,
@@ -45,6 +42,6 @@ export const paperHighlight = HighlightStyle.define([
   },
   { tag: tags.list, color: 'var(--color-accent-text)' },
   { tag: tags.contentSeparator, color: 'var(--color-ink-dim)' },
-  // Markdown 的 # ** ` 这些记号本身，压到最淡，让内容浮出来。
+  // Markdown 的 # ** ` 这些记号本身，压到最淡，让内容浮出来
   { tag: tags.processingInstruction, color: 'var(--color-ink-dim)' },
 ]);

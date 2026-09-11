@@ -49,8 +49,7 @@ const EMPTY_FORM: WizForm = {
 const fallbackTitle = (name: string) =>
   name.replace(/\.[^/.]+$/, '') || '未命名';
 
-// music-metadata 体积大且多数上传页访问者未必拖文件（交接 P2）：
-// 不随上传页静态加载，改为解析前动态 import；拖入/聚焦 dropzone 时预取以抵消等待。
+// 不随上传页静态加载，改为解析前动态 import；拖入/聚焦 dropzone 时预取以抵消等待
 let parserPromise: Promise<typeof MusicMetadata> | null = null;
 const prefetchParser = () => (parserPromise ??= import('music-metadata'));
 
@@ -63,7 +62,6 @@ export const UploadWizard = () => {
   const [embeddedCover, setEmbeddedCover] = useState<EmbeddedCover | null>(
     null,
   );
-  // 幂等重试（M7）：已成功直传的段记入 state，重试直接复用资产 id 不重传。
   const [uploaded, setUploaded] = useState<{
     coverAssetId: number | null;
     sourceAssetId: number | null;
@@ -72,17 +70,17 @@ export const UploadWizard = () => {
   const [error, setError] = useState('');
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
-  // 并发解析守卫（L-8）：只认最新一次选择，过期解析结果整体丢弃。
+  // 并发解析守卫：只认最新一次选择，过期解析结果整体丢弃
   const latestFileRef = useRef<File | null>(null);
 
-  // 内嵌封面 objectURL 跟随组件生命周期释放。
+  // 内嵌封面 objectURL 跟随组件生命周期释放
   useEffect(() => {
     return () => {
       if (embeddedCover) URL.revokeObjectURL(embeddedCover.objectUrl);
     };
   }, [embeddedCover]);
 
-  /** 解析唯一一次：发生在客户端（拖入即解析），服务端不再解析媒体。 */
+  /** 解析唯一一次：发生在客户端（拖入即解析），服务端不再解析媒体 */
   const startWithFile = async (target: File) => {
     const isAudio =
       target.type.startsWith('audio/') ||
@@ -91,7 +89,7 @@ export const UploadWizard = () => {
       setError('请选择音频文件。');
       return;
     }
-    // 选入即校验（M15）：0 字节与超限音频不等一次必败请求。
+    // 选入即校验：0 字节与超限音频不等一次必败请求
     const sizeError = uploadSizeError(target, 'MUSIC_SOURCE');
     if (sizeError !== null) {
       setError(sizeError);
@@ -103,7 +101,7 @@ export const UploadWizard = () => {
     setProgress(0);
     setError('');
     setSaveError('');
-    // 新文件重新计费：上一次选择已完成的段不再沿用。
+    // 新文件重新计费：上一次选择已完成的段不再沿用
     setUploaded({ coverAssetId: null, sourceAssetId: null });
 
     const degrade = (title: string) => {
@@ -122,7 +120,7 @@ export const UploadWizard = () => {
     try {
       const { parseBlob } = await prefetchParser();
       const { common, format } = await parseBlob(target);
-      // 过期解析：已有更新的选择在途，丢弃本次结果，不覆盖任何状态。
+      // 过期解析：已有更新的选择在途，丢弃本次结果，不覆盖任何状态
       if (latestFileRef.current !== target) return;
       const picture = common.picture?.[0];
       const embedded = picture
@@ -149,7 +147,6 @@ export const UploadWizard = () => {
       setPhase('ready');
     } catch {
       if (latestFileRef.current !== target) return;
-      // 不可解析：降级为文件名标题，仍可手动补全后保存。
       degrade(fallbackTitle(target.name));
       setError('未能解析文件元数据，已用文件名作为标题，可手动补全。');
     }
@@ -166,8 +163,7 @@ export const UploadWizard = () => {
     setSaveError('');
     setProgress(0);
 
-    // 幂等重试（M7）：本次运行内的段完成情况记入快照，已完成的段直接
-    // 复用资产 id，断网重试不重复直传、不制造孤儿资产。
+    // 幂等重试：本次运行的段完成情况记入快照，已完成的段直接复用资产 id，断网重试不重复直传、不制造孤儿资产
     const done = {
       coverAssetId: uploaded.coverAssetId,
       sourceAssetId: uploaded.sourceAssetId,
@@ -204,7 +200,6 @@ export const UploadWizard = () => {
     };
 
     try {
-      // 音源直传（进度真实可感知）与内嵌封面上传并行。
       const [sourceAsset, pickedCoverAssetId] = await Promise.all([
         uploadSource(),
         uploadCover(),
@@ -218,15 +213,14 @@ export const UploadWizard = () => {
         seconds: form.seconds,
         sourceAssetId: sourceAsset.id,
         title: form.title.trim(),
-        // 解析出的内嵌封面或资源库封面走受管资产；否则以外部 URL 为准。
+        // 解析出的内嵌封面或资源库封面走受管资产；否则以外部 URL 为准
         ...(coverAssetId === null
           ? { cover: form.cover.trim() }
           : { coverAssetId }),
       });
 
       if (embeddedCover) URL.revokeObjectURL(embeddedCover.objectUrl);
-      // 音源/封面资产记录与音乐记录都已落库：标记资产缓存过期并失效音乐家族，
-      // 音乐库列表在导航回来时自动拿到新数据。
+      // 音源/封面资产记录与音乐记录都已落库：标记资产缓存过期并失效音乐家族，导航回来列表自动拿到新数据
       markAssetsStale();
       await invalidateMusicAfterMutation();
       toast.success('已加入音乐库。');
@@ -399,8 +393,7 @@ export const UploadWizard = () => {
             cover: asset.deliveryUrl,
             coverAssetId: asset.id,
           }));
-          // 换库封面即弃用内嵌封面（M8）：置空后 objectURL 由生命周期
-          // effect 释放，保存时不再上传注定被弃置的内嵌结果。
+          // 换库封面即弃用内嵌封面：置空后 objectURL 由生命周期 effect 释放，保存不再上传注定弃置的内嵌结果
           setEmbeddedCover(null);
           setPickerOpen(false);
         }}

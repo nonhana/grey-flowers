@@ -25,7 +25,7 @@ describe('resolveRailSize · 拖拽（pointer）', () => {
       collapsed: true,
       width: RAIL_SIZE.default,
     });
-    // 钳制带内（X, Y] 保持展开在最小宽度，不折叠。
+    // 钳制带内（X, Y] 保持展开在最小宽度，不折叠
     expect(resolveRailSize(expanded, RAIL_SIZE.collapsed + 1)).toEqual({
       collapsed: false,
       width: RAIL_SIZE.min,
@@ -59,7 +59,6 @@ describe('resolveRailSize · 键盘（keyboard）', () => {
       collapsed: true,
       width: RAIL_SIZE.default,
     });
-    // 未低于最小宽度时正常钳制。
     expect(resolveRailSize(expanded, RAIL_SIZE.min, 'keyboard')).toEqual({
       collapsed: false,
       width: RAIL_SIZE.min,

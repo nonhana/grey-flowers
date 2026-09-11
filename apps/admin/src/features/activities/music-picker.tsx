@@ -18,10 +18,6 @@ import { Paginator } from '@/ui/paginator';
 const PAGE_SIZE = 20;
 const SELECT_LIMIT = 10;
 
-/**
- * 与真实选择行同构：封面 44px + 标题/艺术家两段 + 时长位。
- * 行高与真实相等（封面主导），数据落地时列表不跳。
- */
 const MusicRowSkeleton = () => (
   <div
     aria-hidden
@@ -36,11 +32,7 @@ const MusicRowSkeleton = () => (
   </div>
 );
 
-/**
- * session-keyed 内层（L-21）：搜索框与 300ms 防抖住在会话组件里，挂载即
- * 从空查询开始 —— 重开对话框不会再拿上一个会话的已提交关键词发一次
- * 注定被丢弃的请求。选择集也随会话播种，确认前一直保留。
- */
+/** session-keyed 内层：搜索框与 300ms 防抖住在会话组件里，挂载即从空查询开始，重开不发注定被丢弃的请求；选择集随会话播种，确认前一直保留 */
 const MusicPickerBody = ({
   isOpen,
   onConfirm,
@@ -257,8 +249,7 @@ export const MusicPickerDialog = ({
   onOpenChange: (open: boolean) => void;
   selected: MusicTrack[];
 }) => {
-  // 每次 open 产生新的 session：session 作为内层组件的 key，重开即拿到
-  // 全新的搜索/页码/选择状态，旧会话（含退出动画期间）不再污染新会话。
+  // 每次 open 产生新的 session 作内层 key：重开即拿到全新的搜索/页码/选择状态，退出动画期间旧会话不污染新会话
   const [session, setSession] = useState(0);
   const [wasOpen, setWasOpen] = useState(isOpen);
   if (isOpen && !wasOpen) {

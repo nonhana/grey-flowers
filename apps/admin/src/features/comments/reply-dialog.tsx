@@ -20,7 +20,7 @@ export interface ReplyTarget {
   username: string;
 }
 
-/** 单次打开会话内的表单：content 每次打开都从空白开始。 */
+/** 单次打开会话内的表单：content 每次打开都从空白开始 */
 const ReplyForm = ({
   onSent,
   target,
@@ -30,8 +30,7 @@ const ReplyForm = ({
 }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
-  // sent 态（L-17）：成功到对话框卸载之间的退出动画窗口里，提交与取消
-  // 都被禁用 —— 成功瞬间连点不可能发出第二条回复。
+  // sent 态：成功到卸载之间的退出动画窗口里提交与取消都禁用——成功瞬间连点发不出第二条回复
   const [sent, setSent] = useState(false);
 
   const sendMutation = useMutation({
@@ -117,7 +116,6 @@ export const ReplyDialog = ({
   onClose: () => void;
   onExited?: () => void;
   open: boolean;
-  /** useDialog 的单调会话 id：重开同一目标也重建全新表单。 */
   session: number;
   target: ReplyTarget | null;
 }) => {

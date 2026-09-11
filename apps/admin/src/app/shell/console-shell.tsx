@@ -45,7 +45,6 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
   </nav>
 );
 
-// 控制台外壳
 export const ConsoleShell = () => {
   const [composeOpen, setComposeOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);

@@ -1,10 +1,7 @@
 import { cn } from 'cn';
 import { Slider, SliderThumb, SliderTrack } from 'react-aria-components';
 
-/**
- * 可拖拽进度/音量条。RAC Slider 负责指针/键盘/ARIA；
- * 手柄静止时隐藏，悬停或拖动时浮现 —— 进度条自身描出所在位置。
- */
+/** 可拖拽进度/音量条 */
 export const TrackSlider = ({
   className,
   label,

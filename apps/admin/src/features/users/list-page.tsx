@@ -62,7 +62,6 @@ export const UsersPage = () => {
     search: searchValue ?? '',
   }));
 
-  // 筛选草稿整体 300ms 防抖提交进 URL，页码一并重置。
   const commitFilters = useDebouncedCallback((value: UserFilterDraft) => {
     navigateSearch(
       {
@@ -74,7 +73,6 @@ export const UsersPage = () => {
     );
   }, 300);
 
-  // 卸载时取消未提交的防抖 timer。
   useEffect(() => () => commitFilters.cancel(), [commitFilters]);
 
   const listQuery: UserListQuery = {
@@ -92,7 +90,7 @@ export const UsersPage = () => {
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter = searchValue !== undefined || role !== undefined;
 
-  // 末页删光后页码越界：渲染期推导钳制，effect 提交钳回最后一个非空页（L-18）。
+  // 末页删光后页码越界：渲染期推导钳制，effect 提交钳回最后一个非空页
   const clamping =
     data !== undefined &&
     data.items.length === 0 &&
@@ -119,7 +117,7 @@ export const UsersPage = () => {
       await invalidateUsersAfterMutation();
     },
     onError: (cause) => {
-      // CONFLICT（删管理员 / 有资产快照）的消息由服务端中文 message 透出。
+      // CONFLICT（删管理员 / 有资产快照）的消息由服务端中文 message 透出
       toastError(cause);
     },
   });

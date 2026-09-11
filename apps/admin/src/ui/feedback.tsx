@@ -109,7 +109,6 @@ export const Spinner = ({
   </span>
 );
 
-/** 发布状态：文字说清，颜色只作补强，不作为唯一信号。 */
 export const PublishBadge = ({ published }: { published: boolean }) => (
   <span
     className={cn(

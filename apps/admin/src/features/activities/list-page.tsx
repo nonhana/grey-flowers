@@ -27,10 +27,6 @@ import { ActivityCard } from './activity-card';
 
 const PAGE_SIZE = 10;
 
-/**
- * 与真实动态卡同构的骨架（取最常见形态：两行预览 + 双图网格 + 元数据行）。
- * 图片数 0–3 不定，无法逐像素预测卡高 —— 双图是分布中心，落地跳动最小。
- */
 const ActivityCardSkeleton = () => (
   <div
     aria-hidden
@@ -66,7 +62,6 @@ export const ActivitiesPage = () => {
   const navigateSearch = useSearchNavigation('/activities', search);
 
   const [draft, setDraft] = useState(() => search.search ?? '');
-  // 300ms 防抖提交：replace + 页码一并重置。
   const commitSearch = useDebouncedCallback((value: string) => {
     navigateSearch(
       { page: undefined, search: value.trim() || undefined },
@@ -92,7 +87,7 @@ export const ActivitiesPage = () => {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const hasQuery = search.search !== undefined;
 
-  // 越界钳制：页码超界时渲染骨架，effect 同步回最后有效页。
+  // 越界钳制：页码超界时渲染骨架，effect 同步回最后有效页
   const clamping =
     items.length === 0 && page > 1 && total > 0 && totalPages < page;
 
@@ -124,7 +119,6 @@ export const ActivitiesPage = () => {
       toggle();
       return;
     }
-    // 把这条动态的音乐整组作为播放列表入队（点播队列，跨路由常驻）。
     play(activity.music, index);
   };
 

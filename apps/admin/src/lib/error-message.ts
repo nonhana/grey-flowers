@@ -11,10 +11,6 @@ const COMMON: Partial<Record<ApiErrorCode, CodeMessage>> = {
   AUTH_FORBIDDEN: AUTH_FORBIDDEN_MESSAGE,
 };
 
-/**
- * API 错误 → 用户可读文案：按错误码查表（可返回字符串或基于错误的函数），
- * 未命中退回服务端 message；非请求错误走通用兜底。
- */
 export const apiErrorMessage = (
   error: unknown,
   byCode: Partial<Record<ApiErrorCode, CodeMessage>> = {},

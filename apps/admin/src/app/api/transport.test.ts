@@ -19,7 +19,7 @@ const okResponse = (body: unknown) => ({
   json: () => Promise.resolve(body),
 });
 
-/** 全接受 schema：任何 body 都按成功数据返回（Standard Schema validate 形态）。 */
+/** 全接受 schema：任何 body 都按成功数据返回（Standard Schema validate 形态） */
 const permissiveSchema = {
   '~standard': {
     version: 1,

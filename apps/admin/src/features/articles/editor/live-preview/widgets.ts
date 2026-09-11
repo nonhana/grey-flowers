@@ -2,7 +2,7 @@ import { WidgetType } from '@codemirror/view';
 
 import type { UploadEntry } from './upload-state';
 
-/** React 侧的交互出口；CodeMirrorPane 挂载时注入。 */
+/** React 侧的交互出口；CodeMirrorPane 挂载时注入 */
 export interface ImageActions {
   open: (src: string, alt: string, assetId: string | null) => void;
   edit: (src: string, alt: string) => void;
@@ -91,8 +91,7 @@ export class UploadGhostWidget extends WidgetType {
   }
 
   eq(other: UploadGhostWidget) {
-    // 进度是幽灵图的意义所在：只比 id 会让 updateUpload 的进度更新
-    // 被 CodeMirror 判定为「相等」而跳过 DOM 重建，进度永远停在 0%。
+    // 进度是幽灵图的意义所在：只比 id 会让 updateUpload 的进度更新被判「相等」跳过 DOM 重建，进度永远停在 0%
     return (
       other.item.id === this.item.id &&
       other.item.progress === this.item.progress

@@ -6,37 +6,23 @@ import type {
 
 import { useState } from 'react';
 
-/**
- * 把组件某条边变成可拖拽调整尺寸的把手：只负责手势与几何
- * （pointer 拖拽、方向换算、min/max 钳制、键盘调节、拖拽期文本选择抑制）；
- * 吸附/阈值/折叠等业务状态机由调用方在 onResize 里用 meta.raw（未钳制建议值）自行处理。
- * 方向：right/bottom 向外拖（+x/+y）尺寸增大，left/top 相反；键盘 Arrow→大、Home→min、End→max。
- */
+/** 把手方向：right/bottom 向外拖（+x/+y）尺寸增大，left/top 相反；键盘 Arrow→大、Home→min、End→max */
 export type ResizeEdge = 'top' | 'right' | 'bottom' | 'left';
 
 export type ResizeSource = 'pointer' | 'keyboard';
 
 export interface ResizeChange {
-  /** 未钳制的原始建议尺寸（阈值/吸附判断用） */
   raw: number;
-  /** 变化来源：拖拽或键盘 */
   source: ResizeSource;
 }
 
 export interface UseResizableEdgeOptions {
-  /** 被调整尺寸的元素；pointerdown / 键盘调节时从这里读取当前尺寸 */
   ref: RefObject<HTMLElement | null>;
-  /** 挂把手的那条边 */
   edge: ResizeEdge;
-  /** 尺寸下钳（px） */
   min?: number;
-  /** 尺寸上钳（px） */
   max?: number;
-  /** 键盘单步（px） */
   keyboardStep?: number;
-  /** 尺寸变化回调。size 为钳制后的建议尺寸，meta 提供未钳制值与来源。 */
   onResize: (size: number, change: ResizeChange) => void;
-  /** 一次拖拽结束（pointerup / pointercancel），size 为本次拖拽的最终尺寸 */
   onResizeEnd?: (size: number) => void;
 }
 
@@ -85,7 +71,6 @@ export const useResizableEdge = ({
     const startX = event.clientX;
     const startY = event.clientY;
     const horizontal = isHorizontal(edge);
-    // right/bottom：正方向拖拽使尺寸增大；left/top 相反。
     const sign = edge === 'right' || edge === 'bottom' ? 1 : -1;
     let lastRaw = startSize;
 

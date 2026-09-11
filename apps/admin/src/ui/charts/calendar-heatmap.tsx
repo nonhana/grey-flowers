@@ -22,7 +22,6 @@ const levelOf = (count: number) =>
 
 const MIN_LABEL_GAP = 4;
 
-// 发布节奏热力图
 export const CalendarHeatmap = ({
   ariaLabel,
   days,
@@ -34,7 +33,7 @@ export const CalendarHeatmap = ({
   const [cursorIndex, setCursorIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // 外部系统同步：日历渲染后把横向滚动归位到最新一天（DOM scrollLeft）。
+  // 外部系统同步：日历渲染后把横向滚动归位到最新一天（DOM scrollLeft）
   useEffect(() => {
     if (days.length === 0) return;
     const node = scrollRef.current;
@@ -49,7 +48,6 @@ export const CalendarHeatmap = ({
 
   const first = parseDate(days[0].date);
   const gridStart = startOfWeek(first, CAL_LOCALE);
-  // first 在本周内的序号 = 网格开头要补的空格数。
   const padStart = getDayOfWeek(first, CAL_LOCALE);
   const columns = Math.ceil((padStart + days.length) / 7);
 

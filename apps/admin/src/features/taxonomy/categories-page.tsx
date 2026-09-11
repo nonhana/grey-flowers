@@ -25,7 +25,7 @@ import { AssetImage } from '@/ui/image';
 import { AppDialog, ConfirmDialog } from '@/ui/overlay';
 import { PageBody, PageHeader, RowStack } from '@/ui/surface';
 
-/** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位。 */
+/** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位 */
 const CategoryRowSkeleton = () => (
   <div aria-hidden className="flex items-center gap-4 px-4 py-3">
     <Skeleton className="size-12 shrink-0 rounded-control" />

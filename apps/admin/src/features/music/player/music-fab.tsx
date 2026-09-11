@@ -2,11 +2,7 @@ import { Disc3 } from 'lucide-react';
 
 import { usePlayerStore } from '@/store/player';
 
-/**
- * 移动端右下角音乐管理入口：圆形悬浮按钮，悬于发布 FAB 正上方。
- * 有曲目时出现、清空后消失；点击展开全屏「正在播放」。
- * 发布菜单展开期间让位隐藏——菜单子按钮的堆叠区正好覆盖本按钮位置。
- */
+/** 发布菜单展开期间让位隐藏——菜单子按钮的堆叠区正好覆盖本按钮位置 */
 export const MusicFab = ({
   composeMenuOpen,
   onOpen,

@@ -49,7 +49,6 @@ function findImage(view: EditorView, src: string, anchor: number) {
   return located;
 }
 
-/** 重写某张图片的 alt。 */
 export function rewriteImageAlt(view: EditorView, src: string, alt: string) {
   const found = findImage(view, src, 0);
   if (!found) return;
@@ -58,7 +57,6 @@ export function rewriteImageAlt(view: EditorView, src: string, alt: string) {
   });
 }
 
-/** 删除某张图片（连同 `{asset-id}` 尾巴）。 */
 export function removeImage(view: EditorView, src: string, anchor: number) {
   const found = findImage(view, src, anchor);
   if (!found) return;

@@ -45,7 +45,6 @@ const VolumeIcon = ({ muted, volume }: { muted: boolean; volume: number }) => {
   return <Volume2 aria-hidden />;
 };
 
-/** 桌面 docked 播放条：跨路由常驻，挂在 ConsoleShell 底部。 */
 export const PlayerBar = () => {
   const track = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);

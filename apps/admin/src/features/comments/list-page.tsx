@@ -317,7 +317,6 @@ export const CommentsPage = () => {
   }>();
   const batchDialog = useDialog<number[]>();
 
-  // 筛选草稿 300ms 防抖整体提交；空串字段统一降级为 undefined。
   const commitFilters = useDebouncedCallback((next: CommentFilterDraft) => {
     const authorIdRaw = next.authorId.trim();
     navigateSearch(
@@ -340,7 +339,7 @@ export const CommentsPage = () => {
     commitFilters(next);
   };
 
-  // 筛选提交即清空选择集（L-11）：跨筛选的选择没有意义还会误删。
+  // 筛选提交即清空选择集：跨筛选的选择没有意义还会误删
   const filterKey = [
     search.authorId ?? '',
     search.endDate ?? '',
@@ -356,7 +355,7 @@ export const CommentsPage = () => {
   const [prevPage, setPrevPage] = useState(page);
   if (prevPage !== page) {
     setPrevPage(page);
-    // 翻页同样清空选择集（L-11）。
+    // 翻页同样清空选择集
     setSelectedIds(new Set());
   }
 
@@ -374,7 +373,7 @@ export const CommentsPage = () => {
   const items = data?.items ?? [];
   const total = data?.total ?? 0;
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  // 末页删光后页码越界：渲染期推导 + effect 钳回最后一个非空页（L-18）。
+  // 末页删光后页码越界：渲染期推导 + effect 钳回最后一个非空页
   const clamping =
     items.length === 0 && page > 1 && total > 0 && totalPages < page;
 
@@ -409,7 +408,7 @@ export const CommentsPage = () => {
     mutationFn: (ids: number[]) => apiClient.comments.removeBatch(ids),
     onSuccess: async (result) => {
       toast.success(`已删除 ${result.deleted} 条评论。`);
-      // 批删成功后才清空选择集（L-11）：mutation 失败时选择保留可重试。
+      // 批删成功后才清空选择集：mutation 失败时选择保留可重试
       setSelectedIds(new Set());
       await invalidateCommentsAfterMutation();
     },
@@ -450,7 +449,7 @@ export const CommentsPage = () => {
     const ids = batchDialog.data;
     if (!ids || ids.length === 0) return;
     batchDialog.dismiss();
-    // 不在此处清空选择集：清空移入 removeBatchMutation.onSuccess（L-11）。
+    // 不在此处清空选择集：清空移入 removeBatchMutation.onSuccess
     removeBatchMutation.mutate(ids);
   };
 

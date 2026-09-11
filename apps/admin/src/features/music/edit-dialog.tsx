@@ -30,7 +30,7 @@ interface EditForm {
   title: string;
 }
 
-/** 单次打开会话内的表单：挂载时以当前 music 初始化，重开由 session key 重建。 */
+/** 单次打开会话内的表单：挂载时以当前 music 初始化，重开由 session key 重建 */
 const EditForm = ({
   music,
   onClose,
@@ -72,7 +72,7 @@ const EditForm = ({
       album: form.album.trim(),
       artist: form.artist.trim(),
       title,
-      // 选了受管封面时服务端以资产为准；否则以外部 URL 为准（coverAssetId 报 null 表示无受管封面）。
+      // 选了受管封面时服务端以资产为准；否则以外部 URL 为准（coverAssetId 报 null 表示无受管封面）
       ...(form.coverAssetId === null
         ? { cover: form.cover.trim() }
         : { coverAssetId: form.coverAssetId }),
@@ -213,8 +213,7 @@ export const EditMusicDialog = ({
   onExited?: () => void;
   open: boolean;
 }) => {
-  // 每次 open 产生新的 session identity：keyed inner form 据此重建，
-  // 同一首曲目快速重开也拿到以当前数据初始化的全新表单。
+  // 每次 open 产生新的 session identity：keyed inner form 据此重建，快速重开也拿到以当前数据初始化的全新表单
   const [session, setSession] = useState(0);
   const [wasOpen, setWasOpen] = useState(open);
   if (open && !wasOpen) {

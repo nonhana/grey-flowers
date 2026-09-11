@@ -93,7 +93,7 @@ export const ImageStrip = ({
             flex snap-x snap-mandatory list-none gap-2 overflow-x-auto
             overscroll-x-contain pb-1
           "
-          // 缩略图重排是自己拖的 DOM 节点，别让外层 dropzone 把它当成文件拖放。
+          // 缩略图重排是自己拖的 DOM 节点，别让外层 dropzone 把它当成文件拖放
           onDragEnter={(event) => event.stopPropagation()}
           onDragLeave={(event) => event.stopPropagation()}
           onDragOver={(event) => event.stopPropagation()}

@@ -19,8 +19,6 @@ const getSnapshot = () => {
   return hidden > 24 ? Math.round(hidden) : 0;
 };
 
-/** 软键盘遮住的高度：键盘收起 visual viewport 而 layout viewport 不变，
-  吸底工具条会被压住，据此上移；桌面端恒 0。visualViewport 是浏览器
-  可变外部 store，用 useSyncExternalStore 订阅。 */
+/** 软键盘遮住的高度：键盘收起 visual viewport 而 layout viewport 不变，吸底工具条据此上移；桌面端恒 0。visualViewport 是可变外部 store，用 useSyncExternalStore 订阅 */
 export const useKeyboardInset = () =>
   useSyncExternalStore(subscribe, getSnapshot, () => 0);

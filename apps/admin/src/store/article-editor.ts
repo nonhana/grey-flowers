@@ -70,7 +70,7 @@ export interface ArticleEditorActions {
   applyRestored: (candidate: RestoreCandidate) => void;
   discardRestored: () => Promise<void>;
   resolveConflict: (mode: 'keep-mine' | 'take-server') => Promise<void>;
-  /** 冲突时服务端详情拉取失败后的人工重试：重新拉取并进入解析对话框。 */
+  /** 冲突时服务端详情拉取失败后的人工重试：重新拉取并进入解析对话框 */
   retryConflict: () => Promise<void>;
   loadVersions: () => Promise<void>;
   restoreVersion: (snapshot: ArticleSnapshot) => Promise<void>;
@@ -109,10 +109,7 @@ interface SavePayloadOverrides {
   preserveServerSnapshot?: boolean;
 }
 
-/**
- * save payload 单点组装（persist / resolveConflict(keep-mine) / restoreVersion
- * 三处共用）。加字段只改这里，杜绝反射环类漏字段。
- */
+/** save payload 单点组装（persist / resolveConflict(keep-mine) / restoreVersion 三处共用），加字段只改这里 */
 const buildSavePayload = (
   draft: ArticleDraft,
   overrides: SavePayloadOverrides,
@@ -140,12 +137,10 @@ const buildSavePayload = (
   return payload;
 };
 
-/** 每个编辑实例一个 store */
 export const createArticleEditorStore = (articleId: number | null) => {
   let savingPromise: Promise<void> | null = null;
   let pendingAgain = false;
-  // 防抖句柄前置声明：saveOnce 的冲突分支要 cancel 排队保存（观察项），
-  // 真正的 debounce 在 persist 之后初始化。
+  // 防抖句柄前置声明：saveOnce 的冲突分支要 cancel 排队保存，真正的 debounce 在 persist 之后初始化
   let scheduleSave: { (): void; cancel: () => void } | null = null;
 
   return createStore<ArticleEditorState & ArticleEditorActions>()(
@@ -161,10 +156,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         });
       };
 
-      /**
-       * 单次落盘。成功返回 true；冲突 / 离线 / 服务端报错返回 false
-       * （失败态已写入 store，由 UI 接管）。本函数不抛。
-       */
+      /** 单次落盘：成功 true；冲突/离线/服务端报错 false（失败态已写入 store 由 UI 接管），不抛 */
       const saveOnce = async (): Promise<boolean> => {
         const current = get().draft;
         if (articleId === null || current === null) return false;
@@ -178,24 +170,21 @@ export const createArticleEditorStore = (articleId: number | null) => {
           set({
             article: result,
             revision: result.revision,
-            // 请求在途期间又改了稿（draft 换了引用）就仍然是脏的，
-            // 别让 canPublish / flushNow 在续保存启动前误判为已落盘。
+            // 请求在途期间又改了稿（draft 换了引用）就仍是脏的，别让 canPublish/flushNow 在续保存启动前误判已落盘
             dirty: get().draft !== current,
             phase: 'saved',
             lastError: null,
           });
           await del(draftKey(articleId)).catch(() => undefined);
-          // 保存已落盘：文章列表/元数据缓存过期。计数与发布态不受 save 影响，
-          // 不失效 overview/taxonomy，避免自动保存期间的 refetch 风暴。
+          // 落盘后只让文章列表/元数据缓存过期；计数与发布态不受 save 影响，避免自动保存的 refetch 风暴
           await invalidateArticlesAfterContentSave();
           return true;
         } catch (error) {
           if (isApiRequestError(error, 'ARTICLE_STALE')) {
-            // 进入冲突态就掐掉排队的防抖保存：弹窗期间自燃的那次保存会
-            // 再次撞锁，把刚拉到的 conflict.server 偷换成更旧的版本。
+            // 进入冲突态就掐掉排队的防抖保存：弹窗期间自燃的那次会再撞锁，把刚拉到的 conflict.server 偷换成更旧版本
             scheduleSave?.cancel();
             set({ phase: 'conflict', lastError: null });
-            // 拉取服务端版本失败仍保持冲突态，由用户显式 retryConflict 重试。
+            // 拉取服务端版本失败仍保持冲突态，由用户显式 retryConflict 重试
             try {
               const server = await apiClient.articles.detail(articleId);
               set({ conflict: { resolution: null, server } });
@@ -215,10 +204,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
               phase: 'idle',
             });
           }
-          // 失败分支统一幂等落恢复槽（M12）：无论冲突/离线/鉴权过期/通用
-          // 失败，都存「此刻最新」的草稿而非请求开始时的快照 —— 请求在途
-          // 期间的输入不因一次失败而丢字。失败态本身由上面的分支按各自
-          // 语义设置；成功路径与 resolveConflict(keep-mine) 成功会删槽。
+          // 失败分支统一幂等落恢复槽：存「此刻最新」草稿而非请求开始时的快照，在途输入不丢字；成功路径与 resolveConflict(keep-mine) 成功删槽
           const latest = get().draft ?? current;
           if (latest !== null) {
             await idbSet(draftKey(articleId), {
@@ -230,21 +216,14 @@ export const createArticleEditorStore = (articleId: number | null) => {
         }
       };
 
-      /**
-       * 串行落盘直到队列真的排空：在途保存期间产生的改动记在 pendingAgain 上，
-       * 本轮一结束立刻续跑下一轮。这样返回的 promise 才等价于「草稿已全部落盘」。
-       * 保存失败（冲突/离线/报错）时停在失败态，不自旋重试。
-       */
+      /** 串行落盘直到队列真的排空：在途期间的改动记在 pendingAgain，本轮一结束立刻续跑，返回的 promise 才等价「草稿已全部落盘」；失败停失败态不自旋 */
       const drainSaves = async (): Promise<void> => {
         pendingAgain = false;
         const saved = await saveOnce();
         if (saved && pendingAgain) await drainSaves();
       };
 
-      /**
-       * 落盘入口。已在保存中时记录 pendingAgain 并 **join 整条链**（而非只等
-       * 当前这一次请求），flushNow 的「发布前内容已落盘」门控才真正成立。
-       */
+      /** 落盘入口：已在保存中时记 pendingAgain 并 join 整条链（而非只等当前这次请求），flushNow 的「发布前已落盘」门控才真正成立 */
       const persist = (): Promise<void> => {
         if (articleId === null || get().draft === null)
           return Promise.resolve();
@@ -278,9 +257,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
             lastError: null,
           });
 
-          // 恢复判定只看内容（M13）：存在槽且槽内草稿与当前稿不同才展示
-          // 恢复条，不再比较客户端 savedAt 与服务端时钟 —— 两边时钟都
-          // 不可信；内容一致（含无槽）时不展示，槽留给成功落盘或放弃恢复清走。
+          // 恢复判定只看内容：槽存在且槽内草稿与当前稿不同才展示恢复条；两边时钟都不可信，内容一致（含无槽）不展示
           const stored = await idbGet<RestoreCandidate>(draftKey(articleId));
           const sameAsLoaded =
             stored !== undefined &&
@@ -314,11 +291,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         scheduleSave?.();
       };
 
-      /**
-       * 立刻落盘；成功返回 true，供发布 / 预览等前置门控。
-       * 保存进行中时 join 整条续保存链，等草稿真正排空再判断结果 ——
-       * 返回 true 即「此刻 store 里的草稿已经在服务端」。
-       */
+      /** 立刻落盘，成功 true 供发布/预览门控；保存中时 join 整条续保存链等排空再判结果，true 即「此刻 store 草稿已在服务端」 */
       const flushNow = async (): Promise<boolean> => {
         if (articleId === null || get().draft === null) return false;
 
@@ -382,13 +355,11 @@ export const createArticleEditorStore = (articleId: number | null) => {
         } else {
           sync(conflictState.server);
           set({ phase: 'saved', conflict: null });
-          // 采用服务端 = 明确放弃本地稿（M13）：M12 起冲突分支也落了恢复槽，
-          // 不删槽的话下次 reload 会把用户已主动丢弃的旧稿再端出来。
+          // 采用服务端 = 明确放弃本地稿：冲突分支也落恢复槽，不删槽下次 reload 会把已弃旧稿再端出来
           await del(draftKey(articleId)).catch(() => undefined);
         }
       };
 
-      /** 冲突时服务端详情拉取失败后的显式重试（保持冲突态，不再死胡同）。 */
       const retryConflict = async () => {
         if (articleId === null) return;
         set({ phase: 'conflict', lastError: null });
@@ -405,11 +376,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         }
       };
 
-      /**
-       * 版本列表是次要数据：加载失败不抛给调用方（publish/unpublish/
-       * restoreVersion 的主操作不能因此被误报失败），保留旧列表并给一条
-       * 非阻塞 toast，用户可随时按「加载版本快照」重试（M10）。
-       */
+      /** 版本列表是次要数据：失败不抛给调用方（主操作不能被误报失败），保留旧列表 + 非阻塞 toast 可随时重试 */
       const loadVersions = async () => {
         if (articleId === null) return;
         try {
@@ -426,7 +393,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved) return;
 
-        // 落盘后重新取草稿：flushNow 期间可能又落了一版，payload 必须基于最新的。
+        // 落盘后重新取草稿：flushNow 期间可能又落了一版，payload 必须基于最新的
         const current = get().draft;
         if (!current) return;
 
@@ -454,9 +421,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const current = get().draft;
         try {
           const result = await apiClient.articles.publish(articleId);
-          // 发布请求在途期间又改了稿（M11）：只同步服务端状态与新 revision，
-          // 不覆盖草稿、不清脏 —— 用户键入的内容和脏态都保住，续保存会
-          // 以新 revision 落盘。沿用 saveOnce 的 dirty: get().draft !== current 口径。
+          // 发布在途又改稿：只同步服务端状态与新 revision，不覆盖草稿不清脏，续保存以新 revision 落盘（沿用 saveOnce 的 dirty 口径）
           if (current !== null && get().draft !== current) {
             set({ article: result, revision: result.revision, phase: 'idle' });
           } else {
@@ -464,7 +429,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
             set({ phase: 'saved' });
           }
           await loadVersions();
-          // 发布态变化影响文章列表、taxonomy 计数与 overview 统计。
+          // 发布态变化影响文章列表、taxonomy 计数与 overview 统计
           await invalidateArticlesAfterMutation();
           toast.success('文章已发布。');
           return result;
@@ -504,7 +469,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         try {
           await apiClient.articles.remove(articleId);
           set({ article: null });
-          // 删除级联：列表/计数全失效；被删文章的评论与资产引用投影同步过期。
+          // 删除级联：列表/计数全失效；被删文章的评论与资产引用投影同步过期
           await invalidateArticlesAfterMutation();
           markAssetsStale();
           toast.success('文章已删除。');
@@ -521,7 +486,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
         const saved = await flushNow();
         if (!saved) return null;
 
-        // 落盘会换掉 article（新的 to / revision），预览链接取落盘后的那份。
+        // 落盘会换掉 article（新的 to / revision），预览链接取落盘后的那份
         const current = get().article;
         if (!current) return null;
 
@@ -564,10 +529,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
   );
 };
 
-/**
- * 文章编辑器 React 绑定：每实例 store + 逐字段订阅 + 挂载即拉取。
- * 返回形状即编辑器公开 API（workspace-page / inspector-pane 直接消费）。
- */
+/** 返回形状即编辑器公开 API（workspace-page / inspector-pane 直接消费） */
 export const useArticleEditor = (articleId: number | null) => {
   const store = useMemo(() => createArticleEditorStore(articleId), [articleId]);
 
@@ -597,8 +559,7 @@ export const useArticleEditor = (articleId: number | null) => {
   const unpublish = useStore(store, (s) => s.unpublish);
   const updateDraft = useStore(store, (s) => s.updateDraft);
 
-  // 关页/刷新前尽力落盘（L-24）：pagehide 是浏览器卸载页面前最后的事件
-  // 钩子，同步的外部系统是「页面生命周期 + 服务端草稿」。
+  // 关页/刷新前尽力落盘：pagehide 是浏览器卸载页面前最后的事件钩子，同步的外部系统是「页面生命周期 + 服务端草稿」
   useEffect(() => {
     const onPageHide = () => {
       void store.getState().flushNow();
@@ -607,7 +568,7 @@ export const useArticleEditor = (articleId: number | null) => {
     return () => window.removeEventListener('pagehide', onPageHide);
   }, [store]);
 
-  // 离线失败后恢复联网自动续存（L-22）：把外部网络的恢复转成一次落盘。
+  // 离线失败后恢复联网自动续存：把外部网络的恢复转成一次落盘
   useEffect(() => {
     const onOnline = () => {
       const state = store.getState();
@@ -617,7 +578,6 @@ export const useArticleEditor = (articleId: number | null) => {
     return () => window.removeEventListener('online', onOnline);
   }, [store]);
 
-  // 进入编辑器即拉取一次文章与离线恢复候选。
   useEffect(() => {
     void store.getState().reload();
   }, [store]);

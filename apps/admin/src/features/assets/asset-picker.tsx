@@ -29,7 +29,6 @@ export const AssetPickerDialog = ({
   title,
 }: {
   onClose: () => void;
-  /** 提供后在底部渲染「完成（已选 N）」按钮，供多选场景关闭对话框。 */
   onDone?: () => void;
   onSelect: (asset: AssetDto) => void;
   open: boolean;
@@ -38,8 +37,7 @@ export const AssetPickerDialog = ({
   selectedAssetIds?: ReadonlySet<number>;
   title: string;
 }) => {
-  // 每次 open 产生新的 session：session 进入 query key，重开永远是全新列表，
-  // 关闭动画期间/快速重开都不会让旧会话的结果或错误闪现。
+  // 每次 open 产生新的 session 进 query key：重开永远是全新列表，关闭动画期间/快速重开不让旧结果或错误闪现
   const [session, setSession] = useState(0);
   const [wasOpen, setWasOpen] = useState(open);
   if (open && !wasOpen) {
@@ -51,7 +49,7 @@ export const AssetPickerDialog = ({
   const [uploading, setUploading] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  // 在途上传的取消柄：关闭对话框或外壳卸载都掐断上传，杜绝迟到回调（L-19）。
+  // 在途上传的取消柄：关闭对话框或外壳卸载都掐断上传，杜绝迟到回调
   const uploadAbortRef = useRef<AbortController | null>(null);
   useEffect(() => () => uploadAbortRef.current?.abort(), []);
 
@@ -59,7 +57,7 @@ export const AssetPickerDialog = ({
     ...assetsPickerOptions(purpose, session),
     enabled: open,
   });
-  // 按 id 去重（Map）：并发页返回重叠窗口时同一条目只渲染一次。
+  // 按 id 去重（Map）：并发页返回重叠窗口时同一条目只渲染一次
   const itemsById = new Map(
     pickerQuery.data?.pages
       .flatMap((page) => page.items)
@@ -92,20 +90,20 @@ export const AssetPickerDialog = ({
         undefined,
         controller.signal,
       );
-      // 上传成功但对话框已关闭/会话已取消：不幽灵回调插入（L-19）。
+      // 上传成功但对话框已关闭/会话已取消：不幽灵回调插入
       if (!controller.signal.aborted) {
         markAssetsStale();
         onSelect(asset);
       }
     } catch (uploadError) {
-      // 取消静默：不是错误态，也不 toast（关闭对话框本身就是用户意图）。
+      // 取消静默：不是错误态，也不 toast（关闭对话框本身就是用户意图）
       if (!isAbortError(uploadError) && !controller.signal.aborted) {
         setUploadError(
           isApiRequestError(uploadError) ? uploadError.message : '上传失败。',
         );
       }
     }
-    // 不用 try/finally：React Compiler 尚不支持带 finally 的 try 语句。
+    // 不用 try/finally：React Compiler 尚不支持带 finally 的 try 语句
     if (uploadAbortRef.current === controller) uploadAbortRef.current = null;
     setUploading(null);
   };

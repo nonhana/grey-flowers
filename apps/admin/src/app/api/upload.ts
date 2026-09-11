@@ -25,7 +25,7 @@ export const putUpload = (
   xhr.onerror = () => reject(new ApiNetworkError('Upload request failed'));
   xhr.onabort = () => reject(abortError());
   xhr.onload = () => {
-    // 2xx 即接收完成；R2 错误响应体为 XML，统一归一为网络错误。
+    // 2xx 即接收完成；R2 错误响应体为 XML，统一归一为网络错误
     if (xhr.status >= 200 && xhr.status < 300) {
       resolve();
     } else {

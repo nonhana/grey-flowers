@@ -399,10 +399,6 @@ export const InspectorPane = ({
         <VersionList editor={editor} />
       </div>
 
-      {/*
-        「发布」是这一列唯一的去处，不能排在一条会滚出视口的长队末尾。
-        吸底：桌面端贴在面板下沿，移动端贴在 sheet 下沿，两处都在可滚容器内。
-      */}
       <div
         className="
           sticky bottom-0 -mx-4 -mb-8 border-t border-rule bg-(--gf-surface)

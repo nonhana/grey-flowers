@@ -34,7 +34,7 @@ type HttpRequestOptions = Omit<
   | 'throwHttpErrors'
 >;
 
-/** 唯一事实源：支持的 HTTP method 清单，类型与运行时同源。 */
+/** 唯一事实源：支持的 HTTP method 清单，类型与运行时同源 */
 const HTTP_METHODS = ['get', 'post', 'patch', 'delete'] as const;
 
 type HttpMethod = (typeof HTTP_METHODS)[number];

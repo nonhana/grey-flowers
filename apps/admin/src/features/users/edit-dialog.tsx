@@ -27,7 +27,7 @@ interface EditDraft {
   username: string;
 }
 
-/** 单次打开会话内的字段组：session key 重挂载即回全新受控草稿。 */
+/** 单次打开会话内的字段组：session key 重挂载即回全新受控草稿 */
 const EditFields = ({
   draft,
   roleChanged,
@@ -76,7 +76,7 @@ const EditFields = ({
   </div>
 );
 
-/** 编辑会话本体：draft 与保存逻辑全部住在会话内，随 session 卸载消失。 */
+/** 编辑会话本体：draft 与保存逻辑全部住在会话内，随 session 卸载消失 */
 const EditUserBody = ({
   onClose,
   user,
@@ -106,7 +106,7 @@ const EditUserBody = ({
       await invalidateUsersAfterMutation();
     },
     onError: (error) => {
-      // CONFLICT（用户名/邮箱占用）的消息由服务端中文 message 透出。
+      // CONFLICT（用户名/邮箱占用）的消息由服务端中文 message 透出
       toastError(error);
     },
   });
@@ -151,12 +151,7 @@ const EditUserBody = ({
   );
 };
 
-/**
- * 编辑用户资料。avatar 不可管理端编辑（服务端由邮箱派生）；密码属自助；
- * role 变更会撤销该用户全部会话，需重新登录——选择与当前不同时给出提示。
- * 草稿住在 session-keyed 的编辑会话组件里（M4）：每次打开都从 user 当前值
- * 起一份全新草稿，同一用户重开也拿到全新表单。
- */
+/** 编辑用户资料：avatar 服务端由邮箱派生不可管理端编辑；密码属自助；role 变更撤销该用户全部会话需重登（选择不同时提示）；草稿住 session-keyed 会话，每次从当前值起全新草稿 */
 export const EditUserDialog = ({
   onClose,
   onExited,
@@ -167,7 +162,6 @@ export const EditUserDialog = ({
   onClose: () => void;
   onExited?: () => void;
   open: boolean;
-  /** useDialog 的单调会话 id：作为编辑会话组件的 key，每次打开重建会话。 */
   session: number;
   user: UserAdminSummary | null;
 }) => {

@@ -71,9 +71,7 @@ export const CodeMirrorPane = ({
   const [altDraft, setAltDraft] = useState('');
   const keyboardInset = useKeyboardInset();
 
-  // 把图片动作安装到模块级 imageActions 槽位（L-9）：effect 空依赖、只在
-  // 挂载时安装一次；handler 经 useEffectEvent 恒读最新的 dialog store 与
-  // viewRef，不再押注 Compiler 记忆化 useDialog 返回对象的引用身份。
+  // 图片动作安装到模块级 imageActions 槽位：effect 空依赖只装一次，handler 经 useEffectEvent 恒读最新的 dialog store 与 viewRef
   const openViewer = useEffectEvent(
     (src: string, alt: string, assetId: string | null) => {
       viewerDialog.open({ src, alt, assetId });
@@ -99,10 +97,6 @@ export const CodeMirrorPane = ({
     };
   }, []);
 
-  /**
-   * 上传不写进文档（幽灵占位是 UI-only，不参与自动保存），成功后才把
-   * `![alt](deliveryUrl){asset-id=N}` 插进正文、撤掉幽灵。
-   */
   const uploadImages = (
     files: File[],
     target: EditorView | null,
@@ -130,8 +124,7 @@ export const CodeMirrorPane = ({
         )
         .then((asset) => {
           if (!view) return;
-          // 上传在途期间的输入会平移占位插入点（uploadField 按文档变更重映射），
-          // 完成时读 field 里的实时坐标，避免按陈旧 insertAt 插入造成漂移。
+          // 上传在途期间的输入会平移占位插入点（uploadField 按文档变更重映射），完成时读 field 实时坐标避免按陈旧 insertAt 漂移
           const liveAt =
             view.state
               .field(uploadField, false)
@@ -152,14 +145,11 @@ export const CodeMirrorPane = ({
     });
   };
 
-  // 扩展是静态的（交互出口走模块级 imageActions 槽位，闭包用稳定 ref）：
-  // 只在挂载时构建一次，避免每次键入触发的重渲染都让 react-codemirror
-  // 整体 reconfigure、重建 ViewPlugin/装饰，造成排版抖动与无谓开销。
+  // 扩展是静态的（交互出口走模块级 imageActions 槽位，闭包用稳定 ref）：只在挂载时构建一次，避免逐键 reconfigure 重建 ViewPlugin/装饰造成排版抖动
   const [extensions] = useState<Extension[]>(() => [
     EditorView.lineWrapping,
     history(),
-    // 用 GFM base：表格才被解析成 Table 节点，块级观感类才套得上；
-    // 与主站 @nuxtjs/mdc 的表格渲染语义一致。
+    // 用 GFM base：表格才被解析成 Table 节点，块级观感类才套得上；与主站 @nuxtjs/mdc 的表格渲染语义一致
     markdown({ base: markdownLanguage }),
     syntaxHighlighting(paperHighlight, { fallback: true }),
     keymap.of([
@@ -198,10 +188,7 @@ export const CodeMirrorPane = ({
     }),
   ]);
 
-  // 文件拖放统一走 react-dropzone（挂在编辑器外壳上）。drop 事件会先到
-  // CodeMirror 内置处理器：它对二进制图片是无害 no-op（按文本读入后被
-  // 控制字符过滤成空串），图片上传/插入由这里接手；粘贴仍由 CodeMirror
-  // 的 domEventHandlers 处理，所以关掉 dropzone 的 onPaste（noPaste）。
+  // drop 事件先到 CodeMirror 内置处理器：对二进制图片是无害 no-op（按文本读入被控制字符过滤成空串），图片上传/插入由 dropzone 接手；粘贴仍走 domEventHandlers，故关掉 onPaste（noPaste）
   const { getRootProps, isDragActive } = useDropzone({
     accept: IMAGE_ACCEPT_MAP,
     multiple: true,
@@ -273,11 +260,7 @@ export const CodeMirrorPane = ({
             </span>
           </div>
         ) : null}
-        {/*
-          theme="none" 是必须的：默认的 "light" 会注入一条写死的
-          backgroundColor: #fff，暗色下把纸面刷成白的，正文变成
-          浅灰压白。纸面的明暗全部交给 paperTheme 里的 --color-paper。
-        */}
+        {/* theme="none" 必须：默认 "light" 注入写死的 backgroundColor: #fff，暗色下把纸面刷白、正文浅灰压白；纸面明暗全交给 paperTheme 的 --color-paper */}
         <CodeMirror
           basicSetup={false}
           className="h-full text-left"
