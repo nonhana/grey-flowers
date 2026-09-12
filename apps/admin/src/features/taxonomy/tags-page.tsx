@@ -1,5 +1,6 @@
 import type { TagAdmin } from '@grey-flowers/contracts';
 
+import { tagCreateInputSchema } from '@grey-flowers/contracts';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Plus, Tags as TagsIcon, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -65,9 +66,12 @@ export const TagsPage = () => {
   });
 
   const create = () => {
-    const name = newName.trim();
-    if (!name) return;
-    createMutation.mutate(name);
+    const parsed = tagCreateInputSchema.safeParse({ name: newName });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? '创建失败。');
+      return;
+    }
+    createMutation.mutate(parsed.data.name);
   };
 
   const remove = () => {

@@ -1,5 +1,6 @@
 import type { ArticleCreateInput } from '@grey-flowers/contracts';
 
+import { articleCreateInputSchema } from '@grey-flowers/contracts';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
@@ -16,8 +17,6 @@ import { PageBody, PageHeader, Panel } from '@/ui/surface';
 
 import { articleErrorMessage } from './display';
 
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-
 const suggestSlug = (title: string) =>
   title
     .trim()
@@ -31,10 +30,6 @@ export const NewArticlePage = () => {
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
-
-  const trimmedSlug = slug.trim();
-  const slugIsInvalid =
-    trimmedSlug.length > 0 && !SLUG_PATTERN.test(trimmedSlug);
 
   const createMutation = useMutation({
     mutationFn: (input: ArticleCreateInput) => apiClient.articles.create(input),
@@ -52,24 +47,20 @@ export const NewArticlePage = () => {
   });
 
   const create = () => {
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) {
-      setError('标题不能为空。');
-      return;
-    }
-    if (slugIsInvalid) {
-      setError('路径只能使用小写字母、数字与连字符。');
+    const parsed = articleCreateInputSchema.safeParse({
+      content: '',
+      tags: [],
+      title,
+      slug: slug.trim() || undefined,
+      description: description.trim() || undefined,
+    });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '输入不合法。');
       return;
     }
 
     setError(null);
-    createMutation.mutate({
-      content: '',
-      tags: [],
-      title: trimmedTitle,
-      ...(trimmedSlug ? { slug: trimmedSlug } : {}),
-      ...(description.trim() ? { description: description.trim() } : {}),
-    });
+    createMutation.mutate(parsed.data);
   };
 
   const submitting = createMutation.isPending;

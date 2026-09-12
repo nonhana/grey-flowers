@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import type { ActivityItem } from '#shared/types/activity'
-import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
+import type { ActivityPublic } from '@grey-flowers/contracts'
 import { Clock, LoaderCircle } from '@lucide/vue'
 import { HanaImgViewer } from 'hana-img-viewer'
-import { hanaInfo } from '~/utils/constants'
 
 const props = withDefaults(defineProps<{
   status?: ActivityDetailStatus
-  item?: ActivityItem
+  item?: ActivityPublic
   errorMessage?: string | null
   navigationMode?: OverlayNavigationMode
 }>(), {

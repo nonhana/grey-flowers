@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { Track } from '#shared/types/activity'
+import type { MusicTrack } from '@grey-flowers/contracts'
 import { AudioLines } from '@lucide/vue'
 
 defineProps<{
-  currentTrack: Track | null
+  currentTrack: MusicTrack | null
 }>()
 
 const showPlaying = ref(false)

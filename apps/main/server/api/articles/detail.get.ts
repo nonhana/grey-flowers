@@ -1,35 +1,27 @@
 import type { ArticleDetail } from '@grey-flowers/contracts'
-import type { ArticleMarkdownPayload } from '#shared/types/markdown'
-import { apiGet, isApiNotFound } from '#server/utils/api-gateway'
-import { resolveArticleImagePolicy } from '#server/utils/article-generated-image'
+import { articleDetailQuerySchema, articleDetailSchema, articlePreviewQuerySchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)
-  const path = query.path as string
+  const { path } = parsePublicQuery(articleDetailQuerySchema, { path: query.path })
 
-  if (!path) {
-    return {
-      statusCode: 400,
-      statusMessage: 'Path parameter is required',
-      success: false,
-    }
-  }
-
-  const previewToken = (query.preview as string | undefined) || undefined
+  const previewToken = typeof query.preview === 'string' && query.preview
+    ? parsePublicQuery(articlePreviewQuerySchema, { path, token: query.preview }).token
+    : undefined
 
   let article: ArticleDetail | null = null
   try {
-    article = await apiGet<ArticleDetail>('/public/articles/detail', { path })
+    article = await apiGet('/public/articles/detail', { path }, articleDetailSchema)
   }
   catch (error) {
     if (previewToken && isApiNotFound(error)) {
       // 草稿预览：一次 token 门控 SSR，未发布页面不被索引。
       // 防泄密 header（noindex / no-store / no-referrer）由 server/middleware
       // 按「文章路径 + ?preview=」落到最终页面响应，内部子路由不重复设置。
-      article = await apiGet<ArticleDetail>('/public/articles/preview', {
+      article = await apiGet('/public/articles/preview', {
         path,
         token: previewToken,
-      })
+      }, articleDetailSchema)
     }
     else if (!isApiNotFound(error)) {
       throw error

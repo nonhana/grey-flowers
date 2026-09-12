@@ -1,6 +1,6 @@
-import type { SimpleUserInfo } from '#shared/types/user'
+import type { CommentAuthorPublic } from '@grey-flowers/contracts'
 
-export const hanaInfo: SimpleUserInfo = {
+export const hanaInfo: CommentAuthorPublic = {
   id: 1,
   username: 'non_hana',
   site: 'https://caelum.moe',

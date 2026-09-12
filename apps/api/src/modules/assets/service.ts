@@ -4,12 +4,12 @@ import type {
   AssetDto,
   AssetListData,
   AssetListQuery,
-  AssetPurpose,
   AssetUploadUrlData,
   AssetUploadUrlInput,
 } from '@grey-flowers/contracts';
 import type { PrismaClient } from '@grey-flowers/db';
 
+import { assetUploadProfiles } from '@grey-flowers/contracts';
 import { randomUUID } from 'node:crypto';
 
 import type {
@@ -29,64 +29,6 @@ import {
   toAssetDto,
   toReferenceCounts,
 } from './contracts';
-
-export const MAX_UPLOAD_BYTES = 150 * 1024 * 1024;
-const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
-
-const IMAGE_MIME_TYPES = new Set([
-  'image/gif',
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-]);
-
-const AUDIO_MIME_TYPES = new Set([
-  'audio/aac',
-  'audio/flac',
-  'audio/mpeg',
-  'audio/ogg',
-  'audio/wav',
-]);
-
-interface PurposeProfile {
-  maxBytes: number;
-  mediaType: 'AUDIO' | 'IMAGE';
-  mimeTypes: ReadonlySet<string>;
-}
-
-const purposeProfiles: Record<AssetPurpose, PurposeProfile> = {
-  ACTIVITY_IMAGE: {
-    maxBytes: MAX_IMAGE_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: IMAGE_MIME_TYPES,
-  },
-  ARTICLE_COVER: {
-    maxBytes: MAX_IMAGE_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: IMAGE_MIME_TYPES,
-  },
-  ARTICLE_INLINE: {
-    maxBytes: MAX_IMAGE_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: IMAGE_MIME_TYPES,
-  },
-  CATEGORY_COVER: {
-    maxBytes: MAX_IMAGE_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: IMAGE_MIME_TYPES,
-  },
-  MUSIC_COVER: {
-    maxBytes: MAX_IMAGE_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: IMAGE_MIME_TYPES,
-  },
-  MUSIC_SOURCE: {
-    maxBytes: MAX_UPLOAD_BYTES,
-    mediaType: 'AUDIO',
-    mimeTypes: AUDIO_MIME_TYPES,
-  },
-};
-
 const normalizeDeclaredMime = (value: string) => {
   switch (value) {
     case 'application/ogg':
@@ -134,10 +76,10 @@ export class AssetService {
   async createUploadUrl(
     input: AssetUploadUrlInput,
   ): Promise<AssetUploadUrlData> {
-    const profile = purposeProfiles[input.purpose];
+    const profile = assetUploadProfiles[input.purpose];
     const declared = normalizeDeclaredMime(input.contentType);
 
-    if (!profile.mimeTypes.has(declared)) {
+    if (!profile.mimeTypes.includes(declared)) {
       throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
     }
     if (input.size !== undefined && input.size > profile.maxBytes) {
@@ -178,7 +120,7 @@ export class AssetService {
         fields: { key: ['存储路径不在受管目录内'] },
       });
     }
-    const profile = purposeProfiles[purpose];
+    const profile = assetUploadProfiles[purpose];
 
     let head: HeadObjectResult;
     try {
@@ -191,7 +133,7 @@ export class AssetService {
     }
 
     const contentType = normalizeDeclaredMime(head.contentType);
-    if (!profile.mimeTypes.has(contentType)) {
+    if (!profile.mimeTypes.includes(contentType)) {
       throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
     }
     if (head.size !== input.size || head.size > profile.maxBytes) {

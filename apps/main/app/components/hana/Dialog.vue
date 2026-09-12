@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
-import type { DialogOptions } from '~/composables/useDialog'
 import { X } from '@lucide/vue'
 import { useElementSize, usePreferredReducedMotion } from '@vueuse/core'
 

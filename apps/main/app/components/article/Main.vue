@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { ArticleCardProps, ArticleCardVariant } from '#shared/types/article'
-import type { ArticleFilterQuery } from '#shared/types/articles'
+import type { ArticleFilterQuery } from '@grey-flowers/contracts'
+
+// URL 参数名保持 publishedAtMonth（契约字段为 month）。
+type ArticleFilterUrlQuery = { [K in keyof ArticleFilterQuery as K extends 'month' ? 'publishedAtMonth' : K]: ArticleFilterQuery[K] }
 
 const props = withDefaults(defineProps<{
   type?: 'common' | 'tags' | 'category' | 'archives'
@@ -16,7 +18,7 @@ function remainTwoDigits(num: string) {
 }
 
 const whereObj = computed(() => {
-  const filter: ArticleFilterQuery = {}
+  const filter: ArticleFilterUrlQuery = {}
   switch (props.type) {
     case 'tags':
       filter.tag = route.query.tag as string

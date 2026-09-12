@@ -1,9 +1,8 @@
+import type { ActivityPublic } from '@grey-flowers/contracts'
 import type { Ref } from 'vue'
-import type { ActivityItem } from '#shared/types/activity'
-import type { ActivityDetailStatus } from '~/composables/useActivityDetail'
 
 interface Options {
-  activities: Readonly<Ref<ReadonlyArray<ActivityItem>>>
+  activities: Readonly<Ref<ReadonlyArray<ActivityPublic>>>
   ensureItemLoaded: (id: number) => Promise<boolean>
 }
 
@@ -32,7 +31,7 @@ export function useRecentlyDetailRoute(options: Options) {
   const listedActivity = computed(() =>
     options.activities.value.find(item => item.id === curActivityId.value),
   )
-  const resolvedActivity = computed<ActivityItem | undefined>(() =>
+  const resolvedActivity = computed<ActivityPublic | undefined>(() =>
     listedActivity.value ?? detailActivity.value ?? undefined,
   )
 

@@ -1,5 +1,6 @@
 import type * as MusicMetadata from 'music-metadata';
 
+import { musicCreateInputSchema } from '@grey-flowers/contracts';
 import { useNavigate } from '@tanstack/react-router';
 import { FileUp, ImagePlus, Upload } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -21,6 +22,13 @@ import { FieldLabel, TextField } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { MetaLine, Panel } from '@/ui/surface';
 
+/** 上传前快检：元数据在两次直传之前拦截；sourceAssetId/cover 由上传产物决定，仍以服务端为准。 */
+const metadataInputSchema = musicCreateInputSchema.pick({
+  album: true,
+  artist: true,
+  seconds: true,
+  title: true,
+});
 type Phase = 'idle' | 'parsing' | 'ready';
 
 interface WizForm {
@@ -159,10 +167,20 @@ export const UploadWizard = () => {
 
   const save = async () => {
     if (!canSave || !file) return;
+    const metadata = metadataInputSchema.safeParse({
+      album: form.album.trim(),
+      artist: form.artist.trim(),
+      seconds: form.seconds,
+      title: form.title.trim(),
+    });
+    if (!metadata.success) {
+      setSaveError(metadata.error.issues[0]?.message ?? '输入不合法。');
+      return;
+    }
+
     setSaving(true);
     setSaveError('');
     setProgress(0);
-
     // 幂等重试：本次运行的段完成情况记入快照，已完成的段直接复用资产 id，断网重试不重复直传、不制造孤儿资产
     const done = {
       coverAssetId: uploaded.coverAssetId,

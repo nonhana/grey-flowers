@@ -1,13 +1,9 @@
-import type { CommentCount } from '@grey-flowers/contracts'
-import { apiGet } from '#server/utils/api-gateway'
+import { commentCountSchema, commentPublicListQuerySchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
   const query = getQuery(event)
-  const path = query.path as string
-  if (!path) {
-    return { payload: { totalCount: 0, parentCount: 0 } }
-  }
+  const { path } = parsePublicQuery(commentPublicListQuerySchema.pick({ path: true }), { path: query.path })
 
-  const data = await apiGet<CommentCount>('/public/comments/count', { path })
+  const data = await apiGet('/public/comments/count', { path }, commentCountSchema)
   return { payload: data }
 })

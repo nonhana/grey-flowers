@@ -1,21 +1,13 @@
 import type { ActivityPublic } from '@grey-flowers/contracts'
-import { apiGet, isApiNotFound } from '#server/utils/api-gateway'
-import { formatDateTimeYmdHms } from '#shared/utils/date'
+import { activityPublicSchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
-  const query = getQuery(event) as { id: string }
-  const id = Number.parseInt(query.id, 10)
-  if (Number.isNaN(id) || id < 1) {
-    return {
-      statusCode: 400,
-      statusMessage: 'Invalid activity id',
-      success: false,
-    }
-  }
+  const query = getQuery(event)
+  const id = parsePositiveIntId(query.id)
 
   let activity: ActivityPublic
   try {
-    activity = await apiGet<ActivityPublic>(`/public/activities/${id}`)
+    activity = await apiGet(`/public/activities/${id}`, undefined, activityPublicSchema)
   }
   catch (error) {
     if (isApiNotFound(error)) {

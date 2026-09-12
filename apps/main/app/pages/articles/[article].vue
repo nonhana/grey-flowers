@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import type { ArticleHeader } from '#shared/types/content'
-import type { ArticleMarkdownPayload, Neighbors } from '#shared/types/markdown'
 import { seoData } from '#shared/data/meta'
-import { getArticleOgImageDefinition } from '#shared/utils/article-og-image'
-import { useStore } from '~/stores'
 
 const { articleStore } = useStore()
 const { headerVisible } = toRefs(articleStore)

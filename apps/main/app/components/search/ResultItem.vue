@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ArticleSearchItem } from '#shared/types/article'
+import type { ArticleSearchItem } from '@grey-flowers/contracts'
 
 interface HighlightSegment {
   text: string

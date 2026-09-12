@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AuthUpdateMeInput } from '@grey-flowers/contracts'
+import { authUpdateMeInputSchema } from '@grey-flowers/contracts'
 import { Globe, KeyRound, Mail, UserRound } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 const { userStore } = useStore()
 const { userInfo } = toRefs(userStore)
@@ -34,20 +34,6 @@ const submitBtnText = computed(() => submitting.value ? '提交中...' : '确认
 
 function handleForm(): AuthUpdateMeInput | undefined {
   const { username, email, site, currentPassword, newPassword } = userInfoForm.value
-  if (!username || !email) {
-    callHanaMessage({
-      message: '请填写用户名与邮箱。',
-      type: 'error',
-    })
-    return
-  }
-  if ((currentPassword && !newPassword) || (!currentPassword && newPassword)) {
-    callHanaMessage({
-      message: '修改密码时请同时填写当前密码和新密码。',
-      type: 'error',
-    })
-    return
-  }
 
   const result: AuthUpdateMeInput = {}
   if (username !== userInfo.value!.username)
@@ -59,12 +45,21 @@ function handleForm(): AuthUpdateMeInput | undefined {
   if (normalizedSite !== userInfo.value!.site)
     result.site = normalizedSite
 
-  if (currentPassword && newPassword) {
+  if (currentPassword || newPassword) {
     result.currentPassword = currentPassword
     result.newPassword = newPassword
   }
 
-  return result
+  const parsed = authUpdateMeInputSchema.safeParse(result)
+  if (!parsed.success) {
+    callHanaMessage({
+      message: parsed.error.issues[0]?.message ?? '提交失败。',
+      type: 'error',
+    })
+    return
+  }
+
+  return parsed.data
 }
 
 async function submitForm(objData: AuthUpdateMeInput) {

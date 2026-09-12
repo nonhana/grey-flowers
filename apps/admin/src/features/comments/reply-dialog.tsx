@@ -1,3 +1,4 @@
+import { commentReplyInputSchema } from '@grey-flowers/contracts';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
@@ -48,13 +49,13 @@ const ReplyForm = ({
   });
 
   const send = () => {
-    const body = content.trim();
-    if (!body) {
-      setError('回复内容不能为空。');
+    const parsed = commentReplyInputSchema.safeParse({ content });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '回复发送失败。');
       return;
     }
     setError(null);
-    sendMutation.mutate(body);
+    sendMutation.mutate(parsed.data.content);
   };
 
   return (

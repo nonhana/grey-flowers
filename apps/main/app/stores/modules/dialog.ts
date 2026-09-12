@@ -1,5 +1,3 @@
-import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
-
 interface OverlayStackEntry {
   id: string
   navigationMode: OverlayNavigationMode

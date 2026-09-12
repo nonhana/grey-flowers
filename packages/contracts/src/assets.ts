@@ -29,6 +29,64 @@ export const assetStatusSchema = z.enum([
 
 export type AssetStatus = z.infer<typeof assetStatusSchema>;
 
+/** 上传约束 SSOT：presign/confirm（服务端）与选入预检（admin 客户端）共用本表。 */
+export const ASSET_IMAGE_MIME_TYPES = [
+  'image/gif',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+] as const;
+
+export const ASSET_AUDIO_MIME_TYPES = [
+  'audio/aac',
+  'audio/flac',
+  'audio/mpeg',
+  'audio/ogg',
+  'audio/wav',
+] as const;
+
+export const ASSET_IMAGE_MAX_BYTES = 20 * 1024 * 1024;
+export const ASSET_AUDIO_MAX_BYTES = 150 * 1024 * 1024;
+
+export interface AssetUploadProfile {
+  maxBytes: number;
+  mediaType: AssetMediaType;
+  mimeTypes: readonly string[];
+}
+
+export const assetUploadProfiles: Record<AssetPurpose, AssetUploadProfile> = {
+  ACTIVITY_IMAGE: {
+    maxBytes: ASSET_IMAGE_MAX_BYTES,
+    mediaType: 'IMAGE',
+    mimeTypes: ASSET_IMAGE_MIME_TYPES,
+  },
+  ARTICLE_COVER: {
+    maxBytes: ASSET_IMAGE_MAX_BYTES,
+    mediaType: 'IMAGE',
+    mimeTypes: ASSET_IMAGE_MIME_TYPES,
+  },
+  ARTICLE_INLINE: {
+    maxBytes: ASSET_IMAGE_MAX_BYTES,
+    mediaType: 'IMAGE',
+    mimeTypes: ASSET_IMAGE_MIME_TYPES,
+  },
+  CATEGORY_COVER: {
+    maxBytes: ASSET_IMAGE_MAX_BYTES,
+    mediaType: 'IMAGE',
+    mimeTypes: ASSET_IMAGE_MIME_TYPES,
+  },
+  MUSIC_COVER: {
+    maxBytes: ASSET_IMAGE_MAX_BYTES,
+    mediaType: 'IMAGE',
+    mimeTypes: ASSET_IMAGE_MIME_TYPES,
+  },
+  MUSIC_SOURCE: {
+    maxBytes: ASSET_AUDIO_MAX_BYTES,
+    mediaType: 'AUDIO',
+    mimeTypes: ASSET_AUDIO_MIME_TYPES,
+  },
+};
+
 const assetSize = nonNegativeIntSchema;
 const dimensions = positiveIntSchema.optional();
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ActivityItem } from '#shared/types/activity'
+import type { ActivityPublic } from '@grey-flowers/contracts'
 import { Activity, ArrowRight, CheckCircle, CloudOff, Inbox, LoaderCircle, RefreshCw } from '@lucide/vue'
 
 const ACTIVITY_PAGE_SIZE = 20
@@ -38,7 +38,7 @@ let loadMoreObserver: IntersectionObserver | null = null
 const router = useRouter()
 
 const detailDialogVisible = ref(false)
-const curActivity = ref<ActivityItem>()
+const curActivity = ref<ActivityPublic>()
 
 const hasActivities = computed(() => activities.value.length > 0)
 
@@ -151,7 +151,7 @@ function gotoRecently() {
   router.push('/recently')
 }
 
-function handleCardSelect(item: ActivityItem) {
+function handleCardSelect(item: ActivityPublic) {
   if (consumeSuppressedSelect())
     return
 

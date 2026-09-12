@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { Track } from '#shared/types/activity'
-import { useStore } from '~/stores'
+import type { MusicTrack } from '@grey-flowers/contracts'
 
 const { dialogStore, uiInfoStore } = useStore()
 const { scrollHeight, clientHeight } = toRefs(uiInfoStore)
@@ -12,7 +11,7 @@ const commentWhiteList = ['/recently']
 const hasComments = ref(false)
 const isClient = ref(false)
 const isAudioIdle = ref(true)
-const currentTrack = ref<Track | null>(null)
+const currentTrack = ref<MusicTrack | null>(null)
 const volume = ref(0.2)
 const isMuted = ref(false)
 

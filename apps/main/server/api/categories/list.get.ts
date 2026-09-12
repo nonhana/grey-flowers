@@ -1,7 +1,6 @@
-import type { PublicCategory } from '@grey-flowers/contracts'
-import { apiGet } from '#server/utils/api-gateway'
+import { publicCategoryListDataSchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async () => {
-  const data = await apiGet<{ items: PublicCategory[] }>('/public/categories')
+  const data = await apiGet('/public/categories', undefined, publicCategoryListDataSchema)
   return { payload: data.items }
 })

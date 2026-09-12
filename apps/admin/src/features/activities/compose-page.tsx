@@ -1,5 +1,9 @@
 import type { ActivityAdmin, MusicTrack } from '@grey-flowers/contracts';
 
+import {
+  activityCreateInputSchema,
+  activityUpdateInputSchema,
+} from '@grey-flowers/contracts';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { cn } from 'cn';
@@ -20,7 +24,7 @@ import { usePasteFiles } from '@/hooks/use-paste-files';
 import { apiErrorMessage } from '@/lib/error-message';
 import { formatDuration } from '@/lib/format';
 import { fileMatchesAccept, IMAGE_ACCEPT_MAP } from '@/lib/media-accept';
-import { uploadSizeError } from '@/lib/upload-limits';
+import { maxUploadMb, uploadSizeError } from '@/lib/upload-limits';
 import { Button, buttonClass, IconButton } from '@/ui/button';
 import { Alert } from '@/ui/feedback';
 import { FieldLabel } from '@/ui/form';
@@ -140,7 +144,9 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
       (file) => uploadSizeError(file, 'ACTIVITY_IMAGE') === null,
     );
     if (sized.length < files.length) {
-      setError('部分图片为空文件或超出 20 MB 上限，已拒收。');
+      setError(
+        `部分图片为空文件或超出 ${maxUploadMb('ACTIVITY_IMAGE')} MB 上限，已拒收。`,
+      );
     }
     const batch = sized.slice(0, slots).map((file) => ({
       assetId: null,
@@ -206,12 +212,22 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
   const submit = () => {
     if (!canSubmit || submitMutation.isPending) return;
-    setError('');
-    submitMutation.mutate({
+    const draft = {
       content,
       images: committedImages.map(toImageItem),
       musicIds: music.map((track) => track.id),
-    });
+    };
+    // create/update 契约分支校验；上限值（8192/9/12）以 schema 为准，UI 常量仅作提示
+    const parsed =
+      editingId !== null
+        ? activityUpdateInputSchema.safeParse(draft)
+        : activityCreateInputSchema.safeParse(draft);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '提交失败。');
+      return;
+    }
+    setError('');
+    submitMutation.mutate(draft);
   };
 
   const contentNearLimit = content.length >= CONTENT_WARN_AT;
@@ -468,6 +484,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
       <MusicPickerDialog
         isOpen={musicPickerOpen}
+        maxSelection={MAX_MUSIC}
         onConfirm={(tracks) => setMusic(tracks.slice(0, MAX_MUSIC))}
         onOpenChange={setMusicPickerOpen}
         selected={music}

@@ -1,20 +1,7 @@
 import type { H3Event } from 'h3'
+import type { LegacyEnvelope } from '#shared/legacy-envelope'
 
-interface ApiResponse<T, S> {
-  statusCode: number
-  statusMessage: string
-  success: boolean
-  payload: T
-  error: S
-}
-
-interface HandlerResponse<T, S> {
-  statusCode?: number
-  statusMessage?: string
-  success?: boolean
-  payload?: T
-  error?: S
-}
+type HandlerResponse<T = unknown> = Partial<LegacyEnvelope<T>>
 
 function getErrorStatus(value: unknown): number | undefined {
   if (
@@ -44,27 +31,20 @@ function getErrorStatusMessage(value: unknown): string | undefined {
   return undefined
 }
 
-export function formattedEventHandler<T, S>(
-  handler: (event: H3Event) => Promise<HandlerResponse<T, S> | void> | HandlerResponse<T, S> | void,
+export function formattedEventHandler<T>(
+  handler: (event: H3Event) => Promise<HandlerResponse<T> | void> | HandlerResponse<T> | void,
 ) {
   return defineEventHandler(
-    async (event): Promise<ApiResponse<T | null, S | null> | ApiResponse<null, unknown>> => {
+    async (event): Promise<LegacyEnvelope<T> | LegacyEnvelope<null>> => {
       try {
         const res = await handler(event)
 
         if (res === undefined) {
           setResponseStatus(event, 200)
-          return {
-            statusCode: 200,
-            statusMessage: 'OK',
-            success: true,
-            payload: null,
-            error: null,
-          } as ApiResponse<null, null>
+          return { statusCode: 200, statusMessage: 'OK', success: true, payload: null, error: null }
         }
 
         const { statusCode, statusMessage, success, payload, error } = res
-
         const formattedPayload = payload ?? null
         const formattedError = error ?? null
         const status = statusCode || 200
@@ -78,7 +58,7 @@ export function formattedEventHandler<T, S>(
           success: success ?? true,
           payload: formattedPayload,
           error: formattedError,
-        } as ApiResponse<T extends void ? null : T, S extends void ? null : S>
+        }
       }
       catch (rawError: unknown) {
         const status = getErrorStatus(rawError) ?? 500
@@ -89,7 +69,7 @@ export function formattedEventHandler<T, S>(
           success: false,
           payload: null,
           error: getErrorStatusMessage(rawError) ?? rawError,
-        } as ApiResponse<null, unknown>
+        }
       }
     },
   )

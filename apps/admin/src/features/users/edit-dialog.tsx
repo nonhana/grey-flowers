@@ -1,5 +1,6 @@
 import type { UserAdminSummary, UserRole } from '@grey-flowers/contracts';
 
+import { userUpdateInputSchema } from '@grey-flowers/contracts';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
@@ -122,12 +123,18 @@ const EditUserBody = ({
     const email = draft.email.trim();
     const site = draft.site.trim() === '' ? null : draft.site.trim();
 
-    saveMutation.mutate({
+    const input = {
       ...(username !== user.username ? { username } : {}),
       ...(email !== user.email ? { email } : {}),
       site,
       ...(draft.role !== user.role ? { role: draft.role } : {}),
-    });
+    };
+    const parsed = userUpdateInputSchema.safeParse(input);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? '保存失败。');
+      return;
+    }
+    saveMutation.mutate({ ...parsed.data, site });
   };
 
   return (

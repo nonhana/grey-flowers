@@ -1,5 +1,3 @@
-import { getStaticMarkdownPage, isStaticMarkdownPageSlug } from '#server/utils/markdown'
-
 export default formattedEventHandler(async (event) => {
   const slug = getRouterParam(event, 'slug')
 

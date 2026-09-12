@@ -1,16 +1,18 @@
-import type { ArticleSearchItem } from '@grey-flowers/contracts'
-import type { ArticleSearchQuery } from '#shared/types/articles'
-import { apiGet } from '#server/utils/api-gateway'
-import { formatDateYmd } from '#shared/utils/date'
+import { articleSearchListDataSchema, articleSearchQuerySchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
-  const searchQuery = getQuery(event) as ArticleSearchQuery
-  const data = await apiGet<{ items: ArticleSearchItem[] }>(
+  const query = getQuery(event)
+  const parsed = parsePublicQuery(articleSearchQuerySchema, {
+    q: query.q,
+    limit: query.limit,
+  })
+  const data = await apiGet(
     '/public/articles/search',
     {
-      q: searchQuery.q,
-      limit: searchQuery.limit,
+      q: parsed.q,
+      limit: parsed.limit,
     },
+    articleSearchListDataSchema,
   )
 
   const payload = data.items.map(item => ({

@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import type { ActivityPublic } from '@grey-flowers/contracts'
 import type { LucideIcon } from '@lucide/vue'
-import type { ActivityItem } from '#shared/types/activity'
 import { Feather, Image, Images, MessageCircle, Music4 } from '@lucide/vue'
-import { formatRelativeTime } from '#shared/utils/date'
 
 const props = defineProps<{
-  item: ActivityItem
+  item: ActivityPublic
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', item: ActivityItem): void
+  (e: 'select', item: ActivityPublic): void
 }>()
 
 const previewImage = computed(() => props.item.images?.[0] ?? '')
@@ -47,7 +46,7 @@ const compactDate = computed(() => formatMonthDay(props.item.publishedAt))
 
 const detailAriaLabel = computed(() => `查看${typeLabel.value}动态详情，发布时间 ${absoluteDate.value}`)
 
-function getFallbackContent(item: ActivityItem) {
+function getFallbackContent(item: ActivityPublic) {
   if (item.music?.length) {
     const track = item.music[0]
     return track

@@ -1,12 +1,4 @@
-import type { ArticleImageSource } from '#shared/types/article'
-import type { ArticleOgImageInput } from '#shared/utils/article-og-image'
-import { buildOgImageUrl } from '#server/utils/nuxt-og-image-builder'
 import { seoData } from '#shared/data/meta'
-import {
-  getArticleOgImageDefinition,
-  getArticlePagePath,
-  hasUsableArticleCover,
-} from '#shared/utils/article-og-image'
 
 export interface ResolvedArticleImagePolicy {
   generatedImage: string

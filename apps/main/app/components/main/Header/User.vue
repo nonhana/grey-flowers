@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { LucideIcon } from '@lucide/vue'
-import type { DropdownCommand } from '#shared/types/common'
+import { authLoginInputSchema, authRegisterInputSchema } from '@grey-flowers/contracts'
 import { Globe, KeyRound, LogIn, LogOut, Mail, MessageSquareMore, User, UserPlus, UserRound } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 const { userStore } = useStore()
 const { callHanaMessage } = useMessage()
@@ -63,11 +62,10 @@ const logging = ref(false)
 const loginBtnText = computed(() => logging.value ? '登录中...' : '登录')
 async function handleLogin(e: Event) {
   const formData = new FormData(e.target as HTMLFormElement)
-  const account = formData.get('account')
-  const password = formData.get('password')
-  if (typeof account !== 'string' || typeof password !== 'string' || !account || !password) {
+  const parsed = authLoginInputSchema.safeParse(Object.fromEntries(formData))
+  if (!parsed.success) {
     callHanaMessage({
-      message: '请输入用户名和密码。',
+      message: parsed.error.issues[0]?.message ?? '登录失败。',
       type: 'error',
     })
     return
@@ -75,7 +73,7 @@ async function handleLogin(e: Event) {
 
   logging.value = true
   try {
-    const data = await apiClient.login({ account, password })
+    const data = await apiClient.login(parsed.data)
     if (data.success) {
       loginWindowVisible.value = false
       callHanaMessage({
@@ -105,20 +103,17 @@ const registering = ref(false)
 const registerBtnText = computed(() => registering.value ? '注册中...' : '注册')
 async function handleRegister(e: Event) {
   const formData = new FormData(e.target as HTMLFormElement)
-  const username = formData.get('username')
-  const email = formData.get('email')
-  const password = formData.get('password')
-  const site = formData.get('site')
-  if (
-    typeof username !== 'string'
-    || typeof email !== 'string'
-    || typeof password !== 'string'
-    || !username
-    || !email
-    || !password
-  ) {
+  const raw = Object.fromEntries(formData)
+  // site 空串仍省略，保持现行为。
+  const parsed = authRegisterInputSchema.safeParse({
+    username: raw.username,
+    email: raw.email,
+    password: raw.password,
+    ...(typeof raw.site === 'string' && raw.site ? { site: raw.site } : {}),
+  })
+  if (!parsed.success) {
     callHanaMessage({
-      message: '请填写用户名、邮箱和密码。',
+      message: parsed.error.issues[0]?.message ?? '注册失败。',
       type: 'error',
     })
     return
@@ -126,12 +121,7 @@ async function handleRegister(e: Event) {
 
   registering.value = true
   try {
-    const data = await apiClient.register({
-      username,
-      email,
-      password,
-      ...(typeof site === 'string' && site ? { site } : {}),
-    })
+    const data = await apiClient.register(parsed.data)
     if (data.success) {
       callHanaMessage({
         message: '注册成功，请登录',

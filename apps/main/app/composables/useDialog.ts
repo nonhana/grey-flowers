@@ -1,4 +1,3 @@
-import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
 import { createVNode, render } from 'vue'
 import Dialog from '~/components/hana/Dialog.vue'
 

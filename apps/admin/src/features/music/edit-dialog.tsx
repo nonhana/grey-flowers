@@ -4,6 +4,7 @@ import type {
   MusicUpdateInput,
 } from '@grey-flowers/contracts';
 
+import { musicUpdateInputSchema } from '@grey-flowers/contracts';
 import { useMutation } from '@tanstack/react-query';
 import { ImagePlus } from 'lucide-react';
 import { useState } from 'react';
@@ -62,22 +63,22 @@ const EditForm = ({
   });
 
   const save = () => {
-    const title = form.title.trim();
-    if (!title) {
-      setError('标题不能为空。');
-      return;
-    }
-    setError(null);
     const input: MusicUpdateInput = {
       album: form.album.trim(),
       artist: form.artist.trim(),
-      title,
+      title: form.title.trim(),
       // 选了受管封面时服务端以资产为准；否则以外部 URL 为准（coverAssetId 报 null 表示无受管封面）
       ...(form.coverAssetId === null
         ? { cover: form.cover.trim() }
         : { coverAssetId: form.coverAssetId }),
     };
-    saveMutation.mutate(input);
+    const parsed = musicUpdateInputSchema.safeParse(input);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '保存失败。');
+      return;
+    }
+    setError(null);
+    saveMutation.mutate(parsed.data);
   };
 
   return (

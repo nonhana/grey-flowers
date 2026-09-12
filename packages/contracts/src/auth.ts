@@ -52,7 +52,7 @@ export type AuthRegisterResponse = z.infer<typeof authRegisterResponseSchema>;
 
 export const authLoginInputSchema = z
   .object({
-    account: z.string().min(1, { message: '账号不能为空' }),
+    account: z.string().trim().min(1, { message: '账号不能为空' }),
     password: z.string().min(1, { message: '密码不能为空' }),
   })
   .strict();

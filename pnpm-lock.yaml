@@ -791,6 +791,9 @@ importers:
       vue-router:
         specifier: catalog:main
         version: 5.3.1(@vue/compiler-sfc@3.5.42)(esbuild@0.28.1)(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(rolldown@1.2.8)(rollup@4.62.4)(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.13)(yaml@2.9.0))(vue@3.5.42(typescript@6.0.3))(webpack@5.109.2(cssnano@8.0.4(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.28))
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.2
     devDependencies:
       '@antfu/eslint-config':
         specifier: catalog:main
@@ -867,9 +870,6 @@ importers:
       vivus:
         specifier: catalog:main
         version: 0.4.6
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.2
 
   packages/contracts:
     dependencies:

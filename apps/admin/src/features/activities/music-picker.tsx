@@ -16,7 +16,6 @@ import { AppDialog } from '@/ui/overlay';
 import { Paginator } from '@/ui/paginator';
 
 const PAGE_SIZE = 20;
-const SELECT_LIMIT = 10;
 
 const MusicRowSkeleton = () => (
   <div
@@ -35,12 +34,14 @@ const MusicRowSkeleton = () => (
 /** session-keyed 内层：搜索框与 300ms 防抖住在会话组件里，挂载即从空查询开始，重开不发注定被丢弃的请求；选择集随会话播种，确认前一直保留 */
 const MusicPickerBody = ({
   isOpen,
+  maxSelection,
   onConfirm,
   onOpenChange,
   selected,
   session,
 }: {
   isOpen: boolean;
+  maxSelection: number;
   onConfirm: (tracks: MusicTrack[]) => void;
   onOpenChange: (open: boolean) => void;
   selected: MusicTrack[];
@@ -72,7 +73,7 @@ const MusicPickerBody = ({
   const error = pickerQuery.error ? '无法加载音乐库，请稍后重试。' : '';
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const atLimit = selection.size >= SELECT_LIMIT;
+  const atLimit = selection.size >= maxSelection;
 
   const toggleTrack = (track: MusicTrack) => {
     setSelection((current) => {
@@ -218,7 +219,7 @@ const MusicPickerBody = ({
 
       <div className="flex items-center justify-between gap-3">
         <span className="font-mono text-2xs text-ink-dim">
-          已选 {selection.size} / {SELECT_LIMIT}
+          已选 {selection.size} / {maxSelection}
         </span>
         <div className="flex items-center gap-2">
           {data && data.total > PAGE_SIZE ? (
@@ -240,11 +241,13 @@ const MusicPickerBody = ({
 
 export const MusicPickerDialog = ({
   isOpen,
+  maxSelection,
   onConfirm,
   onOpenChange,
   selected,
 }: {
   isOpen: boolean;
+  maxSelection: number;
   onConfirm: (tracks: MusicTrack[]) => void;
   onOpenChange: (open: boolean) => void;
   selected: MusicTrack[];
@@ -269,6 +272,7 @@ export const MusicPickerDialog = ({
       <MusicPickerBody
         isOpen={isOpen}
         key={session}
+        maxSelection={maxSelection}
         onConfirm={onConfirm}
         onOpenChange={onOpenChange}
         selected={selected}

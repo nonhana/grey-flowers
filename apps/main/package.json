@@ -23,7 +23,8 @@
     "@unocss/reset": "catalog:main",
     "nuxt": "catalog:main",
     "vue": "catalog:main",
-    "vue-router": "catalog:main"
+    "vue-router": "catalog:main",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:main",
@@ -50,7 +51,6 @@
     "pinia-plugin-persistedstate": "catalog:main",
     "unocss": "catalog:main",
     "unocss-preset-scrollbar": "catalog:main",
-    "vivus": "catalog:main",
-    "zod": "catalog:"
+    "vivus": "catalog:main"
   }
 }

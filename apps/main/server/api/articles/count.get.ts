@@ -1,12 +1,16 @@
-import type { ArticleFilterQuery } from '#shared/types/articles'
-import { apiGet } from '#server/utils/api-gateway'
+import { articleCountDataSchema, articleFilterQuerySchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
-  const query = getQuery(event) as ArticleFilterQuery
-  const { count } = await apiGet<{ count: number }>('/public/articles/count', {
+  const query = getQuery(event)
+  const parsed = parsePublicQuery(articleFilterQuerySchema, {
     tag: query.tag,
     category: query.category,
     month: query.publishedAtMonth,
   })
+  const { count } = await apiGet('/public/articles/count', {
+    tag: parsed.tag,
+    category: parsed.category,
+    month: parsed.month,
+  }, articleCountDataSchema)
   return { payload: count }
 })

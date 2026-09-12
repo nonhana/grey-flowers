@@ -1,22 +1,7 @@
 import type { ApiErrorCode } from '@grey-flowers/contracts'
-
 import type { H3Event } from 'h3'
-
-interface ApiSuccessBody<T> {
-  success: true
-  data: T
-}
-
-interface ApiFailureBody {
-  success: false
-  error: {
-    code: ApiErrorCode
-    fields?: Record<string, string[]>
-    message: string
-  }
-}
-
-type ApiBody<T> = ApiSuccessBody<T> | ApiFailureBody
+import type { ZodType } from 'zod'
+import { apiEnvelopeSchema } from '@grey-flowers/contracts'
 
 export class ApiGatewayError extends Error {
   readonly code: ApiErrorCode
@@ -29,13 +14,36 @@ export class ApiGatewayError extends Error {
   }
 }
 
+/** 上游响应信封按契约 data schema 校验后展开；非 JSON 或形状漂移一律转 INTERNAL_ERROR。 */
+async function parseApiBody<T>(response: Response, schema: ZodType<T>): Promise<T> {
+  let body: unknown
+  try {
+    body = await response.json()
+  }
+  catch {
+    throw new ApiGatewayError(response.status, 'INTERNAL_ERROR', 'Malformed API response')
+  }
+
+  const parsed = apiEnvelopeSchema(schema).safeParse(body)
+  if (!parsed.success) {
+    throw new ApiGatewayError(response.status, 'INTERNAL_ERROR', 'Malformed API response')
+  }
+
+  if (parsed.data.success) {
+    return parsed.data.data
+  }
+
+  throw new ApiGatewayError(response.status, parsed.data.error.code, parsed.data.error.message)
+}
+
 /**
- * 主站 → Hono API 的只读薄适配。只负责把 `{ success, data }` 信封
- * 展开为数据，或把可处理失败转成 ApiGatewayError；不承载业务规则。
+ * 主站 → Hono API 的只读薄适配。把经契约校验的 `{ success, data }` 信封展开为
+ * 数据，或把可处理失败转成 ApiGatewayError；不承载业务规则。
  */
 export async function apiGet<T>(
   path: string,
-  query?: Record<string, string | number | undefined | null>,
+  query: Record<string, string | number | undefined | null> | undefined,
+  schema: ZodType<T>,
 ): Promise<T> {
   const { public: { apiOrigin } } = useRuntimeConfig()
   const url = new URL(`${apiOrigin}${path}`)
@@ -50,23 +58,7 @@ export async function apiGet<T>(
     headers: { accept: 'application/json' },
   })
 
-  let body: ApiBody<T>
-  try {
-    body = await response.json() as ApiBody<T>
-  }
-  catch {
-    throw new ApiGatewayError(response.status, 'INTERNAL_ERROR', 'Malformed API response')
-  }
-
-  if (body.success) {
-    return body.data
-  }
-
-  throw new ApiGatewayError(
-    response.status,
-    body.error.code,
-    body.error.message,
-  )
+  return parseApiBody(response, schema)
 }
 
 export function isApiNotFound(error: unknown) {
@@ -82,6 +74,7 @@ export async function apiMutate<T>(
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
   path: string,
   options: { body?: unknown, event: H3Event },
+  schema: ZodType<T>,
 ): Promise<T> {
   const { public: { apiOrigin } } = useRuntimeConfig()
   const url = `${apiOrigin}${path}`
@@ -100,21 +93,5 @@ export async function apiMutate<T>(
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
   })
 
-  let body: ApiBody<T>
-  try {
-    body = await response.json() as ApiBody<T>
-  }
-  catch {
-    throw new ApiGatewayError(response.status, 'INTERNAL_ERROR', 'Malformed API response')
-  }
-
-  if (body.success) {
-    return body.data
-  }
-
-  throw new ApiGatewayError(
-    response.status,
-    body.error.code,
-    body.error.message,
-  )
+  return parseApiBody(response, schema)
 }

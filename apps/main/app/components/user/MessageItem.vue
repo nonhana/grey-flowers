@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { CommentItem } from '#shared/types/comment'
-
 const props = defineProps<{
   message: CommentItem
 }>()

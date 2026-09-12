@@ -1,5 +1,4 @@
 import type { ComputedRef, Ref } from 'vue'
-import { useStore } from '~/stores'
 
 export type OverlayNavigationMode = 'history' | 'route'
 

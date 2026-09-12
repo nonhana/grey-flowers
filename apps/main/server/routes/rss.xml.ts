@@ -1,9 +1,6 @@
 import type { ArticleListData } from '@grey-flowers/contracts'
+import { articleListDataSchema } from '@grey-flowers/contracts'
 import { Feed } from 'feed'
-
-import { apiGet } from '#server/utils/api-gateway'
-import { resolveArticleImagePolicy, toAbsoluteArticleImageUrl } from '#server/utils/article-generated-image'
-import { STATIC_MARKDOWN_TITLES } from '#server/utils/markdown'
 
 const basePath = 'https://caelum.moe'
 
@@ -15,9 +12,10 @@ async function fetchAllPublishedArticles(): Promise<ArticleListData['items']> {
   let total = Number.POSITIVE_INFINITY
 
   for (let page = 1; items.length < total; page += 1) {
-    const data = await apiGet<ArticleListData>(
+    const data = await apiGet(
       '/public/articles/list',
       { page, pageSize: RSS_PAGE_SIZE },
+      articleListDataSchema,
     )
     items.push(...data.items)
     total = data.total

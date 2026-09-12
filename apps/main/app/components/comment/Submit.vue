@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { CommentItem, IPostComment, IReplyComment } from '#shared/types/comment'
-import { useStore } from '~/stores'
+import type { CommentCreateInput } from '@grey-flowers/contracts'
+import { commentCreateInputSchema } from '@grey-flowers/contracts'
 
 const props = defineProps<{
   isRecently: boolean
@@ -41,32 +41,34 @@ const supportedSyntax = [
   '- 列表',
   '```代码块```',
 ]
-
 async function handlePublish() {
-  if (!content.value) {
-    callHanaMessage({
-      message: '请填写评论内容。',
-      type: 'error',
-    })
-    return
-  }
-  const objData: IPostComment = {
+  const draft: CommentCreateInput = {
     path: props.isRecently ? fullPath : path,
     content: content.value,
   }
   if (replyTo.value) {
-    objData.parentId = replyTo.value.parentId
+    draft.parentId = replyTo.value.parentId
     if (replyTo.value.targetCommentLevel === 'CHILD') {
-      objData.replyToUserId = replyTo.value.userId
-      objData.replyToCommentId = replyTo.value.commentId
+      draft.replyToUserId = replyTo.value.userId
+      draft.replyToCommentId = replyTo.value.commentId
     }
   }
+
+  const parsed = commentCreateInputSchema.safeParse(draft)
+  if (!parsed.success) {
+    callHanaMessage({
+      message: parsed.error.issues[0]?.message ?? '评论提交失败。',
+      type: 'error',
+    })
+    return
+  }
+
   publishing.value = true
-  await publishComment(objData)
+  await publishComment(parsed.data)
   publishing.value = false
 }
 
-async function publishComment(objData: IPostComment) {
+async function publishComment(objData: CommentCreateInput) {
   try {
     const data = await apiClient.legacyBearerRequest<CommentItem>('/api/comments/post', {
       method: 'POST',

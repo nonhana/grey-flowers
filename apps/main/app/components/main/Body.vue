@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { ArticleCardProps } from '#shared/types/article'
 import { Newspaper } from '@lucide/vue'
 
 const { data: fetchArticleData } = await useFetch('/api/articles/list', { query: { page: 1, pageSize: 5 } })

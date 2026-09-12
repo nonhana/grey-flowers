@@ -4,6 +4,7 @@ import type {
   CategorySaveInput,
 } from '@grey-flowers/contracts';
 
+import { categorySaveInputSchema } from '@grey-flowers/contracts';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
 import { FolderTree, ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
@@ -119,16 +120,17 @@ export const CategoriesPage = () => {
   };
 
   const save = () => {
-    const name = form.name.trim();
-    if (!name) {
-      setError('分类名不能为空。');
+    const parsed = categorySaveInputSchema.safeParse({
+      name: form.name,
+      cover: form.cover,
+      coverAssetId: form.coverAssetId,
+    });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '保存失败。');
       return;
     }
     setError(null);
-    saveMutation.mutate({
-      target: editing,
-      input: { cover: form.cover, coverAssetId: form.coverAssetId, name },
-    });
+    saveMutation.mutate({ target: editing, input: parsed.data });
   };
 
   const remove = () => {

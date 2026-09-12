@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { LucideIcon } from '@lucide/vue'
 import type { TransitionProps } from 'vue'
-import type { OverlayNavigationMode } from '~/composables/useOverlayNavigation'
 import { X } from '@lucide/vue'
 
 const props = withDefaults(defineProps<{

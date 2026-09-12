@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { authLoginInputSchema } from '@grey-flowers/contracts';
 import { RouterProvider } from '@tanstack/react-router';
 import { cn } from 'cn';
 import {
@@ -101,6 +102,7 @@ const LoginScreen = ({
   const { signIn } = useAuth();
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
+  const [invalid, setInvalid] = useState<string | null>(null);
 
   return (
     <Stage>
@@ -113,7 +115,13 @@ const LoginScreen = ({
         className="grid gap-4"
         onSubmit={(e) => {
           e.preventDefault();
-          void signIn({ account: account.trim(), password });
+          const parsed = authLoginInputSchema.safeParse({ account, password });
+          if (!parsed.success) {
+            setInvalid(parsed.error.issues[0]?.message ?? '登录失败。');
+            return;
+          }
+          setInvalid(null);
+          void signIn(parsed.data);
         }}
       >
         <TextField
@@ -138,6 +146,7 @@ const LoginScreen = ({
           value={password}
         />
         {error ? <Alert tone="danger">{error}</Alert> : null}
+        {invalid ? <Alert tone="danger">{invalid}</Alert> : null}
         <Button
           className="mt-1 w-full"
           icon={<LockKeyhole aria-hidden />}

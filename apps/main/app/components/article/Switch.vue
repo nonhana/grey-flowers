@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { NeighborItem } from '~/stores/modules/article'
 import { ArrowLeft, ArrowRight } from '@lucide/vue'
 
 const props = defineProps<{

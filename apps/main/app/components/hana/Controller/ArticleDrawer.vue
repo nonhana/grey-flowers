@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Menu } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 const { articleStore } = useStore()
 const { content, neighbors } = toRefs(articleStore)
