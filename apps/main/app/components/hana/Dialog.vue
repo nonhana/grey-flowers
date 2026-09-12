@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { TransitionProps } from 'vue'
 import { X } from '@lucide/vue'
-import { useElementSize, usePreferredReducedMotion } from '@vueuse/core'
 
 const props = withDefaults(defineProps<DialogOptions>(), {
   title: '',

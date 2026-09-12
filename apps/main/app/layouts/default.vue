@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import HanaScrollView from '~/components/hana/ScrollView.vue'
-
 const route = useRoute()
 const { headerStatusStore, uiInfoStore } = useStore()
 useRouterOptions()

@@ -1,6 +1,3 @@
-import { useMediaQuery } from '@vueuse/core'
-import { reactive, ref } from 'vue'
-
 interface UseHorizontalRailOptions {
   dragThreshold?: number
   inertiaLaunchVelocity?: number

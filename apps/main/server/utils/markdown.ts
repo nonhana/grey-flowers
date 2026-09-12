@@ -2,7 +2,6 @@ import type { MDCParserResult } from '@nuxtjs/mdc'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import process from 'node:process'
-import { parseMarkdown } from '@nuxtjs/mdc/runtime'
 
 const MARKDOWN_TOC_OPTIONS = {
   depth: 2,

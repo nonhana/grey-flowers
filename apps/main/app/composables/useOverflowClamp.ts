@@ -1,5 +1,4 @@
 import type { Ref } from 'vue'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 export function useOverflowClamp(
   containerRef: Readonly<Ref<HTMLElement | null>>,

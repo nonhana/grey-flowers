@@ -1,5 +1,4 @@
 import type { ActivityPublic } from '@grey-flowers/contracts'
-import { ref, shallowReadonly } from 'vue'
 
 interface ActivityListErrorMessages {
   initialResponse: string
