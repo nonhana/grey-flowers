@@ -6,8 +6,11 @@ injectWorkspacePackages: true
 minimumReleaseAge: 0
 
 allowBuilds:
+  '@grey-flowers/db@file:packages/db': false
   '@parcel/watcher': true
+  '@prisma/client': true
   '@prisma/engines': true
+  better-sqlite3: true
   core-js: true
   esbuild: true
   prisma: true
@@ -156,16 +159,6 @@ catalogs:
     '@types/pg': ^8.23.1
     pg: ^8.23.0
     prisma: ^7.10.0
-
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@prisma/client'
-  - '@prisma/engines'
-  - better-sqlite3
-  - esbuild
-  - prisma
-  - sharp
-  - vue-demi
 
 peerDependencyRules:
   allowedVersions:
