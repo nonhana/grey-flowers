@@ -7,8 +7,8 @@ import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-import { flattenJsxAttrWhitespace } from './vite/flatten-jsx-attr-whitespace';
-import { themeInitScript } from './vite/theme-script-plugin';
+import { flattenJsxAttrWhitespace } from './vite/flatten-jsx-attr-whitespace.ts';
+import { themeInitScript } from './vite/theme-script-plugin.ts';
 
 const PWA_ICONS: Record<string, true> = {
   'favicon.ico': true,
@@ -138,6 +138,9 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: adminPort,
+    },
+    build: {
+      chunkSizeWarningLimit: 1024,
     },
   };
 });
