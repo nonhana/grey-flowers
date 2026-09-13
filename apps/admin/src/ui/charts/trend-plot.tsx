@@ -4,7 +4,7 @@ import type { KeyboardEvent } from 'react';
 import { cn } from 'cn';
 import { useState } from 'react';
 
-import { monthDay } from './shared.js';
+import { monthDay } from './shared';
 
 const STAGGER_WINDOW = 160;
 const STAGGER_MAX_STEP = 12;

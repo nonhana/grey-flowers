@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { SNSNames } from '#shared/types/about'
-
 defineProps<{
   icon: SNSNames
   color: string

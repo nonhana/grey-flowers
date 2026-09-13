@@ -3,12 +3,12 @@ import type { ActivityAdmin } from '@grey-flowers/contracts';
 import { cn } from 'cn';
 import { Pause, Pencil, Play, Trash2 } from 'lucide-react';
 
-import { formatDateTime } from '@/lib/format.js';
-import { IconButton } from '@/ui/button.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDateTime } from '@/lib/format';
+import { IconButton } from '@/ui/button';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
-import { activityContentPreview, activityImageGridClass } from './display.js';
+import { activityContentPreview, activityImageGridClass } from './display';
 
 export const ActivityCard = ({
   activity,
@@ -71,12 +71,12 @@ export const ActivityCard = ({
               <button
                 aria-label={`${isPlaying ? '暂停' : '播放'} ${track.title}`}
                 className={cn(
-                  'inline-flex min-h-8 items-center gap-1.5 rounded-full border',
                   `
+                    inline-flex min-h-8 items-center gap-1.5 rounded-full border
                     border-edge bg-well px-2.5 font-mono text-xs text-ink
                     transition-colors
+                    hover:border-accent-rule hover:text-accent-text
                   `,
-                  'hover:border-accent-rule hover:text-accent-text',
                   isPlaying && 'border-accent-rule text-accent-text',
                 )}
                 key={track.id}

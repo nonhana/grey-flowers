@@ -1,4 +1,3 @@
-/** 动态卡片图片缩略图：1/2/3/4 张走 PhotoGrid 布局，更多列 3 列网格。 */
 export const activityImageGridClass = (count: number) => {
   switch (count) {
     case 1:
@@ -14,5 +13,4 @@ export const activityImageGridClass = (count: number) => {
   }
 };
 
-/** 内容预览：折叠空白、保留换行信号，供 feed 列表 line-clamp 前使用。 */
 export const activityContentPreview = (content: string) => content.trim();

@@ -1,0 +1,121 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const articlesApi = vi.hoisted(() => ({
+  list: vi.fn<
+    (
+      query: Record<string, unknown>,
+      options?: { signal?: AbortSignal },
+    ) => Promise<unknown>
+  >(),
+  detail:
+    vi.fn<
+      (id: number, options?: { signal?: AbortSignal }) => Promise<unknown>
+    >(),
+}));
+
+vi.mock('@/app/api/index', () => ({ apiClient: { articles: articlesApi } }));
+
+import { queryClient } from '../client';
+import { musicRoot } from '../roots';
+import {
+  articlesKeys,
+  articlesListOptions,
+  invalidateArticlesAfterContentSave,
+  invalidateArticlesAfterMutation,
+} from './articles';
+import { overviewKeys } from './overview';
+import { taxonomyKeys } from './taxonomy';
+
+describe('invalidateArticlesAfterContentSave', () => {
+  beforeEach(() => {
+    queryClient.clear();
+  });
+
+  it('save 窄失效：只命中 articles 家族，不扩散到 taxonomy 与 overview', async () => {
+    const listQuery = { status: 'all', page: 1, pageSize: 20 } as const;
+    queryClient.setQueryData(articlesKeys.list(listQuery), []);
+    queryClient.setQueryData(articlesKeys.detail(3), {});
+    queryClient.setQueryData(taxonomyKeys.categories, []);
+    queryClient.setQueryData(overviewKeys.counts, {});
+
+    await invalidateArticlesAfterContentSave();
+
+    expect(
+      queryClient.getQueryState(articlesKeys.list(listQuery))?.isInvalidated,
+    ).toBe(true);
+    expect(
+      queryClient.getQueryState(articlesKeys.detail(3))?.isInvalidated,
+    ).toBe(true);
+    expect(
+      queryClient.getQueryState(taxonomyKeys.categories)?.isInvalidated,
+    ).toBe(false);
+    expect(queryClient.getQueryState(overviewKeys.counts)?.isInvalidated).toBe(
+      false,
+    );
+  });
+});
+
+describe('invalidateArticlesAfterMutation', () => {
+  beforeEach(() => {
+    queryClient.clear();
+  });
+
+  it('create/publish/unpublish/delete 全量失效：命中 articles、taxonomy 与 overview，不扩散到 music', async () => {
+    const listQuery = { status: 'all', page: 1, pageSize: 20 } as const;
+    queryClient.setQueryData(articlesKeys.list(listQuery), []);
+    queryClient.setQueryData(taxonomyKeys.categories, []);
+    queryClient.setQueryData(overviewKeys.counts, {});
+    queryClient.setQueryData([...musicRoot, 'list', { page: 1 }], []);
+
+    await invalidateArticlesAfterMutation();
+
+    expect(
+      queryClient.getQueryState(articlesKeys.list(listQuery))?.isInvalidated,
+    ).toBe(true);
+    expect(
+      queryClient.getQueryState(taxonomyKeys.categories)?.isInvalidated,
+    ).toBe(true);
+    expect(queryClient.getQueryState(overviewKeys.counts)?.isInvalidated).toBe(
+      true,
+    );
+    expect(
+      queryClient.getQueryState([...musicRoot, 'list', { page: 1 }])
+        ?.isInvalidated,
+    ).toBe(false);
+  });
+});
+
+describe('articles list query', () => {
+  beforeEach(() => {
+    queryClient.clear();
+    vi.clearAllMocks();
+  });
+
+  it('空 q 与无 q 是同一个缓存键,同一请求只占一份缓存', () => {
+    expect(
+      articlesKeys.list({ status: 'all', page: 1, pageSize: 20, q: '' }),
+    ).toEqual(articlesKeys.list({ status: 'all', page: 1, pageSize: 20 }));
+  });
+
+  it('list query 归一化 q(去空白、空白即未搜索)并消费 signal', async () => {
+    articlesApi.list.mockResolvedValue({ items: [], total: 0 });
+
+    await queryClient.query(
+      articlesListOptions({
+        status: 'all',
+        page: 1,
+        pageSize: 20,
+        q: '  hana  ',
+      }),
+    );
+
+    const [callQuery, callSignal] = articlesApi.list.mock.calls[0] ?? [];
+    expect(callQuery).toEqual({
+      status: 'all',
+      page: 1,
+      pageSize: 20,
+      q: 'hana',
+    });
+    expect(callSignal).toBeInstanceOf(AbortSignal);
+  });
+});

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '#shared/types/comment'
 import { ChevronRight, MapPin, Reply, X } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 type Comment = CommentItem | ParentCommentItem
 

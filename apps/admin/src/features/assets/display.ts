@@ -4,7 +4,7 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { apiErrorMessage } from '@/lib/error-message.js';
+import { apiErrorMessage } from '@/lib/error-message';
 
 export const purposeLabels: Record<AssetPurpose, string> = {
   ACTIVITY_IMAGE: '动态图片',
@@ -34,12 +34,6 @@ export const statusLabels: Record<AssetStatus, string> = {
   DELETED: '已删除',
   PENDING_CLEANUP: '待清理',
 };
-
-export type AssetStatusFilter = 'all' | 'AVAILABLE' | 'PENDING_CLEANUP';
-
-/** URL 是资产状态筛选的唯一真相，概览待清理深链可由此进入并复位。 */
-export const parseAssetStatusFilter = (value: unknown): AssetStatusFilter =>
-  value === 'PENDING_CLEANUP' || value === 'AVAILABLE' ? value : 'all';
 
 export const assetErrorMessage = (error: unknown) =>
   apiErrorMessage(error, {

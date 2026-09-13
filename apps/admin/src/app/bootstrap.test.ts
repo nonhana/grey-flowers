@@ -4,9 +4,9 @@ const api = vi.hoisted(() => ({ setSessionExpiredHandler: vi.fn() }));
 
 const restoreSession = vi.hoisted(() => vi.fn(() => Promise.resolve()));
 
-vi.mock('@/app/api/index.js', () => ({ apiClient: api }));
+vi.mock('@/app/api/index', () => ({ apiClient: api }));
 
-vi.mock('@/store/auth.js', () => ({
+vi.mock('@/store/auth', () => ({
   useAuthStore: {
     getState: () => ({
       decideSessionExpired: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock('@/store/auth.js', () => ({
   },
 }));
 
-import { bootstrapAdminApp } from './bootstrap.js';
+import { bootstrapAdminApp } from './bootstrap';
 
 describe('bootstrapAdminApp', () => {
   beforeEach(() => {

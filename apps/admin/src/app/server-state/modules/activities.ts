@@ -1,0 +1,44 @@
+import type { ActivityListQuery } from '@grey-flowers/contracts';
+
+import {
+  keepPreviousData,
+  queryOptions,
+  skipToken,
+} from '@tanstack/react-query';
+
+import { apiClient } from '@/app/api/index';
+
+import { queryClient } from '../client';
+import { activitiesRoot } from '../roots';
+import { overviewKeys } from './overview';
+
+export const activityKeys = {
+  list: (query: ActivityListQuery) =>
+    [...activitiesRoot, 'list', query] as const,
+  detail: (id: number) => [...activitiesRoot, 'detail', id] as const,
+};
+
+export const activityListOptions = (query: ActivityListQuery) =>
+  queryOptions({
+    queryKey: activityKeys.list(query),
+    queryFn: ({ signal }) => apiClient.activities.list(query, signal),
+    placeholderData: keepPreviousData,
+  });
+
+export const activityDetailOptions = (id: number | null) =>
+  queryOptions({
+    queryKey: activityKeys.detail(id ?? 0),
+    queryFn:
+      id === null
+        ? skipToken
+        : ({ signal }) => apiClient.activities.detail(id, signal),
+  });
+/** 动态增删改后的规定失效：activities 全家族、overview 计数/趋势/节奏；删除级联评论的失效待接入 comments/users */
+export const invalidateActivitiesAfterMutation = async () => {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: activitiesRoot }),
+    queryClient.invalidateQueries({ queryKey: overviewKeys.counts }),
+    queryClient.invalidateQueries({ queryKey: overviewKeys.trendRoot }),
+    queryClient.invalidateQueries({ queryKey: overviewKeys.calendar }),
+  ]);
+};

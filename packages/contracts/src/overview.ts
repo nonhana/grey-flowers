@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { apiSuccessSchema, nonNegativeIntSchema } from './common.js';
+import { apiSuccessSchema, nonNegativeIntSchema } from './common';
 
 export const overviewCountsSchema = z
   .object({

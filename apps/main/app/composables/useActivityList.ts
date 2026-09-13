@@ -1,5 +1,4 @@
-import type { ActivityItem } from '#shared/types/activity'
-import { ref, shallowReadonly } from 'vue'
+import type { ActivityPublic } from '@grey-flowers/contracts'
 
 interface ActivityListErrorMessages {
   initialResponse: string
@@ -34,8 +33,9 @@ function resolveActivityErrorMessage(
 
 export function useActivityList(options: UseActivityListOptions) {
   const pageSize = options.pageSize ?? DEFAULT_ACTIVITY_PAGE_SIZE
+  const apiClient = useApiClient()
 
-  const items = ref<ActivityItem[]>([])
+  const items = ref<ActivityPublic[]>([])
   const page = ref(1)
   const hasMore = ref(true)
   const loadingInitial = ref(false)
@@ -93,7 +93,7 @@ export function useActivityList(options: UseActivityListOptions) {
 
     activeRequest = (async () => {
       try {
-        const data = await $fetch('/api/activity/list', {
+        const data = await apiClient.mainRequest<ActivityPublic[]>('/api/activity/list', {
           query: {
             page: page.value,
             pageSize,
@@ -105,14 +105,13 @@ export function useActivityList(options: UseActivityListOptions) {
           return false
         }
 
-        const list = Array.isArray(data.payload) ? data.payload : []
-        items.value = [...items.value, ...list]
+        const loadedCount = data.payload?.length ?? 0
+        items.value = [...items.value, ...(data.payload ?? [])]
 
-        if (list.length < pageSize)
+        if (loadedCount < pageSize)
           hasMore.value = false
         else
           page.value += 1
-
         return true
       }
       catch (error) {

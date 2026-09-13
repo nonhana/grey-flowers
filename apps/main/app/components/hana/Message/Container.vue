@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { MessageOptions } from '~/composables/useMessage'
 import Message from './Item.vue'
 
 interface MessageItem extends MessageOptions {

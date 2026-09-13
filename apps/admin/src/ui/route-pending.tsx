@@ -1,5 +1,5 @@
-import { Skeleton } from '@/ui/feedback.js';
-import { PageBody } from '@/ui/surface.js';
+import { Skeleton } from '@/ui/feedback';
+import { PageBody } from '@/ui/surface';
 
 export const RoutePending = () => (
   <PageBody>

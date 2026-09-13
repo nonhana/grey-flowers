@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { MarkdownPagePayload } from '#shared/types/markdown'
 import { BookHeart, Link as LinkIcon, Sticker } from '@lucide/vue'
 import { linksPageData } from '#shared/data/meta'
 import friends from '~/data/friends.json'

@@ -1,6 +1,7 @@
-import type { ArticleSearchItem } from '#shared/types/article'
+import type { ArticleSearchItem } from '@grey-flowers/contracts'
 
 export function useArticleSearch() {
+  const apiClient = useApiClient()
   const results = ref<ArticleSearchItem[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -24,7 +25,7 @@ export function useArticleSearch() {
     error.value = null
 
     try {
-      const response = await $fetch('/api/articles/search', {
+      const response = await apiClient.mainRequest<ArticleSearchItem[]>('/api/articles/search', {
         query: { q: query },
       })
 
@@ -38,9 +39,7 @@ export function useArticleSearch() {
         return
       }
 
-      results.value = Array.isArray(response.payload)
-        ? response.payload as ArticleSearchItem[]
-        : []
+      results.value = response.payload ?? []
     }
     catch (fetchError) {
       console.error('[ArticleSearch] search error:', fetchError)

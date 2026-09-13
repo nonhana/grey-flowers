@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { CommentItem, IDeleteComment, IReplyComment, ParentCommentItem } from '#shared/types/comment'
+import type { CommentCount, CommentDeleteResult } from '@grey-flowers/contracts'
 import { Send } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 const props = withDefaults(defineProps<{
   type?: 'default' | 'recently'
@@ -31,31 +30,30 @@ const commentList = ref<ParentCommentItem[]>([])
 
 async function fetchTotal() {
   try {
-    const data = await $fetch('/api/comments/count', {
+    const data = await apiClient.mainRequest<CommentCount>('/api/comments/count', {
       query: { path: queryPath.value },
     })
     if (data.success) {
-      totalCount.value = data.payload?.totalCount || 0
-      parentCount.value = data.payload?.parentCount || 0
+      totalCount.value = data.payload?.totalCount ?? 0
+      parentCount.value = data.payload?.parentCount ?? 0
     }
   }
   catch {
-    // 上游异常时评论计数保持 0 即可（S5 后非 2xx 会 reject，这里吞掉避免
-    // unhandled rejection；列表/计数空态本就是可接受降级）。
+    // 网络/上游异常时计数保持 0 即可，不向上抛；空态本就是可接受降级。
   }
 }
 
 async function fetchComments() {
   try {
-    const data = await $fetch('/api/comments/list', {
+    const data = await apiClient.mainRequest<ParentCommentItem[]>('/api/comments/list', {
       query: { path: queryPath.value, page: page.value, pageSize: pageSize.value },
     })
     if (data.success) {
-      commentList.value = (data.payload as ParentCommentItem[]) ?? []
+      commentList.value = data.payload ?? []
     }
   }
   catch {
-    // 同上：上游异常时不更新列表（保持上一页/空态），不向上抛。
+    // 同上：不更新列表（保持上一页/空态），不向上抛。
   }
 }
 
@@ -103,7 +101,7 @@ function handleReply(value: IReplyComment) {
 
 async function handleDelete(value: IDeleteComment) {
   try {
-    const data = await apiClient.legacyBearerRequest('/api/comments/delete', {
+    const data = await apiClient.legacyBearerRequest<CommentDeleteResult>('/api/comments/delete', {
       method: 'POST',
       body: { commentId: value.id },
     })

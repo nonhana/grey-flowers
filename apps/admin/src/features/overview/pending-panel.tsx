@@ -5,15 +5,30 @@ import { Link } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { ChevronRight, FileText, Images, Music2 } from 'lucide-react';
 
-import { Skeleton } from '@/ui/feedback.js';
-import { SectionLabel } from '@/ui/surface.js';
+import type { FileRoutesByTo } from '@/routeTree.gen';
 
-interface PendingMeta {
-  icon: LucideIcon;
-  label: string;
-  search: Record<string, unknown>;
-  to: '/articles' | '/assets' | '/music';
-}
+import { Skeleton } from '@/ui/feedback';
+import { SectionLabel } from '@/ui/surface';
+
+type PendingMeta =
+  | {
+      icon: LucideIcon;
+      label: string;
+      search: FileRoutesByTo['/articles']['types']['fullSearchSchema'];
+      to: '/articles';
+    }
+  | {
+      icon: LucideIcon;
+      label: string;
+      search: FileRoutesByTo['/assets']['types']['fullSearchSchema'];
+      to: '/assets';
+    }
+  | {
+      icon: LucideIcon;
+      label: string;
+      search: FileRoutesByTo['/music']['types']['fullSearchSchema'];
+      to: '/music';
+    };
 
 const PENDING_META: Record<OverviewPendingItem['key'], PendingMeta> = {
   draft_articles: {

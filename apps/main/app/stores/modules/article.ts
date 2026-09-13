@@ -1,5 +1,3 @@
-import type { ArticleMarkdownPayload, Neighbors } from '#shared/types/markdown'
-
 export type { NeighborItem, Neighbors } from '#shared/types/markdown'
 
 export const useArticleStore = defineStore('article', () => {

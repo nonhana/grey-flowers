@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createRestrictedMarkdown } from './restricted-markdown.js';
+import { createRestrictedMarkdown } from './restricted-markdown';
 
 const commentMd = createRestrictedMarkdown({
   clobberPrefix: 'comment-',

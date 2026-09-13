@@ -1,24 +1,25 @@
 import type { TagAdmin } from '@grey-flowers/contracts';
 
+import { tagCreateInputSchema } from '@grey-flowers/contracts';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Plus, Tags as TagsIcon, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyTagsOptions,
-} from '@/app/server-state/taxonomy.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { Alert, EmptyState, Skeleton } from '@/ui/feedback.js';
-import { controlClass, FilterChip } from '@/ui/form.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { PageBody, PageHeader, RowStack } from '@/ui/surface.js';
+} from '@/app/server-state/modules/taxonomy';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { Button, IconButton } from '@/ui/button';
+import { Alert, EmptyState, Skeleton } from '@/ui/feedback';
+import { controlClass, FilterChip } from '@/ui/form';
+import { ConfirmDialog } from '@/ui/overlay';
+import { PageBody, PageHeader, RowStack } from '@/ui/surface';
 
-/** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳。 */
+/** 与真实标签行同构：名称 / 计数两段 + 删除位，落地时行高不跳 */
 const TagRowSkeleton = () => (
   <div
     aria-hidden
@@ -36,7 +37,7 @@ export const TagsPage = () => {
   const [newName, setNewName] = useState('');
   const tagsQuery = useQuery(taxonomyTagsOptions(unusedOnly));
   const items = tagsQuery.data?.items ?? [];
-  const loading = tagsQuery.isFetching;
+  const loading = tagsQuery.isPending;
   const deleteDialog = useDialog<TagAdmin>();
 
   const createMutation = useMutation({
@@ -65,9 +66,12 @@ export const TagsPage = () => {
   });
 
   const create = () => {
-    const name = newName.trim();
-    if (!name) return;
-    createMutation.mutate(name);
+    const parsed = tagCreateInputSchema.safeParse({ name: newName });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? '创建失败。');
+      return;
+    }
+    createMutation.mutate(parsed.data.name);
   };
 
   const remove = () => {

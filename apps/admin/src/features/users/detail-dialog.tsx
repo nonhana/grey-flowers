@@ -8,15 +8,15 @@ import { useQuery } from '@tanstack/react-query';
 import { CloudOff, ExternalLink, MessagesSquare } from 'lucide-react';
 import { useState } from 'react';
 
-import { usersDetailOptions } from '@/app/server-state/users.js';
-import { formatDateTime } from '@/lib/format.js';
-import { pageUrl } from '@/lib/page-url.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine } from '@/ui/surface.js';
+import { usersDetailOptions } from '@/app/server-state/modules/users';
+import { formatDateTime } from '@/lib/format';
+import { pageUrl } from '@/lib/page-url';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine } from '@/ui/surface';
 
 const COMMENT_PAGE_SIZE = 10;
 
@@ -63,10 +63,6 @@ const CommentRow = ({ comment }: { comment: CommentAdmin }) => (
   </article>
 );
 
-/**
- * 与 CommentRow 同构的骨架：path 行 + 三行正文（引用行可有可无，不画）。
- * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
- */
 const CommentRowSkeleton = () => (
   <article aria-hidden className="grid gap-1.5">
     <Skeleton className="h-[1.45em] w-2/3 text-2xs" />
@@ -77,7 +73,7 @@ const CommentRowSkeleton = () => (
   </article>
 );
 
-/** 单次打开会话内的详情体：评论页码构成 query key，翻页/重试都由 Query 驱动。 */
+/** 单次打开会话内的详情体：评论页码构成 query key，翻页/重试都由 Query 驱动 */
 const DetailBody = ({ user }: { user: UserAdminSummary }) => {
   const [commentPage, setCommentPage] = useState(1);
 
@@ -88,7 +84,8 @@ const DetailBody = ({ user }: { user: UserAdminSummary }) => {
     }),
   );
   const data: UserAdminDetailData | undefined = detailQuery.data;
-  const loading = detailQuery.isFetching;
+  const loading = detailQuery.isPending;
+  const busy = detailQuery.isFetching;
   const error = detailQuery.error ? '无法加载用户详情，请稍后重试。' : '';
 
   const totalComments = data?.comments.total ?? 0;
@@ -98,7 +95,7 @@ const DetailBody = ({ user }: { user: UserAdminSummary }) => {
 
   return (
     <div className="grid gap-4">
-      <section aria-busy={loading} className="grid gap-4">
+      <section aria-busy={busy} className="grid gap-4">
         <h3 className="font-mono text-xs text-ink-dim">评论历史</h3>
 
         {loading ? (
@@ -145,10 +142,7 @@ const DetailBody = ({ user }: { user: UserAdminSummary }) => {
   );
 };
 
-/**
- * 用户详情：资料头 + 分页评论历史（复用 commentAdminSchema 投影）。
- * 只读视图，编辑/删除走列表卡片操作。
- */
+/** 只读视图，编辑/删除走列表卡片操作 */
 export const UserDetailDialog = ({
   onClose,
   onExited,
@@ -159,7 +153,6 @@ export const UserDetailDialog = ({
   onClose: () => void;
   onExited?: () => void;
   open: boolean;
-  /** useDialog 的单调会话 id：重开/切换用户都从第 1 页重新开始。 */
   session: number;
   user: UserAdminSummary | null;
 }) => {

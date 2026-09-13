@@ -17,13 +17,13 @@ import {
   X,
 } from 'lucide-react';
 
-import { usePlayerStore, type LoopMode } from '@/store/player.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { AssetImage } from '@/ui/image.js';
-import { BottomSheet } from '@/ui/overlay.js';
+import { usePlayerStore, type LoopMode } from '@/store/player';
+import { Button, IconButton } from '@/ui/button';
+import { AssetImage } from '@/ui/image';
+import { BottomSheet } from '@/ui/overlay';
 
-import { SeekRow } from './seek-row.js';
-import { TrackSlider } from './track-slider.js';
+import { SeekRow } from './seek-row';
+import { TrackSlider } from './track-slider';
 
 const LOOP_LABEL: Record<LoopMode, string> = {
   off: '顺序播放',
@@ -136,10 +136,10 @@ export const NowPlayingSheet = ({
           </div>
 
           <div
-            className={cn(
-              'flex items-center justify-center gap-3',
-              'rounded-control border border-rule p-2',
-            )}
+            className="
+              flex items-center justify-center gap-3 rounded-control border
+              border-rule p-2
+            "
           >
             <IconButton
               label={muted ? '取消静音' : '静音'}

@@ -1,14 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { parseAssetStatusFilter } from '@/features/assets/display.js';
-import { AssetsListPage } from '@/features/assets/list-page.js';
-import { RoutePending } from '@/ui/route-pending.js';
+import { AssetsListPage } from '@/features/assets/list-page';
+import { assetsSearchSchema } from '@/features/assets/search';
+import { RoutePending } from '@/ui/route-pending';
 
 export const Route = createFileRoute('/assets/')({
-  validateSearch: (search) => {
-    const status = parseAssetStatusFilter(search.status);
-    return status === 'all' ? {} : { status };
-  },
+  validateSearch: assetsSearchSchema,
   component: AssetsListPage,
   pendingComponent: RoutePending,
 });

@@ -5,7 +5,7 @@ import type {
 } from '@grey-flowers/contracts';
 import type { Prisma } from '@grey-flowers/db';
 
-import { musicTrackSelect, toMusicTrack } from '../music/contracts.js';
+import { musicTrackSelect, toMusicTrack } from '../music/contracts';
 
 export const activityImageAssetSelect = {
   asset: { select: { id: true, storageKey: true } },

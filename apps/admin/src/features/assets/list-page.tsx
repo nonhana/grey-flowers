@@ -7,50 +7,39 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-import { assetsListOptions } from '@/app/server-state/assets.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { formatBytes, formatDateTime } from '@/lib/format.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { SelectField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+import { assetsListOptions } from '@/app/server-state/modules/assets';
+import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { formatBytes, formatDateTime } from '@/lib/format';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback';
+import { SelectField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
 import {
   mediaTypeLabels,
-  parseAssetStatusFilter,
   purposeLabels,
   purposeOptions,
   statusLabels,
-} from './display.js';
-import { UploadDialog } from './upload-dialog.js';
+} from './display';
+import { UploadDialog } from './upload-dialog';
 
 const PAGE_SIZE = 12;
-/** 状态筛选只在可选的两个状态上取值（DELETED 不参与筛选）。 */
 type AssetFilterStatus = 'AVAILABLE' | 'PENDING_CLEANUP';
 const STATUS_OPTIONS: AssetFilterStatus[] = ['AVAILABLE', 'PENDING_CLEANUP'];
 const MEDIA_OPTIONS: AssetMediaType[] = ['IMAGE', 'AUDIO'];
 
-interface FilterState {
-  mediaType?: AssetMediaType;
-  purpose?: AssetPurpose;
-}
-
-const EMPTY_FILTER: FilterState = {};
-
 const statusTone = (status: AssetStatus) =>
   status === 'AVAILABLE' ? 'ok' : status === 'PENDING_CLEANUP' ? 'warn' : 'err';
 
-/**
- * 缩略图直接顶到卡片内沿 —— 不再是「圆角盒子里再套一个圆角盒子」。
- * 卡片只声明一次抬升：描边，不叠投影。
- */
 const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   <Link
     className="
@@ -101,18 +90,9 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
   </Link>
 );
 
-/* 只剩一两个资产时也不该出现一块 500px 宽的巨砖：轨道宽度固定，缺的补空位。
-   网格 h-full 撑满列表区，行高 minmax(min-content,1fr)：内容超过视口时
-   行取内容高、列表区照常滚动；视口高时 1fr 均分剩余高度。缩略图绝对定位
-   不参与行高计算（否则加载出来的图片会把行撑得参差不齐），由卡片内部的
-   缩略图区吸收增长，避免底部留白。 */
 const GRID_CLASS =
   'grid h-full grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] auto-rows-[minmax(min-content,1fr)] gap-3';
 
-/**
- * 与真实资产卡同构的骨架：图区（min-h-28、随行高吸收增长）+ 标签行（含状态
- * 读数位 28px）+ 三段元数据。块高按真实字号的 line-height 取 em，落地时卡高相等。
- */
 const AssetCardSkeleton = () => (
   <div
     aria-hidden
@@ -137,46 +117,52 @@ const AssetCardSkeleton = () => (
 );
 
 export const AssetsListPage = () => {
-  const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { status?: unknown };
-  const status = parseAssetStatusFilter(search.status);
-  const activeStatus: AssetFilterStatus | undefined =
-    status === 'all' ? undefined : status;
+  const search = useSearch({ from: '/assets/' });
+  const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [page, search.status, search.mediaType, search.purpose]);
 
-  const [filters, setFilters] = useState<FilterState>(EMPTY_FILTER);
-  const [page, setPage] = useState(1);
+  const navigateSearch = useSearchNavigation('/assets', search);
+
   const [uploadOpen, setUploadOpen] = useState(false);
 
-  // 空筛选不进 key：undefined 字段按「未提供」归一。
+  // 空筛选不进 key：undefined 字段按「未提供」归一
   const listQuery: AssetListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(filters.purpose ? { purpose: filters.purpose } : {}),
-    ...(filters.mediaType ? { mediaType: filters.mediaType } : {}),
-    ...(activeStatus ? { status: activeStatus } : {}),
+    ...(search.status ? { status: search.status } : {}),
+    ...(search.mediaType ? { mediaType: search.mediaType } : {}),
+    ...(search.purpose ? { purpose: search.purpose } : {}),
   };
   const assetsQuery = useQuery(assetsListOptions(listQuery));
   const data = assetsQuery.data;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = assetsQuery.isFetching;
+  const loading = assetsQuery.isPending;
+  const busy = assetsQuery.isFetching;
+  const placeholder = assetsQuery.isPlaceholderData;
   const error = assetsQuery.error;
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
+  const { totalPages } = usePageClamp({
+    emptyPage: data !== undefined && data.items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total: data?.total ?? 0,
+  });
   const hasFilter =
-    Object.values(filters).some((value) => value !== undefined) ||
-    activeStatus !== undefined;
+    search.status !== undefined ||
+    search.mediaType !== undefined ||
+    search.purpose !== undefined;
 
-  const applyFilter = (next: FilterState) => {
-    setFilters((current) => ({ ...current, ...next }));
-    setPage(1);
-  };
-
-  const clearFilters = () => {
-    setFilters(EMPTY_FILTER);
-    setPage(1);
-    void navigate({ search: {}, to: '/assets' });
-  };
+  const clearFilters = () =>
+    navigateSearch(
+      {
+        page: undefined,
+        status: undefined,
+        mediaType: undefined,
+        purpose: undefined,
+      },
+      true,
+    );
 
   return (
     <PageBody scroll="child" width="wide">
@@ -194,8 +180,6 @@ export const AssetsListPage = () => {
         title="资产库"
       />
 
-      {/* 一行字盘式筛选条：空选项自己说清是哪一维（「全部用途」），
-          于是三个可见标签可以收掉，整排从三行塌成一行。 */}
       <div
         className="
           mt-5 grid grid-cols-2 gap-2
@@ -206,37 +190,37 @@ export const AssetsListPage = () => {
           className="sm:w-40"
           hideLabel
           label="用途"
-          onChange={(value) => applyFilter({ purpose: value })}
+          onChange={(value) =>
+            navigateSearch({ page: undefined, purpose: value })
+          }
           optionLabels={purposeLabels}
           options={purposeOptions}
           placeholderLabel="全部用途"
-          value={filters.purpose}
+          value={search.purpose}
         />
         <SelectField<AssetMediaType>
           className="sm:w-32"
           hideLabel
           label="类型"
-          onChange={(value) => applyFilter({ mediaType: value })}
+          onChange={(value) =>
+            navigateSearch({ page: undefined, mediaType: value })
+          }
           optionLabels={mediaTypeLabels}
           options={MEDIA_OPTIONS}
           placeholderLabel="全部类型"
-          value={filters.mediaType}
+          value={search.mediaType}
         />
         <SelectField<AssetFilterStatus>
           className="sm:w-32"
           hideLabel
           label="状态"
-          onChange={(value) => {
-            setPage(1);
-            void navigate({
-              search: value ? { status: value } : {},
-              to: '/assets',
-            });
-          }}
+          onChange={(value) =>
+            navigateSearch({ page: undefined, status: value })
+          }
           optionLabels={statusLabels}
           options={STATUS_OPTIONS}
           placeholderLabel="全部状态"
-          value={activeStatus}
+          value={search.status}
         />
         {hasFilter ? (
           <Button
@@ -251,8 +235,16 @@ export const AssetsListPage = () => {
       </div>
 
       <section
-        aria-busy={loading}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
         {loading ? (
           <div className={cn(GRID_CLASS, 'animate-content-in')} key="skeleton">
@@ -304,7 +296,10 @@ export const AssetsListPage = () => {
       {data ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          isBusy={placeholder}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={data.total}
           totalPages={totalPages}

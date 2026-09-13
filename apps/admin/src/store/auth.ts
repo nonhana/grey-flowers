@@ -10,8 +10,8 @@ import {
   isApiNetworkError,
   isApiRequestError,
   setAccessToken,
-} from '@/app/api/index.js';
-import { clearAdminQueryCache } from '@/app/server-state/client.js';
+} from '@/app/api/index';
+import { queryClient } from '@/app/server-state/client';
 
 type AuthenticationState =
   | { status: 'checking' }
@@ -33,7 +33,7 @@ interface AuthState {
   signIn: (input: { account: string; password: string }) => Promise<void>;
   signOut: () => Promise<void>;
   useAnotherAccount: () => void;
-  /** 会话过期（401）时的兜底处理，供 apiClient 拦截器回调。 */
+  /** 会话过期（401）时的兜底处理，供 apiClient 拦截器回调 */
   decideSessionExpired: () => void;
 }
 
@@ -57,13 +57,13 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     }
 
     setAccessToken(null);
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ state: { status: 'forbidden' } });
   };
 
   const decideSessionExpired = () => {
     setAccessToken(null);
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ state: { status: 'unauthenticated' } });
     toast.error('登录已过期，请重新登录。');
   };
@@ -82,7 +82,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     } catch (error) {
       if (isApiRequestError(error, 'AUTH_FORBIDDEN')) {
         setAccessToken(null);
-        clearAdminQueryCache();
+        queryClient.clear();
         set({ state: { status: 'forbidden' } });
         return;
       }
@@ -103,8 +103,8 @@ export const useAuthStore = create<AuthState>()((set, get) => {
   };
 
   const signIn = async (input: { account: string; password: string }) => {
-    // 登录前清掉上一主体可能残留的查询缓存。
-    clearAdminQueryCache();
+    // 登录前清掉上一主体可能残留的查询缓存
+    queryClient.clear();
     set({ isSubmitting: true });
     try {
       const response = await apiClient.auth.login(input);
@@ -113,7 +113,7 @@ export const useAuthStore = create<AuthState>()((set, get) => {
     } catch (error) {
       if (isApiRequestError(error, 'AUTH_FORBIDDEN')) {
         setAccessToken(null);
-        clearAdminQueryCache();
+        queryClient.clear();
         set({ state: { status: 'forbidden' } });
         return;
       }
@@ -142,13 +142,13 @@ export const useAuthStore = create<AuthState>()((set, get) => {
       set({ state: { status: 'unauthenticated', error: messageFor(error) } });
     } finally {
       setAccessToken(null);
-      clearAdminQueryCache();
+      queryClient.clear();
       set({ isSigningOut: false });
     }
   };
 
   const useAnotherAccount = () => {
-    clearAdminQueryCache();
+    queryClient.clear();
     set({ state: { status: 'unauthenticated' } });
   };
 
@@ -165,7 +165,6 @@ export const useAuthStore = create<AuthState>()((set, get) => {
   };
 });
 
-/** 认证状态与动作订阅（返回形状稳定，仅顶层字段变化时通知）。 */
 export const useAuth = () =>
   useAuthStore(
     useShallow((s) => ({

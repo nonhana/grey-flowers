@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ArrowRight, ChevronsDown, ChevronsUp, FileTerminal } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 const props = withDefaults(defineProps<{
   code?: string

@@ -1,31 +1,31 @@
 import type { ArticleListAdmin } from '@grey-flowers/contracts';
 
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-import { articlesListOptions } from '@/app/server-state/articles.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { formatDateTime } from '@/lib/format.js';
-import { Button, buttonClass } from '@/ui/button.js';
-import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback.js';
-import { FilterChip, SearchInput } from '@/ui/form.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader, RowStack } from '@/ui/surface.js';
+import { articlesListOptions } from '@/app/server-state/modules/articles';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { formatDateTime } from '@/lib/format';
+import { Button, buttonClass } from '@/ui/button';
+import { Alert, EmptyState, PublishBadge, Skeleton } from '@/ui/feedback';
+import { FilterChip, SearchInput } from '@/ui/form';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader, RowStack } from '@/ui/surface';
 
-import type { ArticleStatusFilter } from './display.js';
-
-import { parseStatusFilter } from './display.js';
+import type { ArticleStatusFilter } from './display';
 
 const PAGE_SIZE = 20;
 
 const FILTERS = [
-  { label: '全部', search: {}, status: 'all' },
-  { label: '草稿', search: { status: 'draft' }, status: 'draft' },
-  { label: '已发布', search: { status: 'published' }, status: 'published' },
+  { label: '全部', status: 'all' },
+  { label: '草稿', status: 'draft' },
+  { label: '已发布', status: 'published' },
 ] as const;
 
 const EMPTY_TITLE: Record<ArticleStatusFilter, string> = {
@@ -40,7 +40,6 @@ const EMPTY_COPY: Record<ArticleStatusFilter, string> = {
   published: '在编辑页打开元数据面板，点「发布」，文章就会出现在主站上。',
 };
 
-/** 行布局骨架与真实行共用：标题 / 描述 / 元数据三段的行高永远同步。 */
 const ARTICLE_ROW_LAYOUT = 'grid gap-1.5 px-4 py-3.5';
 
 const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
@@ -79,15 +78,10 @@ const ArticleRow = ({ article }: { article: ArticleListAdmin }) => (
   </Link>
 );
 
-/**
- * 与真实行同构的行骨架：块高按真实字号的 line-height 取 em，
- * 徽章 / 日期位按固定高度取 —— 行高与真实逐段相等，落地时零跳动。
- */
 const ArticleRowSkeleton = () => (
   <div aria-hidden className={ARTICLE_ROW_LAYOUT}>
     <div className="flex items-start justify-between gap-3">
       <Skeleton className="h-[1.6em] w-48 text-md" />
-      {/* 发布徽章：text-2xs lh 1.45 + py-0.5 ≈ 20px */}
       <Skeleton className="h-5 w-14" />
     </div>
     <Skeleton className="h-[1.55em] w-3/5 text-base" />
@@ -133,42 +127,46 @@ const EmptySearch = ({
 );
 
 export const ArticlesListPage = () => {
-  const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { status?: unknown };
-  const status = parseStatusFilter(search.status);
+  const search = useSearch({ from: '/articles/' });
+  const status = search.status ?? 'all';
+  const page = search.page ?? 1;
 
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState('');
+  const navigateSearch = useSearchNavigation('/articles', search);
+  const listRef = useRef<HTMLDivElement>(null);
+  useScrollReset(listRef, [page, search.q, status]);
 
-  // 每一次按键都发一次请求既浪费也让列表抖动，落后 250ms 再查；
-  // 提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebouncedCommit(query, 250);
-  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
-  if (prevCommitted !== committedQuery) {
-    setPrevCommitted(committedQuery);
-    setPage(1);
-  }
+  const [draft, setDraft] = useState(() => search.q ?? '');
+  const commitQuery = useDebouncedCommit((value: string) => {
+    navigateSearch({ page: undefined, q: value.trim() || undefined }, true);
+  }, 250);
 
   const articlesQuery = useQuery(
     articlesListOptions({
       page,
       pageSize: PAGE_SIZE,
-      q: committedQuery,
+      q: search.q,
       status,
     }),
   );
-  const items = articlesQuery.data?.items ?? [];
-  const total = articlesQuery.data?.total ?? 0;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, articlesQuery.data, PAGE_SIZE);
-  const loading = articlesQuery.isFetching;
+  const data = articlesQuery.data;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const loading = articlesQuery.isPending;
+  const busy = articlesQuery.isFetching;
+  const placeholder = articlesQuery.isPlaceholderData;
   const error = articlesQuery.error;
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const isSearching = committedQuery.trim().length > 0;
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
+  });
+  const isSearching = search.q !== undefined;
+
   return (
     <PageBody scroll="child">
-      {/* 搜索是这一屏唯一的控件，跟标题同排；桌面端的状态筛选由侧栏子项承担。 */}
       <PageHeader
         actions={
           <SearchInput
@@ -177,9 +175,12 @@ export const ArticlesListPage = () => {
               md:block
             "
             label="搜索文章标题"
-            onChange={setQuery}
+            onChange={(value) => {
+              setDraft(value);
+              commitQuery(value);
+            }}
             placeholder="搜索标题…"
-            value={query}
+            value={draft}
           />
         }
         description="草稿与已发布都在这里。点开任意一篇进入写作台。"
@@ -198,8 +199,10 @@ export const ArticlesListPage = () => {
               isSelected={status === filter.status}
               key={filter.status}
               onPress={() => {
-                setPage(1);
-                void navigate({ search: filter.search, to: '/articles' });
+                navigateSearch({
+                  page: undefined,
+                  status: filter.status === 'all' ? undefined : filter.status,
+                });
               }}
             >
               {filter.label}
@@ -208,14 +211,28 @@ export const ArticlesListPage = () => {
         </div>
         <SearchInput
           label="搜索文章标题"
-          onChange={setQuery}
+          onChange={(value) => {
+            setDraft(value);
+            commitQuery(value);
+          }}
           placeholder="搜索标题…"
-          value={query}
+          value={draft}
         />
       </div>
 
-      <div className="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        {loading ? (
+      <div
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
+      >
+        {loading || clamping ? (
           <RowStack className="animate-content-in" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <ArticleRowSkeleton key={index} />
@@ -233,7 +250,13 @@ export const ArticlesListPage = () => {
           </Alert>
         ) : items.length === 0 ? (
           isSearching ? (
-            <EmptySearch onClear={() => setQuery('')} query={committedQuery} />
+            <EmptySearch
+              onClear={() => {
+                setDraft('');
+                navigateSearch({ page: undefined, q: undefined }, true);
+              }}
+              query={search.q ?? ''}
+            />
           ) : (
             <EmptyArticles status={status} />
           )
@@ -246,10 +269,13 @@ export const ArticlesListPage = () => {
         )}
       </div>
 
-      {!loading ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          isBusy={placeholder}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={total}
           totalPages={totalPages}

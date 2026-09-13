@@ -1,7 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
-import { createTestEnvironment } from '@/testing/environment.js';
+import { createTestEnvironment } from '@/testing/environment';
 
 import {
   ACCESS_TOKEN_AUDIENCE,
@@ -14,7 +14,7 @@ import {
   signAccessToken,
   verifyAccessToken,
   verifyRefreshSecret,
-} from './tokens.js';
+} from './tokens';
 
 const environment = createTestEnvironment();
 const SESSION_ID = 'c'.padEnd(25, 'a');

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { pagination } from './pagination.js';
+import { pagination } from './pagination';
 
 describe('pagination', () => {
   it('第一页不跳过任何行', () => {

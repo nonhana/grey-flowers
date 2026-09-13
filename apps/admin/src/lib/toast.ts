@@ -2,7 +2,7 @@ import type { ApiErrorCode } from '@grey-flowers/contracts';
 
 import { toast } from 'sonner';
 
-import { apiErrorMessage, type CodeMessage } from './error-message.js';
+import { apiErrorMessage, type CodeMessage } from './error-message';
 
 export const toastError = (
   error: unknown,

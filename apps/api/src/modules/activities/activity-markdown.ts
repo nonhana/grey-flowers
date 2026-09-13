@@ -2,7 +2,7 @@ import {
   createRestrictedMarkdown,
   type RestrictedMarkdownFailure,
   type RestrictedMarkdownPayload,
-} from '@/lib/restricted-markdown.js';
+} from '@/lib/restricted-markdown';
 
 export type ActivityMarkdownPayload = RestrictedMarkdownPayload;
 

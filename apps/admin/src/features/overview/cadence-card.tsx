@@ -3,11 +3,11 @@ import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { Fragment } from 'react';
 
-import { overviewCalendarOptions } from '@/app/server-state/overview.js';
-import { Button } from '@/ui/button.js';
-import { CalendarHeatmap } from '@/ui/charts/calendar-heatmap.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { Panel, SectionLabel } from '@/ui/surface.js';
+import { overviewCalendarOptions } from '@/app/server-state/modules/overview';
+import { Button } from '@/ui/button';
+import { CalendarHeatmap } from '@/ui/charts/calendar-heatmap';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { Panel, SectionLabel } from '@/ui/surface';
 
 const HeatmapSkeleton = () => (
   <div aria-hidden className="grid gap-2.5">
@@ -42,7 +42,7 @@ const HeatmapSkeleton = () => (
 );
 
 export const CadenceCard = ({ className }: { className?: string }) => {
-  const { data, error, isFetching, refetch } = useQuery(
+  const { data, error, isPending, refetch } = useQuery(
     overviewCalendarOptions(),
   );
 
@@ -70,7 +70,7 @@ export const CadenceCard = ({ className }: { className?: string }) => {
         ) : null}
       </div>
 
-      {isFetching ? (
+      {isPending ? (
         <HeatmapSkeleton />
       ) : error ? (
         <EmptyState

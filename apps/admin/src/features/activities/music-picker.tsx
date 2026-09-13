@@ -4,24 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
 import { Check, Disc3, ListMusic } from 'lucide-react';
 import { useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
-import { musicPickerOptions } from '@/app/server-state/music.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { formatDuration } from '@/lib/format.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { SearchInput } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
+import { musicPickerOptions } from '@/app/server-state/modules/music';
+import { formatDuration } from '@/lib/format';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton, StatusReadout } from '@/ui/feedback';
+import { SearchInput } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
 
 const PAGE_SIZE = 20;
-const SELECT_LIMIT = 10;
 
-/**
- * 与真实选择行同构：封面 44px + 标题/艺术家两段 + 时长位。
- * 行高与真实相等（封面主导），数据落地时列表不跳。
- */
 const MusicRowSkeleton = () => (
   <div
     aria-hidden
@@ -36,19 +31,17 @@ const MusicRowSkeleton = () => (
   </div>
 );
 
-/**
- * session-keyed 内层（L-21）：搜索框与 300ms 防抖住在会话组件里，挂载即
- * 从空查询开始 —— 重开对话框不会再拿上一个会话的已提交关键词发一次
- * 注定被丢弃的请求。选择集也随会话播种，确认前一直保留。
- */
+/** session-keyed 内层：搜索框与 300ms 防抖住在会话组件里，挂载即从空查询开始，重开不发注定被丢弃的请求；选择集随会话播种，确认前一直保留 */
 const MusicPickerBody = ({
   isOpen,
+  maxSelection,
   onConfirm,
   onOpenChange,
   selected,
   session,
 }: {
   isOpen: boolean;
+  maxSelection: number;
   onConfirm: (tracks: MusicTrack[]) => void;
   onOpenChange: (open: boolean) => void;
   selected: MusicTrack[];
@@ -60,7 +53,7 @@ const MusicPickerBody = ({
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
 
-  const committedQuery = useDebouncedCommit(query, 300);
+  const committedQuery = useDebounce(query, 300)[0];
   const [prevCommitted, setPrevCommitted] = useState(committedQuery);
   if (prevCommitted !== committedQuery) {
     setPrevCommitted(committedQuery);
@@ -80,7 +73,7 @@ const MusicPickerBody = ({
   const error = pickerQuery.error ? '无法加载音乐库，请稍后重试。' : '';
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const atLimit = selection.size >= SELECT_LIMIT;
+  const atLimit = selection.size >= maxSelection;
 
   const toggleTrack = (track: MusicTrack) => {
     setSelection((current) => {
@@ -153,8 +146,6 @@ const MusicPickerBody = ({
                       `
                         flex w-full items-center gap-3 rounded-control p-2
                         text-left transition-colors
-                      `,
-                      `
                         hover:bg-accent-wash
                         md:h-full md:rounded-panel md:border md:border-rule
                         md:bg-case-raised md:p-3
@@ -228,7 +219,7 @@ const MusicPickerBody = ({
 
       <div className="flex items-center justify-between gap-3">
         <span className="font-mono text-2xs text-ink-dim">
-          已选 {selection.size} / {SELECT_LIMIT}
+          已选 {selection.size} / {maxSelection}
         </span>
         <div className="flex items-center gap-2">
           {data && data.total > PAGE_SIZE ? (
@@ -250,17 +241,18 @@ const MusicPickerBody = ({
 
 export const MusicPickerDialog = ({
   isOpen,
+  maxSelection,
   onConfirm,
   onOpenChange,
   selected,
 }: {
   isOpen: boolean;
+  maxSelection: number;
   onConfirm: (tracks: MusicTrack[]) => void;
   onOpenChange: (open: boolean) => void;
   selected: MusicTrack[];
 }) => {
-  // 每次 open 产生新的 session：session 作为内层组件的 key，重开即拿到
-  // 全新的搜索/页码/选择状态，旧会话（含退出动画期间）不再污染新会话。
+  // 每次 open 产生新的 session 作内层 key：重开即拿到全新的搜索/页码/选择状态，退出动画期间旧会话不污染新会话
   const [session, setSession] = useState(0);
   const [wasOpen, setWasOpen] = useState(isOpen);
   if (isOpen && !wasOpen) {
@@ -280,6 +272,7 @@ export const MusicPickerDialog = ({
       <MusicPickerBody
         isOpen={isOpen}
         key={session}
+        maxSelection={maxSelection}
         onConfirm={onConfirm}
         onOpenChange={onOpenChange}
         selected={selected}

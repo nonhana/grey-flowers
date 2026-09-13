@@ -1,35 +1,35 @@
 import type { ActivityAdmin, ActivityListQuery } from '@grey-flowers/contracts';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { cn } from 'cn';
 import { CloudOff, MessageSquareText, PenLine } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   activityListOptions,
   invalidateActivitiesAfterMutation,
-} from '@/app/server-state/activities.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { usePlayerStore } from '@/store/player.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { SearchInput } from '@/ui/form.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/modules/activities';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { toastError } from '@/lib/toast';
+import { usePlayerStore } from '@/store/player';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { SearchInput } from '@/ui/form';
+import { ConfirmDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import { ActivityCard } from './activity-card.js';
+import { ActivityCard } from './activity-card';
 
 const PAGE_SIZE = 10;
 
-/**
- * 与真实动态卡同构的骨架（取最常见形态：两行预览 + 双图网格 + 元数据行）。
- * 图片数 0–3 不定，无法逐像素预测卡高 —— 双图是分布中心，落地跳动最小。
- */
 const ActivityCardSkeleton = () => (
   <div
     aria-hidden
@@ -52,36 +52,50 @@ const ActivityCardSkeleton = () => (
 
 export const ActivitiesPage = () => {
   const navigate = useNavigate();
+  const search = useSearch({ from: '/activities/' });
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);
   const toggle = usePlayerStore((s) => s.toggle);
   const play = usePlayerStore((s) => s.play);
   const removeTrack = usePlayerStore((s) => s.removeTrack);
 
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
+  const page = search.page ?? 1;
   const deleteDialog = useDialog<ActivityAdmin>();
 
-  // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebouncedCommit(query, 300);
-  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
-  if (prevCommitted !== committedQuery) {
-    setPrevCommitted(committedQuery);
-    setPage(1);
-  }
+  const navigateSearch = useSearchNavigation('/activities', search);
+
+  const [draft, setDraft] = useState(() => search.search ?? '');
+  const commitSearch = useDebouncedCommit((value: string) => {
+    navigateSearch(
+      { page: undefined, search: value.trim() || undefined },
+      true,
+    );
+  }, 300);
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [page, search.search]);
 
   const listQuery: ActivityListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(committedQuery ? { search: committedQuery } : {}),
+    search: search.search,
   };
   const activitiesQuery = useQuery(activityListOptions(listQuery));
   const data = activitiesQuery.data;
-  const loading = activitiesQuery.isFetching;
+  const loading = activitiesQuery.isPending;
+  const busy = activitiesQuery.isFetching;
+  const placeholder = activitiesQuery.isPlaceholderData;
   const error = activitiesQuery.error;
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasQuery = committedQuery.length > 0;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
+  });
+  const hasQuery = search.search !== undefined;
 
   const removeMutation = useMutation({
     mutationFn: (target: ActivityAdmin) =>
@@ -103,7 +117,6 @@ export const ActivitiesPage = () => {
       toggle();
       return;
     }
-    // 把这条动态的音乐整组作为播放列表入队（点播队列，跨路由常驻）。
     play(activity.music, index);
   };
 
@@ -136,9 +149,12 @@ export const ActivitiesPage = () => {
                 md:block
               "
               label="搜索动态"
-              onChange={setQuery}
+              onChange={(value) => {
+                setDraft(value);
+                commitSearch(value);
+              }}
               placeholder="搜索动态内容…"
-              value={query}
+              value={draft}
             />
             <Button
               className="
@@ -164,17 +180,28 @@ export const ActivitiesPage = () => {
             md:hidden
           "
           label="搜索动态"
-          onChange={setQuery}
+          onChange={(value) => {
+            setDraft(value);
+            commitSearch(value);
+          }}
           placeholder="搜索动态内容…"
-          value={query}
+          value={draft}
         />
       </div>
 
       <section
-        aria-busy={loading}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
-        {loading ? (
+        {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <ActivityCardSkeleton key={index} />
@@ -192,11 +219,21 @@ export const ActivitiesPage = () => {
           >
             无法加载动态，请稍后重试。
           </EmptyState>
-        ) : data && data.items.length === 0 ? (
+        ) : items.length === 0 ? (
           <EmptyState
             action={
               hasQuery ? (
-                <Button onPress={() => setQuery('')}>清除搜索</Button>
+                <Button
+                  onPress={() => {
+                    setDraft('');
+                    navigateSearch(
+                      { page: undefined, search: undefined },
+                      true,
+                    );
+                  }}
+                >
+                  清除搜索
+                </Button>
               ) : (
                 <Button
                   icon={<PenLine aria-hidden />}
@@ -216,7 +253,7 @@ export const ActivitiesPage = () => {
           </EmptyState>
         ) : (
           <div className="grid animate-content-in gap-3" key="content">
-            {data?.items.map((activity) => (
+            {items.map((activity) => (
               <ActivityCard
                 activity={activity}
                 key={activity.id}
@@ -232,12 +269,15 @@ export const ActivitiesPage = () => {
         )}
       </section>
 
-      {data ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          isBusy={placeholder}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
-          total={data.total}
+          total={total}
           totalPages={totalPages}
           unit="条"
         />

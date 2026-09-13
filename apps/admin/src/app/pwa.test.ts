@@ -27,7 +27,7 @@ vi.mock('virtual:pwa-register/react', () => ({
   }),
 }));
 
-import { PwaBridge } from './pwa.js';
+import { PwaBridge } from './pwa';
 
 beforeEach(() => {
   vi.resetAllMocks();

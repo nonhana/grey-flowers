@@ -35,6 +35,7 @@
     "source.organizeImports": "never"
   },
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "css.lint.unknownAtRules": "ignore",
+  "css.customData": [".vscode/tailwind.json"],
+  "tailwindCSS.classFunctions": ["cn", "cva"],
   "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
 }

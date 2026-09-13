@@ -9,24 +9,19 @@ import { cn } from 'cn';
 import { ChevronDown, Eye, ImagePlus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 
-import type { useArticleEditor } from '@/store/article-editor.js';
+import type { useArticleEditor } from '@/store/article-editor';
 
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { formatDateTime } from '@/lib/format.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { PublishBadge } from '@/ui/feedback.js';
-import {
-  controlClass,
-  FilterChip,
-  TextAreaField,
-  TextField,
-} from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { MetaLine, SectionLabel } from '@/ui/surface.js';
+import { useDialog } from '@/hooks/use-dialog';
+import { formatDateTime } from '@/lib/format';
+import { Button, IconButton } from '@/ui/button';
+import { PublishBadge } from '@/ui/feedback';
+import { controlClass, FilterChip, TextAreaField, TextField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { ConfirmDialog } from '@/ui/overlay';
+import { MetaLine, SectionLabel } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
-import { slugFromTo } from '../display.js';
+import { slugFromTo } from '../display';
 
 type Editor = ReturnType<typeof useArticleEditor>;
 
@@ -404,10 +399,6 @@ export const InspectorPane = ({
         <VersionList editor={editor} />
       </div>
 
-      {/*
-        「发布」是这一列唯一的去处，不能排在一条会滚出视口的长队末尾。
-        吸底：桌面端贴在面板下沿，移动端贴在 sheet 下沿，两处都在可滚容器内。
-      */}
       <div
         className="
           sticky bottom-0 -mx-4 -mb-8 border-t border-rule bg-(--gf-surface)

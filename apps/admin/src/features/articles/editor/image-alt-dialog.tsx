@@ -1,8 +1,8 @@
 import { cn } from 'cn';
 
-import { Button } from '@/ui/button.js';
-import { controlClass } from '@/ui/form.js';
-import { AppDialog } from '@/ui/overlay.js';
+import { Button } from '@/ui/button';
+import { controlClass } from '@/ui/form';
+import { AppDialog } from '@/ui/overlay';
 
 export const ImageAltDialog = ({
   draft,

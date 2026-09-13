@@ -4,40 +4,35 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicListOptions,
-} from '@/app/server-state/music.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { usePlayerStore } from '@/store/player.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { FilterChip, SearchInput } from '@/ui/form.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/modules/music';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { toastError } from '@/lib/toast';
+import { usePlayerStore } from '@/store/player';
+import { Button } from '@/ui/button';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { FilterChip, SearchInput } from '@/ui/form';
+import { ConfirmDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { PageBody, PageHeader } from '@/ui/surface';
 
-import { EditMusicDialog } from './edit-dialog.js';
-import { MusicCard } from './music-card.js';
+import { EditMusicDialog } from './edit-dialog';
+import { MusicCard } from './music-card';
 
 const PAGE_SIZE = 12;
-/* 网格撑满列表区，行高 minmax(min-content,1fr) 均分剩余高度；溢出时回落到
-   内容高照常滚动。与资产库同构，卡片封面区吸收增长。 */
 const GRID_CLASS =
   'grid h-full grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] auto-rows-[minmax(min-content,1fr)] gap-3';
 
-/**
- * 与真实音乐卡同构的骨架：封面区（min-h-[10.5rem]、随行高吸收增长）+
- * 标题行 + 三段元数据 + 底部操作位（三个 sm 按钮 32px 主导）。
- * 块高按真实字号的 line-height 取 em。
- */
 const MusicCardSkeleton = () => (
   <div
     aria-hidden
@@ -62,40 +57,51 @@ const MusicCardSkeleton = () => (
 
 export const MusicLibraryPage = () => {
   const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { incomplete?: unknown };
+  const search = useSearch({ from: '/music/' });
   const incomplete = search.incomplete === true;
+  const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [page, search.search, incomplete]);
   const currentTrack = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);
   const toggle = usePlayerStore((s) => s.toggle);
   const play = usePlayerStore((s) => s.play);
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
   const editDialog = useDialog<MusicAdmin>();
   const deleteDialog = useDialog<MusicAdmin>();
 
-  // 300ms 搜索提交：提交值一变，页码在渲染期回到第 1 页。
-  const committedQuery = useDebouncedCommit(query, 300);
-  const [prevCommitted, setPrevCommitted] = useState(committedQuery);
-  if (prevCommitted !== committedQuery) {
-    setPrevCommitted(committedQuery);
-    setPage(1);
-  }
+  const navigateSearch = useSearchNavigation('/music', search);
+
+  const [draft, setDraft] = useState(() => search.search ?? '');
+  const commitQuery = useDebouncedCommit((value: string) => {
+    navigateSearch(
+      { page: undefined, search: value.trim() || undefined },
+      true,
+    );
+  }, 300);
 
   const listQuery: MusicListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(committedQuery ? { search: committedQuery } : {}),
+    ...(search.search ? { search: search.search } : {}),
     ...(incomplete ? { incomplete: 'true' } : {}),
   };
   const musicQuery = useQuery(musicListOptions(listQuery));
   const data = musicQuery.data;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = musicQuery.isFetching;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const loading = musicQuery.isPending;
+  const busy = musicQuery.isFetching;
+  const placeholder = musicQuery.isPlaceholderData;
   const error = musicQuery.error;
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasQuery = committedQuery.length > 0;
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
+  });
+  const hasQuery = search.search !== undefined;
 
   const removeMutation = useMutation({
     mutationFn: (target: MusicAdmin) => apiClient.music.remove(target.id),
@@ -116,7 +122,6 @@ export const MusicLibraryPage = () => {
     if (currentTrack?.id === track.id) {
       toggle();
     } else {
-      // 把当前筛选结果整页作为播放列表入队。
       play(data.items, index);
     }
   };
@@ -138,9 +143,12 @@ export const MusicLibraryPage = () => {
               md:block
             "
             label="搜索音乐"
-            onChange={setQuery}
+            onChange={(value) => {
+              setDraft(value);
+              commitQuery(value);
+            }}
             placeholder="搜索标题、艺术家、专辑…"
-            value={query}
+            value={draft}
           />
         }
         description="音源与封面都是受管资产；删除音乐不会删除它们。"
@@ -158,10 +166,9 @@ export const MusicLibraryPage = () => {
         <FilterChip
           isSelected={incomplete}
           onPress={() => {
-            setPage(1);
-            void navigate({
-              search: incomplete ? {} : { incomplete: true },
-              to: '/music',
+            navigateSearch({
+              incomplete: incomplete ? undefined : true,
+              page: undefined,
             });
           }}
         >
@@ -173,17 +180,28 @@ export const MusicLibraryPage = () => {
             md:hidden
           "
           label="搜索音乐"
-          onChange={setQuery}
+          onChange={(value) => {
+            setDraft(value);
+            commitQuery(value);
+          }}
           placeholder="搜索标题、艺术家、专辑…"
-          value={query}
+          value={draft}
         />
       </div>
 
       <section
-        aria-busy={loading}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
-        {loading ? (
+        {loading || clamping ? (
           <div className={cn(GRID_CLASS, 'animate-content-in')} key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <MusicCardSkeleton key={index} />
@@ -203,10 +221,29 @@ export const MusicLibraryPage = () => {
           <EmptyState
             action={
               hasQuery ? (
-                <Button onPress={() => setQuery('')}>清除搜索</Button>
+                <Button
+                  onPress={() => {
+                    setDraft('');
+                    navigateSearch(
+                      { page: undefined, search: undefined },
+                      true,
+                    );
+                  }}
+                >
+                  清除搜索
+                </Button>
               ) : incomplete ? (
                 <Button
-                  onPress={() => void navigate({ search: {}, to: '/music' })}
+                  onPress={() =>
+                    navigateSearch(
+                      {
+                        incomplete: undefined,
+                        page: undefined,
+                        search: undefined,
+                      },
+                      true,
+                    )
+                  }
                 >
                   查看全部
                 </Button>
@@ -258,10 +295,13 @@ export const MusicLibraryPage = () => {
         )}
       </section>
 
-      {data ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          isBusy={placeholder}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={data.total}
           totalPages={totalPages}

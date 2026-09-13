@@ -5,29 +5,33 @@ import type {
 } from '@grey-flowers/contracts';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSearch } from '@tanstack/react-router';
+import { cn } from 'cn';
 import { CloudOff, RotateCcw, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateUsersAfterMutation,
   usersListOptions,
-} from '@/app/server-state/users.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button } from '@/ui/button.js';
-import { EmptyState } from '@/ui/feedback.js';
-import { SearchInput, SelectField } from '@/ui/form.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/modules/users';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { toastError } from '@/lib/toast';
+import { Button } from '@/ui/button';
+import { EmptyState } from '@/ui/feedback';
+import { SearchInput, SelectField } from '@/ui/form';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import { UserDeleteConfirm } from './delete-confirm.js';
-import { UserDetailDialog } from './detail-dialog.js';
-import { EditUserDialog } from './edit-dialog.js';
-import { UserCard, UserCardSkeleton } from './user-card.js';
+import { UserDeleteConfirm } from './delete-confirm';
+import { UserDetailDialog } from './detail-dialog';
+import { EditUserDialog } from './edit-dialog';
+import { UserCard, UserCardSkeleton } from './user-card';
 
 const PAGE_SIZE = 20;
 
@@ -45,36 +49,56 @@ interface UserFilterDraft {
 const EMPTY_FILTER: UserFilterDraft = { role: '', search: '' };
 
 export const UsersPage = () => {
-  const [draft, setDraft] = useState<UserFilterDraft>(EMPTY_FILTER);
-  const [page, setPage] = useState(1);
+  const search = useSearch({ from: '/users' });
+  const role = search.role;
+  const searchValue = search.search;
+  const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [page, role, searchValue]);
 
   const detailDialog = useDialog<UserAdminSummary>();
   const editDialog = useDialog<UserAdminSummary>();
   const deleteDialog = useDialog<UserAdminSummary>();
 
-  // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
-  const filters = useDebouncedCommit(draft, 300);
-  const [prevFilters, setPrevFilters] = useState(filters);
-  if (prevFilters !== filters) {
-    setPrevFilters(filters);
-    setPage(1);
-  }
+  const navigateSearch = useSearchNavigation('/users', search);
+
+  const [draft, setDraft] = useState<UserFilterDraft>(() => ({
+    role: role ?? '',
+    search: searchValue ?? '',
+  }));
+
+  const commitFilters = useDebouncedCommit((value: UserFilterDraft) => {
+    navigateSearch(
+      {
+        page: undefined,
+        role: value.role === '' ? undefined : value.role,
+        search: value.search.trim() || undefined,
+      },
+      true,
+    );
+  }, 300);
 
   const listQuery: UserListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(filters.search ? { search: filters.search } : {}),
-    ...(filters.role ? { role: filters.role } : {}),
+    ...(searchValue ? { search: searchValue } : {}),
+    ...(role ? { role } : {}),
   };
   const usersQuery = useQuery(usersListOptions(listQuery));
   const data = usersQuery.data;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = usersQuery.isFetching;
+  const loading = usersQuery.isPending;
+  const busy = usersQuery.isFetching;
+  const placeholder = usersQuery.isPlaceholderData;
   const error = usersQuery.error ? '无法加载用户，请稍后重试。' : '';
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasFilter = filters.search !== '' || filters.role !== '';
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: data !== undefined && data.items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total: data?.total ?? 0,
+  });
+  const hasFilter = searchValue !== undefined || role !== undefined;
 
   const removeMutation = useMutation({
     mutationFn: (target: UserAdminSummary) => apiClient.users.remove(target.id),
@@ -87,7 +111,7 @@ export const UsersPage = () => {
       await invalidateUsersAfterMutation();
     },
     onError: (cause) => {
-      // CONFLICT（删管理员 / 有资产快照）的消息由服务端中文 message 透出。
+      // CONFLICT（删管理员 / 有资产快照）的消息由服务端中文 message 透出
       toastError(cause);
     },
   });
@@ -125,18 +149,22 @@ export const UsersPage = () => {
           <SearchInput
             className="min-w-0"
             label="搜索用户名或邮箱"
-            onChange={(search) =>
-              setDraft((current) => ({ ...current, search }))
-            }
+            onChange={(value) => {
+              const next = { ...draft, search: value };
+              setDraft(next);
+              commitFilters(next);
+            }}
             placeholder="搜索用户名或邮箱…"
             value={draft.search}
           />
         </div>
         <SelectField
           label="角色"
-          onChange={(role) =>
-            setDraft((current) => ({ ...current, role: role ?? '' }))
-          }
+          onChange={(value) => {
+            const next: UserFilterDraft = { ...draft, role: value ?? '' };
+            setDraft(next);
+            commitFilters(next);
+          }}
           optionLabels={ROLE_LABELS}
           options={ROLE_OPTIONS}
           value={draft.role === '' ? undefined : draft.role}
@@ -147,7 +175,11 @@ export const UsersPage = () => {
             icon={<RotateCcw aria-hidden />}
             onPress={() => {
               setDraft(EMPTY_FILTER);
-              setPage(1);
+              commitFilters.cancel();
+              navigateSearch(
+                { page: undefined, role: undefined, search: undefined },
+                true,
+              );
             }}
             size="md"
             tone="ghost"
@@ -158,10 +190,18 @@ export const UsersPage = () => {
       </section>
 
       <section
-        aria-busy={loading}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
-        {loading ? (
+        {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <UserCardSkeleton key={index} />
@@ -184,7 +224,11 @@ export const UsersPage = () => {
                 <Button
                   onPress={() => {
                     setDraft(EMPTY_FILTER);
-                    setPage(1);
+                    commitFilters.cancel();
+                    navigateSearch(
+                      { page: undefined, role: undefined, search: undefined },
+                      true,
+                    );
                   }}
                 >
                   清除筛选
@@ -215,10 +259,13 @@ export const UsersPage = () => {
         )}
       </section>
 
-      {data ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          isBusy={placeholder}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={data.total}
           totalPages={totalPages}

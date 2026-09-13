@@ -8,7 +8,6 @@ export type LoopMode = 'off' | 'all' | 'one' | 'shuffle';
 const VOLUME_STORAGE_KEY = 'gf.player.volume';
 const LOOP_MODES: LoopMode[] = ['off', 'all', 'one', 'shuffle'];
 
-/** 存储音量只读一次（L-6）：模块加载时定值，audio 初始化与 store 初值共用。 */
 const storedVolume = (() => {
   const raw = localStorage.getItem(VOLUME_STORAGE_KEY);
   if (raw === null) return 1;
@@ -45,7 +44,7 @@ interface PlayerActions {
   toggleMute: () => void;
 }
 
-// 单例 AudioElement：模块加载即创建（未赋值 src 前无实际资源占用），跨路由常驻。
+// 单例 AudioElement：模块加载即创建（未赋值 src 前无实际资源占用），跨路由常驻
 const audioElement = new Audio();
 audioElement.muted = false;
 audioElement.volume = storedVolume;
@@ -95,7 +94,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     audioElement.pause();
   };
 
-  /** 恢复当前曲目（暂停后继续，或缓冲后重试）。 */
+  /** 恢复当前曲目（暂停后继续，或缓冲后重试） */
   const resume = () => {
     if (!get().currentTrack) return;
     playIntentActive = true;
@@ -112,7 +111,6 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     updateMediaSessionPosition();
   };
 
-  /** 换曲共用出口：写状态、赋值 src、开播、同步媒体会话。 */
   const loadTrack = (index: number) => {
     const track = get().playlist[index];
     if (!track) return;
@@ -147,7 +145,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     const { currentIndex, currentTime, loopMode, playlist, shuffleHistory } =
       get();
     if (playlist.length === 0) return;
-    // 播放超过 3 秒时，上一首回到本曲开头。
+    // 播放超过 3 秒时，上一首回到本曲开头
     if (currentTime > 3) {
       seek(0);
       return;
@@ -194,9 +192,9 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
   };
 
   const initAudioElement = () => {
-    // 状态机沿用 HTML5 Media Element 规范：idle → loading → playing ↔ paused → error。
+    // 状态机沿用 HTML5 Media Element 规范：idle → loading → playing ↔ paused → error
     audioElement.addEventListener('loadstart', () => {
-      // stop() 里摘 src 再 load() 也会触发 loadstart；无曲目时保持 idle。
+      // stop() 里摘 src 再 load() 也会触发 loadstart；无曲目时保持 idle
       if (get().currentTrack === null) return;
       set({ status: 'loading' });
     });
@@ -207,7 +205,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
       set({ status: 'playing' });
     });
     audioElement.addEventListener('pause', () => {
-      // ended 前的 pause 交给 ended 处理。
+      // ended 前的 pause 交给 ended 处理
       if (audioElement.ended) return;
       const status = get().status;
       if (status === 'playing' || (status === 'loading' && playIntentActive)) {
@@ -268,24 +266,20 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     }
   };
 
-  /** 以某首曲目为起点进入播放列表（跨路由常驻）。 */
   const play = (tracks: MusicTrack[], index = 0) => {
     setPlaylist(tracks, index);
   };
 
-  /** 在当前队列里按 id 播放（编辑/详情页跳转用）。 */
   const playById = (id: number) => {
     const index = get().playlist.findIndex((track) => track.id === id);
     if (index === -1) return;
     playByIndex(index);
   };
 
-  /** 停止并清空：释放音源、清掉媒体会话（锁屏/控制中心）、清空队列。 */
   const stop = () => {
     playIntentActive = false;
     audioElement.pause();
-    // 摘掉 src 再 load()，中止进行中的拉取并让元素回到无源状态，
-    // 避免停止后仍持有音频流。
+    // 摘掉 src 再 load()：中止进行中的拉取并回到无源状态，避免停止后仍持有音频流
     audioElement.removeAttribute('src');
     audioElement.load();
     if ('mediaSession' in navigator) {
@@ -335,10 +329,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>()((
     setLoopMode(next);
   };
 
-  /**
-   * 删除曲目：被删的是当前曲目则跳到队列中相邻一首继续播；
-   * 队列因此为空则回到 idle。
-   */
+  /** 删除曲目：被删的是当前曲目则跳到队列相邻一首继续播；队列空则回 idle */
   const removeTrack = (trackId: number) => {
     const current = get();
     const index = current.playlist.findIndex((track) => track.id === trackId);

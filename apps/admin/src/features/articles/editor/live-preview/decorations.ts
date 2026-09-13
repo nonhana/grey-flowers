@@ -9,21 +9,16 @@ import {
   imageCover,
   imageInCode,
   parseImage,
-} from './image-parse.js';
+} from './image-parse';
 import {
   insertUpload,
   removeUpload,
   updateUpload,
   uploadField,
-} from './upload-state.js';
-import { InlineImageWidget, UploadGhostWidget } from './widgets.js';
+} from './upload-state';
+import { InlineImageWidget, UploadGhostWidget } from './widgets';
 
-/**
- * 装饰层：`Image` 节点整体被 `Decoration.replace` 替换成 `<img>`；
- * `{asset-id=N}` 不在 lezer 的 `Image` 节点内，装饰与删除都要把这段
- * 尾巴一并并入，否则会漏出裸文本。上传占位在插入点渲染幽灵图。
- */
-export function blockLineStarts(view: EditorView, from: number, to: number) {
+export const blockLineStarts = (view: EditorView, from: number, to: number) => {
   const doc = view.state.doc;
   const starts: number[] = [];
   if (from >= doc.length) return starts;
@@ -36,18 +31,17 @@ export function blockLineStarts(view: EditorView, from: number, to: number) {
     line = next;
   }
   return starts;
-}
+};
 
 const blockQuoteLine = Decoration.line({ class: 'gf-live-bq' });
 const tableLine = Decoration.line({ class: 'gf-live-table' });
 const codeLine = Decoration.line({ class: 'gf-live-code' });
 const linkMark = Decoration.mark({ class: 'gf-live-link' });
 
-function buildDecorations(view: EditorView): DecorationSet {
+const buildDecorations = (view: EditorView): DecorationSet => {
   const ranges: Range<Decoration>[] = [];
   const doc = view.state.doc;
 
-  // 上传幽灵占位：插在记录位置，不占文档内容。
   const uploads = view.state.field(uploadField, false);
   if (uploads && uploads.length > 0) {
     let offset = 0;
@@ -113,7 +107,7 @@ function buildDecorations(view: EditorView): DecorationSet {
   });
 
   return Decoration.set(ranges);
-}
+};
 
 const hasUploadEffect = (update: ViewUpdate) =>
   update.transactions.some((transaction) =>

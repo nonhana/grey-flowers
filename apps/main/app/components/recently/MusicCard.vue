@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { Track } from '#shared/types/activity'
+import type { MusicTrack } from '@grey-flowers/contracts'
 import { Pause, Play, SkipBack, SkipForward, Square } from '@lucide/vue'
 
 const props = defineProps<{
-  music: Track[]
+  music: MusicTrack[]
 }>()
 
 const { $audioPlayer } = useNuxtApp()
@@ -11,7 +11,7 @@ const { $audioPlayer } = useNuxtApp()
 const curMusicIndex = ref(0)
 const curMusic = computed(() => props.music[curMusicIndex.value]!)
 
-const globalCurTrack = shallowRef<Track | null>(null)
+const globalCurTrack = shallowRef<MusicTrack | null>(null)
 const globalCurTime = ref(0)
 const globalIsPlaying = ref(false)
 

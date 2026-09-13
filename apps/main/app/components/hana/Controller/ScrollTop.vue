@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useStore } from '~/stores'
-
 const { uiInfoStore } = useStore()
 const { scrollTop, scrollHeight, clientHeight } = toRefs(uiInfoStore)
 

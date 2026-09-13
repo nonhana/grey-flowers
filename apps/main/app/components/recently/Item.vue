@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { ActivityItem } from '#shared/types/activity'
+import type { ActivityPublic } from '@grey-flowers/contracts'
 import { AtSign, Clock, ExternalLink, MessageCircle } from '@lucide/vue'
-import { hanaInfo } from '~/utils/constants'
 
 const props = defineProps<{
-  item: ActivityItem
+  item: ActivityPublic
   index: number
 }>()
 

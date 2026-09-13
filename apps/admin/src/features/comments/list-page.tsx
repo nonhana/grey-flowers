@@ -4,287 +4,44 @@ import type {
   CommentListQuery,
 } from '@grey-flowers/contracts';
 
-import { parseDate } from '@internationalized/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
-import {
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  CloudOff,
-  Filter,
-  MessagesSquare,
-  RotateCcw,
-} from 'lucide-react';
-import { useState } from 'react';
-import {
-  Button as AriaButton,
-  Calendar,
-  CalendarCell,
-  CalendarGrid,
-  CalendarGridBody,
-  CalendarGridHeader,
-  CalendarHeaderCell,
-  CalendarHeading,
-  DateInput,
-  DatePicker,
-  DateSegment,
-  Group,
-  Popover,
-} from 'react-aria-components';
+import { CloudOff, Filter, MessagesSquare } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   commentsListOptions,
   invalidateCommentsAfterMutation,
-} from '@/app/server-state/comments.js';
-import { useClampPage } from '@/hooks/use-clamp-page.js';
-import { useDebouncedCommit } from '@/hooks/use-debounced-commit.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { EmptyState } from '@/ui/feedback.js';
-import { SearchInput, TextField, controlClass } from '@/ui/form.js';
-import { BottomSheet, ConfirmDialog } from '@/ui/overlay.js';
-import { Paginator } from '@/ui/paginator.js';
-import { MetaLine, PageBody, PageHeader } from '@/ui/surface.js';
+} from '@/app/server-state/modules/comments';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { useDialog } from '@/hooks/use-dialog';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
+import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { toastError } from '@/lib/toast';
+import { Button, IconButton } from '@/ui/button';
+import { EmptyState } from '@/ui/feedback';
+import { SearchInput } from '@/ui/form';
+import { BottomSheet, ConfirmDialog } from '@/ui/overlay';
+import { Paginator } from '@/ui/paginator';
+import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import { CommentCard, CommentCardSkeleton } from './comment-card.js';
-import { ReplyDialog, type ReplyTarget } from './reply-dialog.js';
-import { SessionDialog } from './session-dialog.js';
-
+import { CommentCard, CommentCardSkeleton } from './comment-card';
+import {
+  EMPTY_FILTER,
+  FilterControls,
+  commentsFilterToSearch,
+  type CommentFilterDraft,
+} from './filter-controls';
+import { ReplyDialog, type ReplyTarget } from './reply-dialog';
+import { SessionDialog } from './session-dialog';
 const PAGE_SIZE = 20;
 
-interface CommentFilterDraft {
-  authorId: string;
-  endDate: string;
-  path: string;
-  search: string;
-  startDate: string;
-}
-
-const EMPTY_FILTER: CommentFilterDraft = {
-  authorId: '',
-  endDate: '',
-  path: '',
-  search: '',
-  startDate: '',
-};
-const dateGroupClass = cn(
-  controlClass,
-  'flex min-w-0 items-center gap-1 px-2',
-  'focus-within:border-accent focus-within:outline-2',
-  'focus-within:outline-offset-1 focus-within:outline-focus',
-);
-const dateRangeClass = cn(
-  'grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-1.5 gap-y-2',
-  'md:flex md:gap-1.5',
-);
 const desktopFilterControlsClass = 'mt-5 hidden md:block';
 const mobileFilterControlsClass = 'mt-5 md:hidden';
-
-const CommentDatePicker = ({
-  label,
-  onChange,
-  value,
-}: {
-  label: string;
-  onChange: (value: string) => void;
-  value: string;
-}) => (
-  <DatePicker
-    aria-label={label}
-    className="min-w-0 flex-1"
-    onChange={(date) => onChange(date?.toString() ?? '')}
-    value={value ? parseDate(value) : null}
-  >
-    <Group className={dateGroupClass}>
-      <DateInput className="flex min-w-0 flex-1 items-center overflow-hidden">
-        {(segment) => (
-          <DateSegment
-            className={({ isFocused, isPlaceholder }) =>
-              cn(
-                'rounded-sm px-0.5 outline-none',
-                isPlaceholder && 'text-ink-dim',
-                isFocused && 'bg-accent-wash text-accent-text',
-              )
-            }
-            segment={segment}
-          />
-        )}
-      </DateInput>
-      <AriaButton
-        aria-label={`打开${label}日历`}
-        className="
-          grid size-8 shrink-0 place-items-center rounded-control text-ink-dim
-          transition-colors
-          hover:bg-accent-wash hover:text-accent-text
-        "
-        slot="trigger"
-      >
-        <CalendarDays aria-hidden className="size-4" />
-      </AriaButton>
-    </Group>
-
-    <Popover
-      className="
-        w-[min(20rem,calc(100vw-2rem))] rounded-panel bg-case-raised p-3
-        shadow-float outline-none
-      "
-      offset={8}
-      placement="bottom start"
-    >
-      <Calendar className="grid gap-3">
-        <header className="flex items-center gap-1">
-          <AriaButton
-            aria-label="上个月"
-            className="
-              grid size-8 place-items-center rounded-control text-ink-dim
-              transition-colors
-              hover:bg-accent-wash hover:text-accent-text
-            "
-            slot="previous"
-          >
-            <ChevronLeft aria-hidden className="size-4" />
-          </AriaButton>
-          <CalendarHeading className="flex-1 text-center font-mono text-xs text-ink-strong" />
-          <AriaButton
-            aria-label="下个月"
-            className="
-              grid size-8 place-items-center rounded-control text-ink-dim
-              transition-colors
-              hover:bg-accent-wash hover:text-accent-text
-            "
-            slot="next"
-          >
-            <ChevronRight aria-hidden className="size-4" />
-          </AriaButton>
-        </header>
-
-        <CalendarGrid className="w-full table-fixed border-separate border-spacing-0">
-          <CalendarGridHeader>
-            {(day) => (
-              <CalendarHeaderCell className="h-7 text-center font-mono text-2xs text-ink-dim">
-                {day}
-              </CalendarHeaderCell>
-            )}
-          </CalendarGridHeader>
-          <CalendarGridBody>
-            {(date) => (
-              <CalendarCell
-                className={({ isSelected, isToday }) =>
-                  cn(
-                    `
-                      mx-auto grid size-9 place-items-center rounded-control
-                      font-mono text-xs transition-colors
-                    `,
-                    isSelected
-                      ? 'bg-accent text-accent-on'
-                      : `
-                        text-ink
-                        hover:bg-accent-wash hover:text-accent-text
-                      `,
-                    isToday && !isSelected && 'font-medium text-accent-text',
-                  )
-                }
-                date={date}
-              />
-            )}
-          </CalendarGridBody>
-        </CalendarGrid>
-      </Calendar>
-    </Popover>
-  </DatePicker>
-);
-
-const FilterControls = ({
-  onChange,
-  value,
-}: {
-  onChange: (next: CommentFilterDraft) => void;
-  value: CommentFilterDraft;
-}) => {
-  const set = (field: keyof CommentFilterDraft) => {
-    return (fieldValue: string) => onChange({ ...value, [field]: fieldValue });
-  };
-  const hasFilter =
-    value.search !== '' ||
-    value.path !== '' ||
-    value.authorId !== '' ||
-    value.startDate !== '' ||
-    value.endDate !== '';
-
-  return (
-    <section
-      aria-label="筛选评论"
-      className="
-        grid grid-cols-1 gap-3
-        md:grid-cols-2
-        xl:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1fr)_8rem_minmax(20rem,1.2fr)_auto]
-      "
-    >
-      <div className="grid min-w-0 gap-1.5">
-        <span className="font-mono text-xs text-ink-dim">评论内容</span>
-        <SearchInput
-          className="min-w-0"
-          label="搜索评论内容"
-          onChange={set('search')}
-          placeholder="搜索内容…"
-          value={value.search}
-        />
-      </div>
-      <TextField
-        className="min-w-0"
-        inputClassName="font-mono text-xs"
-        label="页面路径"
-        onChange={set('path')}
-        placeholder="/recently?id=12"
-        value={value.path}
-      />
-      <TextField
-        className="min-w-0"
-        inputClassName="font-mono text-xs"
-        label="作者 ID"
-        onChange={set('authorId')}
-        placeholder="作者 ID"
-        value={value.authorId}
-      />
-      <div className="grid min-w-0 gap-1.5">
-        <span className="font-mono text-xs text-ink-dim">发表日期</span>
-        <div className={dateRangeClass}>
-          <span aria-hidden className="shrink-0 text-xs text-ink-dim">
-            从
-          </span>
-          <CommentDatePicker
-            label="开始日期"
-            onChange={set('startDate')}
-            value={value.startDate}
-          />
-          <span aria-hidden className="shrink-0 text-xs text-ink-dim">
-            至
-          </span>
-          <CommentDatePicker
-            label="结束日期"
-            onChange={set('endDate')}
-            value={value.endDate}
-          />
-        </div>
-      </div>
-      {hasFilter ? (
-        <Button
-          className="self-end justify-self-start"
-          icon={<RotateCcw aria-hidden />}
-          onPress={() => onChange(EMPTY_FILTER)}
-          size="md"
-          tone="ghost"
-        >
-          重置
-        </Button>
-      ) : null}
-    </section>
-  );
-};
 
 const toReplyTarget = (comment: CommentAdmin): ReplyTarget => ({
   content: comment.content,
@@ -293,8 +50,27 @@ const toReplyTarget = (comment: CommentAdmin): ReplyTarget => ({
 });
 
 export const CommentsPage = () => {
-  const [draft, setDraft] = useState<CommentFilterDraft>(EMPTY_FILTER);
-  const [page, setPage] = useState(1);
+  const search = useSearch({ from: '/comments' });
+  const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [
+    page,
+    search.search,
+    search.path,
+    search.authorId,
+    search.startDate,
+    search.endDate,
+  ]);
+
+  const navigateSearch = useSearchNavigation('/comments', search);
+
+  const [draft, setDraft] = useState<CommentFilterDraft>(() => ({
+    authorId: search.authorId === undefined ? '' : String(search.authorId),
+    endDate: search.endDate ?? '',
+    path: search.path ?? '',
+    search: search.search ?? '',
+    startDate: search.startDate ?? '',
+  }));
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
@@ -306,42 +82,59 @@ export const CommentsPage = () => {
   }>();
   const batchDialog = useDialog<number[]>();
 
-  // 筛选草稿 300ms 防抖提交；提交值一变，页码在渲染期回到第 1 页。
-  const filters = useDebouncedCommit(draft, 300);
-  const [prevFilters, setPrevFilters] = useState(filters);
-  if (prevFilters !== filters) {
-    setPrevFilters(filters);
-    setPage(1);
-    // 筛选提交即清空选择集（L-11）：跨筛选的选择没有意义还会误删。
+  const commitFilters = useDebouncedCommit((next: CommentFilterDraft) => {
+    navigateSearch(commentsFilterToSearch(next), true);
+  }, 300);
+
+  const handleFilterChange = (next: CommentFilterDraft) => {
+    setDraft(next);
+    commitFilters(next);
+  };
+
+  // 筛选提交即清空选择集：跨筛选的选择没有意义还会误删
+  const filterKey = [
+    search.authorId ?? '',
+    search.endDate ?? '',
+    search.path ?? '',
+    search.search ?? '',
+    search.startDate ?? '',
+  ].join('|');
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
     setSelectedIds(new Set());
   }
   const [prevPage, setPrevPage] = useState(page);
   if (prevPage !== page) {
     setPrevPage(page);
-    // 翻页同样清空选择集（L-11）。
+    // 翻页同样清空选择集
     setSelectedIds(new Set());
   }
-
-  // authorId 严格解析：非纯数字一律视为未筛选，不做 parseInt 前缀解析。
-  const authorIdRaw = filters.authorId.trim();
-  const authorId = /^\d+$/.test(authorIdRaw)
-    ? Number.parseInt(authorIdRaw, 10)
-    : Number.NaN;
 
   const listQuery: CommentListQuery = {
     page,
     pageSize: PAGE_SIZE,
-    ...(filters.search ? { search: filters.search } : {}),
-    ...(filters.path ? { path: filters.path } : {}),
-    ...(Number.isInteger(authorId) && authorId > 0 ? { authorId } : {}),
-    ...(filters.startDate ? { startDate: filters.startDate } : {}),
-    ...(filters.endDate ? { endDate: filters.endDate } : {}),
+    ...(search.search ? { search: search.search } : {}),
+    ...(search.path ? { path: search.path } : {}),
+    ...(search.authorId !== undefined ? { authorId: search.authorId } : {}),
+    ...(search.startDate ? { startDate: search.startDate } : {}),
+    ...(search.endDate ? { endDate: search.endDate } : {}),
   };
   const commentsQuery = useQuery(commentsListOptions(listQuery));
   const data = commentsQuery.data;
-  // 末页删光后页码越界：渲染期钳回最后一个非空页（L-18）。
-  useClampPage(page, setPage, data, PAGE_SIZE);
-  const loading = commentsQuery.isFetching;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
+  });
+
+  const loading = commentsQuery.isPending;
+  const busy = commentsQuery.isFetching;
+  const placeholder = commentsQuery.isPlaceholderData;
   const error = commentsQuery.error ? '无法加载评论，请稍后重试。' : '';
 
   const removeMutation = useMutation({
@@ -363,7 +156,7 @@ export const CommentsPage = () => {
     mutationFn: (ids: number[]) => apiClient.comments.removeBatch(ids),
     onSuccess: async (result) => {
       toast.success(`已删除 ${result.deleted} 条评论。`);
-      // 批删成功后才清空选择集（L-11）：mutation 失败时选择保留可重试。
+      // 批删成功后才清空选择集：mutation 失败时选择保留可重试
       setSelectedIds(new Set());
       await invalidateCommentsAfterMutation();
     },
@@ -372,13 +165,12 @@ export const CommentsPage = () => {
     },
   });
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
   const hasFilter =
-    filters.search !== '' ||
-    filters.path !== '' ||
-    filters.authorId !== '' ||
-    filters.startDate !== '' ||
-    filters.endDate !== '';
+    search.search !== undefined ||
+    search.path !== undefined ||
+    search.authorId !== undefined ||
+    search.startDate !== undefined ||
+    search.endDate !== undefined;
 
   const toggleSelect = (id: number) => {
     setSelectedIds((current) => {
@@ -405,7 +197,7 @@ export const CommentsPage = () => {
     const ids = batchDialog.data;
     if (!ids || ids.length === 0) return;
     batchDialog.dismiss();
-    // 不在此处清空选择集：清空移入 removeBatchMutation.onSuccess（L-11）。
+    // 不在此处清空选择集：清空移入 removeBatchMutation.onSuccess
     removeBatchMutation.mutate(ids);
   };
 
@@ -420,7 +212,7 @@ export const CommentsPage = () => {
       />
 
       <div className={desktopFilterControlsClass}>
-        <FilterControls onChange={setDraft} value={draft} />
+        <FilterControls onChange={handleFilterChange} value={draft} />
       </div>
       <div className={mobileFilterControlsClass}>
         <span className="mb-1.5 block font-mono text-xs text-ink-dim">
@@ -430,8 +222,8 @@ export const CommentsPage = () => {
           <SearchInput
             className="min-w-0 flex-1"
             label="搜索评论内容"
-            onChange={(search) =>
-              setDraft((current) => ({ ...current, search }))
+            onChange={(value) =>
+              handleFilterChange({ ...draft, search: value })
             }
             placeholder="搜索内容…"
             value={draft.search}
@@ -477,10 +269,18 @@ export const CommentsPage = () => {
       ) : null}
 
       <section
-        aria-busy={loading}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
-        {loading ? (
+        {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
               <CommentCardSkeleton key={index} />
@@ -503,7 +303,17 @@ export const CommentsPage = () => {
                 <Button
                   onPress={() => {
                     setDraft(EMPTY_FILTER);
-                    setPage(1);
+                    navigateSearch(
+                      {
+                        authorId: undefined,
+                        endDate: undefined,
+                        page: undefined,
+                        path: undefined,
+                        search: undefined,
+                        startDate: undefined,
+                      },
+                      true,
+                    );
                   }}
                 >
                   清除筛选
@@ -541,10 +351,13 @@ export const CommentsPage = () => {
         )}
       </section>
 
-      {data ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
-          onChange={setPage}
+          isBusy={placeholder}
+          onChange={(next) =>
+            navigateSearch({ page: next > 1 ? next : undefined })
+          }
           page={page}
           total={data.total}
           totalPages={totalPages}
@@ -558,7 +371,7 @@ export const CommentsPage = () => {
         title="筛选评论"
       >
         <div className="grid gap-4 px-4 pt-1 pb-4">
-          <FilterControls onChange={setDraft} value={draft} />
+          <FilterControls onChange={handleFilterChange} value={draft} />
           <Button onPress={() => setFilterSheetOpen(false)} tone="solid">
             完成
           </Button>

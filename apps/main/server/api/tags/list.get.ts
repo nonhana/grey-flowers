@@ -1,7 +1,6 @@
-import type { PublicTag } from '@grey-flowers/contracts'
-import { apiGet } from '#server/utils/api-gateway'
+import { publicTagListDataSchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async () => {
-  const data = await apiGet<{ items: PublicTag[] }>('/public/tags')
+  const data = await apiGet('/public/tags', undefined, publicTagListDataSchema)
   return { payload: data.items }
 })

@@ -1,5 +1,4 @@
 import type { MDCParserResult, MDCRoot, Toc } from '@nuxtjs/mdc'
-import type { ArticleImageSource } from '#shared/types/article'
 
 export interface MarkdownRenderPayload {
   body: MDCRoot

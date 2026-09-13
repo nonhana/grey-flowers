@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ArticleHeader } from '#shared/types/content'
 import { Calendar, FileText, RefreshCw } from '@lucide/vue'
-import { useStore } from '~/stores'
 
 const props = withDefaults(defineProps<ArticleHeader>(), {
   title: '暂无标题',

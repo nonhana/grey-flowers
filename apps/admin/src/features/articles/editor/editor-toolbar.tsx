@@ -1,6 +1,5 @@
 import type { EditorView } from '@codemirror/view';
 
-import { cn } from 'cn';
 import {
   Bold,
   Code2,
@@ -15,14 +14,13 @@ import {
   Table2,
 } from 'lucide-react';
 
-import { IconButton } from '@/ui/button.js';
-
+import { IconButton } from '@/ui/button';
 import {
   insertInline,
   lineWrappedMarkdown,
   prefixLine,
   wrapSelection,
-} from './markdown-ops.js';
+} from '@/ui/editor/markdown-ops';
 
 const TOOLBAR_BUTTONS = [
   {
@@ -83,18 +81,14 @@ export const EditorToolbar = ({
   onOpenPicker: () => void;
   onRun: (run: (view: EditorView) => void) => void;
 }) => (
-  /*
-   桌面端是顶栏，移动端吸底并跟随软键盘上移——打字时拇指够不到顶栏等于没有。
-  */
   <div
     aria-label="Markdown 插入工具"
-    className={cn(
-      'z-30 gf-scroll-x flex items-center gap-0.5 bg-case px-1.5',
-      // 字盘压在纸上的那道边用投影而不是描边：纸是抬升面，不该被线切开。
-      'fixed inset-x-0 bottom-0 py-1.5 shadow-case-up',
-      'pb-[max(0.375rem,env(safe-area-inset-bottom))]',
-      'md:relative md:pb-1.5 md:shadow-case-down',
-    )}
+    className="
+      fixed inset-x-0 bottom-0 z-30 gf-scroll-x flex items-center gap-0.5
+      bg-case p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]
+      shadow-case-up
+      md:relative md:pb-1.5 md:shadow-case-down
+    "
     role="toolbar"
     style={
       keyboardInset > 0

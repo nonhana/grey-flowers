@@ -3,7 +3,7 @@ import { useState } from 'react';
 export interface DialogStore<T> {
   isOpen: boolean;
   data: T | null;
-  /** 单调递增的打开会话 id：每次 open(data) 都 +1，同一 data 重开亦然。 */
+  /** 单调递增的打开会话 id：每次 open(data) 都 +1，同一 data 重开亦然 */
   session: number;
   open: (data: T) => void;
   dismiss: () => void;

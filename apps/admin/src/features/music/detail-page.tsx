@@ -4,27 +4,27 @@ import { ArrowLeft, Disc3, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
+import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicDetailOptions,
-} from '@/app/server-state/music.js';
-import { formatDateTime, formatDuration } from '@/lib/format.js';
-import { toastError } from '@/lib/toast.js';
-import { usePlayerStore } from '@/store/player.js';
-import { Button, buttonClass } from '@/ui/button.js';
-import { Skeleton, StatusReadout } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { ConfirmDialog } from '@/ui/overlay.js';
+} from '@/app/server-state/modules/music';
+import { formatDateTime, formatDuration } from '@/lib/format';
+import { toastError } from '@/lib/toast';
+import { usePlayerStore } from '@/store/player';
+import { Button, buttonClass } from '@/ui/button';
+import { Skeleton, StatusReadout } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { ConfirmDialog } from '@/ui/overlay';
 import {
   MetaLine,
   PageBody,
   PageHeader,
   Panel,
   SectionLabel,
-} from '@/ui/surface.js';
+} from '@/ui/surface';
 
-import { EditMusicDialog } from './edit-dialog.js';
+import { EditMusicDialog } from './edit-dialog';
 
 const Row = ({
   children,
@@ -41,7 +41,6 @@ const Row = ({
 
 const DetailSkeleton = () => (
   <PageBody>
-    {/* 与真实详情同构：页头位 + 方封面 + 播放面板 + 元数据面板 */}
     <div className="grid animate-content-in gap-4">
       <div className="flex items-center gap-2">
         <Skeleton className="size-10 shrink-0 rounded-control" />
@@ -83,7 +82,7 @@ const DetailSkeleton = () => (
 );
 
 export const MusicDetailPage = () => {
-  const { musicId } = useParams({ strict: false }) as { musicId: string };
+  const { musicId } = useParams({ from: '/music/$musicId' });
   const id = Number(musicId);
   const enabled = Number.isSafeInteger(id) && id > 0;
   const navigate = useNavigate();
@@ -112,7 +111,7 @@ export const MusicDetailPage = () => {
     },
   });
 
-  if (!enabled || detailQuery.isFetching) {
+  if (!enabled || detailQuery.isPending) {
     return <DetailSkeleton />;
   }
 
@@ -136,9 +135,7 @@ export const MusicDetailPage = () => {
       toggle();
       return;
     }
-    // 点播即播这首（L-15）：当前队列里有它就按原位播；没有（含队列为
-    // 空）就把它插到队首再播——不再让 player 把 findIndex=-1 钳成 0 而
-    // 在其他队列播放中点播时播错歌。
+    // 点播即播这首：队列里有就按原位播，没有就插到队首再播——不再让 findIndex=-1 被钳成 0 而播错歌
     const index = playlist.findIndex((track) => track.id === music.id);
     if (index === -1) {
       play([music, ...playlist], 0);

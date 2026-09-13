@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { ApiError } from '@/http/errors.js';
+import { ApiError } from '@/http/errors';
 
-import { parseBody, parseId, parseQuery } from './parser.js';
+import { parseBody, parseId, parseQuery } from './parser';
 
 const schema = z.strictObject({ title: z.string().min(1) });
 

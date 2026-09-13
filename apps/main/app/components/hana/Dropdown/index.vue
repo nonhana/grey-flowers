@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { DropdownCommand } from '#shared/types/common'
-
 const props = withDefaults(defineProps<{
   showArrow?: boolean
   position?: 'top' | 'bottom' | 'left' | 'right'

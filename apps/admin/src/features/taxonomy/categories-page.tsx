@@ -4,28 +4,29 @@ import type {
   CategorySaveInput,
 } from '@grey-flowers/contracts';
 
+import { categorySaveInputSchema } from '@grey-flowers/contracts';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
 import { FolderTree, ImagePlus, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { apiClient, isApiRequestError } from '@/app/api/index.js';
+import { apiClient, isApiRequestError } from '@/app/api/index';
 import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
-} from '@/app/server-state/taxonomy.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { useDialog } from '@/hooks/use-dialog.js';
-import { toastError } from '@/lib/toast.js';
-import { Button, IconButton } from '@/ui/button.js';
-import { Alert, EmptyState, Skeleton } from '@/ui/feedback.js';
-import { controlClass, FieldLabel, TextField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog, ConfirmDialog } from '@/ui/overlay.js';
-import { PageBody, PageHeader, RowStack } from '@/ui/surface.js';
+} from '@/app/server-state/modules/taxonomy';
+import { useDialog } from '@/hooks/use-dialog';
+import { toastError } from '@/lib/toast';
+import { Button, IconButton } from '@/ui/button';
+import { Alert, EmptyState, Skeleton } from '@/ui/feedback';
+import { controlClass, FieldLabel, TextField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog, ConfirmDialog } from '@/ui/overlay';
+import { PageBody, PageHeader, RowStack } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
-/** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位。 */
+/** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位 */
 const CategoryRowSkeleton = () => (
   <div aria-hidden className="flex items-center gap-4 px-4 py-3">
     <Skeleton className="size-12 shrink-0 rounded-control" />
@@ -51,7 +52,7 @@ const EMPTY_FORM: CategoryForm = { cover: '', coverAssetId: null, name: '' };
 export const CategoriesPage = () => {
   const categoriesQuery = useQuery(taxonomyCategoriesOptions());
   const items = categoriesQuery.data?.items ?? [];
-  const loading = categoriesQuery.isFetching;
+  const loading = categoriesQuery.isPending;
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<CategoryAdmin | null>(null);
   const [form, setForm] = useState<CategoryForm>(EMPTY_FORM);
@@ -119,16 +120,17 @@ export const CategoriesPage = () => {
   };
 
   const save = () => {
-    const name = form.name.trim();
-    if (!name) {
-      setError('分类名不能为空。');
+    const parsed = categorySaveInputSchema.safeParse({
+      name: form.name,
+      cover: form.cover,
+      coverAssetId: form.coverAssetId,
+    });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '保存失败。');
       return;
     }
     setError(null);
-    saveMutation.mutate({
-      target: editing,
-      input: { cover: form.cover, coverAssetId: form.coverAssetId, name },
-    });
+    saveMutation.mutate({ target: editing, input: parsed.data });
   };
 
   const remove = () => {

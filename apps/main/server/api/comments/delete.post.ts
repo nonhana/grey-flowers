@@ -1,22 +1,17 @@
-import type { CommentDeleteResult } from '@grey-flowers/contracts'
-import { ApiGatewayError, apiMutate } from '#server/utils/api-gateway'
+import { commentDeleteResultSchema } from '@grey-flowers/contracts'
+import { z } from 'zod'
+
+const commentDeleteBodySchema = z.object({ commentId: z.coerce.number().int().positive() }).strict()
 
 export default formattedEventHandler(async (event) => {
-  const body = await readBody(event) as { commentId?: number }
-  const commentId = Number(body.commentId)
-  if (!Number.isInteger(commentId) || commentId < 1) {
-    return {
-      statusCode: 400,
-      statusMessage: 'Invalid comment id',
-      success: false,
-    }
-  }
+  const { commentId } = await parsePublicBody(commentDeleteBodySchema, event)
 
   try {
-    const result = await apiMutate<CommentDeleteResult>(
+    const result = await apiMutate(
       'DELETE',
       `/public/comments/${commentId}`,
       { event },
+      commentDeleteResultSchema,
     )
     return { payload: result }
   }

@@ -10,13 +10,13 @@ import type { Prisma, createPrismaClient } from '@grey-flowers/db';
 import bcrypt from 'bcryptjs';
 import { createHash } from 'node:crypto';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
-import { ApiError } from '@/http/errors.js';
-import { isUniqueConstraint } from '@/lib/prisma.js';
+import { ApiError } from '@/http/errors';
+import { isUniqueConstraint } from '@/lib/prisma';
 
-import { toPrincipal } from './principal.js';
-import { decideRefresh } from './refresh-policy.js';
+import { toPrincipal } from './principal';
+import { decideRefresh } from './refresh-policy';
 import {
   createRefreshSecret,
   formatRefreshCredential,
@@ -25,7 +25,7 @@ import {
   SESSION_TTL_MS,
   signAccessToken,
   verifyRefreshSecret,
-} from './tokens.js';
+} from './tokens';
 
 const passwordHashCost = 10;
 

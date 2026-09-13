@@ -5,12 +5,12 @@ import {
 } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
 
-import type { AppDependencies } from '@/bootstrap/dependencies.js';
-import type { ApiEnvironment } from '@/http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies';
+import type { ApiEnvironment } from '@/http/context';
 
-import { createSuccess } from '@/http/errors.js';
-import { adminGuard } from '@/http/middleware/admin-guard.js';
-import { parseBody, parseId, parseQuery } from '@/lib/parser.js';
+import { createSuccess } from '@/http/errors';
+import { adminGuard } from '@/http/middleware/admin-guard';
+import { parseBody, parseId, parseQuery } from '@/lib/parser';
 
 /** 管理接口：挂载于 /activities */
 export const createActivityRoutes = (dependencies: AppDependencies) => {

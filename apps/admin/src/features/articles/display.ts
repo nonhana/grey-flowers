@@ -1,10 +1,6 @@
-import { apiErrorMessage } from '@/lib/error-message.js';
+import { apiErrorMessage } from '@/lib/error-message';
 
 export type ArticleStatusFilter = 'all' | 'draft' | 'published';
-
-/** URL 是文章列表筛选的唯一真相，所以侧栏的子项可以直接深链。 */
-export const parseStatusFilter = (value: unknown): ArticleStatusFilter =>
-  value === 'draft' || value === 'published' ? value : 'all';
 
 export const articleErrorMessage = (error: unknown) =>
   apiErrorMessage(error, {

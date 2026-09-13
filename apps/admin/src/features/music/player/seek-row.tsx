@@ -1,17 +1,12 @@
 import { cn } from 'cn';
 import { useShallow } from 'zustand/react/shallow';
 
-import { formatDuration } from '@/lib/format.js';
-import { usePlayerStore } from '@/store/player.js';
+import { formatDuration } from '@/lib/format';
+import { usePlayerStore } from '@/store/player';
 
-import { TrackSlider } from './track-slider.js';
+import { TrackSlider } from './track-slider';
 
-/**
- * 播放进度区：独占 currentTime/duration 的订阅，把 timeupdate 每秒 4~10 次的
- * 高频重渲染隔离在自身，桌面播放条与移动端「正在播放」面板不再随进度 tick 重渲染。
- * layout='row' 对齐桌面 docked 条（当前/总时长分别位于滑条两侧）；
- * layout='stack' 对齐移动端面板（滑条在上、时长一行在下）。
- */
+/** 播放进度区独占 currentTime/duration 订阅，把 timeupdate 每秒 4~10 次的高频重渲染隔离在自身，桌面播放条与移动端「正在播放」面板不再随之重渲染 */
 export const SeekRow = ({
   className,
   layout = 'row',

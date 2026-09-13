@@ -8,12 +8,12 @@ import { cn } from 'cn';
 import { CloudOff } from 'lucide-react';
 import { useState } from 'react';
 
-import { overviewTrendOptions } from '@/app/server-state/overview.js';
-import { Button } from '@/ui/button.js';
-import { TrendPlot } from '@/ui/charts/trend-plot.js';
-import { EmptyState, Skeleton } from '@/ui/feedback.js';
-import { FilterChip } from '@/ui/form.js';
-import { Panel, SectionLabel } from '@/ui/surface.js';
+import { overviewTrendOptions } from '@/app/server-state/modules/overview';
+import { Button } from '@/ui/button';
+import { TrendPlot } from '@/ui/charts/trend-plot';
+import { EmptyState, Skeleton } from '@/ui/feedback';
+import { FilterChip } from '@/ui/form';
+import { Panel, SectionLabel } from '@/ui/surface';
 
 const METRIC_OPTIONS: readonly OverviewTrendMetric[] = [
   'articles',
@@ -58,7 +58,7 @@ const PlotSkeleton = () => (
 export const TrendCard = ({ className }: { className?: string }) => {
   const [metric, setMetric] = useState<OverviewTrendMetric>('articles');
   const [days, setDays] = useState<OverviewTrendDays>('14');
-  const { data, error, isFetching, refetch } = useQuery(
+  const { data, error, isPending, refetch } = useQuery(
     overviewTrendOptions({ days, metric }),
   );
 
@@ -103,7 +103,7 @@ export const TrendCard = ({ className }: { className?: string }) => {
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col">
-        {isFetching ? (
+        {isPending ? (
           <PlotSkeleton />
         ) : error ? (
           <EmptyState

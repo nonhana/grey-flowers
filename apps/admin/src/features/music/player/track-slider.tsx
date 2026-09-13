@@ -1,10 +1,7 @@
 import { cn } from 'cn';
 import { Slider, SliderThumb, SliderTrack } from 'react-aria-components';
 
-/**
- * 可拖拽进度/音量条。RAC Slider 负责指针/键盘/ARIA；
- * 手柄静止时隐藏，悬停或拖动时浮现 —— 进度条自身描出所在位置。
- */
+/** 可拖拽进度/音量条 */
 export const TrackSlider = ({
   className,
   label,
@@ -39,15 +36,13 @@ export const TrackSlider = ({
             style={{ width: `${state.getThumbPercent(0) * 100}%` }}
           />
           <SliderThumb
-            className={cn(
-              'top-1/2 size-3 rounded-full bg-accent shadow-sm outline-none',
-              'opacity-0 transition-opacity',
-              'group-hover/slider:opacity-100',
-              `
-                data-dragging:opacity-100
-                data-focus-visible:opacity-100
-              `,
-            )}
+            className="
+              top-1/2 size-3 rounded-full bg-accent opacity-0 shadow-sm
+              transition-opacity outline-none
+              group-hover/slider:opacity-100
+              data-dragging:opacity-100
+              data-focus-visible:opacity-100
+            "
             style={{ transform: 'translateY(-50%)' }}
           />
         </>

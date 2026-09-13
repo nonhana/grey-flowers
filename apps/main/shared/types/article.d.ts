@@ -13,14 +13,3 @@ export interface ArticleCardProps {
   wordCount: number
   variant?: ArticleCardVariant
 }
-
-export interface ArticleSearchItem {
-  to: string
-  title: string
-  description: string
-  category: string
-  tags: string[]
-  publishedAt: string
-  snippet: string
-  score: number
-}

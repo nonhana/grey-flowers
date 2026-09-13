@@ -1,7 +1,7 @@
 import type { Prisma, PrismaClient } from '@grey-flowers/db';
 
-import { ApiError } from '@/http/errors.js';
-import { concatUrl } from '@/lib/concat-url.js';
+import { ApiError } from '@/http/errors';
+import { concatUrl } from '@/lib/concat-url';
 
 type Client = PrismaClient | Prisma.TransactionClient;
 

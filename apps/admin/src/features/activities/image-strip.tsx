@@ -4,9 +4,9 @@ import { cn } from 'cn';
 import { ImagePlus, Images, X } from 'lucide-react';
 import { ProgressBar } from 'react-aria-components';
 
-import { Button, IconButton } from '@/ui/button.js';
-import { FieldLabel } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
+import { Button, IconButton } from '@/ui/button';
+import { FieldLabel } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
 
 export const MAX_IMAGES = 9;
 
@@ -93,7 +93,7 @@ export const ImageStrip = ({
             flex snap-x snap-mandatory list-none gap-2 overflow-x-auto
             overscroll-x-contain pb-1
           "
-          // 缩略图重排是自己拖的 DOM 节点，别让外层 dropzone 把它当成文件拖放。
+          // 缩略图重排是自己拖的 DOM 节点，别让外层 dropzone 把它当成文件拖放
           onDragEnter={(event) => event.stopPropagation()}
           onDragLeave={(event) => event.stopPropagation()}
           onDragOver={(event) => event.stopPropagation()}
@@ -104,9 +104,8 @@ export const ImageStrip = ({
               className={cn(
                 `
                   relative size-28 shrink-0 snap-start overflow-hidden
-                  rounded-panel
+                  rounded-panel border border-rule bg-well
                 `,
-                'border border-rule bg-well',
                 image.status === 'error' && 'border-danger-rule',
               )}
               draggable={image.status === 'committed'}

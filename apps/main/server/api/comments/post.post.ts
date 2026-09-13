@@ -1,14 +1,13 @@
-import type { CommentPublic } from '@grey-flowers/contracts'
-import { ApiGatewayError, apiMutate } from '#server/utils/api-gateway'
+import { commentCreateInputSchema, commentPublicSchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
-  const body = await readBody(event)
+  const input = await parsePublicBody(commentCreateInputSchema, event)
 
   try {
-    const comment = await apiMutate<CommentPublic>('POST', '/public/comments', {
+    const comment = await apiMutate('POST', '/public/comments', {
       event,
-      body,
-    })
+      body: input,
+    }, commentPublicSchema)
     return { payload: comment }
   }
   catch (error) {

@@ -2,11 +2,11 @@ import type { UserAdminSummary } from '@grey-flowers/contracts';
 
 import { ExternalLink, Pencil, Trash2, UserRound } from 'lucide-react';
 
-import { formatDateTime } from '@/lib/format.js';
-import { IconButton } from '@/ui/button.js';
-import { Skeleton } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDateTime } from '@/lib/format';
+import { IconButton } from '@/ui/button';
+import { Skeleton } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
 export const UserCard = ({
   actions,
@@ -113,10 +113,6 @@ export const UserCard = ({
   </article>
 );
 
-/**
- * 与真实用户卡同构的骨架：头像 40px 主导行高，右侧三个操作位。
- * 块高按真实字号的 line-height 取 em，落地时行高与真实相等。
- */
 export const UserCardSkeleton = () => (
   <article
     aria-hidden

@@ -1,41 +1,7 @@
-import type { MarkdownRenderPayload } from './markdown'
-import type { SimpleUserInfo } from './user'
+import type { CommentPublic, CommentPublicTree } from '@grey-flowers/contracts'
 
-export interface CommentItem {
-  id: number
-  path: string
-  content: string
-  contentMarkdown: MarkdownRenderPayload | null
-  level: 'PARENT' | 'CHILD'
-  author: SimpleUserInfo
-  parent: {
-    id: number
-    content: string
-    authorId: number
-  } | null
-  replyToUser: {
-    id: number
-    username: string
-  } | null
-  replyToComment: {
-    id: number
-    content: string
-  } | null
-  publishedAt: string
-  editedAt: string
-}
-
-export interface ParentCommentItem extends CommentItem {
-  children: CommentItem[]
-}
-
-export interface IPostComment {
-  path: string
-  content: string
-  parentId?: number
-  replyToUserId?: number
-  replyToCommentId?: number
-}
+export type CommentItem = CommentPublic
+export type ParentCommentItem = CommentPublicTree
 
 export interface IReplyComment {
   targetCommentLevel: 'PARENT' | 'CHILD'

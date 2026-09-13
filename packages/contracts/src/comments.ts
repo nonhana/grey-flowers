@@ -5,7 +5,7 @@ import {
   nonNegativeIntSchema,
   positiveIntSchema,
   userRoleSchema,
-} from './common.js';
+} from './common';
 
 export const commentLevelSchema = z.enum(['PARENT', 'CHILD']);
 

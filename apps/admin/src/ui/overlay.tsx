@@ -12,17 +12,12 @@ import {
   useOverlayTriggerState,
 } from 'react-stately';
 
-import { useMediaQuery } from '@/hooks/use-media-query.js';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
-import { Button, IconButton } from './button.js';
+import { Button, IconButton } from './button';
 
-const scrimClass = cn(
-  'fixed inset-0 z-50 bg-scrim',
-  `
-    data-entering:animate-scrim-in
-    data-exiting:animate-scrim-out
-  `,
-);
+const scrimClass =
+  'fixed inset-0 z-50 bg-scrim data-entering:animate-scrim-in data-exiting:animate-scrim-out';
 
 interface BottomSheetProps {
   children: ReactNode;
@@ -68,11 +63,10 @@ const BottomSheetContents = ({
         onKeyDown={onKeyDown}
         role={role}
         tabIndex={tabIndex}
-        className={cn(
-          '[--gf-surface:var(--color-case-raised)]',
-          'max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised',
-          'shadow-float outline-none',
-        )}
+        className="
+          max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised
+          shadow-float outline-none [--gf-surface:var(--color-case-raised)]
+        "
         ref={panelRef}
         unstyled
       >
@@ -104,7 +98,6 @@ const BottomSheetContents = ({
   );
 };
 
-/** 移动端 sheet：react-modal-sheet 管交互/滚动/键盘避让，React Aria 管模态语义。 */
 export const BottomSheet = ({
   children,
   isOpen,
@@ -131,7 +124,6 @@ export const BottomSheet = ({
   );
 };
 
-/** 桌面端 sheet 是布局的一列：挤压纸面页边而不改正文行宽；内层定宽防回流。 */
 export const SidePanel = ({
   children,
   isOpen,
@@ -147,11 +139,11 @@ export const SidePanel = ({
     aria-hidden={!isOpen}
     aria-label={label}
     className={cn(
-      // --gf-surface 让面板里的吸底条知道自己该刷成什么颜色 ——
-      // 桌面端它是布局的一列（字盘），移动端它是浮起的 sheet（抬起的字盘）。
-      '[--gf-surface:var(--color-case)]',
-      'h-full shrink-0 overflow-hidden border-l border-rule bg-case',
-      'transition-[width] duration-200 ease-out',
+      `
+        h-full shrink-0 overflow-hidden border-l border-rule bg-case
+        transition-[width] duration-200 ease-out
+        [--gf-surface:var(--color-case)]
+      `,
       !isOpen && 'pointer-events-none border-l-0',
     )}
     style={{ width: isOpen ? width : 0 }}
@@ -162,10 +154,6 @@ export const SidePanel = ({
   </aside>
 );
 
-/**
- * 移动端底抽屉本体：拖拽/回弹/背板/键盘避让/焦点圈定全走 react-modal-sheet，
- * 抽屉动画不手写（旧的手写 CSS 在内容异步加载时闪）。
- */
 const AppDialogSheetContents = ({
   children,
   footer,
@@ -203,11 +191,10 @@ const AppDialogSheetContents = ({
         onKeyDown={onKeyDown}
         role={role}
         tabIndex={tabIndex}
-        className={cn(
-          '[--gf-surface:var(--color-case-raised)]',
-          'max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised',
-          'shadow-float outline-none',
-        )}
+        className="
+          max-h-[88dvh]! overflow-hidden rounded-t-sheet bg-case-raised
+          shadow-float outline-none [--gf-surface:var(--color-case-raised)]
+        "
         ref={panelRef}
         unstyled
       >
@@ -270,15 +257,9 @@ const AppDialogSheetContents = ({
   );
 };
 
-/** 哨兵：对话框树卸载（退出动画结束）时触发一次 onExited，供动画期间保留数据。 */
 const ExitSignaler = ({ onExited }: { onExited?: () => void }) => {
-  const signal = useEffectEvent(() => {
-    onExited?.();
-  });
-  // 唯一的卸载清理 Effect：useEffectEvent 保证读到最新的 onExited。
-  // StrictMode 契约（L-23）：dev 双挂载会在「模拟卸载」时提前触发一次
-  // onExited——调用方必须保证其幂等（现有消费方 useDialog.clear 满足：
-  // 已关闭时 clear 为 no-op）；生产构建不存在该时机。
+  const signal = useEffectEvent(() => onExited?.());
+  // 唯一的卸载清理 Effect：useEffectEvent 保证读到最新的 onExited
   useEffect(() => () => signal(), []);
   return null;
 };
@@ -295,10 +276,8 @@ export const AppDialog = ({
 }: {
   children: ReactNode;
   footer?: ReactNode;
-  /** 必须做出选择的对话框（例如内容冲突）设为 false，同时会隐藏关闭按钮。 */
   isDismissable?: boolean;
   isOpen: boolean;
-  /** 退出动画结束后触发——对话框树真正卸载的那一刻。用于在动画期间保留内容数据。 */
   onExited?: () => void;
   onOpenChange: (open: boolean) => void;
   size?: 'sm' | 'md' | 'lg';
@@ -306,7 +285,6 @@ export const AppDialog = ({
 }) => {
   const prefersReducedMotion = useReducedMotion();
   const state = useOverlayTriggerState({ isOpen, onOpenChange });
-  // 与旧实现一致：<640px 是抽屉，≥640px 是居中对话框。
   const isDialog = useMediaQuery('(min-width: 40rem)');
 
   if (isDialog) {
@@ -320,9 +298,9 @@ export const AppDialog = ({
       >
         <Modal
           className={cn(
-            'w-full overflow-hidden rounded-sheet bg-case-raised shadow-float',
-            'outline-none',
             `
+              w-full overflow-hidden rounded-sheet bg-case-raised shadow-float
+              outline-none
               data-entering:animate-dialog-in
               data-exiting:animate-dialog-out
             `,
@@ -331,10 +309,6 @@ export const AppDialog = ({
             size === 'lg' && 'max-w-2xl',
           )}
         >
-          {/*
-            退出动画进行时 React Aria 仍保持这个子树挂载；
-            动画结束、overlay 卸载时才触发 onExited。
-          */}
           <ExitSignaler onExited={onExited} />
           <Dialog
             className={cn(
@@ -395,7 +369,7 @@ export const AppDialog = ({
       onClose={() => {
         if (isDismissable) state.close();
       }}
-      // react-modal-sheet 在关闭动画结束后触发。
+      // react-modal-sheet 在关闭动画结束后触发
       onCloseEnd={onExited}
       prefersReducedMotion={prefersReducedMotion ?? false}
       style={{ zIndex: 50 }}
@@ -414,7 +388,6 @@ export const AppDialog = ({
   );
 };
 
-/** 确认框：破坏性动作必须先让操作者看清后果再执行。 */
 export const ConfirmDialog = ({
   confirmLabel,
   isDestructive = false,
@@ -431,7 +404,6 @@ export const ConfirmDialog = ({
   message: string;
   onCancel: () => void;
   onConfirm: () => void;
-  /** 退出动画结束后触发（见 AppDialog）。用于在动画期间保留内容数据。 */
   onExited?: () => void;
   title: string;
 }) => (
@@ -444,16 +416,12 @@ export const ConfirmDialog = ({
     }}
   >
     <Modal
-      className={cn(
-        `
-          w-full max-w-md rounded-sheet bg-case-raised p-5 shadow-float
-          outline-none
-        `,
-        `
-          data-entering:animate-dialog-in
-          data-exiting:animate-dialog-out
-        `,
-      )}
+      className="
+        w-full max-w-md rounded-sheet bg-case-raised p-5 shadow-float
+        outline-none
+        data-entering:animate-dialog-in
+        data-exiting:animate-dialog-out
+      "
     >
       <ExitSignaler onExited={onExited} />
       <Dialog className="outline-none" role="alertdialog">

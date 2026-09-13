@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { concatUrl } from './concat-url.js';
+import { concatUrl } from './concat-url';
 
 describe('concatUrl', () => {
   it('拼接 origin 与单段路径', () => {

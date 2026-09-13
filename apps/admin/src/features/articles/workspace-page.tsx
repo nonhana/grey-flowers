@@ -20,23 +20,23 @@ import {
   Popover,
 } from 'react-aria-components';
 
-import { articlesListOptions } from '@/app/server-state/articles.js';
+import type { Editor } from '@/store/article-editor';
+
+import { articlesListOptions } from '@/app/server-state/modules/articles';
 import {
   taxonomyCategoriesOptions,
   taxonomyTagsOptions,
-} from '@/app/server-state/taxonomy.js';
-import { useIsDesktop } from '@/hooks/use-media-query.js';
-import { formatDateTime } from '@/lib/format.js';
-import { useArticleEditor } from '@/store/article-editor.js';
-import { Button, buttonClass, IconButton } from '@/ui/button.js';
-import { Alert, StatusReadout } from '@/ui/feedback.js';
-import { Hint } from '@/ui/hint.js';
-import { AppDialog, BottomSheet, SidePanel } from '@/ui/overlay.js';
+} from '@/app/server-state/modules/taxonomy';
+import { useIsDesktop } from '@/hooks/use-media-query';
+import { formatDateTime } from '@/lib/format';
+import { useArticleEditor } from '@/store/article-editor';
+import { Button, buttonClass, IconButton } from '@/ui/button';
+import { Alert, StatusReadout } from '@/ui/feedback';
+import { Hint } from '@/ui/hint';
+import { AppDialog, BottomSheet, SidePanel } from '@/ui/overlay';
 
-import { CodeMirrorPane } from './editor/code-mirror-pane.js';
-import { InspectorPane } from './editor/inspector-pane.js';
-
-type Editor = ReturnType<typeof useArticleEditor>;
+import { CodeMirrorPane } from './editor/code-mirror-pane';
+import { InspectorPane } from './editor/inspector-pane';
 
 interface RecentArticle {
   id: number;
@@ -253,8 +253,6 @@ const WorkspacePage = ({
     );
   }
 
-  // 分类/标签元数据加载失败（M9）：给出明确错误块与重试入口，
-  // 不再 return null 白屏；恢复后正常进入编辑器。
   if (categoriesQuery.error || tagsQuery.error) {
     return (
       <div className="grid h-full place-items-center p-6">
@@ -295,8 +293,6 @@ const WorkspacePage = ({
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-paper">
-      {/* 移动端顶栏直接压在纸上 —— 用投影；桌面端下面还是字盘（工具条），
-          同一种物质之间用发丝线。 */}
       <header
         className="
           relative z-10 flex min-h-12 shrink-0 items-center justify-between
@@ -407,17 +403,14 @@ const WorkspacePage = ({
   );
 };
 
-/** 外壳持有关键切换后要存活的 UI 状态；内层按文章 id 作 key 重挂载，
- *  重挂载即重新拉取最近文章与元数据选项（React 官方「key 重置全部状态」模式）。 */
+/** 外壳持有关键切换后要存活的 UI 状态；内层按文章 id 作 key 重挂载即重新拉取（React 官方「key 重置全部状态」模式） */
 export const ArticleWorkspacePage = () => {
-  const { articleId } = useParams({ strict: false }) as { articleId: string };
-  // 路由 id 严格解析（M14）：/^\d+$/ 且 >0 才是合法文章 id；非法（如
-  // /articles/abc、/articles/0）渲染内联无效态（复用 loadError 的视觉
-  // 结构），不再静默落进新建模式。
+  const { articleId } = useParams({ from: '/articles/$articleId' });
   const valid = /^\d+$/.test(articleId) && Number(articleId) > 0;
   const numericId = valid ? Number(articleId) : null;
   const isDesktop = useIsDesktop();
   const [inspectorOpen, setInspectorOpen] = useState(isDesktop);
+
   if (!valid) {
     return (
       <div className="grid h-full place-items-center p-6">
@@ -431,6 +424,7 @@ export const ArticleWorkspacePage = () => {
       </div>
     );
   }
+
   return (
     <WorkspacePage
       inspectorOpen={inspectorOpen}

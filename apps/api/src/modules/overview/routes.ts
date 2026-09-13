@@ -1,12 +1,12 @@
 import { overviewTrendQuerySchema } from '@grey-flowers/contracts';
 import { Hono } from 'hono';
 
-import type { AppDependencies } from '@/bootstrap/dependencies.js';
-import type { ApiEnvironment } from '@/http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies';
+import type { ApiEnvironment } from '@/http/context';
 
-import { createSuccess } from '@/http/errors.js';
-import { adminGuard } from '@/http/middleware/admin-guard.js';
-import { parseQuery } from '@/lib/parser.js';
+import { createSuccess } from '@/http/errors';
+import { adminGuard } from '@/http/middleware/admin-guard';
+import { parseQuery } from '@/lib/parser';
 
 /** 概览（只读投影，管理端）：挂载于 /overview。
     路由保持薄：验证查询 → 调 service → createSuccess。 */

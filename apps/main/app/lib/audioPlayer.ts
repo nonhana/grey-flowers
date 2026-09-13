@@ -1,4 +1,4 @@
-import type { Track } from '#shared/types/activity'
+import type { MusicTrack } from '@grey-flowers/contracts'
 
 export type PlaybackState
   = | 'idle'
@@ -8,7 +8,7 @@ export type PlaybackState
     | 'error'
 
 export interface PlayerState {
-  currentTrack: Track | null
+  currentTrack: MusicTrack | null
   playbackState: PlaybackState
   isPlaying: boolean
   currentTime: number
@@ -67,7 +67,7 @@ export class AudioPlayer {
     }
   }
 
-  public async loadAndPlay(track: Track): Promise<void> {
+  public async loadAndPlay(track: MusicTrack): Promise<void> {
     this.reset()
     this.updateState({ currentTrack: track, playbackState: 'loading' })
     this.updateMediaSessionMetadata(track)
@@ -83,7 +83,7 @@ export class AudioPlayer {
     }
   }
 
-  public load(track: Track): void {
+  public load(track: MusicTrack): void {
     this.reset()
     this.updateState({ currentTrack: track, playbackState: 'loading' })
     this.updateMediaSessionMetadata(track)
@@ -147,7 +147,7 @@ export class AudioPlayer {
     }
   }
 
-  public updateMediaSessionMetadata(track: Track) {
+  public updateMediaSessionMetadata(track: MusicTrack) {
     if (!('mediaSession' in navigator))
       return
 

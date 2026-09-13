@@ -4,23 +4,24 @@ import type {
   MusicUpdateInput,
 } from '@grey-flowers/contracts';
 
+import { musicUpdateInputSchema } from '@grey-flowers/contracts';
 import { useMutation } from '@tanstack/react-query';
 import { ImagePlus } from 'lucide-react';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateMusicAfterMutation } from '@/app/server-state/music.js';
-import { AssetPickerDialog } from '@/features/assets/asset-picker.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
-import { formatDuration } from '@/lib/format.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { FieldLabel, TextField } from '@/ui/form.js';
-import { AssetImage } from '@/ui/image.js';
-import { AppDialog } from '@/ui/overlay.js';
-import { MetaLine } from '@/ui/surface.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateMusicAfterMutation } from '@/app/server-state/modules/music';
+import { apiErrorMessage } from '@/lib/error-message';
+import { formatDuration } from '@/lib/format';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { FieldLabel, TextField } from '@/ui/form';
+import { AssetImage } from '@/ui/image';
+import { AppDialog } from '@/ui/overlay';
+import { MetaLine } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 interface EditForm {
   album: string;
@@ -30,7 +31,7 @@ interface EditForm {
   title: string;
 }
 
-/** 单次打开会话内的表单：挂载时以当前 music 初始化，重开由 session key 重建。 */
+/** 单次打开会话内的表单：挂载时以当前 music 初始化，重开由 session key 重建 */
 const EditForm = ({
   music,
   onClose,
@@ -62,22 +63,22 @@ const EditForm = ({
   });
 
   const save = () => {
-    const title = form.title.trim();
-    if (!title) {
-      setError('标题不能为空。');
-      return;
-    }
-    setError(null);
     const input: MusicUpdateInput = {
       album: form.album.trim(),
       artist: form.artist.trim(),
-      title,
-      // 选了受管封面时服务端以资产为准；否则以外部 URL 为准（coverAssetId 报 null 表示无受管封面）。
+      title: form.title.trim(),
+      // 选了受管封面时服务端以资产为准；否则以外部 URL 为准（coverAssetId 报 null 表示无受管封面）
       ...(form.coverAssetId === null
         ? { cover: form.cover.trim() }
         : { coverAssetId: form.coverAssetId }),
     };
-    saveMutation.mutate(input);
+    const parsed = musicUpdateInputSchema.safeParse(input);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '保存失败。');
+      return;
+    }
+    setError(null);
+    saveMutation.mutate(parsed.data);
   };
 
   return (
@@ -213,8 +214,7 @@ export const EditMusicDialog = ({
   onExited?: () => void;
   open: boolean;
 }) => {
-  // 每次 open 产生新的 session identity：keyed inner form 据此重建，
-  // 同一首曲目快速重开也拿到以当前数据初始化的全新表单。
+  // 每次 open 产生新的 session identity：keyed inner form 据此重建，快速重开也拿到以当前数据初始化的全新表单
   const [session, setSession] = useState(0);
   const [wasOpen, setWasOpen] = useState(open);
   if (open && !wasOpen) {

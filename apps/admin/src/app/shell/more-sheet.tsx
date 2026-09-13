@@ -8,16 +8,16 @@ import {
   Users,
 } from 'lucide-react';
 
-import { BottomSheet } from '@/ui/overlay.js';
+import { BottomSheet } from '@/ui/overlay';
 
-import { AccountBlock, navRowClass } from './console-rail.js';
+import { AccountBlock, navRowClass } from './console-rail';
 
 export interface MoreSheetProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-/** 移动端「更多」侧拉面板：BottomSheet 链路由 ConsoleShell 首次打开时懒加载。 */
+/** 移动端「更多」侧拉面板：BottomSheet 链路由 ConsoleShell 首次打开时懒加载 */
 export const MoreSheet = ({ isOpen, onOpenChange }: MoreSheetProps) => (
   <BottomSheet isOpen={isOpen} onOpenChange={onOpenChange} title="更多">
     <div className="grid gap-1 px-4 pt-1 pb-4">

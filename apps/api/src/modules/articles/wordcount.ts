@@ -1,4 +1,4 @@
-import { stripMarkdownToPlainText } from '@/lib/markdown.js';
+import { stripMarkdownToPlainText } from '@/lib/markdown';
 
 const CJK_PATTERN = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
 

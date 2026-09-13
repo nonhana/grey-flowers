@@ -1,0 +1,30 @@
+import type { CommentListQuery } from '@grey-flowers/contracts';
+
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
+
+import { apiClient } from '@/app/api/index';
+
+import { queryClient } from '../client';
+import { commentsRoot, usersRoot } from '../roots';
+import { overviewKeys } from './overview';
+
+export const commentsKeys = {
+  list: (query: CommentListQuery) => [...commentsRoot, 'list', query] as const,
+};
+
+export const commentsListOptions = (query: CommentListQuery) =>
+  queryOptions({
+    queryKey: commentsKeys.list(query),
+    queryFn: ({ signal }) => apiClient.comments.list(query, signal),
+    placeholderData: keepPreviousData,
+  });
+
+/** 评论回复/删除（含批量）后的规定失效：comments、users（评论计数）、overview counts/trends。 */
+export const invalidateCommentsAfterMutation = async () => {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: commentsRoot }),
+    queryClient.invalidateQueries({ queryKey: usersRoot }),
+    queryClient.invalidateQueries({ queryKey: overviewKeys.counts }),
+    queryClient.invalidateQueries({ queryKey: overviewKeys.trendRoot }),
+  ]);
+};

@@ -1,3 +1,4 @@
+import { cva } from 'class-variance-authority';
 import { cn } from 'cn';
 
 export interface ShareSegment {
@@ -6,11 +7,11 @@ export interface ShareSegment {
   tone: 'strong' | 'mid' | 'faint';
 }
 
-const SHARE_FILL: Record<ShareSegment['tone'], string> = {
-  faint: 'bg-edge',
-  mid: 'bg-accent-rule',
-  strong: 'bg-accent',
-};
+const shareFillVariants = cva('', {
+  variants: {
+    tone: { faint: 'bg-edge', mid: 'bg-accent-rule', strong: 'bg-accent' },
+  },
+});
 
 export const ShareBar = ({
   ariaLabel,
@@ -34,7 +35,7 @@ export const ShareBar = ({
       >
         {visible.map((segment) => (
           <span
-            className={SHARE_FILL[segment.tone]}
+            className={shareFillVariants({ tone: segment.tone })}
             key={segment.label}
             style={{ width: `${share(segment.value)}%` }}
           />
@@ -48,7 +49,7 @@ export const ShareBar = ({
               aria-hidden
               className={cn(
                 'size-2 shrink-0 translate-y-px',
-                SHARE_FILL[segment.tone],
+                shareFillVariants({ tone: segment.tone }),
               )}
             />
             <span className="min-w-0 flex-1 truncate text-base text-ink">

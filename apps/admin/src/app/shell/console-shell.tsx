@@ -1,5 +1,4 @@
 import { Link, Outlet, useMatches } from '@tanstack/react-router';
-import { cn } from 'cn';
 import {
   FileText,
   LayoutDashboard,
@@ -8,30 +7,24 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { MusicPlayer } from '@/features/music/player/music-player.js';
+import { MusicPlayer } from '@/features/music/player/music-player';
 
-import { ComposeFab } from './compose-fab.js';
-import { ComposeMenu } from './compose-menu.js';
-import { ConsoleRail } from './console-rail.js';
-import { MoreSheet } from './more-sheet.js';
+import { ComposeFab } from './compose-fab';
+import { ComposeMenu } from './compose-menu';
+import { ConsoleRail } from './console-rail';
+import { MoreSheet } from './more-sheet';
 
-const tabClass = cn(
-  'flex h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control',
-  'font-mono text-2xs text-ink-dim transition-colors duration-150',
-  '[&_svg]:size-5',
-  'data-[status=active]:text-accent-text',
-);
+const tabClass =
+  'flex h-14 flex-1 flex-col items-center justify-center gap-1 rounded-control font-mono text-2xs text-ink-dim transition-colors duration-150 [&_svg]:size-5 data-[status=active]:text-accent-text';
 
 const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
   <nav
     aria-label="主导航"
-    className={cn(
-      'flex items-center gap-1 border-t border-rule bg-case px-2 pt-1',
-      `
-        pb-[max(0.25rem,env(safe-area-inset-bottom))]
-        md:hidden
-      `,
-    )}
+    className="
+      flex items-center gap-1 border-t border-rule bg-case px-2 pt-1
+      pb-[max(0.25rem,env(safe-area-inset-bottom))]
+      md:hidden
+    "
   >
     <Link className={tabClass} to="/">
       <LayoutDashboard aria-hidden />
@@ -52,7 +45,6 @@ const MobileTabBar = ({ onMore }: { onMore: () => void }) => (
   </nav>
 );
 
-// 控制台外壳
 export const ConsoleShell = () => {
   const [composeOpen, setComposeOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);

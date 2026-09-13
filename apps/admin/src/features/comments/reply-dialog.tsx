@@ -1,15 +1,16 @@
+import { commentReplyInputSchema } from '@grey-flowers/contracts';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Form } from 'react-aria-components';
 import { toast } from 'sonner';
 
-import { apiClient } from '@/app/api/index.js';
-import { invalidateCommentsAfterMutation } from '@/app/server-state/comments.js';
-import { apiErrorMessage } from '@/lib/error-message.js';
-import { Button } from '@/ui/button.js';
-import { Alert } from '@/ui/feedback.js';
-import { TextAreaField } from '@/ui/form.js';
-import { AppDialog } from '@/ui/overlay.js';
+import { apiClient } from '@/app/api/index';
+import { invalidateCommentsAfterMutation } from '@/app/server-state/modules/comments';
+import { apiErrorMessage } from '@/lib/error-message';
+import { Button } from '@/ui/button';
+import { Alert } from '@/ui/feedback';
+import { TextAreaField } from '@/ui/form';
+import { AppDialog } from '@/ui/overlay';
 
 const MD_HINT =
   'MD 支持：**粗体**、*斜体*、~~删除线~~、[链接](url)、> 引用、- 列表、`代码` · 不支持标题/表格/图片/HTML · 最多 2048 字';
@@ -20,7 +21,7 @@ export interface ReplyTarget {
   username: string;
 }
 
-/** 单次打开会话内的表单：content 每次打开都从空白开始。 */
+/** 单次打开会话内的表单：content 每次打开都从空白开始 */
 const ReplyForm = ({
   onSent,
   target,
@@ -30,8 +31,7 @@ const ReplyForm = ({
 }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
-  // sent 态（L-17）：成功到对话框卸载之间的退出动画窗口里，提交与取消
-  // 都被禁用 —— 成功瞬间连点不可能发出第二条回复。
+  // sent 态：成功到卸载之间的退出动画窗口里提交与取消都禁用——成功瞬间连点发不出第二条回复
   const [sent, setSent] = useState(false);
 
   const sendMutation = useMutation({
@@ -49,13 +49,13 @@ const ReplyForm = ({
   });
 
   const send = () => {
-    const body = content.trim();
-    if (!body) {
-      setError('回复内容不能为空。');
+    const parsed = commentReplyInputSchema.safeParse({ content });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? '回复发送失败。');
       return;
     }
     setError(null);
-    sendMutation.mutate(body);
+    sendMutation.mutate(parsed.data.content);
   };
 
   return (
@@ -117,7 +117,6 @@ export const ReplyDialog = ({
   onClose: () => void;
   onExited?: () => void;
   open: boolean;
-  /** useDialog 的单调会话 id：重开同一目标也重建全新表单。 */
   session: number;
   target: ReplyTarget | null;
 }) => {

@@ -2,12 +2,12 @@ import type { OverviewStorage } from '@grey-flowers/contracts';
 
 import { cn } from 'cn';
 
-import type { ShareSegment } from '@/ui/charts/share-bar.js';
+import type { ShareSegment } from '@/ui/charts/share-bar';
 
-import { formatBytes } from '@/lib/format.js';
-import { ShareBar } from '@/ui/charts/share-bar.js';
-import { Skeleton } from '@/ui/feedback.js';
-import { Panel, SectionLabel } from '@/ui/surface.js';
+import { formatBytes } from '@/lib/format';
+import { ShareBar } from '@/ui/charts/share-bar';
+import { Skeleton } from '@/ui/feedback';
+import { Panel, SectionLabel } from '@/ui/surface';
 
 export const StorageCard = ({
   className,

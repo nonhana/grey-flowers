@@ -4,7 +4,7 @@ import {
   apiSuccessSchema,
   nonNegativeIntSchema,
   positiveIntSchema,
-} from './common.js';
+} from './common';
 
 const musicTotal = nonNegativeIntSchema;
 const musicPage = z.number().int().min(1);

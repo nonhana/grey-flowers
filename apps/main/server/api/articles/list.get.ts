@@ -1,18 +1,22 @@
-import type { ArticleCard } from '@grey-flowers/contracts'
-import type { ArticleListQuery } from '#shared/types/articles'
-import { apiGet } from '#server/utils/api-gateway'
-import { resolveArticleImagePolicy } from '#server/utils/article-generated-image'
-import { formatDateYmd } from '#shared/utils/date'
+import { articleListDataSchema, articleListQuerySchema } from '@grey-flowers/contracts'
 
 export default formattedEventHandler(async (event) => {
-  const query = getQuery(event) as ArticleListQuery
-  const data = await apiGet<{ items: ArticleCard[] }>('/public/articles/list', {
+  const query = getQuery(event)
+  const parsed = parsePublicQuery(articleListQuerySchema, {
     page: query.page,
     pageSize: query.pageSize,
     tag: query.tag,
     category: query.category,
     month: query.publishedAtMonth,
   })
+
+  const data = await apiGet('/public/articles/list', {
+    page: parsed.page,
+    pageSize: parsed.pageSize,
+    tag: parsed.tag,
+    category: parsed.category,
+    month: parsed.month,
+  }, articleListDataSchema)
 
   const payload = data.items.map(article => ({
     ...resolveArticleImagePolicy({

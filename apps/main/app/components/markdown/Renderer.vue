@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { MarkdownRenderPayload } from '#shared/types/markdown'
-
 defineOptions({
   inheritAttrs: false,
 })

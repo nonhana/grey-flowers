@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Toc } from '@nuxtjs/mdc'
-import type { MarkdownNavigationItem } from '#shared/types/markdown'
 import { ArrowLeft, ArrowRight, FileText, TableOfContents } from '@lucide/vue'
 
 const props = defineProps<{

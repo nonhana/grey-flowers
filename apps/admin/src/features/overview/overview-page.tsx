@@ -12,28 +12,25 @@ import {
   Users,
 } from 'lucide-react';
 
-import { overviewCountsOptions } from '@/app/server-state/overview.js';
-import { formatCount, formatHours } from '@/lib/format.js';
-import { Button, buttonClass } from '@/ui/button.js';
-import { EmptyState } from '@/ui/feedback.js';
-import { PageBody, PageHeader } from '@/ui/surface.js';
+import { overviewCountsOptions } from '@/app/server-state/modules/overview';
+import { formatCount, formatHours } from '@/lib/format';
+import { Button, buttonClass } from '@/ui/button';
+import { EmptyState } from '@/ui/feedback';
+import { PageBody, PageHeader } from '@/ui/surface';
 
-import { CadenceCard } from './cadence-card.js';
-import {
-  CompositionCard,
-  CompositionCardSkeleton,
-} from './composition-card.js';
-import { PendingPanel, PendingPanelSkeleton } from './pending-panel.js';
+import { CadenceCard } from './cadence-card';
+import { CompositionCard, CompositionCardSkeleton } from './composition-card';
+import { PendingPanel, PendingPanelSkeleton } from './pending-panel';
 import {
   ReadoutCell,
   ReadoutDrawer,
   ReadoutDrawerSkeleton,
-} from './readout-drawer.js';
-import { StorageCard, StorageCardSkeleton } from './storage-card.js';
-import { TrendCard } from './trend-card.js';
+} from './readout-drawer';
+import { StorageCard, StorageCardSkeleton } from './storage-card';
+import { TrendCard } from './trend-card';
 
 export const OverviewPage = () => {
-  const { data, error, isFetching, refetch } = useQuery(
+  const { data, error, isFetching, isPending, refetch } = useQuery(
     overviewCountsOptions(),
   );
 
@@ -79,7 +76,7 @@ export const OverviewPage = () => {
         />
 
         <section aria-label="关键计数" aria-busy={isFetching}>
-          {isFetching ? (
+          {isPending ? (
             <ReadoutDrawerSkeleton />
           ) : error ? (
             <EmptyState
@@ -131,7 +128,7 @@ export const OverviewPage = () => {
           ) : null}
         </section>
 
-        {isFetching ? (
+        {isPending ? (
           <PendingPanelSkeleton />
         ) : data ? (
           <PendingPanel className="animate-content-in" items={data.pending} />
@@ -149,7 +146,7 @@ export const OverviewPage = () => {
               xl:col-span-7
             "
           />
-          {isFetching ? (
+          {isPending ? (
             <CompositionCardSkeleton className="xl:col-span-5" />
           ) : data ? (
             <CompositionCard
@@ -169,7 +166,7 @@ export const OverviewPage = () => {
           "
         >
           <CadenceCard className="xl:col-span-8" />
-          {isFetching ? (
+          {isPending ? (
             <StorageCardSkeleton className="xl:col-span-4" />
           ) : data ? (
             <StorageCard

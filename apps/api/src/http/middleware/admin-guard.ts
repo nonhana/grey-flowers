@@ -1,11 +1,11 @@
 import type { MiddlewareHandler } from 'hono';
 
-import type { ApiEnvironment } from '@/env.js';
+import type { ApiEnvironment } from '@/env';
 
-import type { ApiEnvironment as ContextEnvironment } from '../context.js';
+import type { ApiEnvironment as ContextEnvironment } from '../context';
 
-import { requirePrincipal } from './require-principal.js';
-import { requireRole } from './require-role.js';
+import { requirePrincipal } from './require-principal';
+import { requireRole } from './require-role';
 
 export interface AdminGuard {
   admin: MiddlewareHandler<ContextEnvironment>;

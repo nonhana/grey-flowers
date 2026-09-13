@@ -9,13 +9,13 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { formatDateTime } from '@/lib/format.js';
-import { IconButton } from '@/ui/button.js';
-import { Skeleton } from '@/ui/feedback.js';
-import { AssetImage } from '@/ui/image.js';
-import { MetaLine } from '@/ui/surface.js';
+import { formatDateTime } from '@/lib/format';
+import { IconButton } from '@/ui/button';
+import { Skeleton } from '@/ui/feedback';
+import { AssetImage } from '@/ui/image';
+import { MetaLine } from '@/ui/surface';
 
-import { commentPageUrl } from './display.js';
+import { commentPageUrl } from './display';
 
 export const CommentBody = ({
   actions,
@@ -181,10 +181,7 @@ export const CommentBody = ({
   );
 };
 
-/**
- * 列表卡片：一条 PARENT + 勾选 + 其 children 归并展示。
- * 回复/删除对 PARENT 与 CHILD 均可用（按目标回调，交给调用方区分弹窗）。
- */
+/** 回复/删除对 PARENT 与 CHILD 均可用（按目标回调，交给调用方区分弹窗） */
 export const CommentCard = ({
   actions,
   comment,
@@ -202,8 +199,10 @@ export const CommentCard = ({
 }) => (
   <article
     className={cn(
-      'grid gap-3 rounded-panel border border-rule bg-case-raised p-4',
-      'transition-colors',
+      `
+        grid gap-3 rounded-panel border border-rule bg-case-raised p-4
+        transition-colors
+      `,
       selected && 'border-accent-rule',
     )}
   >
@@ -254,11 +253,6 @@ export const CommentCard = ({
   </article>
 );
 
-/**
- * 与真实评论卡同构的骨架：勾选位 + 作者行（头像/名/邮箱/时间）+ path 行 +
- * 三行正文 + 操作位。children 区数量不定，不画 —— 取无回复的最常见形态。
- * 块高按真实字号的 line-height 取 em，落地时行高与真实逐段相等。
- */
 export const CommentCardSkeleton = () => (
   <article
     aria-hidden
@@ -267,7 +261,6 @@ export const CommentCardSkeleton = () => (
     <div className="flex items-start gap-3">
       <Skeleton className="mt-1 size-4.5 shrink-0 rounded-sm" />
       <div className="min-w-0 flex-1">
-        {/* 作者行：头像 24px 主导行高 */}
         <div className="flex min-w-0 items-center gap-2">
           <Skeleton className="size-6 shrink-0 rounded-full" />
           <Skeleton className="h-[1.55em] w-28 text-base" />
@@ -278,7 +271,6 @@ export const CommentCardSkeleton = () => (
           <Skeleton className="h-[1.45em] w-56 text-2xs" />
           <Skeleton className="h-[1.45em] w-4 text-2xs" />
         </MetaLine>
-        {/* 正文三行：text-base/relaxed → lh 1.625 */}
         <div className="mt-2 grid gap-1.5">
           <Skeleton className="h-[1.625em] w-full text-base" />
           <Skeleton className="h-[1.625em] w-4/5 text-base" />

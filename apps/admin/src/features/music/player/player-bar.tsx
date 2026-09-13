@@ -17,12 +17,12 @@ import {
   X,
 } from 'lucide-react';
 
-import { usePlayerStore, type LoopMode } from '@/store/player.js';
-import { IconButton } from '@/ui/button.js';
-import { AssetImage } from '@/ui/image.js';
+import { usePlayerStore, type LoopMode } from '@/store/player';
+import { IconButton } from '@/ui/button';
+import { AssetImage } from '@/ui/image';
 
-import { SeekRow } from './seek-row.js';
-import { TrackSlider } from './track-slider.js';
+import { SeekRow } from './seek-row';
+import { TrackSlider } from './track-slider';
 
 const LOOP_LABEL: Record<LoopMode, string> = {
   off: '顺序播放',
@@ -45,7 +45,6 @@ const VolumeIcon = ({ muted, volume }: { muted: boolean; volume: number }) => {
   return <Volume2 aria-hidden />;
 };
 
-/** 桌面 docked 播放条：跨路由常驻，挂在 ConsoleShell 底部。 */
 export const PlayerBar = () => {
   const track = usePlayerStore((s) => s.currentTrack);
   const status = usePlayerStore((s) => s.status);

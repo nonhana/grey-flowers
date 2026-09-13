@@ -7,10 +7,10 @@ export const usePasteFiles = ({
   enabled: boolean;
   onFiles: (files: File[]) => void;
 }) => {
-  // useEffectEvent 读最新 onFiles：订阅 Effect 只依赖 enabled，不随回调身份重挂。
+  // useEffectEvent 读最新 onFiles：订阅 Effect 只依赖 enabled，不随回调身份重挂
   const handlePaste = useEffectEvent((files: File[]) => onFiles(files));
 
-  // 外部系统订阅：document paste 事件（唯一的挂载 Effect）。
+  // 外部系统订阅：document paste 事件（唯一的挂载 Effect）
   useEffect(() => {
     if (!enabled) return;
     const onPaste = (event: ClipboardEvent) => {

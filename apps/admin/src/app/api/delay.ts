@@ -1,10 +1,3 @@
-/**
- * 调试：统一接口延迟（ms）。
- *
- * 生效优先级：URL 查询参数 `?apiDelay=` > localStorage > VITE_API_DELAY_MS > 0。
- * 每次请求前读取，改完立即生效、无需重启 —— 用于肉眼验收骨架屏/加载态。
- * URL 参数刷新后保留，适合临时或自动化场景；localStorage 由侧栏调试控件写入。
- */
 export const API_DELAY_STORAGE_KEY = 'gf.admin.apiDelayMs';
 
 const parseDelay = (value: string | undefined | null): number => {
@@ -14,7 +7,6 @@ const parseDelay = (value: string | undefined | null): number => {
 };
 
 export const readApiDelayMs = (): number => {
-  // 调试能力只属于开发态：生产构建此分支被压缩器消除，延迟恒为 0。
   if (import.meta.env.PROD) return 0;
 
   const urlDelay = parseDelay(

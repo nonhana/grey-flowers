@@ -11,6 +11,7 @@ import type {
   AuthUpdateMeInput,
 } from '@grey-flowers/contracts'
 import type { ZodType } from 'zod'
+import type { LegacyEnvelope } from '#shared/legacy-envelope'
 import {
   apiEnvelopeSchema,
   authLoginDataSchema,
@@ -20,6 +21,7 @@ import {
   authSessionDataSchema,
   authUpdateMeDataSchema,
 } from '@grey-flowers/contracts'
+import { legacyEnvelopeSchema } from '#shared/legacy-envelope'
 import { useUserInfoStore } from '~/stores/modules/user'
 
 const accessTokenStorageKey = 'gf.access_token'
@@ -39,17 +41,26 @@ interface ApiRequestOptions {
   credentials?: RequestCredentials
   headers?: HeadersInit
   method?: 'GET' | 'PATCH' | 'POST'
+  query?: Record<string, string | number | undefined>
+}
+
+function withQuery(path: string, query?: Record<string, string | number | undefined>) {
+  if (!query) {
+    return path
+  }
+
+  const search = new URLSearchParams()
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined) {
+      search.set(key, String(value))
+    }
+  }
+
+  const qs = search.toString()
+  return qs ? `${path}?${qs}` : path
 }
 
 type ResponseParser<T> = (value: unknown) => T
-
-export interface LegacyMainResponse<T> {
-  error: unknown
-  payload: T | null
-  statusCode: number
-  statusMessage: string
-  success: boolean
-}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -65,17 +76,14 @@ function isAuthRequired(value: unknown): boolean {
   return isRecord(value.error) && value.error.code === 'AUTH_REQUIRED'
 }
 
-function parseLegacyMainResponse<T>(value: unknown): LegacyMainResponse<T> {
-  if (
-    !isRecord(value)
-    || typeof value.success !== 'boolean'
-    || typeof value.statusCode !== 'number'
-    || typeof value.statusMessage !== 'string'
-  ) {
+function parseLegacyMainResponse<T>(value: unknown): LegacyEnvelope<T> {
+  const parsed = legacyEnvelopeSchema.safeParse(value)
+  if (!parsed.success) {
     throw new Error('主站接口返回了无效响应。')
   }
 
-  return value as unknown as LegacyMainResponse<T>
+  // 信封 → 载荷的唯一边界断言：形状已由 legacyEnvelopeSchema 校验，此处仅收窄 payload 泛型。
+  return parsed.data as LegacyEnvelope<T>
 }
 
 function parseResponse<T>(schema: ZodType<T>, value: unknown): T {
@@ -257,7 +265,7 @@ export function useApiClient() {
   function legacyBearerRequest<T>(
     path: string,
     options: Omit<ApiRequestOptions, 'headers'>,
-  ): Promise<LegacyMainResponse<T>> {
+  ): Promise<LegacyEnvelope<T>> {
     return requestWithAccessToken(accessToken => requestJson(path, {
       ...options,
       headers: {
@@ -266,9 +274,15 @@ export function useApiClient() {
     }, parseLegacyMainResponse<T>))
   }
 
+  /** main 代理的无鉴权请求（浏览器侧）：共享信封 schema 解析 + 泛型载荷。 */
+  function mainRequest<T>(path: string, options: ApiRequestOptions): Promise<LegacyEnvelope<T>> {
+    return requestJson(withQuery(path, options.query), options, parseLegacyMainResponse<T>)
+  }
+
   return {
     clearSession,
     legacyBearerRequest,
+    mainRequest,
     login,
     logout,
     register,

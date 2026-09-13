@@ -9,21 +9,21 @@ import { getConnInfo } from '@hono/node-server/conninfo';
 import { Hono } from 'hono';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 
-import type { AppDependencies } from '@/bootstrap/dependencies.js';
-import type { ApiEnvironment } from '@/http/context.js';
+import type { AppDependencies } from '@/bootstrap/dependencies';
+import type { ApiEnvironment } from '@/http/context';
 
-import { ApiError, createSuccess } from '@/http/errors.js';
-import { requireAllowedOrigin } from '@/http/middleware/require-allowed-origin.js';
-import { requirePrincipal } from '@/http/middleware/require-principal.js';
-import { resolveClientIp } from '@/lib/client-ip.js';
-import { parseBody } from '@/lib/parser.js';
-import { createRateLimiter, type RateLimiter } from '@/lib/rate-limit.js';
+import { ApiError, createSuccess } from '@/http/errors';
+import { requireAllowedOrigin } from '@/http/middleware/require-allowed-origin';
+import { requirePrincipal } from '@/http/middleware/require-principal';
+import { resolveClientIp } from '@/lib/client-ip';
+import { parseBody } from '@/lib/parser';
+import { createRateLimiter, type RateLimiter } from '@/lib/rate-limit';
 
 import {
   ACCESS_TOKEN_TTL_SECONDS,
   REFRESH_COOKIE_NAME,
   refreshCookieOptions,
-} from './tokens.js';
+} from './tokens';
 
 // /auth/* 无登录限流 → 账号可被定向爆破（bcrypt 只拖慢不阻断）。
 // 单实例部署下用内存窗口即可：IP 维度（注册/登录/刷新）防止单源爆破，

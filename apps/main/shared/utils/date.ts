@@ -65,15 +65,6 @@ export function getDaysSince(value: DateLike, now: DateLike = new Date()) {
   return Math.floor((toDate(now).getTime() - toDate(value).getTime()) / DAY_MS)
 }
 
-// 'YYYY-MM' → [当月 1 号, 下月 1 号)
-export function getPublishedAtMonthRange(value: string) {
-  if (!/^\d{4}-\d{2}$/.test(value))
-    throw new RangeError(`Invalid year-month: ${value}`)
-  const y = Number(value.slice(0, 4))
-  const m = Number(value.slice(5, 7))
-  return { start: new Date(y, m - 1, 1), end: new Date(y, m, 1) }
-}
-
 export function formatRelativeTime(
   value: DateLike | null | undefined,
   now: DateLike = new Date(),

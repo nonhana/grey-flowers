@@ -1,10 +1,8 @@
-/** CN 时间本地化单例 Intl */
 const dateTimeFormat = new Intl.DateTimeFormat('zh-CN', {
   dateStyle: 'medium',
   timeStyle: 'short',
 });
 
-/** Intl 格式化 CN 本地时间 */
 export const formatDateTime = (value: string | number | Date) =>
   dateTimeFormat.format(new Date(value));
 
@@ -41,7 +39,6 @@ export const formatCount = (value: number) => {
   return `${wan >= 100 ? String(Math.round(wan)) : wan.toFixed(1)} 万`;
 };
 
-/** s -> hours */
 export const formatHours = (seconds: number) => {
   if (seconds < 3600) return `${Math.round(seconds / 60)} 分钟`;
   const hours = seconds / 3600;

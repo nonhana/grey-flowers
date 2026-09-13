@@ -3,7 +3,6 @@ import type { SyntaxNode } from '@lezer/common';
 import { syntaxTree } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 
-/** ⌘/Ctrl + 点击链接在新标签打开。 */
 export const linkClickHandler = EditorView.domEventHandlers({
   click: (event, view) => {
     if (!(event.metaKey || event.ctrlKey)) return false;
