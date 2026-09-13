@@ -4,10 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
-import { useEffect, useEffectEvent, useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import { useState } from 'react';
 
 import { articlesListOptions } from '@/app/server-state/modules/articles';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
+import { usePageClamp } from '@/hooks/use-page-clamp';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { formatDateTime } from '@/lib/format';
 import { Button, buttonClass } from '@/ui/button';
@@ -132,11 +133,9 @@ export const ArticlesListPage = () => {
   const navigateSearch = useSearchNavigation('/articles', search);
 
   const [draft, setDraft] = useState(() => search.q ?? '');
-  const commitQuery = useDebouncedCallback((value: string) => {
+  const commitQuery = useDebouncedCommit((value: string) => {
     navigateSearch({ page: undefined, q: value.trim() || undefined }, true);
   }, 250);
-
-  useEffect(() => () => commitQuery.cancel(), [commitQuery]);
 
   const articlesQuery = useQuery(
     articlesListOptions({
@@ -151,19 +150,14 @@ export const ArticlesListPage = () => {
   const loading = articlesQuery.isPending;
   const error = articlesQuery.error;
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const isSearching = search.q !== undefined;
-
-  const clamping =
-    items.length === 0 && page > 1 && total > 0 && totalPages < page;
-
-  const syncClampedPage = useEffectEvent(() => {
-    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
   });
-
-  useEffect(() => {
-    if (clamping) syncClampedPage();
-  }, [clamping]);
+  const isSearching = search.q !== undefined;
 
   return (
     <PageBody scroll="child">

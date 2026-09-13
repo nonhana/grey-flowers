@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { articlesSearchSchema } from './display';
+import { articlesSearchSchema } from './search';
 
 describe('articlesSearchSchema', () => {
   it('缺省与垃圾参数一律降级为 undefined', () => {

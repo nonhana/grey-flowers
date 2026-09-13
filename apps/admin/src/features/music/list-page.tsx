@@ -4,16 +4,17 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { CloudOff, Disc3, Music2, Upload } from 'lucide-react';
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import { useDebouncedCallback } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
   invalidateMusicAfterMutation,
   musicListOptions,
 } from '@/app/server-state/modules/music';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
+import { usePageClamp } from '@/hooks/use-page-clamp';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { usePlayerStore } from '@/store/player';
@@ -68,14 +69,12 @@ export const MusicLibraryPage = () => {
   const navigateSearch = useSearchNavigation('/music', search);
 
   const [draft, setDraft] = useState(() => search.search ?? '');
-  const commitQuery = useDebouncedCallback((value: string) => {
+  const commitQuery = useDebouncedCommit((value: string) => {
     navigateSearch(
       { page: undefined, search: value.trim() || undefined },
       true,
     );
   }, 300);
-
-  useEffect(() => () => commitQuery.cancel(), [commitQuery]);
 
   const listQuery: MusicListQuery = {
     page,
@@ -91,19 +90,14 @@ export const MusicLibraryPage = () => {
   const busy = musicQuery.isFetching;
   const error = musicQuery.error;
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const hasQuery = search.search !== undefined;
-
-  const clamping =
-    items.length === 0 && page > 1 && total > 0 && totalPages < page;
-
-  const syncClampedPage = useEffectEvent(() => {
-    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
   });
-
-  useEffect(() => {
-    if (clamping) syncClampedPage();
-  }, [clamping]);
+  const hasQuery = search.search !== undefined;
 
   const removeMutation = useMutation({
     mutationFn: (target: MusicAdmin) => apiClient.music.remove(target.id),

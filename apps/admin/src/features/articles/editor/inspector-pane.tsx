@@ -11,7 +11,6 @@ import { useState } from 'react';
 
 import type { useArticleEditor } from '@/store/article-editor';
 
-import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { useDialog } from '@/hooks/use-dialog';
 import { formatDateTime } from '@/lib/format';
 import { Button, IconButton } from '@/ui/button';
@@ -20,6 +19,7 @@ import { controlClass, FilterChip, TextAreaField, TextField } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { ConfirmDialog } from '@/ui/overlay';
 import { MetaLine, SectionLabel } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 import { slugFromTo } from '../display';
 

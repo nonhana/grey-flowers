@@ -16,13 +16,12 @@ import {
 } from 'lucide-react';
 
 import { IconButton } from '@/ui/button';
-
 import {
   insertInline,
   lineWrappedMarkdown,
   prefixLine,
   wrapSelection,
-} from './markdown-ops';
+} from '@/ui/editor/markdown-ops';
 
 const TOOLBAR_BUTTONS = [
   {

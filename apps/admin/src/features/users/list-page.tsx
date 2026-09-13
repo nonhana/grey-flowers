@@ -7,16 +7,17 @@ import type {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
 import { CloudOff, RotateCcw, Users } from 'lucide-react';
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import { useDebouncedCallback } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
   invalidateUsersAfterMutation,
   usersListOptions,
 } from '@/app/server-state/modules/users';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
+import { usePageClamp } from '@/hooks/use-page-clamp';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { Button } from '@/ui/button';
@@ -62,7 +63,7 @@ export const UsersPage = () => {
     search: searchValue ?? '',
   }));
 
-  const commitFilters = useDebouncedCallback((value: UserFilterDraft) => {
+  const commitFilters = useDebouncedCommit((value: UserFilterDraft) => {
     navigateSearch(
       {
         page: undefined,
@@ -72,8 +73,6 @@ export const UsersPage = () => {
       true,
     );
   }, 300);
-
-  useEffect(() => () => commitFilters.cancel(), [commitFilters]);
 
   const listQuery: UserListQuery = {
     page,
@@ -87,24 +86,14 @@ export const UsersPage = () => {
   const busy = usersQuery.isFetching;
   const error = usersQuery.error ? '无法加载用户，请稍后重试。' : '';
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  const hasFilter = searchValue !== undefined || role !== undefined;
-
-  // 末页删光后页码越界：渲染期推导钳制，effect 提交钳回最后一个非空页
-  const clamping =
-    data !== undefined &&
-    data.items.length === 0 &&
-    page > 1 &&
-    data.total > 0 &&
-    totalPages < page;
-
-  const syncClampedPage = useEffectEvent(() => {
-    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: data !== undefined && data.items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total: data?.total ?? 0,
   });
-
-  useEffect(() => {
-    if (clamping) syncClampedPage();
-  }, [clamping]);
+  const hasFilter = searchValue !== undefined || role !== undefined;
 
   const removeMutation = useMutation({
     mutationFn: (target: UserAdminSummary) => apiClient.users.remove(target.id),

@@ -1,14 +1,6 @@
-import { z } from 'zod';
-
 import { apiErrorMessage } from '@/lib/error-message';
 
 export type ArticleStatusFilter = 'all' | 'draft' | 'published';
-
-export const articlesSearchSchema = z.object({
-  status: z.enum(['draft', 'published']).optional().catch(undefined),
-  q: z.string().trim().min(1).max(200).optional().catch(undefined),
-  page: z.coerce.number().int().min(1).optional().catch(undefined),
-});
 
 export const articleErrorMessage = (error: unknown) =>
   apiErrorMessage(error, {

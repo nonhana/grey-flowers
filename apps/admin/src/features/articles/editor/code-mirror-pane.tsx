@@ -18,13 +18,23 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { apiClient } from '@/app/api/index';
-import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { useDialog } from '@/hooks/use-dialog';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset';
 import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept';
 import { isUrl } from '@/lib/url';
 import { Button } from '@/ui/button';
+import {
+  altForAsset,
+  altForFile,
+  insertInline,
+  isInsideCode,
+  wrapSelection,
+  wrappedMarkdown,
+} from '@/ui/editor/markdown-ops';
+import { paperHighlight } from '@/ui/editor/paper-highlight';
+import { paperTheme } from '@/ui/editor/paper-theme';
 import { Alert } from '@/ui/feedback';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 import { EditorToolbar } from './editor-toolbar';
 import { ImageAltDialog } from './image-alt-dialog';
@@ -39,16 +49,6 @@ import {
   updateUpload,
   uploadField,
 } from './live-preview/index';
-import {
-  altForAsset,
-  altForFile,
-  insertInline,
-  isInsideCode,
-  wrapSelection,
-  wrappedMarkdown,
-} from './markdown-ops';
-import { paperHighlight } from './paper-highlight';
-import { paperTheme } from './paper-theme';
 
 export const CodeMirrorPane = ({
   onChange,

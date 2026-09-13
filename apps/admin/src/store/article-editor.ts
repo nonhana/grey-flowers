@@ -412,7 +412,10 @@ export const createArticleEditorStore = (articleId: number | null) => {
         await loadVersions();
       };
 
-      const publish = async () => {
+      /** 发布/下架共用生命周期转移：flushNow 门控 → 调用 → 在途改稿口径 → 版本刷新与缓存失效 */
+      const transitionLifecycle = async (
+        action: 'publish' | 'unpublish',
+      ): Promise<ArticleAdmin | null> => {
         if (articleId === null) return null;
 
         const saved = await flushNow();
@@ -420,7 +423,10 @@ export const createArticleEditorStore = (articleId: number | null) => {
 
         const current = get().draft;
         try {
-          const result = await apiClient.articles.publish(articleId);
+          const result =
+            action === 'publish'
+              ? await apiClient.articles.publish(articleId)
+              : await apiClient.articles.unpublish(articleId);
           // 发布在途又改稿：只同步服务端状态与新 revision，不覆盖草稿不清脏，续保存以新 revision 落盘（沿用 saveOnce 的 dirty 口径）
           if (current !== null && get().draft !== current) {
             set({ article: result, revision: result.revision, phase: 'idle' });
@@ -431,7 +437,7 @@ export const createArticleEditorStore = (articleId: number | null) => {
           await loadVersions();
           // 发布态变化影响文章列表、taxonomy 计数与 overview 统计
           await invalidateArticlesAfterMutation();
-          toast.success('文章已发布。');
+          toast.success(action === 'publish' ? '文章已发布。' : '文章已下架。');
           return result;
         } catch (error) {
           toastError(error);
@@ -439,30 +445,9 @@ export const createArticleEditorStore = (articleId: number | null) => {
         }
       };
 
-      const unpublish = async () => {
-        if (articleId === null) return null;
+      const publish = () => transitionLifecycle('publish');
 
-        const saved = await flushNow();
-        if (!saved) return null;
-
-        const current = get().draft;
-        try {
-          const result = await apiClient.articles.unpublish(articleId);
-          if (current !== null && get().draft !== current) {
-            set({ article: result, revision: result.revision, phase: 'idle' });
-          } else {
-            sync(result);
-            set({ phase: 'saved' });
-          }
-          await loadVersions();
-          await invalidateArticlesAfterMutation();
-          toast.success('文章已下架。');
-          return result;
-        } catch (error) {
-          toastError(error);
-          return null;
-        }
-      };
+      const unpublish = () => transitionLifecycle('unpublish');
 
       const removeArticle = async (): Promise<boolean> => {
         if (articleId === null) return false;

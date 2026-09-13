@@ -4,8 +4,6 @@ import type {
   AssetStatus,
 } from '@grey-flowers/contracts';
 
-import { z } from 'zod';
-
 import { apiErrorMessage } from '@/lib/error-message';
 
 export const purposeLabels: Record<AssetPurpose, string> = {
@@ -36,23 +34,6 @@ export const statusLabels: Record<AssetStatus, string> = {
   DELETED: '已删除',
   PENDING_CLEANUP: '待清理',
 };
-
-export const assetsSearchSchema = z.object({
-  status: z.enum(['AVAILABLE', 'PENDING_CLEANUP']).optional().catch(undefined),
-  mediaType: z.enum(['IMAGE', 'AUDIO']).optional().catch(undefined),
-  purpose: z
-    .enum([
-      'ARTICLE_COVER',
-      'ARTICLE_INLINE',
-      'CATEGORY_COVER',
-      'ACTIVITY_IMAGE',
-      'MUSIC_SOURCE',
-      'MUSIC_COVER',
-    ])
-    .optional()
-    .catch(undefined),
-  page: z.coerce.number().int().min(1).optional().catch(undefined),
-});
 
 export const assetErrorMessage = (error: unknown) =>
   apiErrorMessage(error, {

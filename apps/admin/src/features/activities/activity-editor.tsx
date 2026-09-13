@@ -24,14 +24,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { IconButton } from '@/ui/button';
 import {
   lineWrappedMarkdown,
   prefixLine,
   wrapSelection,
-} from '@/features/articles/editor/markdown-ops';
-import { paperHighlight } from '@/features/articles/editor/paper-highlight';
-import { paperTheme } from '@/features/articles/editor/paper-theme';
-import { IconButton } from '@/ui/button';
+} from '@/ui/editor/markdown-ops';
+import { paperHighlight } from '@/ui/editor/paper-highlight';
+import { paperTheme } from '@/ui/editor/paper-theme';
 
 // 动态正文是受限 Markdown 子集（schema 拒标题/HTML/图片/表格），工具条只放白名单内
 const FORMAT_ACTIONS = [

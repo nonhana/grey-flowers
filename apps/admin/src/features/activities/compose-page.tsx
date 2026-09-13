@@ -19,7 +19,6 @@ import {
   invalidateActivitiesAfterMutation,
 } from '@/app/server-state/modules/activities';
 import { markAssetsStale } from '@/app/server-state/modules/assets';
-import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { usePasteFiles } from '@/hooks/use-paste-files';
 import { apiErrorMessage } from '@/lib/error-message';
 import { formatDuration } from '@/lib/format';
@@ -30,6 +29,7 @@ import { Alert } from '@/ui/feedback';
 import { FieldLabel } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { AppDialog } from '@/ui/overlay';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 import { ActivityEditor } from './activity-editor';
 import {

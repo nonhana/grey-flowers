@@ -10,9 +10,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useState } from 'react';
 
 import { assetsListOptions } from '@/app/server-state/modules/assets';
+import { usePageClamp } from '@/hooks/use-page-clamp';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { formatBytes, formatDateTime } from '@/lib/format';
 import { Button } from '@/ui/button';
@@ -136,27 +137,17 @@ export const AssetsListPage = () => {
   const busy = assetsQuery.isFetching;
   const error = assetsQuery.error;
 
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
+  const { totalPages } = usePageClamp({
+    emptyPage: data !== undefined && data.items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total: data?.total ?? 0,
+  });
   const hasFilter =
     search.status !== undefined ||
     search.mediaType !== undefined ||
     search.purpose !== undefined;
-
-  // 末页删光后页码越界：渲染期钳回最后一个非空页
-  const clamping =
-    data !== undefined &&
-    data.items.length === 0 &&
-    page > 1 &&
-    data.total > 0 &&
-    totalPages < page;
-
-  const syncClampedPage = useEffectEvent(() => {
-    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
-  });
-
-  useEffect(() => {
-    if (clamping) syncClampedPage();
-  }, [clamping]);
 
   const clearFilters = () =>
     navigateSearch(

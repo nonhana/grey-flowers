@@ -16,7 +16,6 @@ import {
   invalidateTaxonomyAfterMutation,
   taxonomyCategoriesOptions,
 } from '@/app/server-state/modules/taxonomy';
-import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { useDialog } from '@/hooks/use-dialog';
 import { toastError } from '@/lib/toast';
 import { Button, IconButton } from '@/ui/button';
@@ -25,6 +24,7 @@ import { controlClass, FieldLabel, TextField } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { AppDialog, ConfirmDialog } from '@/ui/overlay';
 import { PageBody, PageHeader, RowStack } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 /** 与真实分类行同构：封面位 48px 主导行高 + 名称/计数 + 编辑删除位 */
 const CategoryRowSkeleton = () => (

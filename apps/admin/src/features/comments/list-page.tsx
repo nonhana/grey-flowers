@@ -4,288 +4,42 @@ import type {
   CommentListQuery,
 } from '@grey-flowers/contracts';
 
-import { parseDate } from '@internationalized/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
-import { cn } from 'cn';
-import {
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  CloudOff,
-  Filter,
-  MessagesSquare,
-  RotateCcw,
-} from 'lucide-react';
-import { useEffect, useEffectEvent, useState } from 'react';
-import {
-  Button as AriaButton,
-  Calendar,
-  CalendarCell,
-  CalendarGrid,
-  CalendarGridBody,
-  CalendarGridHeader,
-  CalendarHeaderCell,
-  CalendarHeading,
-  DateInput,
-  DatePicker,
-  DateSegment,
-  Group,
-  Popover,
-} from 'react-aria-components';
+import { CloudOff, Filter, MessagesSquare } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import { useDebouncedCallback } from 'use-debounce';
 
 import { apiClient } from '@/app/api/index';
 import {
   commentsListOptions,
   invalidateCommentsAfterMutation,
 } from '@/app/server-state/modules/comments';
+import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
+import { usePageClamp } from '@/hooks/use-page-clamp';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { Button, IconButton } from '@/ui/button';
 import { EmptyState } from '@/ui/feedback';
-import { SearchInput, TextField, controlClass } from '@/ui/form';
+import { SearchInput } from '@/ui/form';
 import { BottomSheet, ConfirmDialog } from '@/ui/overlay';
 import { Paginator } from '@/ui/paginator';
 import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
 import { CommentCard, CommentCardSkeleton } from './comment-card';
+import {
+  EMPTY_FILTER,
+  FilterControls,
+  commentsFilterToSearch,
+  type CommentFilterDraft,
+} from './filter-controls';
 import { ReplyDialog, type ReplyTarget } from './reply-dialog';
 import { SessionDialog } from './session-dialog';
-
 const PAGE_SIZE = 20;
 
-interface CommentFilterDraft {
-  authorId: string;
-  endDate: string;
-  path: string;
-  search: string;
-  startDate: string;
-}
-
-const EMPTY_FILTER: CommentFilterDraft = {
-  authorId: '',
-  endDate: '',
-  path: '',
-  search: '',
-  startDate: '',
-};
-const dateGroupClass = cn(
-  controlClass,
-  `
-    flex min-w-0 items-center gap-1 px-2
-    focus-within:border-accent focus-within:outline-2
-    focus-within:outline-offset-1 focus-within:outline-focus
-  `,
-);
-const dateRangeClass =
-  'grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-1.5 gap-y-2 md:flex md:gap-1.5';
 const desktopFilterControlsClass = 'mt-5 hidden md:block';
 const mobileFilterControlsClass = 'mt-5 md:hidden';
-
-const CommentDatePicker = ({
-  label,
-  onChange,
-  value,
-}: {
-  label: string;
-  onChange: (value: string) => void;
-  value: string;
-}) => (
-  <DatePicker
-    aria-label={label}
-    className="min-w-0 flex-1"
-    onChange={(date) => onChange(date?.toString() ?? '')}
-    value={value ? parseDate(value) : null}
-  >
-    <Group className={dateGroupClass}>
-      <DateInput className="flex min-w-0 flex-1 items-center overflow-hidden">
-        {(segment) => (
-          <DateSegment
-            className={({ isFocused, isPlaceholder }) =>
-              cn(
-                'rounded-sm px-0.5 outline-none',
-                isPlaceholder && 'text-ink-dim',
-                isFocused && 'bg-accent-wash text-accent-text',
-              )
-            }
-            segment={segment}
-          />
-        )}
-      </DateInput>
-      <AriaButton
-        aria-label={`打开${label}日历`}
-        className="
-          grid size-8 shrink-0 place-items-center rounded-control text-ink-dim
-          transition-colors
-          hover:bg-accent-wash hover:text-accent-text
-        "
-        slot="trigger"
-      >
-        <CalendarDays aria-hidden className="size-4" />
-      </AriaButton>
-    </Group>
-
-    <Popover
-      className="
-        w-[min(20rem,calc(100vw-2rem))] rounded-panel bg-case-raised p-3
-        shadow-float outline-none
-      "
-      offset={8}
-      placement="bottom start"
-    >
-      <Calendar className="grid gap-3">
-        <header className="flex items-center gap-1">
-          <AriaButton
-            aria-label="上个月"
-            className="
-              grid size-8 place-items-center rounded-control text-ink-dim
-              transition-colors
-              hover:bg-accent-wash hover:text-accent-text
-            "
-            slot="previous"
-          >
-            <ChevronLeft aria-hidden className="size-4" />
-          </AriaButton>
-          <CalendarHeading className="flex-1 text-center font-mono text-xs text-ink-strong" />
-          <AriaButton
-            aria-label="下个月"
-            className="
-              grid size-8 place-items-center rounded-control text-ink-dim
-              transition-colors
-              hover:bg-accent-wash hover:text-accent-text
-            "
-            slot="next"
-          >
-            <ChevronRight aria-hidden className="size-4" />
-          </AriaButton>
-        </header>
-
-        <CalendarGrid className="w-full table-fixed border-separate border-spacing-0">
-          <CalendarGridHeader>
-            {(day) => (
-              <CalendarHeaderCell className="h-7 text-center font-mono text-2xs text-ink-dim">
-                {day}
-              </CalendarHeaderCell>
-            )}
-          </CalendarGridHeader>
-          <CalendarGridBody>
-            {(date) => (
-              <CalendarCell
-                className={({ isSelected, isToday }) =>
-                  cn(
-                    `
-                      mx-auto grid size-9 place-items-center rounded-control
-                      font-mono text-xs transition-colors
-                    `,
-                    isSelected
-                      ? 'bg-accent text-accent-on'
-                      : `
-                        text-ink
-                        hover:bg-accent-wash hover:text-accent-text
-                      `,
-                    isToday && !isSelected && 'font-medium text-accent-text',
-                  )
-                }
-                date={date}
-              />
-            )}
-          </CalendarGridBody>
-        </CalendarGrid>
-      </Calendar>
-    </Popover>
-  </DatePicker>
-);
-
-const FilterControls = ({
-  onChange,
-  value,
-}: {
-  onChange: (next: CommentFilterDraft) => void;
-  value: CommentFilterDraft;
-}) => {
-  const set = (field: keyof CommentFilterDraft) => {
-    return (fieldValue: string) => onChange({ ...value, [field]: fieldValue });
-  };
-  const hasFilter =
-    value.search !== '' ||
-    value.path !== '' ||
-    value.authorId !== '' ||
-    value.startDate !== '' ||
-    value.endDate !== '';
-
-  return (
-    <section
-      aria-label="筛选评论"
-      className="
-        grid grid-cols-1 gap-3
-        md:grid-cols-2
-        xl:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1fr)_8rem_minmax(20rem,1.2fr)_auto]
-      "
-    >
-      <div className="grid min-w-0 gap-1.5">
-        <span className="font-mono text-xs text-ink-dim">评论内容</span>
-        <SearchInput
-          className="min-w-0"
-          label="搜索评论内容"
-          onChange={set('search')}
-          placeholder="搜索内容…"
-          value={value.search}
-        />
-      </div>
-      <TextField
-        className="min-w-0"
-        inputClassName="font-mono text-xs"
-        label="页面路径"
-        onChange={set('path')}
-        placeholder="/recently?id=12"
-        value={value.path}
-      />
-      <TextField
-        className="min-w-0"
-        inputClassName="font-mono text-xs"
-        label="作者 ID"
-        onChange={set('authorId')}
-        placeholder="作者 ID"
-        value={value.authorId}
-      />
-      <div className="grid min-w-0 gap-1.5">
-        <span className="font-mono text-xs text-ink-dim">发表日期</span>
-        <div className={dateRangeClass}>
-          <span aria-hidden className="shrink-0 text-xs text-ink-dim">
-            从
-          </span>
-          <CommentDatePicker
-            label="开始日期"
-            onChange={set('startDate')}
-            value={value.startDate}
-          />
-          <span aria-hidden className="shrink-0 text-xs text-ink-dim">
-            至
-          </span>
-          <CommentDatePicker
-            label="结束日期"
-            onChange={set('endDate')}
-            value={value.endDate}
-          />
-        </div>
-      </div>
-      {hasFilter ? (
-        <Button
-          className="self-end justify-self-start"
-          icon={<RotateCcw aria-hidden />}
-          onPress={() => onChange(EMPTY_FILTER)}
-          size="md"
-          tone="ghost"
-        >
-          重置
-        </Button>
-      ) : null}
-    </section>
-  );
-};
 
 const toReplyTarget = (comment: CommentAdmin): ReplyTarget => ({
   content: comment.content,
@@ -317,22 +71,9 @@ export const CommentsPage = () => {
   }>();
   const batchDialog = useDialog<number[]>();
 
-  const commitFilters = useDebouncedCallback((next: CommentFilterDraft) => {
-    const authorIdRaw = next.authorId.trim();
-    navigateSearch(
-      {
-        authorId: /^\d+$/.test(authorIdRaw) ? Number(authorIdRaw) : undefined,
-        endDate: next.endDate || undefined,
-        page: undefined,
-        path: next.path.trim() || undefined,
-        search: next.search.trim() || undefined,
-        startDate: next.startDate || undefined,
-      },
-      true,
-    );
+  const commitFilters = useDebouncedCommit((next: CommentFilterDraft) => {
+    navigateSearch(commentsFilterToSearch(next), true);
   }, 300);
-
-  useEffect(() => () => commitFilters.cancel(), [commitFilters]);
 
   const handleFilterChange = (next: CommentFilterDraft) => {
     setDraft(next);
@@ -372,18 +113,13 @@ export const CommentsPage = () => {
   const data = commentsQuery.data;
   const items = data?.items ?? [];
   const total = data?.total ?? 0;
-  const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
-  // 末页删光后页码越界：渲染期推导 + effect 钳回最后一个非空页
-  const clamping =
-    items.length === 0 && page > 1 && total > 0 && totalPages < page;
-
-  const syncClampedPage = useEffectEvent(() => {
-    navigateSearch({ page: totalPages > 1 ? totalPages : undefined }, true);
+  const { clamping, totalPages } = usePageClamp({
+    emptyPage: items.length === 0,
+    page,
+    pageSize: PAGE_SIZE,
+    setPage: (next) => navigateSearch({ page: next }, true),
+    total,
   });
-
-  useEffect(() => {
-    if (clamping) syncClampedPage();
-  }, [clamping]);
 
   const loading = commentsQuery.isPending;
   const busy = commentsQuery.isFetching;

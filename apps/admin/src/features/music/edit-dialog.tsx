@@ -13,7 +13,6 @@ import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
 import { invalidateMusicAfterMutation } from '@/app/server-state/modules/music';
-import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { apiErrorMessage } from '@/lib/error-message';
 import { formatDuration } from '@/lib/format';
 import { Button } from '@/ui/button';
@@ -22,6 +21,7 @@ import { FieldLabel, TextField } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { AppDialog } from '@/ui/overlay';
 import { MetaLine } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 interface EditForm {
   album: string;

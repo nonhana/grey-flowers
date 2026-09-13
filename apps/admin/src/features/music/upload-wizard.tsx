@@ -10,7 +10,6 @@ import { toast } from 'sonner';
 import { apiClient } from '@/app/api/index';
 import { markAssetsStale } from '@/app/server-state/modules/assets';
 import { invalidateMusicAfterMutation } from '@/app/server-state/modules/music';
-import { AssetPickerDialog } from '@/features/assets/asset-picker';
 import { apiErrorMessage } from '@/lib/error-message';
 import { formatDuration } from '@/lib/format';
 import { AUDIO_ACCEPT_MAP } from '@/lib/media-accept';
@@ -21,6 +20,7 @@ import { FileDrop } from '@/ui/file-drop';
 import { FieldLabel, TextField } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { MetaLine, Panel } from '@/ui/surface';
+import { AssetPickerDialog } from '@/widgets/asset-picker';
 
 /** 上传前快检：元数据在两次直传之前拦截；sourceAssetId/cover 由上传产物决定，仍以服务端为准。 */
 const metadataInputSchema = musicCreateInputSchema.pick({
