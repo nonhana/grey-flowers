@@ -1,6 +1,6 @@
 import type { UserListQuery } from '@grey-flowers/contracts';
 
-import { queryOptions } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
@@ -18,6 +18,7 @@ export const usersListOptions = (query: UserListQuery) =>
   queryOptions({
     queryKey: usersKeys.list(query),
     queryFn: ({ signal }) => apiClient.users.list(query, signal),
+    placeholderData: keepPreviousData,
   });
 
 export const usersDetailOptions = (

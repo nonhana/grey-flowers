@@ -595,3 +595,5 @@ export const useArticleEditor = (articleId: number | null) => {
     updateDraft,
   };
 };
+
+export type Editor = ReturnType<typeof useArticleEditor>;

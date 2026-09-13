@@ -18,7 +18,7 @@ import {
 } from './upload-state';
 import { InlineImageWidget, UploadGhostWidget } from './widgets';
 
-export function blockLineStarts(view: EditorView, from: number, to: number) {
+export const blockLineStarts = (view: EditorView, from: number, to: number) => {
   const doc = view.state.doc;
   const starts: number[] = [];
   if (from >= doc.length) return starts;
@@ -31,14 +31,14 @@ export function blockLineStarts(view: EditorView, from: number, to: number) {
     line = next;
   }
   return starts;
-}
+};
 
 const blockQuoteLine = Decoration.line({ class: 'gf-live-bq' });
 const tableLine = Decoration.line({ class: 'gf-live-table' });
 const codeLine = Decoration.line({ class: 'gf-live-code' });
 const linkMark = Decoration.mark({ class: 'gf-live-link' });
 
-function buildDecorations(view: EditorView): DecorationSet {
+const buildDecorations = (view: EditorView): DecorationSet => {
   const ranges: Range<Decoration>[] = [];
   const doc = view.state.doc;
 
@@ -107,7 +107,7 @@ function buildDecorations(view: EditorView): DecorationSet {
   });
 
   return Decoration.set(ranges);
-}
+};
 
 const hasUploadEffect = (update: ViewUpdate) =>
   update.transactions.some((transaction) =>

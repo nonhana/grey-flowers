@@ -1,6 +1,10 @@
 import type { ActivityListQuery } from '@grey-flowers/contracts';
 
-import { queryOptions, skipToken } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  queryOptions,
+  skipToken,
+} from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
@@ -18,6 +22,7 @@ export const activityListOptions = (query: ActivityListQuery) =>
   queryOptions({
     queryKey: activityKeys.list(query),
     queryFn: ({ signal }) => apiClient.activities.list(query, signal),
+    placeholderData: keepPreviousData,
   });
 
 export const activityDetailOptions = (id: number | null) =>

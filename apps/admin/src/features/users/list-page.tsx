@@ -6,8 +6,9 @@ import type {
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
+import { cn } from 'cn';
 import { CloudOff, RotateCcw, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
@@ -18,6 +19,7 @@ import {
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
 import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { Button } from '@/ui/button';
@@ -51,6 +53,8 @@ export const UsersPage = () => {
   const role = search.role;
   const searchValue = search.search;
   const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [page, role, searchValue]);
 
   const detailDialog = useDialog<UserAdminSummary>();
   const editDialog = useDialog<UserAdminSummary>();
@@ -84,6 +88,7 @@ export const UsersPage = () => {
   const data = usersQuery.data;
   const loading = usersQuery.isPending;
   const busy = usersQuery.isFetching;
+  const placeholder = usersQuery.isPlaceholderData;
   const error = usersQuery.error ? '无法加载用户，请稍后重试。' : '';
 
   const { clamping, totalPages } = usePageClamp({
@@ -186,7 +191,15 @@ export const UsersPage = () => {
 
       <section
         aria-busy={busy}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
         {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
@@ -249,6 +262,7 @@ export const UsersPage = () => {
       {data && !clamping ? (
         <Paginator
           className="mt-5"
+          isBusy={placeholder}
           onChange={(next) =>
             navigateSearch({ page: next > 1 ? next : undefined })
           }

@@ -1,7 +1,9 @@
 import { useNavigate } from '@tanstack/react-router';
 
+import type { FileRouteTypes } from '../routeTree.gen';
+
 export const useSearchNavigation = <TSearch extends object>(
-  to: string,
+  to: FileRouteTypes['to'],
   search: TSearch,
 ) => {
   const navigate = useNavigate();

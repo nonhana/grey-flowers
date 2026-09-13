@@ -6,8 +6,9 @@ import type {
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSearch } from '@tanstack/react-router';
+import { cn } from 'cn';
 import { CloudOff, Filter, MessagesSquare } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/app/api/index';
@@ -17,6 +18,7 @@ import {
 } from '@/app/server-state/modules/comments';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
 import { usePageClamp } from '@/hooks/use-page-clamp';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
@@ -50,6 +52,15 @@ const toReplyTarget = (comment: CommentAdmin): ReplyTarget => ({
 export const CommentsPage = () => {
   const search = useSearch({ from: '/comments' });
   const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [
+    page,
+    search.search,
+    search.path,
+    search.authorId,
+    search.startDate,
+    search.endDate,
+  ]);
 
   const navigateSearch = useSearchNavigation('/comments', search);
 
@@ -123,6 +134,7 @@ export const CommentsPage = () => {
 
   const loading = commentsQuery.isPending;
   const busy = commentsQuery.isFetching;
+  const placeholder = commentsQuery.isPlaceholderData;
   const error = commentsQuery.error ? '无法加载评论，请稍后重试。' : '';
 
   const removeMutation = useMutation({
@@ -258,7 +270,15 @@ export const CommentsPage = () => {
 
       <section
         aria-busy={busy}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
         {loading || clamping ? (
           <div className="grid animate-content-in gap-3" key="skeleton">
@@ -331,9 +351,10 @@ export const CommentsPage = () => {
         )}
       </section>
 
-      {data ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
+          isBusy={placeholder}
           onChange={(next) =>
             navigateSearch({ page: next > 1 ? next : undefined })
           }

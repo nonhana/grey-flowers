@@ -10,10 +10,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { CloudOff, FolderOpen, Music2, Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { assetsListOptions } from '@/app/server-state/modules/assets';
 import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { formatBytes, formatDateTime } from '@/lib/format';
 import { Button } from '@/ui/button';
@@ -118,6 +119,8 @@ const AssetCardSkeleton = () => (
 export const AssetsListPage = () => {
   const search = useSearch({ from: '/assets/' });
   const page = search.page ?? 1;
+  const listRef = useRef<HTMLElement>(null);
+  useScrollReset(listRef, [page, search.status, search.mediaType, search.purpose]);
 
   const navigateSearch = useSearchNavigation('/assets', search);
 
@@ -135,6 +138,7 @@ export const AssetsListPage = () => {
   const data = assetsQuery.data;
   const loading = assetsQuery.isPending;
   const busy = assetsQuery.isFetching;
+  const placeholder = assetsQuery.isPlaceholderData;
   const error = assetsQuery.error;
 
   const { totalPages } = usePageClamp({
@@ -232,7 +236,15 @@ export const AssetsListPage = () => {
 
       <section
         aria-busy={busy}
-        className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
       >
         {loading ? (
           <div className={cn(GRID_CLASS, 'animate-content-in')} key="skeleton">
@@ -284,6 +296,7 @@ export const AssetsListPage = () => {
       {data ? (
         <Paginator
           className="mt-5"
+          isBusy={placeholder}
           onChange={(next) =>
             navigateSearch({ page: next > 1 ? next : undefined })
           }

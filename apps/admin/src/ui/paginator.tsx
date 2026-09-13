@@ -38,6 +38,8 @@ export interface PaginatorProps {
   unit?: string;
   siblings?: number;
   className?: string;
+  /** 数据为过渡占位时禁用全部翻页按钮，防止旧计数下的连点错位 */
+  isBusy?: boolean;
 }
 
 /** 分页器。总页数 ≤ 1 不渲染；结构 = 可选计数 + 上一页 · 页码 · 下一页。 */
@@ -48,6 +50,7 @@ export const Paginator = ({
   total,
   unit = '条',
   siblings = 1,
+  isBusy,
   className,
 }: PaginatorProps) => {
   if (totalPages <= 1) return null;
@@ -77,7 +80,7 @@ export const Paginator = ({
         "
       >
         <IconButton
-          isDisabled={current <= 1}
+          isDisabled={isBusy || current <= 1}
           label="上一页"
           onPress={() => onChange(current - 1)}
           size="sm"
@@ -105,6 +108,7 @@ export const Paginator = ({
                 item === current ? PAGE_CURRENT : PAGE_IDLE,
               )}
               key={item}
+              isDisabled={isBusy}
               onPress={() => onChange(item)}
               type="button"
             >
@@ -113,7 +117,7 @@ export const Paginator = ({
           ),
         )}
         <IconButton
-          isDisabled={current >= totalPages}
+          isDisabled={isBusy || current >= totalPages}
           label="下一页"
           onPress={() => onChange(current + 1)}
           size="sm"

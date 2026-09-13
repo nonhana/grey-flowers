@@ -1,21 +1,21 @@
 import { useSyncExternalStore } from 'react';
 
 const subscribe = (onChange: () => void) => {
-  const viewport = window.visualViewport;
-  if (!viewport) return () => undefined;
+  const vp = window.visualViewport;
+  if (!vp) return () => undefined;
 
-  viewport.addEventListener('resize', onChange);
-  viewport.addEventListener('scroll', onChange);
+  vp.addEventListener('resize', onChange);
+  vp.addEventListener('scroll', onChange);
   return () => {
-    viewport.removeEventListener('resize', onChange);
-    viewport.removeEventListener('scroll', onChange);
+    vp.removeEventListener('resize', onChange);
+    vp.removeEventListener('scroll', onChange);
   };
 };
 
 const getSnapshot = () => {
-  const viewport = window.visualViewport;
-  if (!viewport) return 0;
-  const hidden = window.innerHeight - viewport.height - viewport.offsetTop;
+  const vp = window.visualViewport;
+  if (!vp) return 0;
+  const hidden = window.innerHeight - vp.height - vp.offsetTop;
   return hidden > 24 ? Math.round(hidden) : 0;
 };
 

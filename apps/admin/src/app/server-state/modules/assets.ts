@@ -1,6 +1,10 @@
 import type { AssetListQuery, AssetPurpose } from '@grey-flowers/contracts';
 
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import {
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions,
+} from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
@@ -27,6 +31,7 @@ export const assetsListOptions = (query: AssetListQuery) =>
   queryOptions({
     queryKey: assetsKeys.list(query),
     queryFn: ({ signal }) => apiClient.assets.list(query, signal),
+    placeholderData: keepPreviousData,
   });
 
 export const assetsDetailOptions = (id: number) =>

@@ -21,6 +21,7 @@ import {
 import { useRef, useState } from 'react';
 
 import type { RailSize } from '@/lib/rail-size';
+import type { FileRouteTypes } from '@/routeTree.gen';
 
 import { ThemeToggle } from '@/app/theme/theme-toggle';
 import {
@@ -37,7 +38,7 @@ import { ApiDelayControl } from './api-delay-control';
 interface NavItem {
   icon: LucideIcon;
   label: string;
-  path: string;
+  path: FileRouteTypes['to'];
 }
 
 interface NavSection {

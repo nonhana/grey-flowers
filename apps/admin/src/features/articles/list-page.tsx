@@ -4,11 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useSearch } from '@tanstack/react-router';
 import { cn } from 'cn';
 import { FileText, SearchX, SquarePen } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { articlesListOptions } from '@/app/server-state/modules/articles';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { formatDateTime } from '@/lib/format';
 import { Button, buttonClass } from '@/ui/button';
@@ -131,6 +132,8 @@ export const ArticlesListPage = () => {
   const page = search.page ?? 1;
 
   const navigateSearch = useSearchNavigation('/articles', search);
+  const listRef = useRef<HTMLDivElement>(null);
+  useScrollReset(listRef, [page, search.q, status]);
 
   const [draft, setDraft] = useState(() => search.q ?? '');
   const commitQuery = useDebouncedCommit((value: string) => {
@@ -145,9 +148,12 @@ export const ArticlesListPage = () => {
       status,
     }),
   );
-  const items = articlesQuery.data?.items ?? [];
-  const total = articlesQuery.data?.total ?? 0;
+  const data = articlesQuery.data;
+  const items = data?.items ?? [];
+  const total = data?.total ?? 0;
   const loading = articlesQuery.isPending;
+  const busy = articlesQuery.isFetching;
+  const placeholder = articlesQuery.isPlaceholderData;
   const error = articlesQuery.error;
 
   const { clamping, totalPages } = usePageClamp({
@@ -214,7 +220,18 @@ export const ArticlesListPage = () => {
         />
       </div>
 
-      <div className="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain">
+      <div
+        aria-busy={busy}
+        inert={placeholder}
+        ref={listRef}
+        className={cn(
+          `
+            mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain
+            transition-opacity
+          `,
+          placeholder && 'opacity-60',
+        )}
+      >
         {loading || clamping ? (
           <RowStack className="animate-content-in" key="skeleton">
             {Array.from({ length: PAGE_SIZE }, (_, index) => (
@@ -252,9 +269,10 @@ export const ArticlesListPage = () => {
         )}
       </div>
 
-      {!loading ? (
+      {data && !clamping ? (
         <Paginator
           className="mt-5"
+          isBusy={placeholder}
           onChange={(next) =>
             navigateSearch({ page: next > 1 ? next : undefined })
           }

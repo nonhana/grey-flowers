@@ -1,6 +1,6 @@
 import type { MusicListQuery } from '@grey-flowers/contracts';
 
-import { queryOptions } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
@@ -19,6 +19,7 @@ export const musicListOptions = (query: MusicListQuery) =>
   queryOptions({
     queryKey: musicKeys.list(query),
     queryFn: ({ signal }) => apiClient.music.list(query, signal),
+    placeholderData: keepPreviousData,
   });
 
 export const musicPickerOptions = (session: number, query: MusicListQuery) =>

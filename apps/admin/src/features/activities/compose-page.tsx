@@ -537,8 +537,8 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
 export const ActivityComposePage = () => {
   const navigate = useNavigate();
-  const params = useParams({ strict: false }) as { activityId?: string };
-  // 路由 id 严格解析的三分支：无 id=新建；有 id 但非 /^\d+$/ 或 ≤0=内联无效态（复用 loadError 视觉），不静默变新建；合法 id=编辑
+  const params = useParams({ strict: false });
+  // 无 id=新建；有 id 但非 /^\d+$/ 或 ≤0=内联无效态（复用 loadError 视觉），不静默变新建；合法 id=编辑
   const rawId = params.activityId ?? null;
   const editingId =
     rawId !== null && /^\d+$/.test(rawId) && Number(rawId) > 0

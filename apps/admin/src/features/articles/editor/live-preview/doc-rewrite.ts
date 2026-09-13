@@ -12,7 +12,11 @@ interface LocatedImage {
   altTo: number;
 }
 
-function locateImage(view: EditorView, from: number, to: number): LocatedImage {
+const locateImage = (
+  view: EditorView,
+  from: number,
+  to: number,
+): LocatedImage => {
   const { alt } = parseImage(view, from, to) ?? { alt: '' };
   const { from: coveredFrom, to: coveredTo } = imageCover(view, from, to);
   return {
@@ -21,9 +25,9 @@ function locateImage(view: EditorView, from: number, to: number): LocatedImage {
     altFrom: from + 2,
     altTo: from + 2 + alt.length,
   };
-}
+};
 
-function findImage(view: EditorView, src: string, anchor: number) {
+const findImage = (view: EditorView, src: string, anchor: number) => {
   const tree = syntaxTree(view.state);
   // 优先按锚点找回原节点（位置会随编辑漂移，用 resolve 重新定位）
   const atAnchor: SyntaxNode | null = tree.resolveInner(
@@ -47,18 +51,18 @@ function findImage(view: EditorView, src: string, anchor: number) {
     },
   });
   return located;
-}
+};
 
-export function rewriteImageAlt(view: EditorView, src: string, alt: string) {
+export const rewriteImageAlt = (view: EditorView, src: string, alt: string) => {
   const found = findImage(view, src, 0);
   if (!found) return;
   view.dispatch({
     changes: { from: found.altFrom, to: found.altTo, insert: alt },
   });
-}
+};
 
-export function removeImage(view: EditorView, src: string, anchor: number) {
+export const removeImage = (view: EditorView, src: string, anchor: number) => {
   const found = findImage(view, src, anchor);
   if (!found) return;
   view.dispatch({ changes: { from: found.from, to: found.to, insert: '' } });
-}
+};

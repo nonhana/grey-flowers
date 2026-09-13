@@ -96,7 +96,7 @@ const DetailSkeleton = () => (
 );
 
 export const AssetsDetailPage = () => {
-  const { assetId } = useParams({ strict: false }) as { assetId: string };
+  const { assetId } = useParams({ from: '/assets/$assetId' });
   const id = Number(assetId);
   const enabled = Number.isSafeInteger(id) && id > 0;
   const detailQuery = useQuery({

@@ -1,6 +1,6 @@
 import type { ArticleListAdminQuery } from '@grey-flowers/contracts';
 
-import { queryOptions } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/index';
 
@@ -26,6 +26,7 @@ export const articlesListOptions = (query: ArticleListAdminQuery) => {
   return queryOptions({
     queryKey: articlesKeys.list(normalized),
     queryFn: ({ signal }) => apiClient.articles.list(normalized, signal),
+    placeholderData: keepPreviousData,
   });
 };
 

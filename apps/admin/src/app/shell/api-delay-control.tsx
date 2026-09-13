@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DialogTrigger, Popover } from 'react-aria-components';
 
 import { readApiDelayMs, writeApiDelayMs } from '@/app/api/delay';
-import { Button, buttonClass } from '@/ui/button';
+import { Button, IconButton, buttonClass } from '@/ui/button';
 import { controlClass } from '@/ui/form';
 
 const PRESETS = [0, 300, 1000, 3000] as const;
@@ -27,13 +27,12 @@ export const ApiDelayControl = () => {
 
   return (
     <DialogTrigger isOpen={open} onOpenChange={setOpen}>
-      <button
-        aria-label={value > 0 ? `接口延迟 ${value} ms` : '接口延迟（调试）'}
-        className={buttonClass({ size: 'sm', tone: 'ghost' })}
-        type="button"
+      <IconButton
+        label={value > 0 ? `接口延迟 ${value} ms` : '接口延迟（调试）'}
+        size="sm"
       >
         <Gauge aria-hidden />
-      </button>
+      </IconButton>
       <Popover
         className="
           grid w-64 gap-2.5 rounded-panel bg-case-raised p-3 shadow-float

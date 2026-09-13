@@ -82,7 +82,7 @@ const DetailSkeleton = () => (
 );
 
 export const MusicDetailPage = () => {
-  const { musicId } = useParams({ strict: false }) as { musicId: string };
+  const { musicId } = useParams({ from: '/music/$musicId' });
   const id = Number(musicId);
   const enabled = Number.isSafeInteger(id) && id > 0;
   const navigate = useNavigate();

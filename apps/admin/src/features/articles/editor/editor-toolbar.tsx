@@ -1,6 +1,5 @@
 import type { EditorView } from '@codemirror/view';
 
-import { cn } from 'cn';
 import {
   Bold,
   Code2,
@@ -84,14 +83,12 @@ export const EditorToolbar = ({
 }) => (
   <div
     aria-label="Markdown 插入工具"
-    className={cn(
-      'z-30 gf-scroll-x flex items-center gap-0.5 bg-case px-1.5',
-      `
-        fixed inset-x-0 bottom-0 py-1.5
-        pb-[max(0.375rem,env(safe-area-inset-bottom))] shadow-case-up
-        md:relative md:pb-1.5 md:shadow-case-down
-      `,
-    )}
+    className="
+      fixed inset-x-0 bottom-0 z-30 gf-scroll-x flex items-center gap-0.5
+      bg-case p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]
+      shadow-case-up
+      md:relative md:pb-1.5 md:shadow-case-down
+    "
     role="toolbar"
     style={
       keyboardInset > 0

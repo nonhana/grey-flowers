@@ -20,6 +20,8 @@ import {
   Popover,
 } from 'react-aria-components';
 
+import type { Editor } from '@/store/article-editor';
+
 import { articlesListOptions } from '@/app/server-state/modules/articles';
 import {
   taxonomyCategoriesOptions,
@@ -35,8 +37,6 @@ import { AppDialog, BottomSheet, SidePanel } from '@/ui/overlay';
 
 import { CodeMirrorPane } from './editor/code-mirror-pane';
 import { InspectorPane } from './editor/inspector-pane';
-
-type Editor = ReturnType<typeof useArticleEditor>;
 
 interface RecentArticle {
   id: number;
@@ -405,11 +405,12 @@ const WorkspacePage = ({
 
 /** 外壳持有关键切换后要存活的 UI 状态；内层按文章 id 作 key 重挂载即重新拉取（React 官方「key 重置全部状态」模式） */
 export const ArticleWorkspacePage = () => {
-  const { articleId } = useParams({ strict: false }) as { articleId: string };
+  const { articleId } = useParams({ from: '/articles/$articleId' });
   const valid = /^\d+$/.test(articleId) && Number(articleId) > 0;
   const numericId = valid ? Number(articleId) : null;
   const isDesktop = useIsDesktop();
   const [inspectorOpen, setInspectorOpen] = useState(isDesktop);
+
   if (!valid) {
     return (
       <div className="grid h-full place-items-center p-6">
@@ -423,6 +424,7 @@ export const ArticleWorkspacePage = () => {
       </div>
     );
   }
+
   return (
     <WorkspacePage
       inspectorOpen={inspectorOpen}
