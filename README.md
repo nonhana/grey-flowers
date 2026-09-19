@@ -6,22 +6,38 @@ Even in a gray world, flowers bloom as usual.
 
 ## Tech Stack
 
-Built with:
+A [pnpm](https://pnpm.io) monorepo. Built with:
+
+### `apps/main` — Public site
 
 - [Nuxt4](https://nuxt.com)
 - [Vue3](https://vuejs.org)
 - [MDC](https://mdc.unjs.io/)
-- [Hono](https://hono.dev)
-- [React 19](https://react.dev)
+- [Pinia](https://pinia.vuejs.org)
+- [VueUse](https://vueuse.org)
 - [UnoCSS](https://unocss.dev)
+
+### `apps/api` — Business API
+
+- [Hono](https://hono.dev)
+- [Zod](https://zod.dev)
 - [Prisma](https://prisma.io)
 - [PostgreSQL](https://postgresql.org)
 
-## Workspace
+### `apps/admin` — Operations console
 
-- `apps/main` contains the public Nuxt SSR application.
-- `apps/api` is the Hono backend and the only entry to business data.
-- `apps/admin` is the React console for managing content and media.
-- `packages/contracts` holds the shared Zod DTOs and error codes.
-- `packages/db` exclusively owns the Prisma schema, migrations, generated client, configuration, and database package versions.
-- Run the site and workspace checks from the repository root: `pnpm dev`, `pnpm dev:api`, `pnpm dev:admin`, `pnpm build`, `pnpm typecheck`, and `pnpm lint`.
+- [React 19](https://react.dev)
+- [TanStack Router](https://tanstack.com/router)
+- [TanStack Query](https://tanstack.com/query)
+- [Vite](https://vite.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Zustand](https://zustand.docs.pmnd.rs)
+
+### `packages/contracts` — Shared contracts
+
+- [Zod](https://zod.dev)
+
+### `packages/db` — Database layer
+
+- [Prisma](https://prisma.io)
+- [PostgreSQL](https://postgresql.org)
