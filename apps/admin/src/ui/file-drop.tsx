@@ -10,6 +10,7 @@ export const FileDrop = ({
   busy = false,
   children,
   className,
+  noPaste = false,
   onFile,
   onRejected,
 }: {
@@ -17,6 +18,7 @@ export const FileDrop = ({
   busy?: boolean;
   children: ReactNode;
   className?: string;
+  noPaste?: boolean;
   onFile: (file: File) => void;
   onRejected?: () => void;
 }) => {
@@ -27,6 +29,7 @@ export const FileDrop = ({
       disabled: busy,
       multiple: false,
       noClick: true,
+      noPaste,
       onDrop: (acceptedFiles) => {
         const file = acceptedFiles[0];
         if (file) onFile(file);

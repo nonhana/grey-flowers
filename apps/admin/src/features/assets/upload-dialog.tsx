@@ -158,6 +158,7 @@ const UploadForm = ({
         <FileDrop
           accept={acceptMap}
           busy={phase === 'uploading'}
+          noPaste
           onFile={(target) => {
             // 上传中 FileDrop 已 busy 失效，此处只处理非上传中的选入
             const sizeError = uploadSizeError(

@@ -232,7 +232,6 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
   const contentNearLimit = content.length >= CONTENT_WARN_AT;
 
-  // 整页都是投放区：dragActive 用根元素 enter/leave 自己追踪——dropzone 只在 dragleave 复位 isDragActive，drop 不复位，用它做遮罩会卡住
   const {
     getInputProps,
     getRootProps,
@@ -242,6 +241,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
     multiple: true,
     noClick: true,
     noKeyboard: true,
+    noPaste: true,
     onDragEnter: () => setDragActive(true),
     onDragLeave: (event) => {
       if (!event.currentTarget.contains(event.relatedTarget as Node)) {
