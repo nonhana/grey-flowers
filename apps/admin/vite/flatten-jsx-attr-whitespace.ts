@@ -1,4 +1,4 @@
-import { types as t, type PluginObj } from '@babel/core';
+import { types as t, type PluginTarget } from '@babel/core';
 
 const flattenAttrWhitespace = (value: string): string => {
   if (!value.includes('\n')) return value;
@@ -6,7 +6,7 @@ const flattenAttrWhitespace = (value: string): string => {
 };
 
 /** JSX HTML Attributes value `\n` -> `space` */
-export const flattenJsxAttrWhitespace = (): PluginObj => ({
+export const flattenJsxAttrWhitespace = (): PluginTarget => () => ({
   name: 'grey-flowers:flatten-jsx-attr-whitespace',
   visitor: {
     JSXAttribute(path) {
