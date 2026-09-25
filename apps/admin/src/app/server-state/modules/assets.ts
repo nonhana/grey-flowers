@@ -1,4 +1,4 @@
-import type { AssetListQuery, AssetPurpose } from '@grey-flowers/contracts';
+import type { AssetListQuery, AssetMediaType } from '@grey-flowers/contracts';
 
 import {
   infiniteQueryOptions,
@@ -18,12 +18,12 @@ export const ASSET_PICKER_PAGE_SIZE = 12;
 export const assetsKeys = {
   list: (query: AssetListQuery) => [...assetsRoot, 'list', query] as const,
   detail: (id: number) => [...assetsRoot, 'detail', id] as const,
-  picker: (purpose: AssetPurpose, session: number) =>
+  picker: (mediaType: AssetMediaType, session: number) =>
     [
       ...assetsRoot,
       'picker',
       session,
-      { pageSize: ASSET_PICKER_PAGE_SIZE, purpose, status: 'AVAILABLE' },
+      { pageSize: ASSET_PICKER_PAGE_SIZE, mediaType, status: 'AVAILABLE' },
     ] as const,
 };
 
@@ -40,16 +40,19 @@ export const assetsDetailOptions = (id: number) =>
     queryFn: ({ signal }) => apiClient.assets.detail(id, signal),
   });
 
-export const assetsPickerOptions = (purpose: AssetPurpose, session: number) =>
+export const assetsPickerOptions = (
+  mediaType: AssetMediaType,
+  session: number,
+) =>
   infiniteQueryOptions({
-    queryKey: assetsKeys.picker(purpose, session),
+    queryKey: assetsKeys.picker(mediaType, session),
     initialPageParam: 1,
     queryFn: ({ pageParam, signal }) =>
       apiClient.assets.list(
         {
           page: pageParam,
           pageSize: ASSET_PICKER_PAGE_SIZE,
-          purpose,
+          mediaType,
           status: 'AVAILABLE',
         },
         signal,

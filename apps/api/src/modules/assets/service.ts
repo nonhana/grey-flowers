@@ -9,7 +9,7 @@ import type {
 } from '@grey-flowers/contracts';
 import type { PrismaClient } from '@grey-flowers/db';
 
-import { assetUploadProfiles } from '@grey-flowers/contracts';
+import { assetMediaTypeProfiles } from '@grey-flowers/contracts';
 import { randomUUID } from 'node:crypto';
 
 import type {
@@ -22,13 +22,10 @@ import type { ApiEnvironment } from '@/env';
 import { ApiError } from '@/http/errors';
 import { pagination } from '@/lib/pagination';
 
-import {
-  assetProjection,
-  assetPurposeDirectory,
-  assetPurposeFromDirectory,
-  toAssetDto,
-  toReferenceCounts,
-} from './contracts';
+import { assetProjection, toAssetDto, toReferenceCounts } from './contracts';
+import { buildManagedAssetKey, isManagedAssetKey } from './managed-key';
+import { mediaTypeOfMime } from './media-type';
+
 const normalizeDeclaredMime = (value: string) => {
   switch (value) {
     case 'application/ogg':
@@ -41,11 +38,6 @@ const normalizeDeclaredMime = (value: string) => {
     default:
       return value;
   }
-};
-
-const currentMonthPrefix = () => {
-  const now = new Date();
-  return `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
 };
 
 export class AssetService {
@@ -76,18 +68,19 @@ export class AssetService {
   async createUploadUrl(
     input: AssetUploadUrlInput,
   ): Promise<AssetUploadUrlData> {
-    const profile = assetUploadProfiles[input.purpose];
     const declared = normalizeDeclaredMime(input.contentType);
-
-    if (!profile.mimeTypes.includes(declared)) {
+    const mediaType = mediaTypeOfMime(declared);
+    if (mediaType === undefined) {
       throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
     }
+
+    const profile = assetMediaTypeProfiles[mediaType];
     if (input.size !== undefined && input.size > profile.maxBytes) {
       throw new ApiError('ASSET_PAYLOAD_TOO_LARGE');
     }
 
     const ext = this.mimeToExt[declared];
-    const key = `${assetPurposeDirectory[input.purpose]}/${currentMonthPrefix()}/${randomUUID()}.${ext}`;
+    const key = buildManagedAssetKey(new Date(), randomUUID(), ext);
     const uploadUrl = await this.objectStorage.presignUpload({
       contentType: declared,
       key,
@@ -113,14 +106,11 @@ export class AssetService {
       return toAssetDto(existing, this.environment.ASSET_PUBLIC_URL);
     }
 
-    const directory = input.key.split('/')[0] ?? '';
-    const purpose = assetPurposeFromDirectory(directory);
-    if (!purpose) {
+    if (!isManagedAssetKey(input.key)) {
       throw new ApiError('VALIDATION_FAILED', {
         fields: { key: ['存储路径不在受管目录内'] },
       });
     }
-    const profile = assetUploadProfiles[purpose];
 
     let head: HeadObjectResult;
     try {
@@ -133,6 +123,12 @@ export class AssetService {
     }
 
     const contentType = normalizeDeclaredMime(head.contentType);
+    const mediaType = mediaTypeOfMime(contentType);
+    if (mediaType === undefined) {
+      throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
+    }
+
+    const profile = assetMediaTypeProfiles[mediaType];
     if (!profile.mimeTypes.includes(contentType)) {
       throw new ApiError('UNSUPPORTED_MEDIA_TYPE');
     }
@@ -180,13 +176,6 @@ export class AssetService {
   async list(input: AssetListQuery): Promise<AssetListData> {
     const where = {
       ...(input.mediaType === undefined ? {} : { mediaType: input.mediaType }),
-      ...(input.purpose === undefined
-        ? {}
-        : {
-            storageKey: {
-              startsWith: `${assetPurposeDirectory[input.purpose]}/`,
-            },
-          }),
       ...(input.status === undefined ? {} : { status: input.status }),
     };
 

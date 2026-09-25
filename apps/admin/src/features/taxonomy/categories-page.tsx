@@ -335,6 +335,7 @@ export const CategoriesPage = () => {
       />
 
       <AssetPickerDialog
+        mediaType="IMAGE"
         onClose={() => setPickerOpen(false)}
         onSelect={(asset: AssetDto) => {
           setForm((current) => ({
@@ -345,7 +346,6 @@ export const CategoriesPage = () => {
           setPickerOpen(false);
         }}
         open={pickerOpen}
-        purpose="CATEGORY_COVER"
         title="选择分类封面"
       />
     </PageBody>

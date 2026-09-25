@@ -7,7 +7,6 @@ describe('assetsSearchSchema', () => {
     expect(assetsSearchSchema.parse({})).toEqual({
       status: undefined,
       mediaType: undefined,
-      purpose: undefined,
       page: undefined,
     });
     expect(
@@ -15,12 +14,10 @@ describe('assetsSearchSchema', () => {
         page: 'bogus',
         status: 'DELETED',
         mediaType: 'VIDEO',
-        purpose: 'nope',
       }),
     ).toEqual({
       status: undefined,
       mediaType: undefined,
-      purpose: undefined,
       page: undefined,
     });
   });
@@ -31,13 +28,11 @@ describe('assetsSearchSchema', () => {
         page: '3',
         status: 'AVAILABLE',
         mediaType: 'IMAGE',
-        purpose: 'ARTICLE_COVER',
       }),
     ).toEqual({
       page: 3,
       status: 'AVAILABLE',
       mediaType: 'IMAGE',
-      purpose: 'ARTICLE_COVER',
     });
   });
 
@@ -59,7 +54,6 @@ describe('assetsSearchSchema', () => {
     ).toEqual({
       status: undefined,
       mediaType: 'AUDIO',
-      purpose: undefined,
       page: undefined,
     });
   });

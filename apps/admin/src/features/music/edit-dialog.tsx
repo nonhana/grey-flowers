@@ -186,6 +186,7 @@ const EditForm = ({
       </Form>
 
       <AssetPickerDialog
+        mediaType="IMAGE"
         onClose={() => setPickerOpen(false)}
         onSelect={(asset: AssetDto) => {
           setForm((current) => ({
@@ -196,7 +197,6 @@ const EditForm = ({
           setPickerOpen(false);
         }}
         open={pickerOpen}
-        purpose="MUSIC_COVER"
         title="选择音乐封面"
       />
     </>

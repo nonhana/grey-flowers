@@ -98,7 +98,7 @@ export const UploadWizard = () => {
       return;
     }
     // 选入即校验：0 字节与超限音频不等一次必败请求
-    const sizeError = uploadSizeError(target, 'MUSIC_SOURCE');
+    const sizeError = uploadSizeError(target, 'AUDIO');
     if (sizeError !== null) {
       setError(sizeError);
       return;
@@ -193,11 +193,9 @@ export const UploadWizard = () => {
 
     const uploadSource = async (): Promise<{ id: number }> => {
       if (done.sourceAssetId !== null) return { id: done.sourceAssetId };
-      const asset = await apiClient.assets.upload(
-        { file, purpose: 'MUSIC_SOURCE' },
-        setProgress,
-        { durationMs: form.seconds * 1000 },
-      );
+      const asset = await apiClient.assets.upload({ file }, setProgress, {
+        durationMs: form.seconds * 1000,
+      });
       remember({ sourceAssetId: asset.id });
       return asset;
     };
@@ -209,10 +207,7 @@ export const UploadWizard = () => {
       const coverFile = new File([embeddedCover.blob], 'cover', {
         type: embeddedCover.blob.type,
       });
-      const asset = await apiClient.assets.upload({
-        file: coverFile,
-        purpose: 'MUSIC_COVER',
-      });
+      const asset = await apiClient.assets.upload({ file: coverFile });
       remember({ coverAssetId: asset.id });
       return asset.id;
     };
@@ -404,6 +399,7 @@ export const UploadWizard = () => {
       ) : null}
 
       <AssetPickerDialog
+        mediaType="IMAGE"
         onClose={() => setPickerOpen(false)}
         onSelect={(asset) => {
           setForm((current) => ({
@@ -416,7 +412,6 @@ export const UploadWizard = () => {
           setPickerOpen(false);
         }}
         open={pickerOpen}
-        purpose="MUSIC_COVER"
         title="选择音乐封面"
       />
     </div>

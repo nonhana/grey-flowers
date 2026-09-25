@@ -17,7 +17,6 @@ import { ApiError } from '@/http/errors';
 import { concatUrl } from '@/lib/concat-url';
 import { pagination } from '@/lib/pagination';
 
-import { assetPurposeFromStorageKey } from '../assets/contracts';
 import { parseActivityMarkdown } from './activity-markdown';
 import {
   activityAdminSelect,
@@ -292,19 +291,13 @@ export class ActivityService {
     };
   }
 
-  /** 图片必须是 AVAILABLE 的 IMAGE 且 purpose=ACTIVITY_IMAGE；否则 VALIDATION_FAILED。 */
+  /** 图片必须是 AVAILABLE 的 IMAGE；否则 VALIDATION_FAILED。 */
   private async assertActivityImage(
     client: Client,
     assetId: number,
   ): Promise<string> {
     const asset = await client.asset.findUnique({ where: { id: assetId } });
-    if (
-      !asset ||
-      asset.status !== 'AVAILABLE' ||
-      asset.mediaType !== 'IMAGE' ||
-      assetPurposeFromStorageKey(asset.storageKey, asset.mediaType) !==
-        'ACTIVITY_IMAGE'
-    ) {
+    if (!asset || asset.status !== 'AVAILABLE' || asset.mediaType !== 'IMAGE') {
       throw new ApiError('VALIDATION_FAILED', {
         fields: { images: ['图片必须是可用的受管「动态图片」资产'] },
       });

@@ -25,7 +25,6 @@ import {
 const pageOf = (count: number, total: number): AssetListData => ({
   items: Array.from({ length: count }, (_, index) => ({
     id: index + 1,
-    purpose: 'ARTICLE_COVER',
     mediaType: 'IMAGE',
     status: 'AVAILABLE',
     mimeType: 'image/webp',
@@ -41,7 +40,7 @@ const pageOf = (count: number, total: number): AssetListData => ({
 });
 
 describe('assetsPickerOptions getNextPageParam', () => {
-  const options = assetsPickerOptions('ARTICLE_COVER', 1);
+  const options = assetsPickerOptions('IMAGE', 1);
 
   it('未满一页且有总量时返回下一页', () => {
     const lastPage = pageOf(12, 30);
@@ -73,7 +72,7 @@ describe('invalidation', () => {
   it('mutation 失效命中 assets 全家族与 overview counts', async () => {
     queryClient.setQueryData(assetsKeys.list({ page: 1, pageSize: 12 }), []);
     queryClient.setQueryData(assetsKeys.detail(3), {});
-    queryClient.setQueryData(assetsKeys.picker('ARTICLE_COVER', 1), []);
+    queryClient.setQueryData(assetsKeys.picker('IMAGE', 1), []);
     queryClient.setQueryData([...overviewRoot, 'counts'], {});
     queryClient.setQueryData([...usersRoot, 'list'], []);
 
@@ -87,8 +86,7 @@ describe('invalidation', () => {
       true,
     );
     expect(
-      queryClient.getQueryState(assetsKeys.picker('ARTICLE_COVER', 1))
-        ?.isInvalidated,
+      queryClient.getQueryState(assetsKeys.picker('IMAGE', 1))?.isInvalidated,
     ).toBe(true);
     expect(
       queryClient.getQueryState([...overviewRoot, 'counts'])?.isInvalidated,

@@ -1,31 +1,24 @@
-import type { AssetPurpose } from '@grey-flowers/contracts';
-
 import { FileUp, Upload } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import {
-  ProgressBar,
-  RadioButton,
-  RadioField,
-  RadioGroup,
-} from 'react-aria-components';
+import { ProgressBar } from 'react-aria-components';
 import { toast } from 'sonner';
 
 import { apiClient, isAbortError } from '@/app/api';
 import { invalidateAssetsAfterMutation } from '@/app/server-state/modules/assets';
 import { usePasteFiles } from '@/hooks/use-paste-files';
 import {
-  AUDIO_ACCEPT_MAP,
+  ANY_ACCEPT_MAP,
   fileMatchesAccept,
-  IMAGE_ACCEPT_MAP,
+  mediaTypeOfFile,
 } from '@/lib/media-accept';
-import { uploadSizeError } from '@/lib/upload-limits';
+import { maxUploadMb, uploadSizeError } from '@/lib/upload-limits';
 import { Button } from '@/ui/button';
 import { Alert } from '@/ui/feedback';
 import { FileDrop } from '@/ui/file-drop';
 import { FieldLabel } from '@/ui/form';
 import { AppDialog } from '@/ui/overlay';
 
-import { assetErrorMessage, purposeLabels, purposeOptions } from './display';
+import { assetErrorMessage } from './display';
 
 type Phase = 'idle' | 'uploading' | 'error';
 
@@ -39,35 +32,30 @@ const UploadForm = ({
   onUploaded: () => void;
   setOpen: (value: boolean) => void;
 }) => {
-  const [purpose, setPurpose] = useState<AssetPurpose | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState<Phase>('idle');
   const [error, setError] = useState('');
 
-  const acceptMap =
-    purpose === 'MUSIC_SOURCE' ? AUDIO_ACCEPT_MAP : IMAGE_ACCEPT_MAP;
-  const acceptLabel = purpose === 'MUSIC_SOURCE' ? '音频' : '图片';
+  const acceptLabel = '图片或音频';
   usePasteFiles({
     enabled: true,
     onFiles: (files) => {
       // 上传中粘贴闸门：不打断在途上传，也不悄悄换掉正在上传的文件
       if (phase === 'uploading') return;
       setPhase('idle');
-      if (purpose === null) {
-        setFile(null);
-        setError('先选择上传用途，再粘贴文件。');
-        return;
-      }
       const accepted = files.filter((item) =>
-        fileMatchesAccept(acceptMap, item),
+        fileMatchesAccept(ANY_ACCEPT_MAP, item),
       );
       if (accepted.length === 0) {
         setFile(null);
         setError(`剪贴板里没有可上传的${acceptLabel}文件。`);
         return;
       }
-      const sizeError = uploadSizeError(accepted[0], purpose);
+      const sizeError = uploadSizeError(
+        accepted[0],
+        mediaTypeOfFile(accepted[0]),
+      );
       if (sizeError !== null) {
         setFile(null);
         setError(sizeError);
@@ -77,9 +65,9 @@ const UploadForm = ({
       setError('');
     },
   });
-  const canSubmit = purpose !== null && file !== null && phase !== 'uploading';
+  const canSubmit = file !== null && phase !== 'uploading';
   const submit = async () => {
-    if (purpose === null || file === null) return;
+    if (file === null) return;
 
     const controller = new AbortController();
     abortRef.current = controller;
@@ -89,14 +77,14 @@ const UploadForm = ({
 
     try {
       await apiClient.assets.upload(
-        { file, purpose },
+        { file },
         setProgress,
         undefined,
         controller.signal,
       );
       await invalidateAssetsAfterMutation();
       toast.success(
-        purpose === 'MUSIC_SOURCE' ? '音源已上传。' : '图片已上传。',
+        mediaTypeOfFile(file) === 'AUDIO' ? '音频已上传。' : '图片已上传。',
       );
       onUploaded();
       setOpen(false);
@@ -118,53 +106,14 @@ const UploadForm = ({
   return (
     <div className="grid gap-5">
       <div className="grid gap-2">
-        <FieldLabel>用途</FieldLabel>
-        <RadioGroup
-          aria-label="上传用途"
-          className="grid grid-cols-2 gap-2"
-          onChange={(value) => {
-            setPurpose(value as AssetPurpose);
-            setPhase('idle');
-            setError('');
-          }}
-          value={purpose ?? undefined}
-        >
-          {purposeOptions.map((option) => (
-            <RadioField key={option} value={option}>
-              <RadioButton
-                className="
-                  flex min-h-11 cursor-pointer items-center gap-2
-                  rounded-control border border-edge bg-well px-3 text-base
-                  text-ink transition-colors outline-none
-                  focus-within:outline-2 focus-within:outline-offset-2
-                  focus-within:outline-focus
-                  hover:border-edge-hover
-                  data-selected:border-accent-rule data-selected:bg-accent-wash
-                  data-selected:text-accent-text
-                "
-              >
-                {purposeLabels[option]}
-              </RadioButton>
-            </RadioField>
-          ))}
-        </RadioGroup>
-        <p className="text-xs/relaxed text-ink-dim">
-          用途决定了允许的文件类型与大小上限，之后不能更改。
-        </p>
-      </div>
-
-      <div className="grid gap-2">
         <FieldLabel>文件</FieldLabel>
         <FileDrop
-          accept={acceptMap}
+          accept={ANY_ACCEPT_MAP}
           busy={phase === 'uploading'}
           noPaste
           onFile={(target) => {
             // 上传中 FileDrop 已 busy 失效，此处只处理非上传中的选入
-            const sizeError = uploadSizeError(
-              target,
-              purpose ?? 'ARTICLE_COVER',
-            );
+            const sizeError = uploadSizeError(target, mediaTypeOfFile(target));
             if (sizeError !== null) {
               setFile(null);
               setPhase('idle');
@@ -189,6 +138,9 @@ const UploadForm = ({
             {file ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : acceptLabel}
           </span>
         </FileDrop>
+        <p className="text-xs/relaxed text-ink-dim">
+          {`图片上限 ${maxUploadMb('IMAGE')} MB & 音频上限 ${maxUploadMb('AUDIO')} MB`}
+        </p>
       </div>
 
       {phase === 'uploading' ? (

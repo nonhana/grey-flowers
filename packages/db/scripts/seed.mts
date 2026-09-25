@@ -14,7 +14,6 @@ const COUNTS = {
   categories: 24,
   tags: 160,
   users: 320,
-  // 资产按 purpose 目录分桶（storageKey 前缀稳定推导 purpose）
   assetsCategoryCover: 24,
   assetsArticleCover: 60,
   assetsArticleInline: 520,
@@ -113,7 +112,7 @@ const run = async () => {
       const adminId = userIds[0];
       const regularUserIds = userIds.slice(1);
 
-      // ---------- Asset（大量，按 purpose 分桶，id 连续） ----------
+      // ---------- Asset（大量，按上传用途分布，id 连续） ----------
       const assetRecords: Array<{
         storageKey: string;
         mediaType: 'IMAGE' | 'AUDIO';
@@ -131,25 +130,14 @@ const run = async () => {
       // category-covers：IMAGE
       for (let i = 0; i < COUNTS.assetsCategoryCover; i += 1) {
         assetRecords.push(
-          imageAsset(
-            'category-covers',
-            i % regularUserIds.length,
-            regularUserIds,
-            i,
-          ),
+          imageAsset(i % regularUserIds.length, regularUserIds, i),
         );
       }
       // article-covers：IMAGE
       for (let i = 0; i < COUNTS.assetsArticleCover; i += 1) {
         const status = i % 50 === 0 ? 'PENDING_CLEANUP' : 'AVAILABLE';
         assetRecords.push(
-          imageAsset(
-            'article-covers',
-            i % regularUserIds.length,
-            regularUserIds,
-            i,
-            status,
-          ),
+          imageAsset(i % regularUserIds.length, regularUserIds, i, status),
         );
       }
       // article-inline：IMAGE（含一部分 DELETED 覆盖状态筛选）
@@ -161,53 +149,31 @@ const run = async () => {
               ? 'PENDING_CLEANUP'
               : 'AVAILABLE';
         assetRecords.push(
-          imageAsset(
-            'article-inline',
-            i % regularUserIds.length,
-            regularUserIds,
-            i,
-            status,
-          ),
+          imageAsset(i % regularUserIds.length, regularUserIds, i, status),
         );
       }
       // activity-images：IMAGE
       for (let i = 0; i < COUNTS.assetsActivityImage; i += 1) {
         assetRecords.push(
-          imageAsset(
-            'activity-images',
-            i % regularUserIds.length,
-            regularUserIds,
-            i,
-          ),
+          imageAsset(i % regularUserIds.length, regularUserIds, i),
         );
       }
       // music-covers：IMAGE
       for (let i = 0; i < COUNTS.assetsMusicCover; i += 1) {
         assetRecords.push(
-          imageAsset(
-            'music-covers',
-            i % regularUserIds.length,
-            regularUserIds,
-            i,
-          ),
+          imageAsset(i % regularUserIds.length, regularUserIds, i),
         );
       }
       // music-sources：AUDIO
       for (let i = 0; i < COUNTS.assetsMusicSource; i += 1) {
         assetRecords.push(
-          audioAsset(
-            'music-sources',
-            i % regularUserIds.length,
-            regularUserIds,
-            i,
-          ),
+          audioAsset(i % regularUserIds.length, regularUserIds, i),
         );
       }
       // 每个 bucket 末尾追加若干「无引用」资产，供删除场景（非 409）验证。
       for (let i = 0; i < 8; i += 1) {
         assetRecords.push(
           imageAsset(
-            'article-inline',
             i % regularUserIds.length,
             regularUserIds,
             9000 + i,
@@ -216,7 +182,6 @@ const run = async () => {
         );
         assetRecords.push(
           imageAsset(
-            'article-covers',
             i % regularUserIds.length,
             regularUserIds,
             9100 + i,
@@ -232,7 +197,7 @@ const run = async () => {
           orderBy: { id: 'asc' },
         })
       ).map((row) => row.id);
-      // 按创建顺序切出各 purpose 区段 id。
+      // 按创建顺序切出各用途区段 id。
       const slice = (from: number, length: number) =>
         assetIds.slice(from, from + length);
       const categoryCoverIds = slice(0, COUNTS.assetsCategoryCover);
@@ -739,8 +704,12 @@ const coverUrl = (assetId: number) =>
 const musicCover = (assetId: number) =>
   `https://img.example.com/seed/${assetId}.jpg`;
 
+const seedKeyPrefix = () => {
+  const now = new Date();
+  return `assets/${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+};
+
 const imageAsset = (
-  directory: string,
   seedIndex: number,
   ownerIds: number[],
   i: number,
@@ -748,7 +717,7 @@ const imageAsset = (
 ) => {
   const byteSize = BigInt(8_000 + ((i * 2654435761) % 2_000_000));
   return {
-    storageKey: `${directory}/2026/08/${randomUUID()}.jpg`,
+    storageKey: `${seedKeyPrefix()}/${randomUUID()}.jpg`,
     mediaType: 'IMAGE' as const,
     mimeType: ['image/jpeg', 'image/png', 'image/webp'][i % 3],
     byteSize,
@@ -763,13 +732,8 @@ const imageAsset = (
   };
 };
 
-const audioAsset = (
-  directory: string,
-  seedIndex: number,
-  ownerIds: number[],
-  i: number,
-) => ({
-  storageKey: `${directory}/2026/08/${randomUUID()}.mp3`,
+const audioAsset = (seedIndex: number, ownerIds: number[], i: number) => ({
+  storageKey: `${seedKeyPrefix()}/${randomUUID()}.mp3`,
   mediaType: 'AUDIO' as const,
   mimeType: ['audio/mpeg', 'audio/flac', 'audio/ogg'][i % 3],
   byteSize: BigInt(1_200_000 + ((i * 2654435761) % 18_000_000)),

@@ -108,7 +108,7 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
 
   const uploadOne = (id: string, file: File) => {
     void apiClient.assets
-      .upload({ file, purpose: 'ACTIVITY_IMAGE' }, (progress) => {
+      .upload({ file }, (progress) => {
         if (disposedRef.current) return;
         patchImage(id, { progress });
       })
@@ -141,11 +141,11 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
     if (slots <= 0) return;
     // 选入即校验：0 字节/超限图片直接拒收，不等必败请求；dropzone 拖入与剪贴板粘贴都汇到这里
     const sized = files.filter(
-      (file) => uploadSizeError(file, 'ACTIVITY_IMAGE') === null,
+      (file) => uploadSizeError(file, 'IMAGE') === null,
     );
     if (sized.length < files.length) {
       setError(
-        `部分图片为空文件或超出 ${maxUploadMb('ACTIVITY_IMAGE')} MB 上限，已拒收。`,
+        `部分图片为空文件或超出 ${maxUploadMb('IMAGE')} MB 上限，已拒收。`,
       );
     }
     const batch = sized.slice(0, slots).map((file) => ({
@@ -491,11 +491,11 @@ const ActivityComposer = ({ activity }: { activity: ActivityAdmin | null }) => {
       />
 
       <AssetPickerDialog
+        mediaType="IMAGE"
         onClose={() => setAssetOpen(false)}
         onDone={() => setAssetOpen(false)}
         onSelect={toggleAsset}
         open={assetOpen}
-        purpose="ACTIVITY_IMAGE"
         selectionCount={images.length}
         selectedAssetIds={selectedAssetIds}
         title="选择动态图片"

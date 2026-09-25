@@ -2,7 +2,6 @@ import type {
   AssetListData,
   AssetListQuery,
   AssetMediaType,
-  AssetPurpose,
   AssetStatus,
 } from '@grey-flowers/contracts';
 
@@ -24,12 +23,7 @@ import { AssetImage } from '@/ui/image';
 import { Paginator } from '@/ui/paginator';
 import { MetaLine, PageBody, PageHeader } from '@/ui/surface';
 
-import {
-  mediaTypeLabels,
-  purposeLabels,
-  purposeOptions,
-  statusLabels,
-} from './display';
+import { mediaTypeLabels, statusLabels } from './display';
 import { UploadDialog } from './upload-dialog';
 
 const PAGE_SIZE = 12;
@@ -74,7 +68,7 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
             group-hover:text-accent-text
           "
         >
-          {purposeLabels[asset.purpose]}
+          {mediaTypeLabels[asset.mediaType]}
         </span>
         <StatusReadout
           label={statusLabels[asset.status]}
@@ -82,7 +76,6 @@ const AssetCard = ({ asset }: { asset: AssetListData['items'][number] }) => (
         />
       </div>
       <MetaLine>
-        <span>{mediaTypeLabels[asset.mediaType]}</span>
         <span>{formatBytes(asset.byteSize)}</span>
         <span className="ml-auto">{formatDateTime(asset.createdAt)}</span>
       </MetaLine>
@@ -120,7 +113,7 @@ export const AssetsListPage = () => {
   const search = useSearch({ from: '/assets/' });
   const page = search.page ?? 1;
   const listRef = useRef<HTMLElement>(null);
-  useScrollReset(listRef, [page, search.status, search.mediaType, search.purpose]);
+  useScrollReset(listRef, [page, search.status, search.mediaType]);
 
   const navigateSearch = useSearchNavigation('/assets', search);
 
@@ -132,7 +125,6 @@ export const AssetsListPage = () => {
     pageSize: PAGE_SIZE,
     ...(search.status ? { status: search.status } : {}),
     ...(search.mediaType ? { mediaType: search.mediaType } : {}),
-    ...(search.purpose ? { purpose: search.purpose } : {}),
   };
   const assetsQuery = useQuery(assetsListOptions(listQuery));
   const data = assetsQuery.data;
@@ -149,9 +141,7 @@ export const AssetsListPage = () => {
     total: data?.total ?? 0,
   });
   const hasFilter =
-    search.status !== undefined ||
-    search.mediaType !== undefined ||
-    search.purpose !== undefined;
+    search.status !== undefined || search.mediaType !== undefined;
 
   const clearFilters = () =>
     navigateSearch(
@@ -159,7 +149,6 @@ export const AssetsListPage = () => {
         page: undefined,
         status: undefined,
         mediaType: undefined,
-        purpose: undefined,
       },
       true,
     );
@@ -186,18 +175,6 @@ export const AssetsListPage = () => {
           sm:flex sm:flex-wrap sm:items-center
         "
       >
-        <SelectField<AssetPurpose>
-          className="sm:w-40"
-          hideLabel
-          label="用途"
-          onChange={(value) =>
-            navigateSearch({ page: undefined, purpose: value })
-          }
-          optionLabels={purposeLabels}
-          options={purposeOptions}
-          placeholderLabel="全部用途"
-          value={search.purpose}
-        />
         <SelectField<AssetMediaType>
           className="sm:w-32"
           hideLabel

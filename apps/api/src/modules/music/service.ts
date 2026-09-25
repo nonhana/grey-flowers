@@ -15,7 +15,6 @@ import { ApiError } from '@/http/errors';
 import { concatUrl } from '@/lib/concat-url';
 import { pagination } from '@/lib/pagination';
 
-import { assetPurposeFromStorageKey } from '../assets/contracts';
 import {
   musicAdminSelect,
   musicTrackSelect,
@@ -228,7 +227,7 @@ export class MusicService {
     return { cover: '', coverAssetId: null };
   }
 
-  /** 音源必须是 AVAILABLE 的 AUDIO 且 purpose=MUSIC_SOURCE；否则 VALIDATION_FAILED。 */
+  /** 音源必须是 AVAILABLE 的 AUDIO；否则 VALIDATION_FAILED。 */
   private async assertSourceAsset(
     client: Client,
     sourceAssetId: number,
@@ -236,13 +235,7 @@ export class MusicService {
     const asset = await client.asset.findUnique({
       where: { id: sourceAssetId },
     });
-    if (
-      !asset ||
-      asset.status !== 'AVAILABLE' ||
-      asset.mediaType !== 'AUDIO' ||
-      assetPurposeFromStorageKey(asset.storageKey, asset.mediaType) !==
-        'MUSIC_SOURCE'
-    ) {
+    if (!asset || asset.status !== 'AVAILABLE' || asset.mediaType !== 'AUDIO') {
       throw new ApiError('VALIDATION_FAILED', {
         fields: { sourceAssetId: ['该音源不是可用的受管音乐音频'] },
       });
@@ -250,7 +243,7 @@ export class MusicService {
     return { durationMs: asset.durationMs, storageKey: asset.storageKey };
   }
 
-  /** 封面必须是 AVAILABLE 的 IMAGE 且 purpose=MUSIC_COVER；否则 VALIDATION_FAILED。 */
+  /** 封面必须是 AVAILABLE 的 IMAGE；否则 VALIDATION_FAILED。 */
   private async assertCoverAsset(
     client: Client,
     coverAssetId: number,
@@ -258,13 +251,7 @@ export class MusicService {
     const asset = await client.asset.findUnique({
       where: { id: coverAssetId },
     });
-    if (
-      !asset ||
-      asset.status !== 'AVAILABLE' ||
-      asset.mediaType !== 'IMAGE' ||
-      assetPurposeFromStorageKey(asset.storageKey, asset.mediaType) !==
-        'MUSIC_COVER'
-    ) {
+    if (!asset || asset.status !== 'AVAILABLE' || asset.mediaType !== 'IMAGE') {
       throw new ApiError('VALIDATION_FAILED', {
         fields: { coverAssetId: ['该封面不是可用的受管音乐封面'] },
       });

@@ -18,8 +18,8 @@ import {
 } from '@/app/server-state/modules/comments';
 import { useDebouncedCommit } from '@/hooks/use-debounced-commit';
 import { useDialog } from '@/hooks/use-dialog';
-import { useScrollReset } from '@/hooks/use-scroll-reset';
 import { usePageClamp } from '@/hooks/use-page-clamp';
+import { useScrollReset } from '@/hooks/use-scroll-reset';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { toastError } from '@/lib/toast';
 import { Button, IconButton } from '@/ui/button';

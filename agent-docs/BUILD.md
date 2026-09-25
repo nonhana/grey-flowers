@@ -71,7 +71,7 @@ pnpm prisma:seed    # 在既有库上重灌（幂等，先逆序清空全表）
 ```
 
 seed 位于 `packages/db/scripts/seed.mts`，覆盖全部 14 个模型并造出大规模、差异化的
-测试数据（文章标题 trgm 检索、评论内容/路径/作者/日期区间筛选、资产 purpose 目录/
-媒体类型/状态、音乐/用户/活动检索等）。唯一管理员：`nonhana / nonhana@outlook.com`
+测试数据（文章标题 trgm 检索、评论内容/路径/作者/日期区间筛选、资产 mediaType/状态
+（key 一律 `assets/{YYYY}/{MM}/`）、音乐/用户/活动检索等）。唯一管理员：`nonhana / nonhana@outlook.com`
 密码 `20021209xiang`。`pnpm prisma:reset` 会先重放迁移再跑 seed，一条命令到位。
 seed 仅应在本地/测试库上运行（脚本会对非开发目标环境提前退出）。

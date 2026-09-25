@@ -119,7 +119,7 @@ export const CodeMirrorPane = ({
         }),
       });
       void apiClient.assets
-        .upload({ file, purpose: 'ARTICLE_INLINE' }, (progress) =>
+        .upload({ file }, (progress) =>
           view?.dispatch({ effects: updateUpload.of({ id, progress }) }),
         )
         .then((asset) => {
@@ -293,6 +293,7 @@ export const CodeMirrorPane = ({
       ) : null}
 
       <AssetPickerDialog
+        mediaType="IMAGE"
         onClose={() => setPickerOpen(false)}
         onSelect={(asset: AssetDto) => {
           const view = viewRef.current;
@@ -301,7 +302,6 @@ export const CodeMirrorPane = ({
           setPickerOpen(false);
         }}
         open={pickerOpen}
-        purpose="ARTICLE_INLINE"
         title="选择正文图片"
       />
 

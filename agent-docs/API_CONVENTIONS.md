@@ -60,7 +60,7 @@ Mounted in `createApp`; public reads and management operations are distinct rout
 | Mount | Auth | Notes |
 | --- | --- | --- |
 | `/auth/*` | mixed | register/login/refresh/logout (origin-gated + rate-limited), session, me |
-| `/assets*` | `ADMIN` | upload (multipart), list, detail, `PATCH /:id` set status, `DELETE /:id` |
+| `/assets*` | `ADMIN` | presigned PUT 三步上传（upload-url → 浏览器 PUT → confirm，无用途字段，mediaType 校验），list, detail, `PATCH /:id` set status, `DELETE /:id` |
 | `/articles*` | `ADMIN` | create, list, detail, `PATCH /:id` save, publish/unpublish, delete, snapshots, preview-token |
 | `/activities*` | `ADMIN` | CRUD for activity feed |
 | `/comments*` | `ADMIN` | comment moderation |
@@ -90,7 +90,7 @@ Mounted in `createApp`; public reads and management operations are distinct rout
 - `createHttp` wraps `ky` with `credentials: 'include'`, `retry: 0`, `throwHttpErrors: false`; every request decodes the body through a `*ResponseSchema` then falls back to `apiFailureSchema`.
 - Authenticated calls attach the bearer token; on `AUTH_REQUIRED` the transport runs a single-flight `/auth/refresh` and retries once (`refreshOnce`). Refresh failure clears the token and notifies the app (see `setSessionExpiredHandler`).
 - The short-lived access token lives only in memory (`getAccessToken`/`setAccessToken` in `index.ts`), never `localStorage`; a page reload re-establishes it from the httpOnly refresh cookie.
-- Uploads (multipart) go through an XHR path (`upload`) so `onUploadProgress` gets real progress (0..1) and the same envelope/refresh semantics apply; a `Content-Length` guard in `apps/api` rejects oversize uploads early (`ASSET_PAYLOAD_TOO_LARGE`).
+- Asset uploads are a presigned PUT three-step flow (`upload-url` → browser PUT → `confirm`) with the same envelope/refresh semantics as other calls, so `onUploadProgress` gets real progress (0..1); `apps/api` rejects oversize payloads at presign and confirm (`ASSET_PAYLOAD_TOO_LARGE`).
 - The main site consumes public endpoints with the read-only `apiGet` adapter (`apps/main/server/utils/api-gateway.ts`); it is transport-only, no business rules.
 
 ## Logging

@@ -1,4 +1,4 @@
-import type { AssetListQuery, AssetPurpose } from '@grey-flowers/contracts';
+import type { AssetListQuery } from '@grey-flowers/contracts';
 
 import {
   assetConfirmResponseSchema,
@@ -58,7 +58,7 @@ export const createAssetsApi = (channel: Channel) => ({
     channel.get(`/assets/${id}`, assetDetailResponseSchema, { signal }),
   /** 受管资产直传：presign 签发 URL → 浏览器 PUT 到 R2（进度真实）→ confirm 回执落库；密钥不出服务端，100% 即接收完成 */
   upload: async (
-    input: { file: File; purpose: AssetPurpose },
+    input: { file: File },
     onUploadProgress?: (progress: number) => void,
     metadata?: { durationMs?: number; width?: number; height?: number },
     signal?: AbortSignal,
@@ -70,7 +70,6 @@ export const createAssetsApi = (channel: Channel) => ({
       {
         json: {
           contentType,
-          purpose: input.purpose,
           size: input.file.size,
         },
         signal,
@@ -85,11 +84,10 @@ export const createAssetsApi = (channel: Channel) => ({
       signal,
     );
 
-    // 图片尺寸由前端解码上报（服务端不再解析媒体）。
-    const imageSize =
-      input.purpose === 'MUSIC_SOURCE'
-        ? undefined
-        : await readImageSize(input.file);
+    // 图片尺寸由前端解码上报（服务端不再解析媒体）；音频不解码宽高。
+    const imageSize = contentType.startsWith('audio/')
+      ? undefined
+      : await readImageSize(input.file);
 
     return channel.post('/assets/confirm', assetConfirmResponseSchema, {
       json: {

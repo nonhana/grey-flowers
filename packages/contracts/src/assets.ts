@@ -6,17 +6,6 @@ import {
   positiveIntSchema,
 } from './common';
 
-export const assetPurposeSchema = z.enum([
-  'ARTICLE_COVER',
-  'ARTICLE_INLINE',
-  'CATEGORY_COVER',
-  'ACTIVITY_IMAGE',
-  'MUSIC_SOURCE',
-  'MUSIC_COVER',
-]);
-
-export type AssetPurpose = z.infer<typeof assetPurposeSchema>;
-
 export const assetMediaTypeSchema = z.enum(['IMAGE', 'AUDIO']);
 
 export type AssetMediaType = z.infer<typeof assetMediaTypeSchema>;
@@ -54,36 +43,20 @@ export interface AssetUploadProfile {
   mimeTypes: readonly string[];
 }
 
-export const assetUploadProfiles: Record<AssetPurpose, AssetUploadProfile> = {
-  ACTIVITY_IMAGE: {
-    maxBytes: ASSET_IMAGE_MAX_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: ASSET_IMAGE_MIME_TYPES,
-  },
-  ARTICLE_COVER: {
-    maxBytes: ASSET_IMAGE_MAX_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: ASSET_IMAGE_MIME_TYPES,
-  },
-  ARTICLE_INLINE: {
-    maxBytes: ASSET_IMAGE_MAX_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: ASSET_IMAGE_MIME_TYPES,
-  },
-  CATEGORY_COVER: {
-    maxBytes: ASSET_IMAGE_MAX_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: ASSET_IMAGE_MIME_TYPES,
-  },
-  MUSIC_COVER: {
-    maxBytes: ASSET_IMAGE_MAX_BYTES,
-    mediaType: 'IMAGE',
-    mimeTypes: ASSET_IMAGE_MIME_TYPES,
-  },
-  MUSIC_SOURCE: {
+/** 上传档位按 mediaType（而非用途）约束：IMAGE/AUDIO 各一档。 */
+export const assetMediaTypeProfiles: Record<
+  AssetMediaType,
+  AssetUploadProfile
+> = {
+  AUDIO: {
     maxBytes: ASSET_AUDIO_MAX_BYTES,
     mediaType: 'AUDIO',
     mimeTypes: ASSET_AUDIO_MIME_TYPES,
+  },
+  IMAGE: {
+    maxBytes: ASSET_IMAGE_MAX_BYTES,
+    mediaType: 'IMAGE',
+    mimeTypes: ASSET_IMAGE_MIME_TYPES,
   },
 };
 
@@ -93,7 +66,6 @@ const dimensions = positiveIntSchema.optional();
 export const assetDtoSchema = z
   .object({
     id: positiveIntSchema,
-    purpose: assetPurposeSchema,
     mediaType: assetMediaTypeSchema,
     status: assetStatusSchema,
     mimeType: z.string().min(1),
@@ -127,7 +99,6 @@ export type AssetReferenceCounts = z.infer<typeof assetReferenceCountsSchema>;
 export const assetListQuerySchema = z
   .object({
     mediaType: assetMediaTypeSchema.optional(),
-    purpose: assetPurposeSchema.optional(),
     status: assetStatusSchema.optional(),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
@@ -167,8 +138,7 @@ export type AssetDetailResponse = z.infer<typeof assetDetailResponseSchema>;
 /** 直传第一步：向服务端申请受管 key + R2 presigned PUT URL。 */
 export const assetUploadUrlInputSchema = z
   .object({
-    purpose: assetPurposeSchema,
-    /** 声明 MIME（normalize 后必须命中 purpose 白名单）。 */
+    /** 声明 MIME（normalize 后必须命中 mediaType 白名单）。 */
     contentType: z.string().trim().min(1).max(100),
     /** 声明大小（字节）；可选，presign 阶段预检，confirm 阶段以对象实际大小为准。 */
     size: positiveIntSchema.optional(),

@@ -422,6 +422,7 @@ export const InspectorPane = ({
       </div>
 
       <AssetPickerDialog
+        mediaType="IMAGE"
         onClose={() => setCoverPickerOpen(false)}
         onSelect={(asset) => {
           editor.updateDraft({
@@ -431,7 +432,6 @@ export const InspectorPane = ({
           setCoverPickerOpen(false);
         }}
         open={coverPickerOpen}
-        purpose="ARTICLE_COVER"
         title="选择文章封面"
       />
 

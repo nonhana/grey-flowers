@@ -18,12 +18,7 @@ import { AssetImage } from '@/ui/image';
 import { ConfirmDialog } from '@/ui/overlay';
 import { PageBody, PageHeader, Panel, SectionLabel } from '@/ui/surface';
 
-import {
-  assetErrorMessage,
-  mediaTypeLabels,
-  purposeLabels,
-  statusLabels,
-} from './display';
+import { assetErrorMessage, mediaTypeLabels, statusLabels } from './display';
 
 const Row = ({
   children,
@@ -191,7 +186,7 @@ export const AssetsDetailPage = () => {
             <ArrowLeft aria-hidden className="size-4" />
           </Link>
         }
-        title={purposeLabels[asset.purpose]}
+        title={mediaTypeLabels[asset.mediaType]}
       />
 
       <div className="mt-5 grid gap-4">
@@ -215,7 +210,7 @@ export const AssetsDetailPage = () => {
             </div>
           ) : (
             <AssetImage
-              alt={purposeLabels[asset.purpose]}
+              alt={mediaTypeLabels[asset.mediaType]}
               className="max-h-104 w-full object-contain"
               src={asset.deliveryUrl}
             />
@@ -250,7 +245,6 @@ export const AssetsDetailPage = () => {
         <Panel className="grid gap-2 p-4">
           <SectionLabel>元数据</SectionLabel>
           <dl className="m-0 divide-y divide-rule">
-            <Row label="用途">{purposeLabels[asset.purpose]}</Row>
             <Row label="类型">{mediaTypeLabels[asset.mediaType]}</Row>
             <Row label="MIME">
               <span className="font-mono text-xs">{asset.mimeType}</span>

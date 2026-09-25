@@ -1,4 +1,4 @@
-import type { AssetDto, AssetPurpose } from '@grey-flowers/contracts';
+import type { AssetDto, AssetMediaType } from '@grey-flowers/contracts';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
@@ -19,20 +19,20 @@ import { AssetImage } from '@/ui/image';
 import { AppDialog } from '@/ui/overlay';
 
 export const AssetPickerDialog = ({
+  mediaType,
   onClose,
   onDone,
   onSelect,
   open,
-  purpose,
   selectionCount,
   selectedAssetIds,
   title,
 }: {
+  mediaType: AssetMediaType;
   onClose: () => void;
   onDone?: () => void;
   onSelect: (asset: AssetDto) => void;
   open: boolean;
-  purpose: AssetPurpose;
   selectionCount?: number;
   selectedAssetIds?: ReadonlySet<number>;
   title: string;
@@ -54,7 +54,7 @@ export const AssetPickerDialog = ({
   useEffect(() => () => uploadAbortRef.current?.abort(), []);
 
   const pickerQuery = useInfiniteQuery({
-    ...assetsPickerOptions(purpose, session),
+    ...assetsPickerOptions(mediaType, session),
     enabled: open,
   });
   // 按 id 去重（Map）：并发页返回重叠窗口时同一条目只渲染一次
@@ -74,7 +74,7 @@ export const AssetPickerDialog = ({
         : '资产加载失败。'
       : null);
   const upload = async (file: File) => {
-    const sizeError = uploadSizeError(file, purpose);
+    const sizeError = uploadSizeError(file, mediaType);
     if (sizeError !== null) {
       setUploadError(sizeError);
       return;
@@ -85,7 +85,7 @@ export const AssetPickerDialog = ({
     uploadAbortRef.current = controller;
     try {
       const asset = await apiClient.assets.upload(
-        { file, purpose },
+        { file },
         (progress) => setUploading(Math.round(progress * 100)),
         undefined,
         controller.signal,
@@ -133,10 +133,14 @@ export const AssetPickerDialog = ({
             onPress={() => fileInputRef.current?.click()}
             tone="solid"
           >
-            {uploading === null ? '上传新图片' : `上传中 ${String(uploading)}%`}
+            {uploading === null
+              ? mediaType === 'AUDIO'
+                ? '上传新音频'
+                : '上传新图片'
+              : `上传中 ${String(uploading)}%`}
           </Button>
           <input
-            accept="image/png,image/jpeg,image/gif,image/webp"
+            accept={mediaType === 'AUDIO' ? 'audio/*' : 'image/*'}
             aria-hidden
             className="hidden"
             onChange={(event) => {
@@ -176,10 +180,7 @@ export const AssetPickerDialog = ({
             ))}
           </ul>
         ) : items.length === 0 ? (
-          <EmptyState
-            icon={<Images aria-hidden />}
-            title="这个用途下还没有资产"
-          >
+          <EmptyState icon={<Images aria-hidden />} title="还没有可用的资产">
             用上面的按钮传一张，它会立刻被选中并插入。
           </EmptyState>
         ) : (
