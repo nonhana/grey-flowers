@@ -223,6 +223,36 @@ model ActivityImageAsset {
   @@index([assetId])
 }
 
+model FriendLink {
+  id          Int      @id @default(autoincrement())
+  site        String
+  owner       String
+  url         String   @unique
+  description String
+  image       String
+  color       String?
+  sortOrder   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Work {
+  id          Int      @id @default(autoincrement())
+  site        String
+  owner       String
+  url         String   @unique
+  description String
+  image       String
+  color       String?
+  sortOrder   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
 enum CommentLevel {
   PARENT
   CHILD

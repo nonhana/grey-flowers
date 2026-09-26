@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import type { Friend, Work } from '@grey-flowers/contracts'
 import { BookHeart, Link as LinkIcon, Sticker } from '@lucide/vue'
 import { linksPageData } from '#shared/data/meta'
-import friends from '~/data/friends.json'
-import works from '~/data/works.json'
 
 useHead({
   title: linksPageData.title,
@@ -18,8 +17,25 @@ const { data: articleResponse } = await useFetch('/api/markdown/friends', {
   key: 'friends-article',
 })
 
+const { data: friendsResponse } = await useFetch('/api/friends/list', {
+  key: 'friends-list',
+})
+
+const { data: worksResponse } = await useFetch('/api/works/list', {
+  key: 'works-list',
+})
+
 const article = computed<MarkdownPagePayload | null>(() =>
   (articleResponse.value?.payload as MarkdownPagePayload | null) ?? null,
+)
+
+const friendCards = computed(() =>
+  ((friendsResponse.value?.payload as Friend[] | undefined) ?? [])
+    .map(friend => ({ ...friend, color: friend.color ?? '' })),
+)
+const workCards = computed(() =>
+  ((worksResponse.value?.payload as Work[] | undefined) ?? [])
+    .map(work => ({ ...work, color: work.color ?? '' })),
 )
 </script>
 
@@ -27,12 +43,12 @@ const article = computed<MarkdownPagePayload | null>(() =>
   <div class="flex flex-col gap-8">
     <HanaInfoCard title="友情链接" :icon="BookHeart">
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
-        <LinksCard v-for="(friend, index) in friends" :key="friend.url" v-bind="{ ...friend, index }" />
+        <LinksCard v-for="(friend, index) in friendCards" :key="friend.id" v-bind="{ ...friend, index }" />
       </div>
     </HanaInfoCard>
     <HanaInfoCard title="自己写的一些作品" :icon="LinkIcon">
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
-        <LinksCard v-for="(work, index) in works" :key="work.url" v-bind="{ ...work, index }" />
+        <LinksCard v-for="(work, index) in workCards" :key="work.id" v-bind="{ ...work, index }" />
       </div>
     </HanaInfoCard>
     <HanaInfoCard title="来做朋友吧" :icon="Sticker">

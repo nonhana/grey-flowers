@@ -14,10 +14,12 @@ import { AssetService } from '../modules/assets/service';
 import { AuthService } from '../modules/auth/service';
 import { CommentMailer } from '../modules/comments/mailer';
 import { CommentService } from '../modules/comments/service';
+import { FriendsService } from '../modules/friends/service';
 import { MusicService } from '../modules/music/service';
 import { OverviewService } from '../modules/overview/service';
 import { TaxonomyService } from '../modules/taxonomy/service';
 import { UserService } from '../modules/users/service';
+import { WorksService } from '../modules/works/service';
 import { createLogger, type ApiLogger } from './logger';
 
 export interface AppDependencies {
@@ -27,6 +29,7 @@ export interface AppDependencies {
   auth: AuthService;
   comments: CommentService;
   environment: ApiEnvironment;
+  friends: FriendsService;
   logger: ApiLogger;
   music: MusicService;
   objectStorage: ObjectStorage;
@@ -34,6 +37,7 @@ export interface AppDependencies {
   prisma: PrismaClient;
   taxonomy: TaxonomyService;
   users: UserService;
+  works: WorksService;
 }
 
 export const createDependencies = (
@@ -61,9 +65,15 @@ export const createDependencies = (
       logger,
       new CommentMailer(environment),
     ),
+    friends: new FriendsService(prisma),
     music: new MusicService(prisma, environment),
     overview: new OverviewService(prisma),
     taxonomy,
     users,
+    works: new WorksService(
+      prisma,
+      objectStorage,
+      environment.ASSET_PUBLIC_URL,
+    ),
   };
 };

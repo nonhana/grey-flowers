@@ -21,9 +21,11 @@ import { Route as ArticlesArticleIdRouteImport } from './routes/articles.$articl
 import { Route as ArticlesNewRouteImport } from './routes/articles.new'
 import { Route as AssetsIndexRouteImport } from './routes/assets.index'
 import { Route as AssetsAssetIdRouteImport } from './routes/assets.$assetId'
+import { Route as FriendsIndexRouteImport } from './routes/friends.index'
 import { Route as MusicIndexRouteImport } from './routes/music.index'
 import { Route as MusicMusicIdRouteImport } from './routes/music.$musicId'
 import { Route as MusicUploadRouteImport } from './routes/music.upload'
+import { Route as WorksIndexRouteImport } from './routes/works.index'
 import { Route as ActivitiesActivityIdEditRouteImport } from './routes/activities.$activityId.edit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -86,6 +88,11 @@ const AssetsAssetIdRoute = AssetsAssetIdRouteImport.update({
   path: '/assets/$assetId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FriendsIndexRoute = FriendsIndexRouteImport.update({
+  id: '/friends/',
+  path: '/friends/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MusicIndexRoute = MusicIndexRouteImport.update({
   id: '/music/',
   path: '/music/',
@@ -99,6 +106,11 @@ const MusicMusicIdRoute = MusicMusicIdRouteImport.update({
 const MusicUploadRoute = MusicUploadRouteImport.update({
   id: '/music/upload',
   path: '/music/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorksIndexRoute = WorksIndexRouteImport.update({
+  id: '/works/',
+  path: '/works/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivitiesActivityIdEditRoute =
@@ -123,7 +135,9 @@ export interface FileRoutesByFullPath {
   '/activities/': typeof ActivitiesIndexRoute
   '/articles/': typeof ArticlesIndexRoute
   '/assets/': typeof AssetsIndexRoute
+  '/friends/': typeof FriendsIndexRoute
   '/music/': typeof MusicIndexRoute
+  '/works/': typeof WorksIndexRoute
   '/activities/$activityId/edit': typeof ActivitiesActivityIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -141,7 +155,9 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesIndexRoute
   '/articles': typeof ArticlesIndexRoute
   '/assets': typeof AssetsIndexRoute
+  '/friends': typeof FriendsIndexRoute
   '/music': typeof MusicIndexRoute
+  '/works': typeof WorksIndexRoute
   '/activities/$activityId/edit': typeof ActivitiesActivityIdEditRoute
 }
 export interface FileRoutesById {
@@ -160,7 +176,9 @@ export interface FileRoutesById {
   '/activities/': typeof ActivitiesIndexRoute
   '/articles/': typeof ArticlesIndexRoute
   '/assets/': typeof AssetsIndexRoute
+  '/friends/': typeof FriendsIndexRoute
   '/music/': typeof MusicIndexRoute
+  '/works/': typeof WorksIndexRoute
   '/activities/$activityId/edit': typeof ActivitiesActivityIdEditRoute
 }
 export interface FileRouteTypes {
@@ -180,7 +198,9 @@ export interface FileRouteTypes {
     | '/activities/'
     | '/articles/'
     | '/assets/'
+    | '/friends/'
     | '/music/'
+    | '/works/'
     | '/activities/$activityId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -198,7 +218,9 @@ export interface FileRouteTypes {
     | '/activities'
     | '/articles'
     | '/assets'
+    | '/friends'
     | '/music'
+    | '/works'
     | '/activities/$activityId/edit'
   id:
     | '__root__'
@@ -216,7 +238,9 @@ export interface FileRouteTypes {
     | '/activities/'
     | '/articles/'
     | '/assets/'
+    | '/friends/'
     | '/music/'
+    | '/works/'
     | '/activities/$activityId/edit'
   fileRoutesById: FileRoutesById
 }
@@ -235,7 +259,9 @@ export interface RootRouteChildren {
   ActivitiesIndexRoute: typeof ActivitiesIndexRoute
   ArticlesIndexRoute: typeof ArticlesIndexRoute
   AssetsIndexRoute: typeof AssetsIndexRoute
+  FriendsIndexRoute: typeof FriendsIndexRoute
   MusicIndexRoute: typeof MusicIndexRoute
+  WorksIndexRoute: typeof WorksIndexRoute
   ActivitiesActivityIdEditRoute: typeof ActivitiesActivityIdEditRoute
 }
 
@@ -325,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssetsAssetIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/friends/': {
+      id: '/friends/'
+      path: '/friends'
+      fullPath: '/friends/'
+      preLoaderRoute: typeof FriendsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/music/': {
       id: '/music/'
       path: '/music'
@@ -344,6 +377,13 @@ declare module '@tanstack/react-router' {
       path: '/music/upload'
       fullPath: '/music/upload'
       preLoaderRoute: typeof MusicUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/works/': {
+      id: '/works/'
+      path: '/works'
+      fullPath: '/works/'
+      preLoaderRoute: typeof WorksIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activities/$activityId/edit': {
@@ -371,7 +411,9 @@ const rootRouteChildren: RootRouteChildren = {
   ActivitiesIndexRoute: ActivitiesIndexRoute,
   ArticlesIndexRoute: ArticlesIndexRoute,
   AssetsIndexRoute: AssetsIndexRoute,
+  FriendsIndexRoute: FriendsIndexRoute,
   MusicIndexRoute: MusicIndexRoute,
+  WorksIndexRoute: WorksIndexRoute,
   ActivitiesActivityIdEditRoute: ActivitiesActivityIdEditRoute,
 }
 export const routeTree = rootRouteImport

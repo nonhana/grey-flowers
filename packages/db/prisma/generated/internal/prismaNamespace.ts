@@ -410,7 +410,9 @@ export const ModelName = {
   ActivityMusic: 'ActivityMusic',
   Asset: 'Asset',
   ArticleInlineAsset: 'ArticleInlineAsset',
-  ActivityImageAsset: 'ActivityImageAsset'
+  ActivityImageAsset: 'ActivityImageAsset',
+  FriendLink: 'FriendLink',
+  Work: 'Work'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -426,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "article" | "tag" | "category" | "articleSnapshot" | "user" | "session" | "comment" | "userMessage" | "activity" | "music" | "activityMusic" | "asset" | "articleInlineAsset" | "activityImageAsset"
+    modelProps: "article" | "tag" | "category" | "articleSnapshot" | "user" | "session" | "comment" | "userMessage" | "activity" | "music" | "activityMusic" | "asset" | "articleInlineAsset" | "activityImageAsset" | "friendLink" | "work"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1466,6 +1468,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FriendLink: {
+      payload: Prisma.$FriendLinkPayload<ExtArgs>
+      fields: Prisma.FriendLinkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FriendLinkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FriendLinkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>
+        }
+        findFirst: {
+          args: Prisma.FriendLinkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FriendLinkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>
+        }
+        findMany: {
+          args: Prisma.FriendLinkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>[]
+        }
+        create: {
+          args: Prisma.FriendLinkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>
+        }
+        createMany: {
+          args: Prisma.FriendLinkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FriendLinkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>[]
+        }
+        delete: {
+          args: Prisma.FriendLinkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>
+        }
+        update: {
+          args: Prisma.FriendLinkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>
+        }
+        deleteMany: {
+          args: Prisma.FriendLinkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FriendLinkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FriendLinkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>[]
+        }
+        upsert: {
+          args: Prisma.FriendLinkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendLinkPayload>
+        }
+        aggregate: {
+          args: Prisma.FriendLinkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFriendLink>
+        }
+        groupBy: {
+          args: Prisma.FriendLinkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FriendLinkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FriendLinkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FriendLinkCountAggregateOutputType> | number
+        }
+      }
+    }
+    Work: {
+      payload: Prisma.$WorkPayload<ExtArgs>
+      fields: Prisma.WorkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>
+        }
+        findMany: {
+          args: Prisma.WorkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>[]
+        }
+        create: {
+          args: Prisma.WorkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>
+        }
+        createMany: {
+          args: Prisma.WorkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>
+        }
+        update: {
+          args: Prisma.WorkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWork>
+        }
+        groupBy: {
+          args: Prisma.WorkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1686,6 +1836,38 @@ export const ActivityImageAssetScalarFieldEnum = {
 } as const
 
 export type ActivityImageAssetScalarFieldEnum = (typeof ActivityImageAssetScalarFieldEnum)[keyof typeof ActivityImageAssetScalarFieldEnum]
+
+
+export const FriendLinkScalarFieldEnum = {
+  id: 'id',
+  site: 'site',
+  owner: 'owner',
+  url: 'url',
+  description: 'description',
+  image: 'image',
+  color: 'color',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FriendLinkScalarFieldEnum = (typeof FriendLinkScalarFieldEnum)[keyof typeof FriendLinkScalarFieldEnum]
+
+
+export const WorkScalarFieldEnum = {
+  id: 'id',
+  site: 'site',
+  owner: 'owner',
+  url: 'url',
+  description: 'description',
+  image: 'image',
+  color: 'color',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkScalarFieldEnum = (typeof WorkScalarFieldEnum)[keyof typeof WorkScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2060,6 +2242,8 @@ export type GlobalOmitConfig = {
   asset?: Prisma.AssetOmit
   articleInlineAsset?: Prisma.ArticleInlineAssetOmit
   activityImageAsset?: Prisma.ActivityImageAssetOmit
+  friendLink?: Prisma.FriendLinkOmit
+  work?: Prisma.WorkOmit
 }
 
 /* Types for Logging */

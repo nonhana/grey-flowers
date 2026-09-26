@@ -65,10 +65,11 @@ Mounted in `createApp`; public reads and management operations are distinct rout
 | `/activities*` | `ADMIN` | CRUD for activity feed |
 | `/comments*` | `ADMIN` | comment moderation |
 | `/music*` | `ADMIN` | music library CRUD |
+| `/friends*`, `/works*` | `ADMIN` | site links & works CRUD + `PATCH /reorder`（ids 全集校验，注册先于 `PATCH /:id`）；works 另有 Logo 直传三步（`POST /works/logo/upload-url` → 浏览器 PUT 原资产桶 `works-logo/{filename}` → `POST /works/logo/confirm`）与 `DELETE /works/:id/logo`（只删 `works-logo/` 前缀对象、外链仅清字段；image 可为 `''` 表示未设置） |
 | `/users*` | `ADMIN` | user management |
 | `/overview*` | `ADMIN` | ops dashboard aggregates |
 | `/categories*`, `/tags*` | `ADMIN` | CRUD for taxonomy |
-| `/public/*` | none | `public/articles/*` (list/detail/search/neighbors/dates/count/preview), `public/activities`, `public/comments`, `public/music`, `public/users`, `public/tags`, `public/categories` |
+| `/public/*` | none | `public/articles/*` (list/detail/search/neighbors/dates/count/preview), `public/activities`, `public/comments`, `public/music`, `public/friends`, `public/works`, `public/users`, `public/tags`, `public/categories` |
 
 ## DTO rules (`packages/contracts`)
 

@@ -23,6 +23,10 @@ import {
   createCommentUserRoutes,
 } from './modules/comments/routes';
 import {
+  createFriendPublicRoutes,
+  createFriendRoutes,
+} from './modules/friends/routes';
+import {
   createMusicPublicRoutes,
   createMusicRoutes,
 } from './modules/music/routes';
@@ -33,6 +37,10 @@ import {
   createTagRoutes,
 } from './modules/taxonomy/routes';
 import { createUserRoutes } from './modules/users/routes';
+import {
+  createWorkPublicRoutes,
+  createWorkRoutes,
+} from './modules/works/routes';
 
 export const createApp = (dependencies: AppDependencies) => {
   const app = new Hono<ApiEnvironment>();
@@ -69,12 +77,16 @@ export const createApp = (dependencies: AppDependencies) => {
   app.route('/tags', createTagRoutes(dependencies));
   app.route('/users', createUserRoutes(dependencies));
   app.route('/music', createMusicRoutes(dependencies));
+  app.route('/friends', createFriendRoutes(dependencies));
+  app.route('/works', createWorkRoutes(dependencies));
   app.route('/overview', createOverviewRoutes(dependencies));
   app.route('/public', createPublicTaxonomyRoutes(dependencies));
   app.route('/public/articles', createArticlePublicRoutes(dependencies));
   app.route('/public/activities', createActivityPublicRoutes(dependencies));
   app.route('/public/comments', createCommentPublicRoutes(dependencies));
   app.route('/public/music', createMusicPublicRoutes(dependencies));
+  app.route('/public/friends', createFriendPublicRoutes(dependencies));
+  app.route('/public/works', createWorkPublicRoutes(dependencies));
   app.route('/public/users', createCommentUserRoutes(dependencies));
   app.notFound((c) => createFailure(c, 'NOT_FOUND'));
 

@@ -13,8 +13,9 @@ Only `apps/api` depends on `@grey-flowers/db` at runtime (via `createDependencie
 - **Authoring:** `Article` (raw `content`, slug `to` unique, `revision`, `published`, `publishedAt`, `categoryId`, `coverAssetId`), `Tag`, `Category` (both unique `name`, `articleCount`), `ArticleSnapshot` (per-revision, `@@unique([articleId, revision])`).
 - **Interaction:** `User` (`email`/`username` unique, `role` default `USER`), `Session` (refresh-hash sessions with rotation metadata), `Comment` (path tree with `level` PARENT/CHILD), `UserMessage` (comment → receiver notification).
 - **Media/activity:** `Asset` (object-storage record: `storageKey` unique, `mediaType`, `byteSize` BigInt, `status`, `deletedAt`), `ArticleInlineAsset` (`@@id([articleId, assetId])`), `Activity`, `ActivityImageAsset` (ordered images, `@@unique([activityId, position])`), `ActivityMusic` (M2M `@@id([activityId, musicId])`), `Music` (`sourceAssetId`/`coverAssetId` nullable).
+- **Site links:** `FriendLink` (friend links), `Work` (portfolio). Isomorphic fields (`site`/`owner`/`url` unique/`description`/`image`/`color` nullable/`sortOrder`) in **separate tables by design** — the two evolve differently; rows ship with the `friend_and_work` migration (no seed dependency).
 
-That is **14 models and 5 enums** (`UserRole`, `SessionRevokeReason`, `CommentLevel`, `AssetMediaType`, `AssetStatus`). Session revoke reasons include `REUSE_DETECTED` (refresh-token reuse).
+That is **16 models and 5 enums** (`UserRole`, `SessionRevokeReason`, `CommentLevel`, `AssetMediaType`, `AssetStatus`). Session revoke reasons include `REUSE_DETECTED` (refresh-token reuse).
 
 Asset lifecycle rules belong to `apps/api` (`modules/assets/service.ts`): deletion is soft with reference checks — an asset that is still referenced (by article covers, inline assets, category covers, music) returns `ASSET_REFERENCED` (409); relations on `Asset` use `onDelete: Restrict`.
 
@@ -44,6 +45,7 @@ Every successful `POST /auth/refresh` rotates the secret; a presented old creden
 ## Local synchronization and migrations
 
 - `pnpm prisma:generate` — regenerates the checked-in client after a schema change (also runs on `pnpm install`).
+- After a schema change, run `pnpm install --force` once (not plain `pnpm install`): `pnpm-workspace.yaml` sets `injectWorkspacePackages: true`, so `@grey-flowers/db` is *copied* into `node_modules/.pnpm/...@file+packages+db...` instead of symlinked. Plain `pnpm install` says "Already up to date" and keeps the stale `dist/` snapshot, so `apps/api` runs against a client without the new models (`prisma.x` is undefined at runtime). Rebuild `packages/db/dist` first, then force the reinstall.
 - `pnpm prisma:migrate:dev` — create/apply a migration locally against a disposable database (inspected before running).
 - `pnpm prisma:push` — local schema-sync shortcut; does **not** create a migration and is not the shipping path.
 - `pnpm prisma:migrate:deploy` — applies the committed SQL under `packages/db/prisma/migrations/` to the configured db. Production schema work needs an intentional, committed migration with reviewed SQL.
@@ -54,4 +56,4 @@ The article-search migration creates the `pg_trgm` extension plus partial GIN in
 
 Prisma configuration reads `HANA_DATABASE_URL` from the environment (`prisma.config.ts`, always available because every package loads the root `.env`). Use a disposable local database for schema experiments and inspect the target before any schema-mutating command.
 
-`packages/db` contains no application environment validation, request handling, authorization, query policy, or business mutation logic. Business rules, transactions, and projection-to-DTO maps live in `apps/api` modules. The seed script (`scripts/seed.mts`) is destructive (`deleteMany` then re-seed) and exits early unless the target is a local/development database.
+`packages/db` contains no application environment validation, request handling, authorization, query policy, or business mutation logic. Business rules, transactions, and projection-to-DTO maps live in `apps/api` modules. The seed script (`scripts/seed.mts`) is destructive (`deleteMany` then re-seed), covers the 14 seeded models, and exits early unless the target is a local/development database. Friend links and works are not seeded — their rows ship with the `friend_and_work` migration.

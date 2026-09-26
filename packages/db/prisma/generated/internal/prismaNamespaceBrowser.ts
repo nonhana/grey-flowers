@@ -64,7 +64,9 @@ export const ModelName = {
   ActivityMusic: 'ActivityMusic',
   Asset: 'Asset',
   ArticleInlineAsset: 'ArticleInlineAsset',
-  ActivityImageAsset: 'ActivityImageAsset'
+  ActivityImageAsset: 'ActivityImageAsset',
+  FriendLink: 'FriendLink',
+  Work: 'Work'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -264,6 +266,38 @@ export const ActivityImageAssetScalarFieldEnum = {
 } as const
 
 export type ActivityImageAssetScalarFieldEnum = (typeof ActivityImageAssetScalarFieldEnum)[keyof typeof ActivityImageAssetScalarFieldEnum]
+
+
+export const FriendLinkScalarFieldEnum = {
+  id: 'id',
+  site: 'site',
+  owner: 'owner',
+  url: 'url',
+  description: 'description',
+  image: 'image',
+  color: 'color',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FriendLinkScalarFieldEnum = (typeof FriendLinkScalarFieldEnum)[keyof typeof FriendLinkScalarFieldEnum]
+
+
+export const WorkScalarFieldEnum = {
+  id: 'id',
+  site: 'site',
+  owner: 'owner',
+  url: 'url',
+  description: 'description',
+  image: 'image',
+  color: 'color',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkScalarFieldEnum = (typeof WorkScalarFieldEnum)[keyof typeof WorkScalarFieldEnum]
 
 
 export const SortOrder = {
