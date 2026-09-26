@@ -19,14 +19,14 @@ export const AssetImage = ({
     setFailed(false);
   }
 
-  if (failed) {
+  if (failed || src.trim() === '') {
     return (
       <span
         className={cn(
           'grid size-full place-items-center gap-1 bg-well text-ink-dim',
           className,
         )}
-        title="读不到这张图"
+        title={src.trim() === '' ? '未设置图片' : '读不到这张图'}
       >
         <ImageOff aria-hidden className="size-5" />
         <span className="sr-only">{alt || '图片加载失败'}</span>

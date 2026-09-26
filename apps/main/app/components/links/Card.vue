@@ -18,7 +18,7 @@ onMounted(() => {
       :to="props.url"
       :aria-label="`${props.owner}的个人网站`"
       target="_blank"
-      :title="props.desc"
+      :title="props.description"
       class="relative top-0 flex gap-5 hana-card transition-all active:scale-95 p-5! hover:-translate-y-1 active:bg-hana-blue-200! dark:bg-hana-black-700! hover:bg-hana-blue-150! hover:shadow-lg! dark:active:bg-hana-black-800! dark:hover:bg-hana-black-800!"
     >
       <HanaLazyImg
@@ -32,7 +32,7 @@ onMounted(() => {
       <div class="h-16 flex flex-col">
         <span class="text-black line-clamp-1 dark:text-hana-white">{{ props.site }}</span>
         <div class="flex flex-1 items-center">
-          <span class="text-xs font-code line-clamp-2">{{ props.desc }}</span>
+          <span class="text-xs font-code line-clamp-2">{{ props.description }}</span>
         </div>
       </div>
     </NuxtLink>

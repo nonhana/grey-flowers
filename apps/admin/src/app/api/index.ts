@@ -3,10 +3,12 @@ import { createArticlesApi } from './modules/articles';
 import { createAssetsApi } from './modules/assets';
 import { createAuthApi } from './modules/auth';
 import { createCommentsApi } from './modules/comments';
+import { createFriendsApi } from './modules/friends';
 import { createMusicApi } from './modules/music';
 import { createOverviewApi } from './modules/overview';
 import { createTaxonomyApi } from './modules/taxonomy';
 import { createUsersApi } from './modules/users';
+import { createWorksApi } from './modules/works';
 import { createSession } from './session';
 import { createTransport } from './transport';
 
@@ -44,10 +46,12 @@ const createApiClient = () => {
     assets: createAssetsApi(session.auth),
     auth: createAuthApi({ auth: session.auth, open: transport.open }),
     comments: createCommentsApi(session.auth),
+    friends: createFriendsApi(session.auth),
     music: createMusicApi(session.auth),
     overview: createOverviewApi(session.auth),
     taxonomy: createTaxonomyApi(session.auth),
     users: createUsersApi(session.auth),
+    works: createWorksApi(session.auth),
     refresh: () => session.refresh(),
     setSessionExpiredHandler: session.setSessionExpiredHandler,
   };

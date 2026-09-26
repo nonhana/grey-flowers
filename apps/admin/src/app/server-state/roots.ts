@@ -6,3 +6,5 @@ export const commentsRoot = ['admin', 'comments'] as const;
 export const musicRoot = ['admin', 'music'] as const;
 export const assetsRoot = ['admin', 'assets'] as const;
 export const activitiesRoot = ['admin', 'activities'] as const;
+export const friendsRoot = ['admin', 'friends'] as const;
+export const worksRoot = ['admin', 'works'] as const;

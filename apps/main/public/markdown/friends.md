@@ -7,7 +7,7 @@
   "site": "Greyflowers",
   "owner": "non_hana",
   "url": "https://caelum.moe",
-  "desc": "『灰色的花，终有一天会盛开吧。』",
+  "description": "『灰色的花，终有一天会盛开吧。』",
   "image": "https://static-r2.caelum.moe/avatar.webp",
   "color": "#858585"
 }
@@ -16,8 +16,6 @@
 1. `site`：你的小站名称
 2. `owner`：你的名字
 3. `url`：你的小站地址
-4. `desc`：小站描述
+4. `description`：小站描述
 5. `image`：你的头像
 6. `color`：小站主题色
-
-> 注：友链展示不分先后，单纯由 JSON 文件中的小站添加顺序从新到旧进行排序

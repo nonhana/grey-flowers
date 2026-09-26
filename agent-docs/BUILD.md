@@ -11,7 +11,7 @@ Required environment groups (root `.env`):
 - Ports — `API_PORT` (default 2408), `ADMIN_PORT` (default 2409), `MAIN_PORT` (default 2410). Admin and main derive browser origins from `API_PORT`/`MAIN_PORT`; in production they are hardcoded to `https://api.caelum.moe` / `https://caelum.moe` and the admin/main ports become optional.
 - Auth (API) — `AUTH_ACCESS_TOKEN_SECRET`, `AUTH_REFRESH_TOKEN_PEPPER`: base64url, decode to ≥32 bytes, and must differ from each other.
 - `API_TRUSTED_PROXY_HOPS` — optional integer 0–8: how many trusted reverse proxies sit in front of `apps/api`. Defaults to 1 in production (nginx) and 0 in development (direct). Only affects which `X-Forwarded-For` segment the auth rate limiter treats as the client IP; set it explicitly when the chain changes (CDN + nginx → 2).
-- Object storage (API) — `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`.
+- Object storage (API) — `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`. works Logo 直传复用同一桶（`works-logo/` 前缀），无需额外变量；该桶 CORS 需允许 admin 来源的浏览器 PUT。
 - Mail — `HANA_MAIL_ENABLE`, `RESEND_API_KEY`, `RESEND_FROM`. Consumed by `apps/api` (comment-reply mail); the main site no longer sends mail.
 - `NODE_ENV` — validated by `apps/api/src/env.ts`.
 
@@ -70,7 +70,7 @@ pnpm prisma:reset   # 一键清空 + 重建迁移 + 自动灌入 seed 数据
 pnpm prisma:seed    # 在既有库上重灌（幂等，先逆序清空全表）
 ```
 
-seed 位于 `packages/db/scripts/seed.mts`，覆盖全部 14 个模型并造出大规模、差异化的
+seed 位于 `packages/db/scripts/seed.mts`，覆盖全部 14 个业务模型并造出大规模、差异化的
 测试数据（文章标题 trgm 检索、评论内容/路径/作者/日期区间筛选、资产 mediaType/状态
 （key 一律 `assets/{YYYY}/{MM}/`）、音乐/用户/活动检索等）。唯一管理员：`nonhana / nonhana@outlook.com`
 密码 `20021209xiang`。`pnpm prisma:reset` 会先重放迁移再跑 seed，一条命令到位。

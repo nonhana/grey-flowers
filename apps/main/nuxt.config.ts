@@ -30,6 +30,10 @@ export default defineNuxtConfig({
       type: 'Person',
     },
   },
+  routeRules: {
+    // /links 每请求 SSR 现取 DB（友链/作品）；预渲染会把数据烤死在构建时
+    '/links': { prerender: false },
+  },
   nitro: {
     prerender: {
       crawlLinks: true,

@@ -111,3 +111,13 @@ export type ArticleInlineAsset = Prisma.ArticleInlineAssetModel
  * 
  */
 export type ActivityImageAsset = Prisma.ActivityImageAssetModel
+/**
+ * Model FriendLink
+ * 
+ */
+export type FriendLink = Prisma.FriendLinkModel
+/**
+ * Model Work
+ * 
+ */
+export type Work = Prisma.WorkModel

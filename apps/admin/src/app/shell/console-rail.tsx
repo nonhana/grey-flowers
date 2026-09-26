@@ -8,9 +8,11 @@ import {
   FolderTree,
   Images,
   LayoutDashboard,
+  Link2,
   LogOut,
   MessagesSquare,
   Music2,
+  Package,
   PanelLeftClose,
   PanelLeftOpen,
   Send,
@@ -83,6 +85,13 @@ const SECTIONS: NavSection[] = [
     items: [
       { icon: MessagesSquare, label: '评论', path: '/comments' },
       { icon: Users, label: '用户', path: '/users' },
+    ],
+  },
+  {
+    title: '站点',
+    items: [
+      { icon: Link2, label: '友链', path: '/friends' },
+      { icon: Package, label: '作品', path: '/works' },
     ],
   },
 ];

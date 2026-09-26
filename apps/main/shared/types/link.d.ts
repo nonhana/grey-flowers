@@ -2,7 +2,7 @@ export interface LinkCardProps {
   site: string
   owner: string
   url: string
-  desc: string
+  description: string
   image: string
   color: string
 }
