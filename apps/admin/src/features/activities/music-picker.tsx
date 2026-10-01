@@ -93,7 +93,7 @@ const MusicPickerBody = ({
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="flex flex-col gap-4">
       <SearchInput
         label="搜索音乐"
         onChange={setQuery}
@@ -101,7 +101,7 @@ const MusicPickerBody = ({
         value={query}
       />
 
-      <div className="grid gap-1">
+      <div className="flex flex-col gap-1">
         {error ? (
           <EmptyState
             action={
@@ -113,7 +113,7 @@ const MusicPickerBody = ({
             {error}
           </EmptyState>
         ) : pickerQuery.isPending && pickerQuery.isFetching ? (
-          <div className="grid animate-content-in gap-1">
+          <div className="flex animate-content-in flex-col gap-1">
             {Array.from({ length: 5 }, (_, index) => (
               <MusicRowSkeleton key={index} />
             ))}
