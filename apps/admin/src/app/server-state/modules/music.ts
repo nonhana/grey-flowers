@@ -34,6 +34,10 @@ export const musicDetailOptions = (id: number) =>
     queryFn: ({ signal }) => apiClient.music.detail(id, signal),
   });
 
+// CodeMirror Music widget 获取音乐详情
+export const ensureMusicDetail = (id: number) =>
+  queryClient.query({ ...musicDetailOptions(id), staleTime: 'static' });
+
 /** 音乐增删改后的规定失效：music 全家族、activities（metadata 内嵌进动态投影）、overview counts。 */
 export const invalidateMusicAfterMutation = async () => {
   await Promise.all([

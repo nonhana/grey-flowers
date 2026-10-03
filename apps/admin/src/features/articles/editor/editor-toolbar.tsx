@@ -10,6 +10,7 @@ import {
   Link2,
   List,
   ListOrdered,
+  Music2,
   Quote,
   Table2,
 } from 'lucide-react';
@@ -74,10 +75,12 @@ const TOOLBAR_BUTTONS = [
 
 export const EditorToolbar = ({
   keyboardInset,
+  onOpenMusicPicker,
   onOpenPicker,
   onRun,
 }: {
   keyboardInset: number;
+  onOpenMusicPicker: () => void;
   onOpenPicker: () => void;
   onRun: (run: (view: EditorView) => void) => void;
 }) => (
@@ -109,6 +112,9 @@ export const EditorToolbar = ({
     <span aria-hidden className="mx-1 h-5 w-px shrink-0 bg-rule" />
     <IconButton label="从资产库插入图片" onPress={onOpenPicker} size="md">
       <ImagePlus aria-hidden />
+    </IconButton>
+    <IconButton label="从音乐库插入音乐" onPress={onOpenMusicPicker} size="md">
+      <Music2 aria-hidden />
     </IconButton>
   </div>
 );

@@ -4,6 +4,7 @@ import type { SyntaxNode } from '@lezer/common';
 import { syntaxTree } from '@codemirror/language';
 
 import { imageCover, parseImage } from './image-parse';
+import { formatMusicIdsAttr, locateMusicDirective } from './music-directive';
 
 interface LocatedImage {
   from: number;
@@ -65,4 +66,27 @@ export const removeImage = (view: EditorView, src: string, anchor: number) => {
   const found = findImage(view, src, anchor);
   if (!found) return;
   view.dispatch({ changes: { from: found.from, to: found.to, insert: '' } });
+};
+
+export const rewriteMusicIds = (
+  view: EditorView,
+  position: number,
+  ids: readonly number[],
+) => {
+  const found = locateMusicDirective(view.state, position);
+  if (!found) return;
+  view.dispatch({
+    changes: {
+      from: found.attrFrom,
+      to: found.attrTo,
+      insert: formatMusicIdsAttr(ids),
+    },
+  });
+};
+
+export const removeMusicDirective = (view: EditorView, position: number) => {
+  const found = locateMusicDirective(view.state, position);
+  if (!found) return;
+  const to = Math.min(found.to + 1, view.state.doc.length);
+  view.dispatch({ changes: { from: found.from, to } });
 };

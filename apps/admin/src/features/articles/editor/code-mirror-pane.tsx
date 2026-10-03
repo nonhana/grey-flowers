@@ -1,5 +1,5 @@
 import type { Extension } from '@codemirror/state';
-import type { AssetDto } from '@grey-flowers/contracts';
+import type { AssetDto, MusicTrack } from '@grey-flowers/contracts';
 
 import {
   defaultKeymap,
@@ -18,6 +18,7 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { apiClient } from '@/app/api/index';
+import { ensureMusicDetail } from '@/app/server-state/modules/music';
 import { useDialog } from '@/hooks/use-dialog';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset';
 import { IMAGE_ACCEPT_MAP } from '@/lib/media-accept';
@@ -26,6 +27,7 @@ import { Button } from '@/ui/button';
 import {
   altForAsset,
   altForFile,
+  insertBlock,
   insertInline,
   isInsideCode,
   wrapSelection,
@@ -35,20 +37,27 @@ import { paperHighlight } from '@/ui/editor/paper-highlight';
 import { paperTheme } from '@/ui/editor/paper-theme';
 import { Alert } from '@/ui/feedback';
 import { AssetPickerDialog } from '@/widgets/asset-picker';
+import { MusicPickerDialog } from '@/widgets/music-picker';
 
 import { EditorToolbar } from './editor-toolbar';
 import { ImageAltDialog } from './image-alt-dialog';
 import { ImageViewerDialog } from './image-viewer-dialog';
 import {
+  formatMusicDirective,
   imageActions,
   insertUpload,
   livePreview,
+  locateMusicDirective,
+  musicActions,
   removeImage,
   removeUpload,
   rewriteImageAlt,
+  rewriteMusicIds,
   updateUpload,
   uploadField,
 } from './live-preview/index';
+
+const MAX_MUSIC_IDS = 10;
 
 export const CodeMirrorPane = ({
   onChange,
@@ -68,6 +77,10 @@ export const CodeMirrorPane = ({
     assetId: string | null;
   }>();
   const altDialog = useDialog<{ src: string; alt: string }>();
+  const musicDialog = useDialog<{
+    at: number | null;
+    selected: MusicTrack[];
+  }>();
   const [altDraft, setAltDraft] = useState('');
   const keyboardInset = useKeyboardInset();
 
@@ -86,14 +99,32 @@ export const CodeMirrorPane = ({
     if (view) removeImage(view, src, anchor);
   });
 
+  const changeMusicAt = useEffectEvent((at: number) => {
+    const view = viewRef.current;
+    const directive = view && locateMusicDirective(view.state, at);
+    if (!directive) return;
+    void Promise.allSettled(directive.ids.map(ensureMusicDetail)).then(
+      (results) => {
+        musicDialog.open({
+          at,
+          selected: results.flatMap((result) =>
+            result.status === 'fulfilled' ? [result.value] : [],
+          ),
+        });
+      },
+    );
+  });
+
   useEffect(() => {
     imageActions.current = {
       open: openViewer,
       edit: editAlt,
       remove: removeImageAt,
     };
+    musicActions.current = { change: changeMusicAt };
     return () => {
       imageActions.current = null;
+      musicActions.current = null;
     };
   }, []);
 
@@ -219,10 +250,20 @@ export const CodeMirrorPane = ({
     altDialog.dismiss();
   };
 
+  const confirmMusic = (tracks: MusicTrack[]) => {
+    const view = viewRef.current;
+    const target = musicDialog.data;
+    if (!view || !target) return;
+    const ids = tracks.map((track) => track.id);
+    if (target.at === null) insertBlock(view, formatMusicDirective(ids));
+    else rewriteMusicIds(view, target.at, ids);
+  };
+
   return (
     <div className="relative flex min-h-0 flex-1 flex-col bg-paper">
       <EditorToolbar
         keyboardInset={keyboardInset}
+        onOpenMusicPicker={() => musicDialog.open({ at: null, selected: [] })}
         onOpenPicker={() => setPickerOpen(true)}
         onRun={runCommand}
       />
@@ -303,6 +344,16 @@ export const CodeMirrorPane = ({
         }}
         open={pickerOpen}
         title="选择正文图片"
+      />
+
+      <MusicPickerDialog
+        isOpen={musicDialog.isOpen}
+        maxSelection={MAX_MUSIC_IDS}
+        onConfirm={confirmMusic}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) musicDialog.dismiss();
+        }}
+        selected={musicDialog.data?.selected ?? []}
       />
 
       <ImageViewerDialog

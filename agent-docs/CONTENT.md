@@ -28,6 +28,12 @@ The admin mints a short-lived preview token (`POST /articles/:id/preview-token`)
 - Static Markdown pages are not articles. `apps/main/public/markdown/about.md` and `friends.md` are served by `/api/markdown/:slug`, gated by an explicit `about`/`friends` whitelist (the `StaticMarkdownPageSlug` type in `apps/main/shared/types/markdown.d.ts` plus the whitelist in `server/utils/markdown.ts`). Adding a static page requires updating both places and its consumer.
 - Comments do not use this path. Comment and activity Markdown both use the restricted sanitizer factory `apps/api/src/lib/restricted-markdown.ts` (comments: `apps/api/src/modules/comments/comment-markdown.ts`, activities: `apps/api/src/modules/activities/activity-markdown.ts`); raw HTML is off, heading/html/image/table are rejected, and `href` protocols are whitelisted.
 
+## Custom MDC components
+
+- Custom MDC components live in `apps/main/app/components/mdc/`. `@nuxtjs/mdc` registers that directory globally, which is what lets `MDCRenderer` resolve a tag by name at runtime; an ordinary auto-imported component cannot be resolved that way, and an unresolved tag silently renders as an empty unknown element. MDC attributes always arrive as strings.
+- `::music-player{ids="3,5"}` followed by a closing `::` renders the main-site audio player for Music records 3 and 5 (playlist order = `ids` order, at most 20 ids). Write it block-style on its own lines; the inline `:music-player{…}` form lands inside a `<p>`. The component fetches `/api/music/list` on the client only (the `$audioPlayer` singleton does not exist during SSR), so pages never bake track data in; deleted tracks are skipped and an all-missing list shows "曲目已不可用".
+- The admin article editor inserts the directive from the music library (toolbar button → `widgets/music-picker`) and shows it as a card (`live-preview/music-widget.ts`). The card is decoration only — the document keeps the raw directive. Only a column-0 `::music-player{ids=…}` directly followed by a `::` line is recognised; the inline form, code-fence examples and malformed ids stay plain text.
+
 ## Content constraints
 
 - Treat article and static-page Markdown as trusted authored content.

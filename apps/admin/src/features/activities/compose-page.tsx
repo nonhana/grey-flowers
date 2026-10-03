@@ -30,6 +30,7 @@ import { FieldLabel } from '@/ui/form';
 import { AssetImage } from '@/ui/image';
 import { AppDialog } from '@/ui/overlay';
 import { AssetPickerDialog } from '@/widgets/asset-picker';
+import { MusicPickerDialog } from '@/widgets/music-picker';
 
 import { ActivityEditor } from './activity-editor';
 import {
@@ -38,7 +39,6 @@ import {
   toImageItem,
   type ComposerImage,
 } from './image-strip';
-import { MusicPickerDialog } from './music-picker';
 
 const MAX_MUSIC = 12;
 const CONTENT_LIMIT = 8192;

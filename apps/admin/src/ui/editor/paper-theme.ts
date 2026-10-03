@@ -65,7 +65,7 @@ export const paperTheme = EditorView.theme({
     lineHeight: 'normal',
   },
   '& .gf-live-img:hover .gf-live-img-bar': { opacity: '1' },
-  '& .gf-live-img-act': {
+  '& .gf-live-img-act, & .gf-live-music-act': {
     minHeight: '28px',
     border: 'none',
     borderRadius: '5px',
@@ -78,7 +78,64 @@ export const paperTheme = EditorView.theme({
     cursor: 'pointer',
     boxShadow: '0 1px 4px rgb(0 0 0 / 0.18)',
   },
-  '& .gf-live-img-act:hover': { background: 'var(--color-accent-wash)' },
+  '& .gf-live-img-act:hover, & .gf-live-music-act:hover': {
+    background: 'var(--color-accent-wash)',
+  },
+  '& .gf-live-music': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    margin: '0.35rem 0',
+    padding: '6px 8px',
+    border: '1px solid var(--color-edge)',
+    borderRadius: '8px',
+    background: 'var(--color-well)',
+    lineHeight: 'normal',
+  },
+  '& .gf-live-music-list': {
+    display: 'grid',
+    flex: '1',
+    gap: '6px',
+    minWidth: '0',
+  },
+  '& .gf-live-music-row': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    minWidth: '0',
+  },
+  '& .gf-live-music-cover': {
+    flex: 'none',
+    width: '40px',
+    height: '40px',
+    objectFit: 'cover',
+    borderRadius: '6px',
+    background: 'var(--color-case-raised)',
+  },
+  '& .gf-live-music-text': {
+    display: 'grid',
+    flex: '1',
+    minWidth: '0',
+  },
+  '& .gf-live-music-title, & .gf-live-music-meta': {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  '& .gf-live-music-title': { color: 'var(--color-ink-strong)' },
+  '& .gf-live-music-meta': {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '12px',
+    color: 'var(--color-ink-dim)',
+  },
+  '& .gf-live-music-row[data-state="error"] .gf-live-music-title': {
+    color: 'var(--color-ink-dim)',
+  },
+  '& .gf-live-music-bar': {
+    display: 'flex',
+    flex: 'none',
+    gap: '4px',
+  },
   '& .gf-live-ghost': {
     display: 'inline-flex',
     alignItems: 'center',

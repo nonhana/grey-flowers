@@ -35,12 +35,12 @@ export function formattedEventHandler<T>(
   handler: (event: H3Event) => Promise<HandlerResponse<T> | void> | HandlerResponse<T> | void,
 ) {
   return defineEventHandler(
-    async (event): Promise<LegacyEnvelope<T> | LegacyEnvelope<null>> => {
+    async (e): Promise<LegacyEnvelope<T> | LegacyEnvelope<null>> => {
       try {
-        const res = await handler(event)
+        const res = await handler(e)
 
         if (res === undefined) {
-          setResponseStatus(event, 200)
+          setResponseStatus(e, 200)
           return { statusCode: 200, statusMessage: 'OK', success: true, payload: null, error: null }
         }
 
@@ -49,8 +49,8 @@ export function formattedEventHandler<T>(
         const formattedError = error ?? null
         const status = statusCode || 200
 
-        // body 与真实 HTTP 状态保持同步：404/500 不再被吞成 200（软 404 / 隐藏 5xx）。
-        setResponseStatus(event, status)
+        // body 与真实 HTTP 状态保持同步
+        setResponseStatus(e, status)
 
         return {
           statusCode: status,
@@ -62,7 +62,7 @@ export function formattedEventHandler<T>(
       }
       catch (rawError: unknown) {
         const status = getErrorStatus(rawError) ?? 500
-        setResponseStatus(event, status)
+        setResponseStatus(e, status)
         return {
           statusCode: status,
           statusMessage: getErrorStatusMessage(rawError) ?? 'Internal Server Error',

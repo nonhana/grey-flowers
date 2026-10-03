@@ -1,10 +1,13 @@
+import type { Text } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 import type { AssetDto } from '@grey-flowers/contracts';
 
 import { syntaxTree } from '@codemirror/language';
 
-export const isInsideCode = (view: EditorView, position: number) =>
-  syntaxTree(view.state).resolveInner(position).name.includes('Code');
+export const isInsideCode = (
+  view: Pick<EditorView, 'state'>,
+  position: number,
+) => syntaxTree(view.state).resolveInner(position).name.includes('Code');
 
 export const wrappedMarkdown = (asset: AssetDto, alt: string) =>
   `![${alt}](${asset.deliveryUrl}){asset-id=${asset.id}}`;
@@ -42,6 +45,37 @@ export const insertInline = (view: EditorView, text: string) => {
     changes: { from: selection.from, insert: text, to: selection.to },
     selection: { anchor: selection.from + text.length },
   });
+  view.focus();
+};
+
+// 块级内容必须独占段落，即空行
+export const blockInsertChange = (doc: Text, head: number, text: string) => {
+  const line = doc.lineAt(head);
+  const isBlank = line.text.trim() === '';
+  const previous = line.number > 1 ? doc.line(line.number - 1).text.trim() : '';
+  const nextIsBlankLine =
+    line.number < doc.lines && doc.line(line.number + 1).text.trim() === '';
+
+  const prefix = isBlank ? (previous === '' ? '' : '\n') : '\n\n';
+  const suffix = nextIsBlankLine ? '' : '\n';
+  const insert = `${prefix}${text}${suffix}`;
+  const from = isBlank ? line.from : line.to;
+
+  return {
+    from,
+    to: line.to,
+    insert,
+    cursor: from + insert.length + (nextIsBlankLine ? 1 : 0),
+  };
+};
+
+export const insertBlock = (view: EditorView, text: string) => {
+  const { cursor, ...changes } = blockInsertChange(
+    view.state.doc,
+    view.state.selection.main.head,
+    text,
+  );
+  view.dispatch({ changes, selection: { anchor: cursor } });
   view.focus();
 };
 
